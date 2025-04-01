@@ -25,7 +25,7 @@ const Layout = () => {
       button1Text: "Uploaded Data",
       button2Text: "Create Maser Data",
       onButton1Click: () => alert("Add Item Clicked"),
-      onButton2Click: () => alert("View Reports Clicked"),
+      onButton2Click: () => alert("Create Maser Data"),
     },
     "/profile": {
       title: "Profile",
@@ -33,6 +33,13 @@ const Layout = () => {
       button2Text: "Change Password",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => alert("Change Password Clicked"),
+    },
+    "/masterData": {
+      title: "Master Data",
+      button1Text: "Filter",
+      button2Text: "Create Maser Data",
+      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton2Click: () => alert("Create Maser Data"),
     },
     "/settings": {
       title: "Settings",

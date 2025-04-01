@@ -35,22 +35,29 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <AppBar
-      position="static"
-      sx={{
-        backgroundColor: "white",
-        color: "black",
-        boxShadow: 1,
-        width: { xs: "100vw", md: "76vw", lg: "83vw", xl: "86vw", xxl: "96vw" },
-        overflowX: "hidden",
-        margin: "0 auto",
-      }}
-    >
+    position="sticky"
+    sx={{
+      backgroundColor: "white",
+      color: "black",
+      boxShadow: 1,
+      width: "100%",  // Adjust width to account for sidebar
+      maxWidth:'6000px',
+      left:"250px",  // Align it with the sidebar
+      top: 0,
+      zIndex: 100,
+      overflowY: "auto",
+      
+    }}
+  >
+  
+  
+  
       <Toolbar
         sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
       >
         {/* Menu Icon (Visible only on tablets and smaller screens) */}
         <IconButton
-          sx={{ display: { xs: "block", md: "block", lg: "none" } }} // Show only on tablet & mobile
+          sx={{ display: { xs: "block", md: "none", lg: "none" } }} // Show only on tablet & mobile
           onClick={onMenuClick}
         >
           <MenuIcon />
@@ -92,7 +99,6 @@ const Header: React.FC<HeaderProps> = ({
             borderRadius: "50%",
             border: "2px solid white",
           },
-          marginRight:'6px'
         }}
       >
         <Box
@@ -137,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({
         </Typography>
 
         {/* Two Dynamic Buttons */}
-        <Box display="flex" gap={2} pr={2}>
+        <Box display="flex" gap={2} >
           <Button
             sx={{
               textTransform: "none",

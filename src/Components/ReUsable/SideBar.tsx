@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const menuItems = [
     { text: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-    { text: "Master Data", icon: <Description />, path: "/masterdata" },
+    { text: "Master Data", icon: <Description />, path: "/masterData" },
     { text: "Production Operators", icon: <Receipt />, path: "/invoices" },
     { text: "Reports", icon: <Description />, path: "/reports" },
   ];
@@ -193,12 +193,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     </Drawer>
      {/* Sidebar for Mobile & Tablet */}
      <Drawer
-        anchor="left"
-        open={open}
-        onClose={toggleMobileSidebar}
-        sx={{ display: { xs: "none",md:'none', lg: "block" } }}
+   anchor="left"
+   open={open}
+   onClose={toggleMobileSidebar}
+   sx={{ display: { xs: "block", md: "none", lg: "none" } }}
+>
 
-      >
      <Box  sx={{ width: 250, padding: 2 }}>
         <img src={Logo} alt="Logo" />
       </Box>

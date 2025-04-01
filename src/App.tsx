@@ -3,6 +3,7 @@ import SignInPage from "./Components/Authentication/SignIn";
 import DashboardPage from "./Pages/Dashboard";
 import Layout from "./Components/ReUsable/LayOut";
 import ProtectedRoute from "./Components/Authentication/ProtectedRoute";
+import MasterData from "./Pages/MasterData";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/masterData" element={<MasterData />} />
           </Route>
         </Route>
       </Routes>
