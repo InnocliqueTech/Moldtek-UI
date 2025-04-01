@@ -1,24 +1,29 @@
-import React from 'react';
-import { Button as MUIButton, ButtonProps } from '@mui/material';
+import React from "react";
+import { Button as MUIButton, ButtonProps } from "@mui/material";
+import { number } from "zod";
 
-interface ButtonComponentProps extends ButtonProps {
+interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   text: string;
-  color?: string; // Background color
-  textColor?: string; // Text color
-  width?: string; // Width of the button
-  height?: string; // Height of the button
-  border?: string; // Border style (e.g., '2px solid black')
-  loading?: boolean; // Optional loading state
+  color?: string; // Custom background color
+  textColor?: string; // Custom text color
+  width?: string;
+  height?: string;
+  border?: string; // Custom border style
+  borderRadius?: string; // Custom border radius
+  loading?: boolean; // Loading state
+  p?:string | number
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
   text,
-  color = 'blue', // Default color
-  textColor = 'white', // Default text color
-  width = 'auto', // Default width
-  height = '40px', // Default height
-  border = 'none', // Default no border
+  color = "blue",
+  textColor = "white",
+  width = "auto",
+  height = "40px",
+  border = "none",
+  borderRadius = "8px", // Default border radius
   loading,
+  p='2px',
   ...props
 }) => {
   return (
@@ -30,13 +35,18 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         color: textColor,
         width: width,
         height: height,
-        border: border,
-        '&:hover': {
-          backgroundColor: color ? `${color}D9` : 'transparent', // Darken color on hover
+padding:p,
+whiteSpace:'nowrap',
+        border: border !== "none" ? border : "2px solid transparent", // Default to transparent border if "none"
+        borderRadius: borderRadius, // Apply dynamic border radius
+        "&:hover": {
+          backgroundColor: color ? `${color}D9` : "transparent",
         },
+        // Handle visibility if border is none and text color is also light
+        ...(color === "none" && { color: textColor || "black" }), // Ensure text is visible if color is none
       }}
     >
-      {loading ? 'Loading...' : text}
+      {loading ? "Loading..." : text}
     </MUIButton>
   );
 };

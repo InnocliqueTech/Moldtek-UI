@@ -15,6 +15,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
+import ButtonComponent from "./Button";
 
 interface HeaderProps {
   title: string;
@@ -35,23 +36,19 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <AppBar
-    position="sticky"
-    sx={{
-      backgroundColor: "white",
-      color: "black",
-      boxShadow: 1,
-      width: "100%",  // Adjust width to account for sidebar
-      maxWidth:'6000px',
-      left:"250px",  // Align it with the sidebar
-      top: 0,
-      zIndex: 100,
-      overflowY: "auto",
-      
-    }}
-  >
-  
-  
-  
+      position="sticky"
+      sx={{
+        backgroundColor: "white",
+        color: "black",
+        boxShadow: 1,
+        width: "100%", // Adjust width to account for sidebar
+        maxWidth: "6000px",
+        left: "250px", // Align it with the sidebar
+        top: 0,
+        zIndex: 100,
+        overflowY: "auto",
+      }}
+    >
       <Toolbar
         sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
       >
@@ -75,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({
             "& .MuiOutlinedInput-root": {
               borderRadius: "50px",
             },
-            mt:'10px'
+            mt: "10px",
           }}
           InputProps={{
             startAdornment: (
@@ -88,33 +85,33 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Notification Icon */}
         <Badge
-        overlap="circular"
-        variant="dot"
-        color="error"
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        sx={{
-          "& .MuiBadge-dot": {
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            border: "2px solid white",
-          },
-        }}
-      >
-        <Box
+          overlap="circular"
+          variant="dot"
+          color="error"
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
           sx={{
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
-            border: "2px solid #E5E5E5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            "& .MuiBadge-dot": {
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              border: "2px solid white",
+            },
           }}
         >
-          <NotificationsIcon sx={{ fontSize: 20 }} />
-        </Box>
-      </Badge>
+          <Box
+            sx={{
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              border: "2px solid #E5E5E5",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <NotificationsIcon sx={{ fontSize: 20 }} />
+          </Box>
+        </Badge>
       </Toolbar>
 
       {/* Padding Below Search */}
@@ -134,7 +131,6 @@ const Header: React.FC<HeaderProps> = ({
         px={2}
         paddingTop="0px"
         paddingBottom="8px"
-    
         width="100%"
       >
         {/* Dynamic Title */}
@@ -143,29 +139,25 @@ const Header: React.FC<HeaderProps> = ({
         </Typography>
 
         {/* Two Dynamic Buttons */}
-        <Box display="flex" gap={2} >
-          <Button
-            sx={{
-              textTransform: "none",
-              borderRadius: "100px",
-              border: "1px solid #E5E5E5",
-              color: "#0E0E0E",
-            }}
+        <Box display="flex" gap={2}>
+          <ButtonComponent
             onClick={onButton1Click}
-          >
-            {button1Text}
-          </Button>
-          <Button
-            sx={{
-              textTransform: "none",
-              borderRadius: "100px",
-              backgroundColor: "#0073B7",
-              color: "#FFFFFF",
-            }}
+            color="white" // Background color
+            text={button1Text}
+            textColor="#0E0E0E"
+            borderRadius="100px"
+            border="1px solid #E5E5E5"
+            p={"14px"}
+          />
+          <ButtonComponent
             onClick={onButton2Click}
-          >
-            {button2Text}
-          </Button>
+            color="#0073B7" // Background color
+            text={button2Text}
+            textColor="#FFFFFF"
+            borderRadius="100px"
+            p={"4px"}
+            width={"200px"}
+          />
         </Box>
       </Box>
     </AppBar>
