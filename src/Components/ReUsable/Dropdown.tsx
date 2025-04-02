@@ -6,17 +6,18 @@ import {
   ListItemText,
   InputLabel,
   FormControl,
-  SelectProps,
+  SelectChangeEvent,
+  Typography,
 } from '@mui/material';
 
 interface DropdownProps {
-  options: string[]; // List of options
-  value: string[] | string; // Selected option(s), can be single or multiple
-  onChange: (event: React.ChangeEvent<{ value: unknown }>) => void; // Change handler
-  isMultiSelect: boolean; // If true, allows multi-selection
-  label: string; // Label for the dropdown
-  showAllOption?: boolean; // If true, show the "All" option for multi-selection
-  checkbox?: boolean; // If true, show checkboxes for multi-select
+  options: string[];
+  value: string[] | string;
+  onChange: (event: SelectChangeEvent<string[]>) => void;
+  isMultiSelect: boolean;
+  label: string;
+  showAllOption?: boolean;
+  checkbox?: boolean;
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -31,65 +32,82 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    if (Array.isArray(value)) {
-      setSelectedOptions(value);
-    } else {
-      setSelectedOptions([value]);
-    }
+    setSelectedOptions(Array.isArray(value) ? value : [value]);
   }, [value]);
 
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const selectedValues = event.target.value as string[];
+  const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
+    let selectedValues = event.target.value as string[];
 
     if (showAllOption && selectedValues.includes('All')) {
-      // Remove "All" if selected
-      setSelectedOptions(selectedValues.filter((item) => item !== 'All'));
-      onChange({ target: { value: options } });
-    } else {
-      setSelectedOptions(selectedValues);
-      onChange({ target: { value: selectedValues } });
+      selectedValues = options;
     }
+
+    setSelectedOptions(selectedValues);
+    onChange(event);
   };
 
   return (
-    <FormControl fullWidth>
-      <InputLabel>{label}</InputLabel>
-      <Select
-        multiple={isMultiSelect}
-        value={selectedOptions}
-        onChange={handleSelectChange}
-        renderValue={(selected) => (selected as string[]).join(', ')}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              maxHeight: 300,
-              width: 250,
-            },
-          },
-        }}
-      >
-        {isMultiSelect && showAllOption && (
-          <MenuItem value="All">
-            <Checkbox
-              checked={selectedOptions.length === options.length}
-              indeterminate={selectedOptions.length > 0 && selectedOptions.length < options.length}
-            />
-            <ListItemText primary="All" />
-          </MenuItem>
-        )}
+    <>
+      {/* Top Heading with Gray Color */}
+      <Typography variant="body2" sx={{ fontWeight:500,marginBottom:0}} color="#656565">
+      {label}
+      </Typography>
 
-        {options.map((option) => (
-          <MenuItem key={option} value={option}>
-            {checkbox ? (
-              <Checkbox checked={selectedOptions.includes(option)} />
-            ) : (
-              <span style={{ display: selectedOptions.includes(option) ? 'inline' : 'none' }}>✔</span>
-            )}
-            <ListItemText primary={option} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+      <FormControl fullWidth>
+        <Select
+          multiple={isMultiSelect}
+          value={selectedOptions}
+          onChange={handleSelectChange}
+          renderValue={(selected) => (selected as string[]).join(', ')}
+          MenuProps={{
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+            transformOrigin: {
+              vertical: 'top',
+              horizontal: 'left',
+            },
+            PaperProps: {
+              style: {
+                maxHeight: 200, // Enables scrolling
+                width: 250,
+                overflowY: 'auto', // Adds scrollbar when content overflows
+              },
+            },
+          }}
+          sx={{
+            borderRadius: '8px', // Changed border-radius
+            backgroundColor: 'white',
+            '& .MuiSelect-select': {
+              padding: '8px 10px', // Decrease padding to reduce height
+              color: "black",
+            },
+          }}
+        >
+          {isMultiSelect && showAllOption && (
+            <MenuItem value="All">
+              <Checkbox
+                checked={selectedOptions.length === options.length}
+                indeterminate={selectedOptions.length > 0 && selectedOptions.length < options.length}
+              />
+              <ListItemText primary="All" />
+            </MenuItem>
+          )}
+
+          {options.map((option) => (
+            <MenuItem key={option} value={option}>
+              {checkbox ? (
+                <Checkbox checked={selectedOptions.includes(option)} />
+              ) : (
+                <span style={{ display: selectedOptions.includes(option) ? 'inline' : 'none' }}>✔</span>
+              )}
+              <ListItemText primary={option} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      </>
   );
 };
 

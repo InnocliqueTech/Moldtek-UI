@@ -8,6 +8,7 @@ const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();
+  const [masterDataCreatePopup,setMasterDataCreatePopup] = useState(false);
 
   // Dynamic Titles & Buttons based on path
   const pageData: Record<
@@ -25,7 +26,7 @@ const Layout = () => {
       button1Text: "Uploaded Data",
       button2Text: "Create Maser Data",
       onButton1Click: () => alert("Add Item Clicked"),
-      onButton2Click: () => alert("Create Maser Data"),
+      onButton2Click: () => setMasterDataCreatePopup(true),
     },
     "/profile": {
       title: "Profile",
@@ -59,6 +60,7 @@ const Layout = () => {
 
   const currentPath = location.pathname;
   const headerData = pageData[currentPath] || pageData["/"]; // Fallback to "/" if path is not found in pageData
+  const onClosePopup = ()=> setMasterDataCreatePopup(false)
 
   return (
     <Box
@@ -90,6 +92,8 @@ const Layout = () => {
           onButton1Click={headerData.onButton1Click}
           onButton2Click={headerData.onButton2Click}
           onMenuClick={toggleSidebar} // Toggle sidebar when menu icon is clicked
+          masterDataCreatePopup= {masterDataCreatePopup}
+          onClosePopup = {onClosePopup}
         />
 
         <Box sx={{ flex: 1, p: 4, backgroundColor: "#ECECEC" }}>

@@ -1,0 +1,217 @@
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Box,
+  Button,
+  TextField,
+  MenuItem,
+} from "@mui/material";
+import ButtonComponent from "./Button";
+import ReusableInput from "./TextField";
+import DropdownComponent from "./Dropdown";
+import { CloudUpload } from "@mui/icons-material";
+
+interface ReusablePopupProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  confirmText: string;
+  onConfirm: () => void;
+  text?: string;
+  subText?: string;
+  dropdownOptions?: string[]; // Dynamic dropdown values
+  upload?: boolean;
+  textField?: boolean;
+  dropdown?: boolean;
+  cancel?: boolean;
+}
+
+const ReusablePopup: React.FC<ReusablePopupProps> = ({
+  open,
+  onClose,
+  title,
+  confirmText,
+  onConfirm,
+  text,
+  subText,
+  dropdownOptions = [], // Default to an empty array if no values are provided
+  upload,
+  textField,
+  cancel,
+  dropdown,
+}) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedStructure, setSelectedStructure] = useState("");
+
+  // Handle file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      sx={{
+        "& .MuiPaper-root": {
+          borderRadius: "16px", // 👈 Customize border radius here
+        },
+      }}
+    >
+      {/* Popup Header */}
+      <DialogTitle>{title}</DialogTitle>
+
+      {/* Popup Body */}
+      <DialogContent>
+        <Box display="flex" flexDirection="column" gap="10px">
+          {/* Optional Text */}
+          {text && <Typography variant="body2">{text}</Typography>}
+          {subText && (
+            <Typography variant="body2" color="gray">
+              {subText}
+            </Typography>
+          )}
+          {upload && (
+            <Box
+              sx={{
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                cursor: "pointer",
+                maxWidth: 800,
+                width: "100%",
+              }}
+            >
+              {/* Icon inside a rounded background */}
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  backgroundColor: "#f5f5f5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CloudUpload sx={{ color: "#9e9e9e" }} />{" "}
+                {/* Replace with your icon */}
+              </Box>
+
+              {/* Upload button */}
+              <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
+                <Typography component="span">
+                  <span
+                    style={{
+                      color: "#007bff",
+                      fontWeight: "400",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Click to upload
+                  </span>{" "}
+                  or drag and drop{" "}
+                  <span style={{ color: "#9e9e9e" }}>(max. 1MB)</span>
+                </Typography>
+                <input
+                  type="file"
+                  id="file-upload"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+              </label>
+
+              {/* Show selected file name */}
+              {selectedFile && (
+                <Typography variant="body2" color="green">
+                  {selectedFile.name}
+                </Typography>
+              )}
+            </Box>
+          )}
+          {textField && (
+            <>
+              <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
+                <ReusableInput
+                  label="Unit Effectivity Number"
+                  placeholder="Enter Customer Name"
+                  value={"UEN-20240801"}
+                  onChange={() => {}}
+                />
+                <ReusableInput
+                  label="Customer / Company Name"
+                  placeholder="Enter UEN"
+                  value={"Nestle"}
+                  onChange={() => {}}
+                />
+                <ReusableInput
+                  label=" Brand Name & Pack"
+                  placeholder="Enter Brand & Pack"
+                  value={"KitKat 50g Wrapper"}
+                  onChange={() => {}}
+                />
+                <ReusableInput
+                  label="ITEM Code"
+                  placeholder="Enter ITEM Code"
+                  value={"KK-50G-123"}
+                  onChange={() => {}}
+                />
+              </Box>
+              <ReusableInput
+                label=" Jar/Cap"
+                placeholder="Enter Jar/Cap Details"
+                value={"N/A (For flexible packaging)"}
+                onChange={() => {}}
+              />
+            </>
+          )}
+          {/* Dynamic Dropdown */}
+          {dropdown && (
+            <DropdownComponent
+              options={dropdownOptions}
+              value={"PET"}
+              onChange={() => {}}
+              isMultiSelect={false}
+              label="Structure"
+              showAllOption={false}
+              checkbox={false}
+            />
+          )}
+        </Box>
+      </DialogContent>
+
+      {/* Popup Actions (Confirm & Close) */}
+      <DialogActions sx={{ paddingBottom: "16px" }}>
+        {cancel && (
+          <ButtonComponent
+            onClick={onClose}
+            text="Cancel"
+            color="white"
+            textColor="#0E0E0E"
+          />
+        )}
+        <ButtonComponent
+          onClick={onConfirm}
+          text={confirmText}
+          color="#0073B7"
+          textColor="white"
+          borderRadius="100px"
+          width={cancel ? "" : "100%"}
+        />
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default ReusablePopup;
