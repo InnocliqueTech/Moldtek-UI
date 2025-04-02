@@ -4,6 +4,7 @@ import DashboardPage from "./Pages/Dashboard";
 import Layout from "./Components/ReUsable/LayOut";
 import ProtectedRoute from "./Components/Authentication/ProtectedRoute";
 import MasterData from "./Pages/MasterData";
+import NotFoundPage from "./Components/Authentication/NotFoundPage";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
             <Route path="/masterData" element={<MasterData />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
