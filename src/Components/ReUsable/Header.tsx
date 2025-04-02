@@ -69,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({
             <MenuIcon />
           </IconButton>
 
-          <TextField
+          {/* <TextField
             variant="outlined"
             placeholder="Search..."
             size="small"
@@ -118,12 +118,12 @@ const Header: React.FC<HeaderProps> = ({
             >
               <NotificationsIcon sx={{ fontSize: 20 }} />
             </Box>
-          </Badge>
-        </Toolbar>
+          </Badge> */}
 
+{/* 
         <Box sx={{ height: 10 }} />
         <Divider />
-        <Box sx={{ height: 10 }} />
+        <Box sx={{ height: 10 }} /> */}
 
         <Box
           display="flex"
@@ -159,6 +159,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           </Box>
         </Box>
+        </Toolbar>
       </AppBar>
 
       {/* Master Data Popup */}

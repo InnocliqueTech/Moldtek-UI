@@ -120,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             </Typography>
           </Box>
 
-          <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
+          {/* <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
             <ExpandMore />
           </IconButton>
 
@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 {text}
               </MenuItem>
             ))}
-          </Menu>
+          </Menu> */}
         </Box>
 
         <Typography

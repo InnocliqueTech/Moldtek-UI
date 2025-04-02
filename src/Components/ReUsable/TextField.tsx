@@ -1,5 +1,6 @@
-import React from "react";
-import { TextField, Typography, Box } from "@mui/material";
+import React, { useState } from "react";
+import { TextField, Typography, Box, InputAdornment, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface ReusableInputProps {
   label: string;
@@ -9,6 +10,7 @@ interface ReusableInputProps {
   type?: string;
   error?: boolean;
   helperText?: string;
+  icon?: React.ReactNode; // Left-side icon
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -19,7 +21,10 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   type = "text",
   error = false,
   helperText = "",
+  icon,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Box display="flex" flexDirection="column">
       {/* Grey Heading */}
@@ -32,17 +37,33 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        type={type}
+        type={type === "password" && !showPassword ? "password" : "text"}
         fullWidth
         variant="outlined"
         error={error}
         helperText={helperText}
+        InputProps={{
+          startAdornment: icon ? <InputAdornment position="start">{icon}</InputAdornment> : null,
+          endAdornment: type === "password" ? (
+            <InputAdornment position="end">
+              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end"
+                disableRipple
+                disableFocusRipple
+                sx={{
+                  pointerEvents: "auto", // Allows clicking without focusing the input
+                  "&:focus": { outline: "none" }, // Removes any focus outline
+                }} >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ) : null,
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
-            borderRadius: "8px", //  Rounded corners
+            borderRadius: "8px",
             "& input": {
-              padding: "8px 10px", //  Adjust padding
-              color: "black", // Display input text in black
+              padding: "10px",
+              color: "black",
             },
           },
         }}

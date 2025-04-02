@@ -96,7 +96,7 @@ const Layout = () => {
           onClosePopup = {onClosePopup}
         />
 
-        <Box sx={{ flex: 1, p: 4, backgroundColor: "#ECECEC" }}>
+        <Box sx={{ flex: 1, p: 2, backgroundColor: "#ECECEC" }}>
           <Outlet />
         </Box>
       </Box>
