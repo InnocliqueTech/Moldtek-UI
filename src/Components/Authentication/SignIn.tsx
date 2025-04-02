@@ -34,7 +34,7 @@ const SignInPage: React.FC = () => {
     }
 
     localStorage.setItem("auth", "true");
-    navigate("/dashboard");
+    navigate("/masterData");
   };
 
   return (

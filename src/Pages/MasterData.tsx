@@ -5,7 +5,7 @@ const MasterData: React.FC = () => {
   return (
     <Box
       sx={{
-        p: 4, // Padding on all sides
+        p: 1, // Padding on all sides
         bgcolor: "white", // Background color
         borderRadius: 4, // Rounded corners
         boxShadow: 2, // Optional: Adds a slight shadow
