@@ -20,8 +20,10 @@ import {
   Settings,
   Help,
   ExpandMore,
+  Logout,
+  ExitToApp,
 } from "@mui/icons-material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import profileImage from "../../assets/Images/profile.svg";
 import HomeIcon from "../../assets/Images/home.svg";
@@ -47,6 +49,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const dynamicTexts = ["Kristin Watson", "Text Two"];
   const [currentText, setCurrentText] = useState(dynamicTexts[0]);
 
+  const navigate = useNavigate();
+
   const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
     setDropdownAnchor(event.currentTarget);
   const handleDropdownClose = () => setDropdownAnchor(null);
@@ -54,24 +58,72 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const menuItems = [
     {
       text: "Dashboard",
-      icon: <img src={HomeIcon} alt="Dashboard" width="20" height='20' />,
-      selectedIcon: <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />,
+      icon: <img src={HomeIcon} alt="Dashboard" width="20" height="20" />,
+      selectedIcon: (
+        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+      ),
       path: "/dashboard",
     },
-    { text: "Master Data",  icon: <img src={MasterDataIcon} alt="Dashboard" width="20" height='20' />,
-    selectedIcon: <img src={MasterDataSelectedIcon} alt="Selected" width="20" height="20" />, path: "/masterData" },
-    { text: "Production Operators",  icon: <img src={ProductionOperatorsIcon} alt="Dashboard" width="20" height='20' />,
-    selectedIcon: <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />, path: "/invoices" },
-    { text: "Reports",  icon: <img src={ReportsIcon} alt="Dashboard" width="20" height='20' />,
-    selectedIcon: <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />, path: "/reports" },
+    {
+      text: "Master Data",
+      icon: <img src={MasterDataIcon} alt="Dashboard" width="20" height="20" />,
+      selectedIcon: (
+        <img
+          src={MasterDataSelectedIcon}
+          alt="Selected"
+          width="20"
+          height="20"
+        />
+      ),
+      path: "/masterData",
+    },
+    {
+      text: "Production Operators",
+      icon: (
+        <img
+          src={ProductionOperatorsIcon}
+          alt="Dashboard"
+          width="20"
+          height="20"
+        />
+      ),
+      selectedIcon: (
+        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+      ),
+      path: "/invoices",
+    },
+    {
+      text: "Reports",
+      icon: <img src={ReportsIcon} alt="Dashboard" width="20" height="20" />,
+      selectedIcon: (
+        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+      ),
+      path: "/reports",
+    },
   ];
 
   const preferenceItems = [
-    { text: "Settings",  icon: <img src={SettingsIcon} alt="Dashboard" width="20" height='20' />,
-    selectedIcon: <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />, path: "/settings" },
-    { text: "Help Center",  icon: <img src={HelpCenterIcon} alt="Dashboard" width="20" height='20' />,
-    selectedIcon: <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />, path: "/help" },
+    {
+      text: "Settings",
+      icon: <img src={SettingsIcon} alt="Dashboard" width="20" height="20" />,
+      selectedIcon: (
+        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+      ),
+      path: "/settings",
+    },
+    {
+      text: "Help Center",
+      icon: <img src={HelpCenterIcon} alt="Dashboard" width="20" height="20" />,
+      selectedIcon: (
+        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+      ),
+      path: "/help",
+    },
   ];
+
+  const handleLogOut = () => {
+    navigate("/");
+  };
 
   return (
     <>
@@ -225,7 +277,25 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             );
           })}
         </List>
+        <ListItem
+          sx={{ color: "#C82333", cursor: "pointer" }}
+          onClick={handleLogOut}
+        >
+          <ListItemIcon
+            sx={{
+              color: "#C82333",
+              minWidth: 32,
+            }}
+          >
+            <ExitToApp />
+          </ListItemIcon>
+          <ListItemText
+            primary="Logout Account"
+            sx={{ whiteSpace: "nowrap" }}
+          />
+        </ListItem>
       </Drawer>
+
       {/* Sidebar for Mobile & Tablet */}
       <Drawer
         anchor="left"
@@ -266,7 +336,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               creator
             </Typography>
           </Box>
-
+          {/* 
           <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
             <ExpandMore />
           </IconButton>
@@ -287,7 +357,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 {text}
               </MenuItem>
             ))}
-          </Menu>
+          </Menu> */}
         </Box>
 
         <Typography
@@ -379,6 +449,23 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             );
           })}
         </List>
+        <ListItem
+          sx={{ color: "#C82333", cursor: "pointer" }}
+          onClick={handleLogOut}
+        >
+          <ListItemIcon
+            sx={{
+              color: "#C82333",
+              minWidth: 32,
+            }}
+          >
+            <ExitToApp />
+          </ListItemIcon>
+          <ListItemText
+            primary="Logout Account"
+            sx={{ whiteSpace: "nowrap" }}
+          />
+        </ListItem>
       </Drawer>
     </>
   );
