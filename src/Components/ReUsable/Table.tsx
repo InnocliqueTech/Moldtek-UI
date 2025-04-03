@@ -273,12 +273,11 @@ function ReusableTable<T extends Record<string, any>>({
           p: 2,
         }}
       >
-        {/* Left-aligned Page Indicator */}
-        <Typography variant="body2">
+        <Typography
+          sx={{ color: "#2F2F2F", fontWeight: 500, fontSize: "14px" }}
+        >
           Page {page + 1} of {Math.ceil(filteredData.length / rowsPerPage)}
         </Typography>
-
-        {/* Pagination */}
         <Stack spacing={2}>
           <Pagination
             count={Math.ceil(filteredData.length / rowsPerPage)}

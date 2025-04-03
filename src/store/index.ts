@@ -1,16 +1,16 @@
 // src/store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import { apiSlice } from './services/api'; // Import API slice
-import userReducer from './slices/userSlice'; // Import other slices if needed
+import { apiSlice } from './services/api'; 
+import masterDataReducer from './slices/masterDataSlice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer, // Adding custom slices
+    masterData: masterDataReducer,
     [apiSlice.reducerPath]: apiSlice.reducer, // Adding RTK Query reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware), // Adding RTK Query middleware
 });
 
-export type RootState = ReturnType<typeof store.getState>; // Type for the entire Redux state
-export type AppDispatch = typeof store.dispatch; // Type for dispatching actions
+export type RootState = ReturnType<typeof store.getState>; 
+export type AppDispatch = typeof store.dispatch; 

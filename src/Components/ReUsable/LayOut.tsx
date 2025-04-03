@@ -1,16 +1,18 @@
-import { useLocation, Outlet } from "react-router-dom";
+import { useLocation, Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
 import { useState } from "react";
+
+
+
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();
   const [masterDataCreatePopup,setMasterDataCreatePopup] = useState(false);
-
-  // Dynamic Titles & Buttons based on path
+  const navigate = useNavigate();
   const pageData: Record<
     string,
     {
@@ -36,11 +38,18 @@ const Layout = () => {
       onButton2Click: () => alert("Change Password Clicked"),
     },
     "/masterData": {
-      title: "Master Data",
-      button1Text: "Filter",
-      button2Text: "Create Maser Data",
+      title:"Master Data",
+      button1Text:"Filter",
+      button2Text:"Create Maser Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
-      onButton2Click: () => alert("Create Maser Data"),
+      onButton2Click: () => navigate('/createMasterData'),
+    },
+    "/createMasterData": {
+      title:  "Create Master Data",
+      button1Text:   "Created on: 15-Mar-2025",
+      button2Text:   "Updated Master Data",
+      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton2Click: () => alert("Update"),
     },
     "/settings": {
       title: "Settings",
