@@ -25,8 +25,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   p = "2px",
   ...props
 }) => {
-  const formatText = (text: string) => 
-    text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
 
   return (
     <MUIButton
@@ -48,7 +47,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         ...(color === "none" && { color: textColor || "black" }),
       }}
     >
-      {loading ? "Loading..." : formatText(text)}
+      {loading ? "Loading..." : text}
     </MUIButton>
   );
 };

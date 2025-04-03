@@ -6,6 +6,8 @@ import { AppDispatch, RootState } from "../store/index";
 import { setSelectedTab } from "../store/slices/masterDataSlice";
 import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCuttng";
+import Printing from "./Printing";
+import Lamination from "./Lamination";
 
 const tabs = [
   "Master Data Details",
@@ -39,9 +41,9 @@ const CreateMasterData: React.FC = () => {
           }}
         >
           {selectedTab === 0 && <MasterDataDetails />}
-          {selectedTab === 1 && <Box>Printing Data</Box>}
-          {selectedTab === 2 && <Box>Lamination Data</Box>}
-          {selectedTab === 3 && <DyeCutting/>}
+          {selectedTab === 1 && <Printing />}
+          {selectedTab === 2 && <Lamination />}
+          {selectedTab === 3 && <DyeCutting />}
         </Box>
       </Box>
     </Box>
