@@ -7,7 +7,8 @@ interface MasterDataState {
   openSider:boolean;
   updatePopup:boolean;
   submitPopupConfirm:boolean;
-  submitPopup:boolean
+  submitPopup:boolean;
+  submitAndPublish:boolean;
 }
 
 // Define the initial state with types
@@ -16,7 +17,8 @@ const initialState: MasterDataState = {
   openSider:false,
   updatePopup:false,
   submitPopup:false,
-  submitPopupConfirm:false
+  submitPopupConfirm:false,
+  submitAndPublish:false,
 };
 
 const masterDataSlice = createSlice({
@@ -37,9 +39,12 @@ const masterDataSlice = createSlice({
     },
     setSubmitPopup:(state,action:PayloadAction<boolean>)=>{
     state.submitPopup = action.payload
+    },
+    setSubmitAndPublishPopup:(state,action:PayloadAction<boolean>)=>{
+      state.submitAndPublish = action.payload
     }
   },
 });
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

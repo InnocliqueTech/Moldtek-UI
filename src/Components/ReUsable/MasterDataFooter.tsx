@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setSelectedTab,
+  setSubmitAndPublishPopup,
   setSubmitPopup,
   setSubmitPopupConfirm,
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface MasterDataFooterProps {
   selectedTab: number;
@@ -29,12 +31,18 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
     }
   };
 
-  const handleSubmitPopuOpen = () => {
+  const handleSubmitPopupOpen = () => {
     dispatch(setSubmitPopup(true));
   };
-  const handleSubmitPopuClose = () => {
+  const handleSubmitPopupClose = () => {
     dispatch(setSubmitPopup(false));
   };
+  const handleSubmitAndPublishPopupOpen = () => {
+    if (selectedTab === 3) {
+      dispatch(setSubmitAndPublishPopup(true));
+    }
+  };
+  
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitPopupConfirm(true));
   };
@@ -43,9 +51,13 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
     dispatch(setSubmitPopup(false));
     navigate("/masterData");
   };
-  const { submitPopup, submitPopupConfirm } = useSelector(
+  const { submitPopup, submitPopupConfirm,submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
+
+
+
+  console.log(submitPopup,submitPopupConfirm,submitAndPublish,selectedTab,"POPUPCNSOE")
 
   return (
     <Box display="flex" justifyContent="center" gap={2} p={2}>
@@ -57,6 +69,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
           border="1px solid #0073B7"
           textColor="white"
           p={2}
+          onClick={handleSubmitAndPublishPopupOpen}
         />
       ) : (
         <>
@@ -84,7 +97,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
             border="1px solid #0073B7"
             textColor="white"
             p={2}
-            onClick={handleSubmitPopuOpen}
+            onClick={handleSubmitPopupOpen}
           />
           <ConfirmPopup
             open={submitPopup}
@@ -93,7 +106,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
             buttonText="No"
             buttonText2="Yes,Save it!"
             gifSrc=""
-            onClose={handleSubmitPopuClose}
+            onClose={handleSubmitPopupClose}
             onConfirm={handleSubmitPopupConfirmOpen}
           />
           <ConfirmPopup
@@ -102,7 +115,18 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
             message="You're all set! Let’s get started."
             buttonText2="Go back to Master Data"
             gifSrc=""
-            onClose={handleSubmitPopupConfirmClose}
+            onConfirm={handleSubmitPopupConfirmClose}
+            onClose={()=>{}}
+          />
+           <ConfirmPopup
+            open={submitAndPublish}
+            title="Are you sure you want submit?This version is 4243. "
+            message=""
+            buttonText="No"
+            buttonText2="Yes,Save it!"
+            gifSrc=""
+            onClose={handleSubmitPopupClose}
+            onConfirm={handleSubmitPopupConfirmOpen}
           />
         </>
       )}

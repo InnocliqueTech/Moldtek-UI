@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, TextField, InputAdornment, Button } from "@mui/material";
-import searchIcon from '../assets/Images/search.png'
+import searchIcon from '../../assets/Images/search.png'
 
 const SearchComponent: React.FC = () => {
   return (

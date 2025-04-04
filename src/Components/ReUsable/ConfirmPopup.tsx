@@ -71,7 +71,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             color=""
             border="1px solid #E5E5E5"
             textColor="#0A0A0A"
-            onClick={onConfirm || onClose}
+            onClick={onClose}
             p={2}
           />
         )}
@@ -81,7 +81,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             borderRadius="100px"
             color="#0073B7"
             textColor="white"
-            onClick={onConfirm || onClose}
+            onClick={onConfirm }
             p={2}
           />
         )}

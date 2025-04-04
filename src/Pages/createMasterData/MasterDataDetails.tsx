@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import customerPicture from "../assets/Images/customerPicture.png";
+import customerPicture from "../../assets/Images/customerPicture.png";
 import TextArea from "../../Components/ReUsable/TextArea";
 import { InfoOutline } from "@mui/icons-material";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";

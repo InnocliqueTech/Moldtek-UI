@@ -6,6 +6,7 @@ import { setOpenSlider } from "../../store/slices/masterDataSlice";
 import FilterForm from "./GlobalSearch";
 import SearchComponent from "./GenAiSearch";
 
+
 const Filter: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { openSider } = useSelector((state: RootState) => state.masterData);
