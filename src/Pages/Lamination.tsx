@@ -4,66 +4,97 @@ import { RootState } from "../store";
 import MasterDataFooter from "../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
+import { useState } from "react";
 
 const Lamination: React.FC = () => {
   const { selectedTab } = useSelector((state: RootState) => state.masterData);
+
+  const [formData, setFormData] = useState({
+    zone1Temp: "110",
+    zone2Temp: "120",
+    nipPressure: "3.5",
+    speed: "80",
+    lamiTension: "2.5 n/mm",
+    rewinderTension: "--",
+    printedTension: "2.5 N/mm",
+    printedWidth: "1200",
+    printedThickness: "12",
+    printedGSM: "16.4",
+    printedDyne: "42 Dynes",
+    laminateTension: "2.5 N/mm",
+    laminateWidth: "1200",
+    laminateThickness: "12",
+    laminateGSM: "16.4",
+    laminateDyne: "42 Dynes",
+    adhesiveCode: "53",
+    adhesiveBrand: "273",
+    adhesiveRatio: "246",
+    hardenerCode: "53",
+    hardenerBrand: "273",
+    hardenerRatio: "246",
+    ethylCode: "53",
+    ethylBrand: "273",
+    ethylRatio: "246",
+    materialCode: "53",
+    materialBrand: "273",
+    materialRatio: "246",
+  });
+
+  const handleChange = (key: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", gap: 1 }}>
-            {" "}
-            <Typography
-              sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-            >
+            <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}>
               Zone Temperature & Pressing Conditions
             </Typography>
-            <InfoOutline
-              sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-            />
+            <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
           </Box>
           <Grid container spacing={2} pt={1}>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-1 Temp (°C)"
-                value="110"
-                onChange={() => {}}
+                value={formData.zone1Temp}
+                onChange={(e) => handleChange("zone1Temp", e.target.value)}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-2 Temp (°C)"
-                value="120"
-                onChange={() => {}}
+                value={formData.zone2Temp}
+                onChange={(e) => handleChange("zone2Temp", e.target.value)}
               />
             </Grid>
-
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Nip Pressure (bar)"
-                value="3.5"
-                onChange={() => {}}
+                value={formData.nipPressure}
+                onChange={(e) => handleChange("nipPressure", e.target.value)}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Speed (m/min)"
-                value="80"
-                onChange={() => {}}
+                value={formData.speed}
+                onChange={(e) => handleChange("speed", e.target.value)}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Lami Set Tension"
-                value="2.5 n/mm"
-                onChange={() => {}}
+                value={formData.lamiTension}
+                onChange={(e) => handleChange("lamiTension", e.target.value)}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Rewinder Tension"
-                value="--"
-                onChange={() => {}}
+                value={formData.rewinderTension}
+                onChange={(e) => handleChange("rewinderTension", e.target.value)}
               />
             </Grid>
           </Grid>
@@ -101,38 +132,22 @@ const Lamination: React.FC = () => {
               />
             </Box>
             <Grid container spacing={2} pt={1}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Tension (Primary)"
-                  value="2.5 N/mm"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Width (mm)"
-                  value="1200"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Thickness (micrones)"
-                  value="12"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput label="GSM" value="16.4" onChange={() => {}} />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Dyne Level"
-                  value="42 Dynes"
-                  onChange={() => {}}
-                />
-              </Grid>
+          {[
+            { label: "Tension (Primary)", key: "laminateTension" },
+            { label: "Width (mm)", key: "laminateWidth" },
+            { label: "Thickness (micrones)", key: "laminateThickness" },
+            { label: "GSM", key: "laminateGSM" },
+            { label: "Dyne Level", key: "laminateDyne" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:6}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
             </Grid>
+          ))}
+        </Grid>
           </Grid>
         </Box>
         <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -149,38 +164,22 @@ const Lamination: React.FC = () => {
               />
             </Box>
             <Grid container spacing={2} pt={1}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Tension (Primary)"
-                  value="2.5 N/mm"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Width (mm)"
-                  value="1200"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Thickness (micrones)"
-                  value="12"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput label="GSM" value="16.4" onChange={() => {}} />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Dyne Level"
-                  value="42 Dynes"
-                  onChange={() => {}}
-                />
-              </Grid>
+          {[
+            { label: "Tension (Primary)", key: "laminateTension" },
+            { label: "Width (mm)", key: "laminateWidth" },
+            { label: "Thickness (micrones)", key: "laminateThickness" },
+            { label: "GSM", key: "laminateGSM" },
+            { label: "Dyne Level", key: "laminateDyne" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:6}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
             </Grid>
+          ))}
+        </Grid>
           </Grid>
         </Box>
       </Box>
@@ -210,15 +209,19 @@ const Lamination: React.FC = () => {
           />
         </Box>
         <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Code" value="53" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Brand" value="273" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
-          </Grid>
+          {[
+            { label: "Code", key: "adhesiveCode" },
+            { label: "Brand", key: "adhesiveBrand" },
+            { label: "Ratio", key: "adhesiveRatio" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:4}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
       <Box
@@ -237,15 +240,19 @@ const Lamination: React.FC = () => {
           />
         </Box>
         <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Code" value="53" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Brand" value="273" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
-          </Grid>
+          {[
+            { label: "Code", key: "adhesiveCode" },
+            { label: "Brand", key: "adhesiveBrand" },
+            { label: "Ratio", key: "adhesiveRatio" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:4}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
       <Box
@@ -264,15 +271,19 @@ const Lamination: React.FC = () => {
           />
         </Box>
         <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Code" value="53" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Brand" value="273" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
-          </Grid>
+          {[
+            { label: "Code", key: "adhesiveCode" },
+            { label: "Brand", key: "adhesiveBrand" },
+            { label: "Ratio", key: "adhesiveRatio" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:4}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
       <Box
@@ -291,15 +302,19 @@ const Lamination: React.FC = () => {
           />
         </Box>
         <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Code" value="53" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Brand" value="273" onChange={() => {}} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
-          </Grid>
+          {[
+            { label: "Code", key: "adhesiveCode" },
+            { label: "Brand", key: "adhesiveBrand" },
+            { label: "Ratio", key: "adhesiveRatio" },
+          ].map(({ label, key }) => (
+            <Grid size={{xs:12,md:4}} key={key}>
+              <ReusableInput
+                label={label}
+                value={formData[key as keyof typeof formData]}
+                onChange={(e) => handleChange(key, e.target.value)}
+              />
+            </Grid>
+          ))}
         </Grid>
       </Box>
       <Box mt={1} display="flex" justifyContent="flex-end">
@@ -308,4 +323,5 @@ const Lamination: React.FC = () => {
     </Box>
   );
 };
+
 export default Lamination;
