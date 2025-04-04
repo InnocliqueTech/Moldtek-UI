@@ -3,7 +3,7 @@ import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
 import { useState } from "react";
-import { setOpenSlider } from "../../store/slices/masterDataSlice";
+import { setOpenSlider, setSelectedTab, setUploadPopup } from "../../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 
@@ -46,14 +46,14 @@ const Layout = () => {
       button1Text:"Filter",
       button2Text:"Create Maser Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
-      onButton2Click: () => navigate('/createMasterData'),
+      onButton2Click: () =>{navigate('/createMasterData'),dispatch(setSelectedTab(0))},
     },
     "/createMasterData": {
       title:  "Create Master Data",
       button1Text:   "Created on: 15-Mar-2025",
       button2Text:   "Updated Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
-      onButton2Click: () => alert("Update"),
+      onButton2Click: () => dispatch(setUploadPopup(true)),
     },
     "/settings": {
       title: "Settings",

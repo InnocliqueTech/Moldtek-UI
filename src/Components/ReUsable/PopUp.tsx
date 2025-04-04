@@ -81,64 +81,64 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
           )}
           {upload && (
             <Box
+            sx={{
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              padding: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              cursor: "pointer",
+              maxWidth: 600,
+              width: "100%",
+              backgroundColor: "#fff",
+              flexDirection:'column'
+            }}
+          >
+            {/* Icon inside a rounded background */}
+            <Box
               sx={{
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                padding: "12px",
+                width: 50,
+                height: 50,
+                borderRadius: "50%",
+                backgroundColor: "#f5f5f5",
                 display: "flex",
                 alignItems: "center",
-                gap: 2,
-                cursor: "pointer",
-                maxWidth: 800,
-                width: "100%",
+                justifyContent: "center",
               }}
             >
-              {/* Icon inside a rounded background */}
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  backgroundColor: "#f5f5f5",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CloudUpload sx={{ color: "#9e9e9e" }} />{" "}
-                {/* Replace with your icon */}
-              </Box>
-
-              {/* Upload button */}
-              <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
-                <Typography component="span">
-                  <span
-                    style={{
-                      color: "#007bff",
-                      fontWeight: "400",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Click to upload
-                  </span>{" "}
-                  or drag and drop{" "}
-                  <span style={{ color: "#9e9e9e" }}>(max. 1MB)</span>
-                </Typography>
-                <input
-                  type="file"
-                  id="file-upload"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-              </label>
-
-              {/* Show selected file name */}
-              {selectedFile && (
-                <Typography variant="body2" color="green">
-                  {selectedFile.name}
-                </Typography>
-              )}
+              <CloudUpload sx={{ color: "#9e9e9e", fontSize: 30 }} />
             </Box>
+      
+            {/* Upload button */}
+            <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
+              <Typography component="span" sx={{ fontSize: "14px" }}>
+                <span
+                  style={{
+                    color: "#007bff",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                  }}
+                >
+                  Click to upload
+                </span>{" "}
+                <span style={{ color: "#9e9e9e" }}>(max. 1MB)</span>
+              </Typography>
+              <input
+                type="file"
+                id="file-upload"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </label>
+      
+            {/* Show selected file name */}
+            {selectedFile && (
+              <Typography variant="body2" color="green">
+                {selectedFile.name}
+              </Typography>
+            )}
+          </Box>
           )}
           {textField && (
             <>

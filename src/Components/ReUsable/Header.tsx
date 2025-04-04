@@ -18,6 +18,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
 import Filter from "../../Pages/Filter";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { setUploadPopup } from "../../store/slices/masterDataSlice";
 
 interface HeaderProps {
   title: string;
@@ -42,8 +45,11 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
 
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-
-
+ const {updatePopup} = useSelector((store:RootState)=>store.masterData);
+ const dispatch = useDispatch<AppDispatch>()
+const handleClosePopUp= ()=>{
+  dispatch(setUploadPopup(false))
+}
   return (
     <>
       <AppBar
@@ -175,6 +181,15 @@ const Header: React.FC<HeaderProps> = ({
         upload={true}
         textField={true}
         dropdown={true}
+      />
+      <ReusablePopup 
+      open={updatePopup}
+      upload={true}
+      onConfirm={()=>console.log("Upload Master Data")}
+      confirmText="Upload"
+      title="Create Master Data"
+      onClose={handleClosePopUp}
+      subText="Upload Master Data"
       />
             <Filter/>
     </>

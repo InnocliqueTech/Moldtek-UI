@@ -4,13 +4,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // Define the state type
 interface MasterDataState {
   selectedTab: number;
-  openSider:boolean
+  openSider:boolean;
+  updatePopup:boolean
 }
 
 // Define the initial state with types
 const initialState: MasterDataState = {
   selectedTab: 0,
-  openSider:false
+  openSider:false,
+  updatePopup:false
 };
 
 const masterDataSlice = createSlice({
@@ -22,9 +24,12 @@ const masterDataSlice = createSlice({
     },
     setOpenSlider:(state,action:PayloadAction<boolean>) =>{
       state.openSider = action.payload
+    },
+    setUploadPopup:(state,action:PayloadAction<boolean>) =>{
+    state.updatePopup =  action.payload
     }
   },
 });
 
-export const { setSelectedTab,setOpenSlider } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
