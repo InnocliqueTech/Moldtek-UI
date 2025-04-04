@@ -49,7 +49,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   return (
     <>
       {/* Top Heading with Gray Color */}
-      <Typography variant="body2" sx={{ fontWeight:500,marginBottom:0}} color="#656565">
+      <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
       {label}
       </Typography>
 
@@ -80,7 +80,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             borderRadius: '8px', // Changed border-radius
             backgroundColor: 'white',
             '& .MuiSelect-select': {
-              padding: '8px 10px', // Decrease padding to reduce height
+              padding: '10px', // Decrease padding to reduce height
               color: "black",
             },
           }}

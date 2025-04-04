@@ -123,6 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const handleLogOut = () => {
     navigate("/");
+    localStorage.setItem("auth", "false");
   };
 
   return (

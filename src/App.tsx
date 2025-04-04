@@ -9,21 +9,19 @@ import CreateMasterData from "./Pages/CreateMasterData";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<SignInPage />} />
-
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/masterData" element={<MasterData />} />
-            <Route path="/createMasterData" element={<CreateMasterData />} />
-          </Route>
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Router>
+<Router>
+  <Routes>
+    <Route path="/" element={<SignInPage />} />
+    <Route element={<ProtectedRoute />}>
+      <Route element={<Layout />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/masterData" element={<MasterData />} />
+        <Route path="/createMasterData" element={<CreateMasterData />} />
+      </Route>
+    </Route>
+    <Route path="*" element={<NotFoundPage />} />
+  </Routes>
+</Router>
   );
 };
 

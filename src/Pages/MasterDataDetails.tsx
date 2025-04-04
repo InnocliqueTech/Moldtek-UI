@@ -20,59 +20,24 @@ const MasterDataDetails: React.FC = () => {
         >
           Basic Information
         </Typography>
-        <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput
-              label="Unity Effectivity Number"
-              value="20240401"
-              onChange={() => {}}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput
-              label="Customer"
-              value="Nestlé"
-              onChange={() => {}}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500 }}
-                color="#656565"
-              >
-                Customer Picture
-              </Typography>
-              <Box component="img" src={customerPicture} alt="Customer" />
-            </Box>
-          </Grid>
 
+        <Grid container spacing={2} pt={1}>
+          {/* First Column - Three Input Fields */}
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
+              label="Unit Effectivity Number"
+              value="UEN-20240401"
+              onChange={() => {}}
+            />
+              <DropdownComponent
               label="Type of Label"
+              options={["KitKat 50g Wrapper"]}
               value="KitKat 50g Wrapper"
               onChange={() => {}}
+              isMultiSelect={false}
+              checkbox={false}
             />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput
-              label="ITEM Code"
-              value="KK-50G-123"
-              onChange={() => {}}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <TextArea
-              label="Brand Name & Pack DEscription"
-              value="KK-50G-123"
-              onChange={() => {}}
-              placeholder="Enter your text..."
-              rows={0}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <DropdownComponent
+              <DropdownComponent
               label="Jar/Cap"
               options={["N/A (For flexible packaging)"]}
               value="N/A (For flexible packaging)"
@@ -81,7 +46,19 @@ const MasterDataDetails: React.FC = () => {
               checkbox={false}
             />
           </Grid>
+
+          {/* Second Column - Three Input Fields */}
           <Grid size={{ xs: 12, md: 4 }}>
+          <ReusableInput
+              label="Customer"
+              value="Nestlé"
+              onChange={() => {}}
+            />
+            <ReusableInput
+              label="ITEM Code"
+              value="KK-50G-123"
+              onChange={() => {}}
+            />
             <DropdownComponent
               label="Structure"
               options={["PET"]}
@@ -91,8 +68,32 @@ const MasterDataDetails: React.FC = () => {
               checkbox={false}
             />
           </Grid>
+
+          {/* Third Column - Image + TextArea */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              {/* Image */}
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500 }}
+                color="#656565"
+              >
+                Customer Picture
+              </Typography>
+              <Box component="img" src={customerPicture} alt="Customer" />
+            </Box>
+            {/* TextArea - Occupies remaining space */}
+            <TextArea
+              label="Brand Name & Pack Description"
+              value="0 LTR_AP_DTS_L_WT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779.J] (IML) ASIAN PAINTS"
+              onChange={() => {}}
+              placeholder="Enter your text..."
+              rows={4}
+            />
+          </Grid>
         </Grid>
       </Box>
+
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 2 }}
       >
