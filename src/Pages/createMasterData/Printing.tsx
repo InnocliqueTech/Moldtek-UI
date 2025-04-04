@@ -1,11 +1,11 @@
 import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import MasterDataFooter from "../Components/ReUsable/MasterDataFooter";
-import ReusableInput from "../Components/ReUsable/TextField";
+import { RootState } from "../../store";
+import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
+import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import DataTable from "../Components/ReUsable/MasterDataTable";
-import DropdownComponent from "../Components/ReUsable/Dropdown";
+import DataTable from "../../Components/ReUsable/MasterDataTable";
+import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useState } from "react";
 
 const Printing: React.FC = () => {

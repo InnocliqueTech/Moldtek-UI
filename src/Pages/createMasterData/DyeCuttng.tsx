@@ -1,8 +1,8 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import MasterDataFooter from "../Components/ReUsable/MasterDataFooter";
-import ReusableInput from "../Components/ReUsable/TextField";
+import { RootState } from "../../store";
+import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
+import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useState } from "react";
 

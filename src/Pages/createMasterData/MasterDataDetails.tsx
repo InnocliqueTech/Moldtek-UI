@@ -1,12 +1,12 @@
 import { Box, Grid, Typography } from "@mui/material";
-import ReusableInput from "../Components/ReUsable/TextField";
-import DropdownComponent from "../Components/ReUsable/Dropdown";
+import ReusableInput from "../../Components/ReUsable/TextField";
+import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import customerPicture from "../assets/Images/customerPicture.png";
-import TextArea from "../Components/ReUsable/TextArea";
+import TextArea from "../../Components/ReUsable/TextArea";
 import { InfoOutline } from "@mui/icons-material";
-import MasterDataFooter from "../Components/ReUsable/MasterDataFooter";
+import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import { useSelector} from "react-redux";
-import { RootState } from "../store";
+import { RootState } from "../../store";
 import { useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 

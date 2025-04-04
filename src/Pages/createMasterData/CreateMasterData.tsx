@@ -1,9 +1,9 @@
 import React from "react";
 import { Box } from "@mui/material";
-import TabsComponent from "../Components/ReUsable/Tabs";
+import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store/index";
-import { setSelectedTab } from "../store/slices/masterDataSlice";
+import { AppDispatch, RootState } from "../../store/index";
+import { setSelectedTab } from "../../store/slices/masterDataSlice";
 import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCuttng";
 import Printing from "./Printing";

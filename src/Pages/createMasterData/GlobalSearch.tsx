@@ -14,9 +14,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   filterSchema,
   FilterFormValues,
-} from "../Components/ZodSchemas/filterValidation";
+} from "../../Components/ZodSchemas/filterValidation";
 import { Padding } from "@mui/icons-material";
-import ButtonComponent from "../Components/ReUsable/Button";
+import ButtonComponent from "../../Components/ReUsable/Button";
 
 const FilterForm: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>("");

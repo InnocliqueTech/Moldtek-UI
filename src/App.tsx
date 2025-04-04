@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignInPage from "./Components/Authentication/SignIn";
-import DashboardPage from "./Pages/Dashboard";
+import DashboardPage from "./Pages/createMasterData/Dashboard";
 import Layout from "./Components/ReUsable/LayOut";
 import ProtectedRoute from "./Components/Authentication/ProtectedRoute";
-import MasterData from "./Pages/MasterData";
+import MasterData from "./Pages/createMasterData/MasterData";
 import NotFoundPage from "./Components/Authentication/NotFoundPage";
-import CreateMasterData from "./Pages/CreateMasterData";
+import CreateMasterData from "./Pages/createMasterData/CreateMasterData";
 
 const App: React.FC = () => {
   return (

@@ -17,7 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
-import Filter from "../../Pages/Filter";
+import Filter from "../../Pages/createMasterData/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setUploadPopup } from "../../store/slices/masterDataSlice";

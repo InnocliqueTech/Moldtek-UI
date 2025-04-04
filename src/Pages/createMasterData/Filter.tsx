@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
-import DynamicSlider from "../Components/ReUsable/Slider";
-import { setOpenSlider } from "../store/slices/masterDataSlice";
+import { AppDispatch, RootState } from "../../store";
+import DynamicSlider from "../../Components/ReUsable/Slider";
+import { setOpenSlider } from "../../store/slices/masterDataSlice";
 import FilterForm from "./GlobalSearch";
 import SearchComponent from "./GenAiSearch";
 
