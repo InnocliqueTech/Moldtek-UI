@@ -3,6 +3,9 @@ import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
 import { useState } from "react";
+import { setOpenSlider } from "../../store/slices/masterDataSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
 
 
 
@@ -11,6 +14,7 @@ const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup,setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
   const pageData: Record<
@@ -41,7 +45,7 @@ const Layout = () => {
       title:"Master Data",
       button1Text:"Filter",
       button2Text:"Create Maser Data",
-      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: () => navigate('/createMasterData'),
     },
     "/createMasterData": {

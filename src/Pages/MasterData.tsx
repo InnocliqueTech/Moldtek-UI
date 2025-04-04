@@ -4,6 +4,7 @@ import Cards from "../Components/ReUsable/Crads";
 import { Info, InfoOutline } from "@mui/icons-material";
 import Header from "./../Components/ReUsable/Header";
 import ReusableTable from "../Components/ReUsable/Table";
+import Filter from "./Filter";
 
 const MasterData: React.FC = () => {
   const stats = [

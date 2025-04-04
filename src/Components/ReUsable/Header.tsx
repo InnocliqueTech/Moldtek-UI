@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
+import Filter from "../../Pages/Filter";
 
 interface HeaderProps {
   title: string;
@@ -175,6 +176,7 @@ const Header: React.FC<HeaderProps> = ({
         textField={true}
         dropdown={true}
       />
+            <Filter/>
     </>
   );
 };
