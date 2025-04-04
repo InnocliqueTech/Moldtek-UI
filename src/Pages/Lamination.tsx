@@ -16,7 +16,7 @@ const Lamination: React.FC = () => {
             <Typography
               sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             >
-              Lamination Production Entry
+              Zone Temperature & Pressing Conditions
             </Typography>
             <InfoOutline
               sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -25,15 +25,15 @@ const Lamination: React.FC = () => {
           <Grid container spacing={2} pt={1}>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
-                label="Zone-1 Temp(c)"
-                value="20240401"
+                label="Zone-1 Temp (°C)"
+                value="110"
                 onChange={() => {}}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
-                label="Zone-2 Temp(c)"
-                value="Nestlé"
+                label="Zone-2 Temp (°C)"
+                value="120"
                 onChange={() => {}}
               />
             </Grid>
@@ -41,28 +41,28 @@ const Lamination: React.FC = () => {
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Nip Pressure (bar)"
-                value="KitKat 50g Wrapper"
+                value="3.5"
                 onChange={() => {}}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Speed (m/min)"
-                value="KK-50G-123"
+                value="80"
                 onChange={() => {}}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
-                label="Speed (m/min)"
-                value="KK-50G-123"
+                label="Lami Set Tension"
+                value="2.5 n/mm"
                 onChange={() => {}}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
-                label="Speed (m/min)"
-                value="KK-50G-123"
+                label="Rewinder Tension"
+                value="--"
                 onChange={() => {}}
               />
             </Grid>
@@ -75,7 +75,7 @@ const Lamination: React.FC = () => {
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Substrate
+         Lamination Specifications
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
       </Box>
@@ -94,7 +94,7 @@ const Lamination: React.FC = () => {
               <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
               >
-                Printing Substrate
+                Printed Film
               </Typography>
               <InfoOutline
                 sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -103,34 +103,34 @@ const Lamination: React.FC = () => {
             <Grid container spacing={2} pt={1}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
-                  label="Dyne Level"
-                  value="1200"
+                  label="Tension (Primary)"
+                  value="2.5 N/mm"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Width (mm)"
-                  value="12"
+                  value="1200"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Thickness (micrones)"
-                  value="16.4"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Density (g/cm)"
-                  value="16.4"
+                  value="12"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput label="GSM" value="16.4" onChange={() => {}} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ReusableInput
+                  label="Dyne Level"
+                  value="42 Dynes"
+                  onChange={() => {}}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -142,7 +142,7 @@ const Lamination: React.FC = () => {
               <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
               >
-                Lamination Substrate
+               Laminate Film
               </Typography>
               <InfoOutline
                 sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -151,34 +151,34 @@ const Lamination: React.FC = () => {
             <Grid container spacing={2} pt={1}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
-                  label="Dyne Level"
-                  value="1200"
+                  label="Tension (Primary)"
+                  value="2.5 N/mm"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Width (mm)"
-                  value="12"
+                  value="1200"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Thickness (micrones)"
-                  value="16.4"
-                  onChange={() => {}}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="Density (g/cm)"
-                  value="16.4"
+                  value="12"
                   onChange={() => {}}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput label="GSM" value="16.4" onChange={() => {}} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ReusableInput
+                  label="Dyne Level"
+                  value="42 Dynes"
+                  onChange={() => {}}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -190,7 +190,7 @@ const Lamination: React.FC = () => {
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Substrate
+          Bonding Material Specifications
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
       </Box>
@@ -203,7 +203,7 @@ const Lamination: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Additional Information
+            Adhesive
           </Typography>
           <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -211,13 +211,13 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Repeat" value="53" onChange={() => {}} />
+            <ReusableInput label="Code" value="53" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="UPs" value="273" onChange={() => {}} />
+            <ReusableInput label="Brand" value="273" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Tracks" value="246" onChange={() => {}} />
+            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
           </Grid>
         </Grid>
       </Box>
@@ -230,7 +230,7 @@ const Lamination: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Additional Information
+           Hardener
           </Typography>
           <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -238,13 +238,13 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Repeat" value="53" onChange={() => {}} />
+            <ReusableInput label="Code" value="53" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="UPs" value="273" onChange={() => {}} />
+            <ReusableInput label="Brand" value="273" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Tracks" value="246" onChange={() => {}} />
+            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
           </Grid>
         </Grid>
       </Box>
@@ -257,7 +257,7 @@ const Lamination: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Additional Information
+            Ethyl Acetate
           </Typography>
           <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -265,13 +265,13 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Repeat" value="53" onChange={() => {}} />
+            <ReusableInput label="Code" value="53" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="UPs" value="273" onChange={() => {}} />
+            <ReusableInput label="Brand" value="273" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Tracks" value="246" onChange={() => {}} />
+            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
           </Grid>
         </Grid>
       </Box>
@@ -284,7 +284,7 @@ const Lamination: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Additional Information
+           Material Details
           </Typography>
           <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -292,13 +292,13 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Repeat" value="53" onChange={() => {}} />
+            <ReusableInput label="Code" value="53" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="UPs" value="273" onChange={() => {}} />
+            <ReusableInput label="Brand" value="273" onChange={() => {}} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput label="Tracks" value="246" onChange={() => {}} />
+            <ReusableInput label="Ratio" value="246" onChange={() => {}} />
           </Grid>
         </Grid>
       </Box>

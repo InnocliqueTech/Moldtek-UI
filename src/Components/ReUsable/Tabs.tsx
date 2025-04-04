@@ -19,6 +19,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
       variant="scrollable"
       scrollButtons="auto"
       allowScrollButtonsMobile
+      TabIndicatorProps={{ style: { display: "none" }  }}
       sx={{
         minHeight: "50px",
         borderRadius: "8px 8px 0 0",
@@ -45,8 +46,8 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
             backgroundColor: value === index ? "white" : "#E0E0E0",
             color: value === index ? "#0073B7" : "#656565",
             marginLeft: index===0 ?"0px":"5px",
-            border:
-            value === index ? "2px solid #0073B7" : "3px solid transparent",
+            border:value === index ? "2px solid #0073B7" : "3px solid transparent",
+            borderBottom:'none',
             transition: "border 0.3s ease-in-out",
             boxShadow:
               value === index ? "0px 4px 6px rgba(0, 0, 0, 0.1)" : "none",

@@ -9,7 +9,11 @@ import {
   Paper,
   Select,
   MenuItem,
+  ListItemText,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
+import { Done } from "@mui/icons-material";
 
 interface Column {
   id: string;
@@ -41,7 +45,8 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
             {columns.map((column) => (
               <TableCell
                 key={column.id}
-                sx={{ fontWeight: "bold", border: "1px solid #ccc" }}
+                align="center"
+                sx={{ fontWeight: 500, border: "1px solid #ccc" ,color:'#656565',fontSize:'14px'}}
               >
                 {column.label}
               </TableCell>
@@ -69,6 +74,7 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
                       value={row[column.id]}
                       variant="standard" // Keep it standard
                       fullWidth
+                      renderValue={(selected) => selected}
                       sx={{
                         borderBottom: "none", // Removes the underline
                         "&:before": { borderBottom: "none" }, // Removes default MUI underline
@@ -80,7 +86,22 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
                     >
                       {column.options?.map((option) => (
                         <MenuItem key={option} value={option}>
-                          {option}
+                          <Tooltip title={option} arrow>
+                <ListItemText
+                  primary={option}
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "180px",
+                    color:"#2F2F2F"
+                  }}
+                />
+              </Tooltip>
+
+              {row[column.id].includes(option) && (
+               <IconButton sx={{color:'#0073B7'}}><Done/></IconButton>
+              )}
                         </MenuItem>
                       ))}
                     </Select>

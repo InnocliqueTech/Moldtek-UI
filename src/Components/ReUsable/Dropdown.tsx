@@ -8,7 +8,10 @@ import {
   FormControl,
   SelectChangeEvent,
   Typography,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
+import { Done } from '@mui/icons-material';
 
 interface DropdownProps {
   options: string[];
@@ -58,7 +61,10 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           multiple={isMultiSelect}
           value={selectedOptions}
           onChange={handleSelectChange}
-          renderValue={(selected) => (selected as string[]).join(', ')}
+          renderValue={(selected) => 
+            Array.isArray(selected) ? selected.join(', ') : selected
+          }
+          
           MenuProps={{
             anchorOrigin: {
               vertical: 'bottom',
@@ -95,14 +101,37 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             </MenuItem>
           )}
 
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
+{options.map((option) => (
+            <MenuItem
+              key={option}
+              value={option}
+              sx={{
+                backgroundColor: selectedOptions.includes(option) ? "blue-100" : "inherit",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               {checkbox ? (
                 <Checkbox checked={selectedOptions.includes(option)} />
-              ) : (
-                <span style={{ display: selectedOptions.includes(option) ? 'inline' : 'none' }}>✔</span>
+              ) : null}
+
+              <Tooltip title={option} arrow>
+                <ListItemText
+                  primary={option}
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "180px",
+                    color:"#2F2F2F"
+                  }}
+                />
+              </Tooltip>
+
+              {!checkbox && selectedOptions.includes(option) && (
+               <IconButton sx={{color:'#0073B7'}}><Done/></IconButton>
               )}
-              <ListItemText primary={option} />
             </MenuItem>
           ))}
         </Select>
