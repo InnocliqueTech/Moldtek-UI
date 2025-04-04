@@ -29,6 +29,7 @@ const MasterDataDetails: React.FC = () => {
               value="UEN-20240401"
               onChange={() => {}}
             />
+              <Box sx={{mt:2}}>
               <DropdownComponent
               label="Type of Label"
               options={["KitKat 50g Wrapper"]}
@@ -37,6 +38,8 @@ const MasterDataDetails: React.FC = () => {
               isMultiSelect={false}
               checkbox={false}
             />
+            </Box>
+            <Box sx={{mt:2}}>
               <DropdownComponent
               label="Jar/Cap"
               options={["N/A (For flexible packaging)"]}
@@ -45,6 +48,7 @@ const MasterDataDetails: React.FC = () => {
               isMultiSelect={false}
               checkbox={false}
             />
+            </Box>
           </Grid>
 
           {/* Second Column - Three Input Fields */}
@@ -54,11 +58,13 @@ const MasterDataDetails: React.FC = () => {
               value="Nestlé"
               onChange={() => {}}
             />
+            <Box sx={{mt:2}}></Box>
             <ReusableInput
               label="ITEM Code"
               value="KK-50G-123"
               onChange={() => {}}
             />
+            <Box sx={{mt:2}}>
             <DropdownComponent
               label="Structure"
               options={["PET"]}
@@ -67,6 +73,7 @@ const MasterDataDetails: React.FC = () => {
               isMultiSelect={false}
               checkbox={false}
             />
+            </Box>
           </Grid>
 
           {/* Third Column - Image + TextArea */}
@@ -82,6 +89,7 @@ const MasterDataDetails: React.FC = () => {
               </Typography>
               <Box component="img" src={customerPicture} alt="Customer" />
             </Box>
+            <Box sx={{mt:2}}>
             {/* TextArea - Occupies remaining space */}
             <TextArea
               label="Brand Name & Pack Description"
@@ -90,6 +98,7 @@ const MasterDataDetails: React.FC = () => {
               placeholder="Enter your text..."
               rows={4}
             />
+            </Box>
           </Grid>
         </Grid>
       </Box>
