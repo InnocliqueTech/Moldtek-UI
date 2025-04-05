@@ -20,6 +20,7 @@ interface ConfirmPopupProps {
   onClose: () => void;
   onConfirm?: () => void;
   buttonText2?: string;
+  onClick?:()=> void;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -31,6 +32,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   onClose,
   onConfirm,
   buttonText2,
+  onClick
 }) => {
   return (
     <Dialog
@@ -81,7 +83,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             borderRadius="100px"
             color="#0073B7"
             textColor="white"
-            onClick={onConfirm }
+            onClick={onClick }
             p={2}
           />
         )}

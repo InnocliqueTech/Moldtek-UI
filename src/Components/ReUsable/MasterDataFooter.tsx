@@ -44,20 +44,24 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
   };
   
   const handleSubmitPopupConfirmOpen = () => {
+    dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(true));
   };
   const handleSubmitPopupConfirmClose = () => {
+    dispatch(setSubmitAndPublishPopup(false));
+    dispatch(setSubmitPopupConfirm(false));
+    dispatch(setSubmitPopup(false));
+  };
+  const handleSubmitPopupConfirmClick = ()=>{
+    dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
     navigate("/masterData");
-  };
+  }
+
   const { submitPopup, submitPopupConfirm,submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
-
-
-
-  console.log(submitPopup,submitPopupConfirm,submitAndPublish,selectedTab,"POPUPCNSOE")
 
   return (
     <Box display="flex" justifyContent="center" gap={2} p={2}>
@@ -99,39 +103,42 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
             p={2}
             onClick={handleSubmitPopupOpen}
           />
-          <ConfirmPopup
-            open={submitPopup}
-            title="Are you sure you want submit?This version is 4243. "
-            message=""
-            buttonText="No"
-            buttonText2="Yes,Save it!"
-            gifSrc=""
-            onClose={handleSubmitPopupClose}
-            onConfirm={handleSubmitPopupConfirmOpen}
-          />
-          <ConfirmPopup
-            open={submitPopupConfirm}
-            title="You have successfully created master data your version is 4253. "
-            message="You're all set! Let’s get started."
-            buttonText2="Go back to Master Data"
-            gifSrc=""
-            onConfirm={handleSubmitPopupConfirmClose}
-            onClose={()=>{}}
-          />
-           <ConfirmPopup
-            open={submitAndPublish}
-            title="Are you sure you want submit?This version is 4243. "
-            message=""
-            buttonText="No"
-            buttonText2="Yes,Save it!"
-            gifSrc=""
-            onClose={handleSubmitPopupClose}
-            onConfirm={handleSubmitPopupConfirmOpen}
-          />
         </>
       )}
+  
+      {/* Popup Rendering - Always include them regardless of tab */}
+      <ConfirmPopup
+        open={submitPopup}
+        title="Are you sure you want submit?This version is 4243. "
+        message=""
+        buttonText="No"
+        buttonText2="Yes,Save it!"
+        gifSrc=""
+        onClose={handleSubmitPopupClose}
+        onClick={handleSubmitPopupConfirmOpen}
+      />
+      <ConfirmPopup
+        open={submitPopupConfirm}
+        title="You have successfully created master data your version is 4253. "
+        message="You're all set! Let’s get started."
+        buttonText2="Go back to Master Data"
+        gifSrc=""
+        onClose={handleSubmitPopupConfirmClose}
+        onClick={handleSubmitPopupConfirmClick}
+      />
+      <ConfirmPopup
+        open={submitAndPublish}
+        title="Are you sure you want submit and publish? This version is 4243."
+        message=""
+        buttonText="No"
+        buttonText2="Yes, Publish it!"
+        gifSrc=""
+        onClose={() => dispatch(setSubmitAndPublishPopup(false))}
+        onClick={handleSubmitPopupConfirmOpen}
+      />
     </Box>
   );
+  
 };
 
 export default MasterDataFooter;
