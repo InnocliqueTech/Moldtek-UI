@@ -1,27 +1,33 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignInPage from "./Components/Authentication/SignIn";
-import DashboardPage from "./Pages/createMasterData/Dashboard";
-import Layout from "./Components/ReUsable/LayOut";
-import ProtectedRoute from "./Components/Authentication/ProtectedRoute";
-import MasterData from "./Pages/createMasterData/MasterData";
-import NotFoundPage from "./Components/Authentication/NotFoundPage";
-import CreateMasterData from "./Pages/createMasterData/CreateMasterData";
+import { Suspense, lazy } from "react";
+import Loader from "./Loader";
+
+
+const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));
+const DashboardPage = lazy(() => import("./Pages/createMasterData/Dashboard"));
+const MasterData = lazy(() => import("./Pages/createMasterData/MasterData"));
+const CreateMasterData = lazy(() => import("./Pages/createMasterData/CreateMasterData"));
+const Layout = lazy(() => import("./Components/ReUsable/LayOut"));
+const ProtectedRoute = lazy(() => import("./Components/Authentication/ProtectedRoute"));
+const NotFoundPage = lazy(() => import("./Components/Authentication/NotFoundPage"));
 
 const App: React.FC = () => {
   return (
-<Router>
-  <Routes>
-    <Route path="/" element={<SignInPage />} />
-    <Route element={<ProtectedRoute />}>
-      <Route element={<Layout />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/masterData" element={<MasterData />} />
-        <Route path="/createMasterData" element={<CreateMasterData />} />
-      </Route>
-    </Route>
-    <Route path="*" element={<NotFoundPage />} />
-  </Routes>
-</Router>
+    <Router>
+      <Suspense fallback={<Loader/>}>
+        <Routes>
+          <Route path="/" element={<SignInPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/masterData" element={<MasterData />} />
+              <Route path="/createMasterData" element={<CreateMasterData />} />
+            </Route>
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 };
 
