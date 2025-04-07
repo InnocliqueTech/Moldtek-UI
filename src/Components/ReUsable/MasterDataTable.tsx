@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import {
+  Box,
+  IconButton,
+  ListItemText,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Select,
-  MenuItem,
-  ListItemText,
-  Tooltip,
-  IconButton,
   TextField,
-  Box,
+  Tooltip,
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
 import { AutocompleteCell } from "../helpers";
@@ -27,26 +27,32 @@ interface Column {
   editSelect?: boolean;
 }
 
-interface TableProps {
+interface DataTableProps<T> {
+  data: T[];
+  setData: React.Dispatch<React.SetStateAction<T[]>>;
   columns: Column[];
-  data: Record<string, any>[];
 }
 
-const DataTable: React.FC<TableProps> = ({ columns, data }) => {
-  const [tableData, setTableData] = useState(data);
-
-  const handleChange = (
+const DataTable = <T extends Record<string, any>>({
+  columns,
+  data,
+  setData,
+}: DataTableProps<T>) => {
+  const handleChange = <K extends keyof T>(
     rowIndex: number,
-    columnId: string,
-    value: string | number | string[]
+    columnId: K,
+    value: T[K]
   ) => {
-    const updatedData = [...tableData];
-    updatedData[rowIndex][columnId] = value;
-    setTableData(updatedData);
+    const updated = [...data];
+    updated[rowIndex] = { ...updated[rowIndex], [columnId]: value };
+    setData(updated);
   };
 
   return (
-    <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }} component={Paper}>
+    <TableContainer
+      sx={{ maxWidth: "100%", overflowX: "auto" }}
+      component={Paper}
+    >
       <Table>
         <TableHead
           sx={{
@@ -95,7 +101,7 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
             },
           }}
         >
-          {tableData.map((row, rowIndex) => (
+          {data.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
               {columns.map((column) => (
                 <TableCell
@@ -111,7 +117,11 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
                     <Select
                       value={row[column.id] || ""}
                       onChange={(e) =>
-                        handleChange(rowIndex, column.id, e.target.value)
+                        handleChange(
+                          rowIndex,
+                          column.id as keyof T,
+                          e.target.value as T[keyof T]
+                        )
                       }
                       variant="standard"
                       fullWidth
@@ -173,14 +183,24 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
                       row={row}
                       column={column}
                       rowIndex={rowIndex}
-                      handleChange={handleChange}
+                      handleChange={(rowIndex, columnId, newValue) =>
+                        handleChange(
+                          rowIndex,
+                          columnId as keyof T,
+                          newValue as T[keyof T]
+                        )
+                      }
                     />
                   ) : column.edit ? (
                     <TextField
                       variant="standard"
                       value={row[column.id]}
                       onChange={(e) =>
-                        handleChange(rowIndex, column.id, e.target.value)
+                        handleChange(
+                          rowIndex,
+                          column.id as keyof T,
+                          e.target.value as T[keyof T]
+                        )
                       }
                       fullWidth
                       InputProps={{

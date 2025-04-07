@@ -117,8 +117,13 @@ console.log(row[column.id],"ROWOFTHEDATA")
             const cleaned = newValue.map((val) =>
               typeof val === "string" ? val.replace(" (new)", "") : val
             );
-            handleChange(rowIndex, column.id, cleaned);
+            (handleChange as (rowIndex: number, columnId: string, newValue: string[]) => void)(
+              rowIndex,
+              column.id,
+              cleaned
+            );
           }}
+          
           onBlur={() => setOpen(false)}
           renderTags={(selected, getTagProps) =>
             selected.map((option, index) => (
@@ -128,7 +133,7 @@ console.log(row[column.id],"ROWOFTHEDATA")
                 size="small"
                 sx={{
                   fontSize: "12px",
-                  maxWidth: 80,
+                  maxWidth: 180,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}

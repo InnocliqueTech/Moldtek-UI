@@ -14,9 +14,10 @@ import { useEffect } from "react";
 
 interface MasterDataFooterProps {
   selectedTab: number;
+  handleSave?:()=>void
 }
 
-const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
+const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleSave }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const buttonText = [
@@ -62,6 +63,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
   const { submitPopup, submitPopupConfirm,submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
+  
 
   return (
 <Box
@@ -102,6 +104,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
             border="1px solid #0073B7"
             textColor="#0073B7"
             p={2}
+            onClick={handleSave}
           />
           <ReusableButton
             text="Submit"

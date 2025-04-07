@@ -1,15 +1,17 @@
 import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PrintingFormValues, PrintingTableRow, setSavePrintingFormData } from "../../store/slices/masterDataSlice";
 
 const Printing: React.FC = () => {
-  const { selectedTab } = useSelector((state: RootState) => state.masterData);
+  const { selectedTab,printingSaveFormData } = useSelector((state: RootState) => state.masterData);
+  const dispatch = useDispatch<AppDispatch>()
 
   const columns = [
     { id: "stationNo", label: "Station No",edit:true },
@@ -27,119 +29,46 @@ const Printing: React.FC = () => {
     { id: "uvLed", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
   ];
 
-  const data = [
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: [["Siegwerk"]],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 2,
-      colorPantone: "Pantone Black C",
-      lfValue: 65,
-      inkSupplier:[["Flint Group"]],
-      lpcm: 65,
-      volume: "550ml",
-      uvLed: "UV",
-    },
-    {
-      stationNo: 3,
-      colorPantone: "Pantone Yellow 012C",
-      lfValue: 60,
-      inkSupplier: ["Flint Group"],
-      lpcm: 60,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-    {
-      stationNo: 1,
-      colorPantone: "Pantone Red 032C",
-      lfValue: 65,
-      inkSupplier: ["Siegwerk"],
-      lpcm: 65,
-      volume: "480ml",
-      uvLed: "LED",
-    },
-  ];
-
-  const [formValues, setFormValues] = useState({
-    mountingType: "20240401",
-    cylinderTeeth: "500",
-    tension: "31",
-    unwinder: "457",
-    infeed: "54",
-    outfeed: "54",
-    rewinder: "456",
-    staticCharge: "54",
-    formatCorrect: "54",
+  const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
+  const [formValues, setFormValues] = useState<PrintingFormValues>({
+    mountingType: "",
+    cylinderTeeth: "",
+    tension: "",
+    unwinder: "",
+    infeed: "",
+    outfeed: "",
+    rewinder: "",
+    staticCharge: "",
+    formatCorrect: "",
+    printingTableData: [
+      {
+        stationNo: 0,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier: [],
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      }
+    ]
   });
+  const handleSave = () => {
+    const finalSaveData = {
+      ...formValues,
+      printingTableData: tableData,
+    };
+    dispatch(setSavePrintingFormData(finalSaveData));
+  };
+  useEffect(() => {
+    if (printingSaveFormData) {
+      setFormValues(printingSaveFormData);
+      if (printingSaveFormData.printingTableData) {
+        setTableData(printingSaveFormData.printingTableData);
+      }
+    }
+  }, [printingSaveFormData]);
+  
+    
 
   const handleChange = (
     field: string,
@@ -263,12 +192,13 @@ const Printing: React.FC = () => {
             />
           </Box>
           <Box sx={{ mt: 2 }}>
-            <DataTable columns={columns} data={data} />
+          <DataTable columns={columns} data={tableData} setData={setTableData} />
+
           </Box>
         </Grid>
       </Box>
       <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} />
+        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

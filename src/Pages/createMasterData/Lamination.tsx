@@ -1,46 +1,57 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { LaminationFormData, setLaminationFormData } from "../../store/slices/masterDataSlice";
 
 const Lamination: React.FC = () => {
-  const { selectedTab } = useSelector((state: RootState) => state.masterData);
-
-  const [formData, setFormData] = useState({
-    zone1Temp: "110",
-    zone2Temp: "120",
-    nipPressure: "3.5",
-    speed: "80",
-    lamiTension: "2.5 n/mm",
-    rewinderTension: "--",
-    printedTension: "2.5 N/mm",
-    printedWidth: "1200",
-    printedThickness: "12",
-    printedGSM: "16.4",
-    printedDyne: "42 Dynes",
-    laminateTension: "2.5 N/mm",
-    laminateWidth: "1200",
-    laminateThickness: "12",
-    laminateGSM: "16.4",
-    laminateDyne: "42 Dynes",
-    adhesiveCode: "53",
-    adhesiveBrand: "273",
-    adhesiveRatio: "246",
-    hardenerCode: "53",
-    hardenerBrand: "273",
-    hardenerRatio: "246",
-    ethylCode: "53",
-    ethylBrand: "273",
-    ethylRatio: "246",
-    materialCode: "53",
-    materialBrand: "273",
-    materialRatio: "246",
-    viscocityRange:'ADH123',
-    adhesiveGSM:'Henkel'
+  const { selectedTab,laminaionFormData } = useSelector((state: RootState) => state.masterData);
+const dispatch = useDispatch<AppDispatch>()
+  const [formData, setFormData] = useState<LaminationFormData>({
+    zone1Temp: "",
+    zone2Temp: "",
+    nipPressure: "",
+    speed: "",
+    lamiTension: "",
+    rewinderTension: "",
+    printedTension: "",
+    printedWidth: "",
+    printedThickness: "",
+    printedGSM: "",
+    printedDyne: "",
+    laminateTension: "",
+    laminateWidth: "",
+    laminateThickness: "",
+    laminateGSM: "",
+    laminateDyne: "",
+    adhesiveCode: "",
+    adhesiveBrand: "",
+    adhesiveRatio: "",
+    hardenerCode: "",
+    hardenerBrand: "",
+    hardenerRatio: "",
+    ethylCode: "",
+    ethylBrand: "",
+    ethylRatio: "",
+    materialCode: "",
+    materialBrand: "",
+    materialRatio: "",
+    viscocityRange: "",
+    adhesiveGSM: ""
   });
+
+    const handleSave = () => {
+      dispatch(setLaminationFormData(formData));
+    };
+    useEffect(() => {
+      if (laminaionFormData) {
+        setFormData(laminaionFormData);
+
+      }
+    }, [laminaionFormData]);
 
   const handleChange = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -300,7 +311,7 @@ const Lamination: React.FC = () => {
         </Grid>
       </Box>
       <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} />
+        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

@@ -5,34 +5,42 @@ import customerPicture from "../../assets/Images/customerPicture.png";
 import TextArea from "../../Components/ReUsable/TextArea";
 import { InfoOutline } from "@mui/icons-material";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
-import { useSelector} from "react-redux";
-import { RootState } from "../../store";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
+import { setSaveFormData } from "../../store/slices/masterDataSlice";
+import { MasterFormData } from "./../../store/slices/masterDataSlice";
 
 const MasterDataDetails: React.FC = () => {
-  const { selectedTab } = useSelector((state: RootState) => state.masterData);
-  const [formData, setFormData] = useState({
-    unitEffectivityNumber: "UEN-20240401",
-    typeOfLabel: "KitKat 50g Wrapper",
-    jarCap: "N/A (For flexible packaging)",
-    customer: "Nestlé",
-    itemCode: "KK-50G-123",
-    structure: "PET",
-    brandDescription:
-      "0 LTR_AP_DTS_L_WT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779.J] (IML) ASIAN PAINTS",
-    repeat: "53",
-    ups: "273",
-    tracks: "246",
-    labelsPerMeter: "121",
-    substrateType: "PET",
-    supplier: "U-Flex Ltd.",
-    dyneLevel: "1200",
-    width: "12",
-    thickness: "16.4",
-    density: "16.4",
-    gsm: "16.4",
+  const { selectedTab, saveFormData } = useSelector(
+    (state: RootState) => state.masterData
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  const [formData, setFormData] = useState<MasterFormData>({
+    unitEffectivityNumber: "",
+    typeOfLabel: "",
+    jarCap: "",
+    customer: "",
+    itemCode: "",
+    structure: "",
+    brandDescription: "",
+    repeat: "",
+    ups: "",
+    tracks: "",
+    labelsPerMeter: "",
+    substrateType: "",
+    supplier: "",
+    dyneLevel: "",
+    width: "",
+    thickness: "",
+    density: "",
+    gsm: "",
   });
+
+  const handleSave = () => {
+    dispatch(setSaveFormData(formData));
+  };
 
   const handleChange = (
     field: string,
@@ -47,6 +55,12 @@ const MasterDataDetails: React.FC = () => {
         : value.target.value,
     }));
   };
+
+  useEffect(() => {
+    if (saveFormData) {
+      setFormData(saveFormData);
+    }
+  }, [saveFormData]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -211,7 +225,12 @@ const MasterDataDetails: React.FC = () => {
               <Grid size={{ xs: 12, md: 6 }}>
                 <DropdownComponent
                   label="Supplier"
-                  options={["U-Flex Ltd.","Huhtamaki","Huhtamaki","Gulf Pack Supplier"]}
+                  options={[
+                    "U-Flex Ltd.",
+                    "Huhtamaki",
+                    "Huhtamaki",
+                    "Gulf Pack Supplier",
+                  ]}
                   value={formData.supplier}
                   onChange={(value) => handleChange("supplier", value)}
                   isMultiSelect={false}
@@ -222,36 +241,28 @@ const MasterDataDetails: React.FC = () => {
                 <ReusableInput
                   label="Dyne Level"
                   value={formData.dyneLevel}
-                  onChange={(e) =>
-                    handleChange("dyneLevel", e.target.value)
-                  }
+                  onChange={(e) => handleChange("dyneLevel", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Width (mm)"
                   value={formData.width}
-                  onChange={(e) =>
-                    handleChange("width", e.target.value)
-                  }
+                  onChange={(e) => handleChange("width", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Thickness (micrones)"
                   value={formData.thickness}
-                  onChange={(e) =>
-                    handleChange("thickness", e.target.value)
-                  }
+                  onChange={(e) => handleChange("thickness", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Density (g/cm)"
                   value={formData.density}
-                  onChange={(e) =>
-                    handleChange("density", e.target.value)
-                  }
+                  onChange={(e) => handleChange("density", e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -278,7 +289,12 @@ const MasterDataDetails: React.FC = () => {
               <Grid size={{ xs: 12, md: 6 }}>
                 <DropdownComponent
                   label="Supplier"
-                  options={["U-Flex Ltd.","Huhtamaki","Huhtamaki","Gulf Pack Supplier"]}
+                  options={[
+                    "U-Flex Ltd.",
+                    "Huhtamaki",
+                    "Huhtamaki",
+                    "Gulf Pack Supplier",
+                  ]}
                   value={formData.supplier}
                   onChange={(value) => handleChange("supplier", value)}
                   isMultiSelect={false}
@@ -289,36 +305,28 @@ const MasterDataDetails: React.FC = () => {
                 <ReusableInput
                   label="Dyne Level"
                   value={formData.dyneLevel}
-                  onChange={(e) =>
-                    handleChange("dyneLevel", e.target.value)
-                  }
+                  onChange={(e) => handleChange("dyneLevel", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Width (mm)"
                   value={formData.width}
-                  onChange={(e) =>
-                    handleChange("width", e.target.value)
-                  }
+                  onChange={(e) => handleChange("width", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Thickness (micrones)"
                   value={formData.thickness}
-                  onChange={(e) =>
-                    handleChange("thickness", e.target.value)
-                  }
+                  onChange={(e) => handleChange("thickness", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <ReusableInput
                   label="Density (g/cm)"
                   value={formData.density}
-                  onChange={(e) =>
-                    handleChange("density", e.target.value)
-                  }
+                  onChange={(e) => handleChange("density", e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -327,7 +335,7 @@ const MasterDataDetails: React.FC = () => {
       </Box>
 
       <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} />
+        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

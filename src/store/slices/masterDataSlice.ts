@@ -1,7 +1,94 @@
-// src/slices/userSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define the state type
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import DyeCutting from '../../Pages/createMasterData/DyeCuttng';
+
+
+
+export interface PrintingTableRow {
+  stationNo: number;
+  colorPantone: string;
+  lfValue: number;
+  inkSupplier: string[];
+  lpcm: number;
+  volume: string;
+  uvLed: string;
+}
+
+export interface LaminationFormData {
+    zone1Temp: string;
+    zone2Temp: string;
+    nipPressure: string;
+    speed: string;
+    lamiTension: string;
+    rewinderTension: string;
+    printedTension: string;
+    printedWidth: string;
+    printedThickness: string;
+    printedGSM: string;
+    printedDyne: string;
+    laminateTension: string;
+    laminateWidth: string;
+    laminateThickness: string;
+    laminateGSM: string;
+    laminateDyne: string;
+    adhesiveCode: string;
+    adhesiveBrand: string;
+    adhesiveRatio: string;
+    hardenerCode: string;
+    hardenerBrand: string;
+    hardenerRatio: string;
+    ethylCode: string;
+    ethylBrand: string;
+    ethylRatio: string;
+    materialCode: string;
+    materialBrand: string;
+    materialRatio: string;
+    viscocityRange: string;
+    adhesiveGSM: string;
+  
+}
+export interface MasterFormData  {
+  unitEffectivityNumber: string;
+  typeOfLabel: string;
+  jarCap: string;
+  customer: string;
+  itemCode: string;
+  structure: string;
+  brandDescription: string;
+  repeat: string;
+  ups: string;
+  tracks: string;
+  labelsPerMeter: string;
+  substrateType: string;
+  supplier: string;
+  dyneLevel: string;
+  width: string;
+  thickness: string;
+  density: string;
+  gsm: string;
+}
+
+export interface DyeCuttingFormData {
+  dyeCutMachineType: string,
+  machine: string,
+  dyeCode: string,
+  runSpeed: string,
+}
+
+
+export interface PrintingFormValues {
+  mountingType: string;
+  cylinderTeeth: string;
+  tension: string;
+  unwinder: string;
+  infeed: string;
+  outfeed: string;
+  rewinder: string;
+  staticCharge: string;
+  formatCorrect: string;
+  printingTableData: PrintingTableRow[];
+}
+
 interface MasterDataState {
   selectedTab: number;
   openSider:boolean;
@@ -9,9 +96,12 @@ interface MasterDataState {
   submitPopupConfirm:boolean;
   submitPopup:boolean;
   submitAndPublish:boolean;
+  saveFormData: MasterFormData;
+  printingSaveFormData:PrintingFormValues;
+  laminaionFormData:LaminationFormData;
+  dyeCuttingFormData:DyeCuttingFormData;
 }
 
-// Define the initial state with types
 const initialState: MasterDataState = {
   selectedTab: 0,
   openSider:false,
@@ -19,6 +109,88 @@ const initialState: MasterDataState = {
   submitPopup:false,
   submitPopupConfirm:false,
   submitAndPublish:false,
+  saveFormData: {
+    unitEffectivityNumber: "",
+    typeOfLabel: "",
+    jarCap: "",
+    customer: "",
+    itemCode: "",
+    structure: "",
+    brandDescription:
+      "",
+    repeat: "",
+    ups: "",
+    tracks: "",
+    labelsPerMeter: "",
+    substrateType: "",
+    supplier: "",
+    dyneLevel: "",
+    width: "",
+    thickness: "",
+    density: "",
+    gsm: "",
+  },
+  printingSaveFormData: {
+    mountingType: "",
+    cylinderTeeth: "",
+    tension: "",
+    unwinder: "",
+    infeed: "",
+    outfeed: "",
+    rewinder: "",
+    staticCharge: "",
+    formatCorrect: "",
+    printingTableData: [
+      {
+        stationNo: 0,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier: [],
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      }
+    ]
+  },
+  laminaionFormData:{
+    zone1Temp: "",
+    zone2Temp: "",
+    nipPressure: "",
+    speed: "",
+    lamiTension: "",
+    rewinderTension: "",
+    printedTension: "",
+    printedWidth: "",
+    printedThickness: "",
+    printedGSM: "",
+    printedDyne: "",
+    laminateTension: "",
+    laminateWidth: "",
+    laminateThickness: "",
+    laminateGSM: "",
+    laminateDyne: "",
+    adhesiveCode: "",
+    adhesiveBrand: "",
+    adhesiveRatio: "",
+    hardenerCode: "",
+    hardenerBrand: "",
+    hardenerRatio: "",
+    ethylCode: "",
+    ethylBrand: "",
+    ethylRatio: "",
+    materialCode: "",
+    materialBrand: "",
+    materialRatio: "",
+    viscocityRange: "",
+    adhesiveGSM: "",
+  },
+  dyeCuttingFormData:{
+    dyeCutMachineType: "",
+    machine: "",
+    dyeCode: "",
+    runSpeed: "",
+  }
+  
 };
 
 const masterDataSlice = createSlice({
@@ -42,9 +214,23 @@ const masterDataSlice = createSlice({
     },
     setSubmitAndPublishPopup:(state,action:PayloadAction<boolean>)=>{
       state.submitAndPublish = action.payload
+    },
+    setSaveFormData: (state, action: PayloadAction<MasterFormData>) => {
+      state.saveFormData = { ...state.saveFormData, ...action.payload };
+    },
+    setSavePrintingFormData: (state, action: PayloadAction<PrintingFormValues>) => {
+      state.printingSaveFormData = { ...state.printingSaveFormData, ...action.payload };
+    },
+    setLaminationFormData:(state,action:PayloadAction<LaminationFormData>)=>{
+      state.laminaionFormData = {...state.laminaionFormData,...action.payload}
+    },
+    setDyeCuttingFormData:(state,action:PayloadAction<DyeCuttingFormData>)=>{
+      state.dyeCuttingFormData = {...state.dyeCuttingFormData,...action.payload}
     }
+    
+    
   },
 });
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyeCuttingFormData } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
