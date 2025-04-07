@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Crads";
-import { Info, InfoOutline, LinkOutlined } from "@mui/icons-material";
-import Header from "../../Components/ReUsable/Header";
+import {InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
-import Filter from "./Filter";
 import { useNavigate } from "react-router-dom";
-import UENCell, { RenderTooltip } from "../../Components/helpers";
+import  { UENCell } from "../../Components/helpers";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+
 
   const stats = [
     { title: "Total Jobs", value: 2000 },

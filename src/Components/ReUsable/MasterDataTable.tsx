@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,14 +12,19 @@ import {
   ListItemText,
   Tooltip,
   IconButton,
+  TextField,
+  Box,
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
+import { AutocompleteCell } from "../helpers";
 
 interface Column {
   id: string;
   label: string;
   isDropdown?: boolean;
   options?: string[];
+  edit?: boolean;
+  editSelect?: boolean;
 }
 
 interface TableProps {
@@ -28,16 +33,34 @@ interface TableProps {
 }
 
 const DataTable: React.FC<TableProps> = ({ columns, data }) => {
+  const [tableData, setTableData] = useState(data);
+
+  const handleChange = (
+    rowIndex: number,
+    columnId: string,
+    value: string | number | string[]
+  ) => {
+    const updatedData = [...tableData];
+    updatedData[rowIndex][columnId] = value;
+    setTableData(updatedData);
+  };
+
   return (
-    <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
+    <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }} component={Paper}>
       <Table>
         <TableHead
           sx={{
             backgroundColor: "#F5F5F5",
             height: "32px", // Reduce overall height
             "& .MuiTableCell-root": {
-              padding: "4px 8px", // Reduce padding inside header cells
-              height: "32px", // Reduce row height
+              padding: "4px 8px",
+              height: "32px",
+              maxWidth: 180,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              textAlign: "center",
+              fontSize: "14px",
             },
           }}
         >
@@ -46,67 +69,155 @@ const DataTable: React.FC<TableProps> = ({ columns, data }) => {
               <TableCell
                 key={column.id}
                 align="center"
-                sx={{ fontWeight: 500, border: "1px solid #ccc" ,color:'#656565',fontSize:'14px'}}
+                sx={{
+                  fontWeight: 500,
+                  border: "1px solid #ccc",
+                  color: "#656565",
+                  maxWidth: 180,
+                }}
               >
                 {column.label}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
+
         <TableBody
           sx={{
             "& .MuiTableCell-root": {
-              padding: "4px 8px", // Apply to all table cells
+              padding: "4px 8px",
               height: "32px",
+              maxWidth: 180,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              textAlign: "center",
             },
           }}
         >
-          {data.map((row, rowIndex) => (
+          {tableData.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  sx={{ border: "1px solid #ccc" }}
                   align="center"
+                  sx={{
+                    border: "1px solid #ccc",
+                    maxWidth: 180,
+                    overflow: "hidden",
+                  }}
                 >
                   {column.isDropdown ? (
                     <Select
-                      value={row[column.id]}
-                      variant="standard" // Keep it standard
+                      value={row[column.id] || ""}
+                      onChange={(e) =>
+                        handleChange(rowIndex, column.id, e.target.value)
+                      }
+                      variant="standard"
                       fullWidth
-                      renderValue={(selected) => selected}
+                      renderValue={(selected) => (
+                        <Tooltip title={selected} arrow>
+                          <Box
+                            sx={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {selected}
+                          </Box>
+                        </Tooltip>
+                      )}
                       sx={{
+                        height: "32px",
+                        fontSize: "14px",
                         borderBottom: "none", // Removes the underline
                         "&:before": { borderBottom: "none" }, // Removes default MUI underline
                         "&:after": { borderBottom: "none" }, // Ensures no focus underline
                         "&:hover:not(.Mui-disabled):before": {
                           borderBottom: "none !important",
-                        }, // Removes hover effect
+                        },
+                        "& .MuiSelect-select": {
+                          display: "flex",
+                          alignItems: "center",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        },
                       }}
                     >
                       {column.options?.map((option) => (
                         <MenuItem key={option} value={option}>
                           <Tooltip title={option} arrow>
-                <ListItemText
-                  primary={option}
-                  sx={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "180px",
-                    color:"#2F2F2F"
-                  }}
-                />
-              </Tooltip>
-
-              {row[column.id].includes(option) && (
-               <IconButton sx={{color:'#0073B7'}}><Done/></IconButton>
-              )}
+                            <ListItemText
+                              primary={option}
+                              sx={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                maxWidth: "180px",
+                                color: "#2F2F2F",
+                              }}
+                            />
+                          </Tooltip>
+                          {row[column.id] === option && (
+                            <IconButton sx={{ color: "#0073B7" }}>
+                              <Done />
+                            </IconButton>
+                          )}
                         </MenuItem>
                       ))}
                     </Select>
+                  ) : column.editSelect ? (
+                    <AutocompleteCell
+                      row={row}
+                      column={column}
+                      rowIndex={rowIndex}
+                      handleChange={handleChange}
+                    />
+                  ) : column.edit ? (
+                    <TextField
+                      variant="standard"
+                      value={row[column.id]}
+                      onChange={(e) =>
+                        handleChange(rowIndex, column.id, e.target.value)
+                      }
+                      fullWidth
+                      InputProps={{
+                        disableUnderline: true,
+                        sx: {
+                          fontSize: "14px",
+                          color: "#2F2F2F",
+                          height: "32px",
+                          padding: "0px",
+                          input: {
+                            textAlign: "center",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          },
+                        },
+                      }}
+                    />
                   ) : (
-                    row[column.id]
+                    <Tooltip title={String(row[column.id])} arrow>
+                      <Box
+                        sx={{
+                          maxWidth: "100%",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          fontSize: "14px",
+                          color: "#2F2F2F",
+                          height: "32px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {row[column.id]}
+                      </Box>
+                    </Tooltip>
                   )}
                 </TableCell>
               ))}
