@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { LinkOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -6,27 +5,23 @@ import {
   Autocomplete,
   Box,
   Chip,
+  Popover,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 
+// Props for rendering text with tooltip if too long
 interface RenderTooltipProps {
   content: string;
   strLength: number;
 }
 
-interface AutocompleteCellProps {
-  row: Record<string, any>;
-  column: {
-    id: string;
-    options?: string[];
-  };
-  rowIndex: number;
-  handleChange: (rowIndex: number, columnId: string, newValue: string[]) => void;
-}
-
-
-export const RenderTooltip: React.FC<RenderTooltipProps> = ({ content, strLength }) => {
+// Tooltip render logic for long strings
+export const RenderTooltip: React.FC<RenderTooltipProps> = ({
+  content,
+  strLength,
+}) => {
   if (content && content.length > strLength) {
     return (
       <Tooltip title={content} arrow>
@@ -37,12 +32,12 @@ export const RenderTooltip: React.FC<RenderTooltipProps> = ({ content, strLength
   return <span>{content}</span>;
 };
 
-
-
+// Props for the UEN clickable cell
 interface UENCellProps {
   value: string;
 }
 
+// Cell with clickable UEN navigation
 export const UENCell: React.FC<UENCellProps> = ({ value }) => {
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
@@ -67,64 +62,123 @@ export const UENCell: React.FC<UENCellProps> = ({ value }) => {
   );
 };
 
-
+// Props for the editable Autocomplete cell
+interface AutocompleteCellProps {
+  row: Record<string, any>;
+  column: {
+    id: string;
+    options?: string[];
+  };
+  rowIndex: number;
+  handleChange: (
+    rowIndex: number,
+    columnId: string,
+    newValue: string[]
+  ) => void;
+}
 
 
 export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   row,
   column,
   rowIndex,
-  handleChange
+  handleChange,
 }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [inputValue, setInputValue] = useState("");
-  const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-console.log(row[column.id],"ROWOFTHEDATA")
-  const value = row[column.id] ? row[column.id] : [];
-  console.log(value,"ROWOFTHEDATA1")
 
-  const allOptions = inputValue && !column.options?.includes(inputValue)
-    ? [...(column.options || []), `${inputValue} (new)`]
-    : column.options || [];
+  const value: string[] = Array.isArray(row[column.id]) ? row[column.id] : [];
+
+  const open = Boolean(anchorEl);
+
+  // Dynamic options with "(new)" if needed
+  const allOptions =
+    inputValue && !column.options?.includes(inputValue)
+      ? [...(column.options || []), `${inputValue} (new)`]
+      : column.options || [];
 
   useEffect(() => {
     if (open && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      inputRef.current.focus();
     }
   }, [open]);
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <Tooltip title={value && value?.join(", ")} arrow placement="top">
-      <Box
-        onClick={() => setOpen(true)}
-        sx={{
-          width: "100%",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          textOverflow: "ellipsis",
-          cursor: "pointer"
+    <Box>
+      {/* Box with chips & tooltip */}
+      <Tooltip title={value?.join(", ")} arrow placement="top">
+        <Box
+          onClick={handleClick}
+          sx={{
+            width: "100%",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            padding: "6px 8px",
+          }}
+        >
+          {value.length > 0 ? (
+            value.map((value, index) => (
+              <Chip
+                key={index}
+                label={index > 1 ? `${value[0]}...` : value}
+                size="small"
+                sx={{ fontSize: "12px" }}
+              />
+            ))
+          ) : (
+            <Typography color="gray" fontSize="14px">
+              Click to add 
+            </Typography>
+          )}
+        </Box>
+      </Tooltip>
+
+      {/* Tag selector popover */}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 270,
+              p: 1,
+              mt: 1,
+            },
+          },
         }}
       >
         <Autocomplete
           multiple
           freeSolo
-          open={open}
+          autoFocus
+          filterSelectedOptions
           options={allOptions}
           value={value}
           inputValue={inputValue}
-          onInputChange={(_, newInput) => setInputValue(newInput)}
+          onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
           onChange={(_, newValue) => {
             const cleaned = newValue.map((val) =>
               typeof val === "string" ? val.replace(" (new)", "") : val
             );
-            (handleChange as (rowIndex: number, columnId: string, newValue: string[]) => void)(
-              rowIndex,
-              column.id,
-              cleaned
-            );
+            handleChange(rowIndex, column.id, cleaned);
           }}
-          
-          onBlur={() => setOpen(false)}
           renderTags={(selected, getTagProps) =>
             selected.map((option, index) => (
               <Chip
@@ -144,32 +198,14 @@ console.log(row[column.id],"ROWOFTHEDATA")
             <TextField
               {...params}
               inputRef={inputRef}
-              variant="standard"
-              placeholder={value.length === 0 ? "Click to add" : ""}
-              InputProps={{
-                ...params.InputProps,
-                disableUnderline: true,
-                sx: {
-                  fontSize: "14px",
-                  color: "#2F2F2F",
-                  input: {
-                    textAlign: "center",
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                  },
-                },
-              }}
+              placeholder="Type or select values..."
+              variant="outlined"
+              size="small"
+              fullWidth
             />
           )}
-          filterSelectedOptions
-          fullWidth
         />
-      </Box>
-    </Tooltip>
+      </Popover>
+    </Box>
   );
 };
-
-
-
-
