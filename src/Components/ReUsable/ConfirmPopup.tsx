@@ -2,13 +2,9 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Button,
   Typography,
-  Slide,
   Box,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import { forwardRef, ReactNode } from "react";
 import ButtonComponent from "./Button";
 
 interface ConfirmPopupProps {
@@ -30,7 +26,6 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   buttonText,
   gifSrc,
   onClose,
-  onConfirm,
   buttonText2,
   onClick
 }) => {

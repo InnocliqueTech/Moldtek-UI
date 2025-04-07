@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import DynamicSlider from "../../Components/ReUsable/Slider";

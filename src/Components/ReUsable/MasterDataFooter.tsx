@@ -10,7 +10,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+
 
 interface MasterDataFooterProps {
   selectedTab: number;

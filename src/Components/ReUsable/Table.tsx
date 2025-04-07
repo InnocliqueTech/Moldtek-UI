@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  TablePagination,
   Paper,
   Checkbox,
   TextField,
@@ -26,7 +25,6 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
-  ArrowDownward,
   ChevronLeft,
   ChevronRight,
   InfoOutline,
@@ -63,8 +61,6 @@ interface TableProps<T> {
 function ReusableTable<T extends Record<string, any>>({
   columns,
   data,
-  rowsPerPageOptions = [5, 10, 25],
-  defaultRowsPerPage = 5,
   selectable = false,
   title = "Table",
   lastUpdate = "",

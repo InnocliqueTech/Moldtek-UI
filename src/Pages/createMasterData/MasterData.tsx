@@ -348,12 +348,12 @@ const MasterData: React.FC = () => {
             {
               label: "View",
               // icon: <VisibilityIcon fontSize="small" />,
-              onClick: (row) => navigate(`/viewMasterData`),
+              onClick: () => navigate(`/viewMasterData`),
             },
             {
               label: "Edit",
               // icon: <EditIcon fontSize="small" />,
-              onClick: (row) => navigate(`/editMasterData`),
+              onClick: () => navigate(`/editMasterData`),
             },
           ]}
         />

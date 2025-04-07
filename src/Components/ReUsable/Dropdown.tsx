@@ -4,7 +4,6 @@ import {
   MenuItem,
   Checkbox,
   ListItemText,
-  InputLabel,
   FormControl,
   SelectChangeEvent,
   Typography,

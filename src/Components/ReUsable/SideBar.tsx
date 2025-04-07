@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import {
   Box,
   Drawer,
@@ -6,21 +6,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
   Avatar,
-  Divider,
   Typography,
-  MenuItem,
-  Menu,
 } from "@mui/material";
 import {
-  Dashboard,
-  Description,
-  Receipt,
-  Settings,
-  Help,
-  ExpandMore,
-  Logout,
   ExitToApp,
 } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -42,18 +31,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const location = useLocation();
-  const [dropdownAnchor, setDropdownAnchor] = useState<null | HTMLElement>(
-    null
-  );
-  const isDropdownOpen = Boolean(dropdownAnchor);
+  // const [dropdownAnchor, setDropdownAnchor] = useState<null | HTMLElement>(
+  //   null
+  // );
+
   const dynamicTexts = ["Kristin Watson", "Text Two"];
-  const [currentText, setCurrentText] = useState(dynamicTexts[0]);
+  const currentText = dynamicTexts[0];
 
   const navigate = useNavigate();
 
-  const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
-    setDropdownAnchor(event.currentTarget);
-  const handleDropdownClose = () => setDropdownAnchor(null);
+  // const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
+  //   setDropdownAnchor(event.currentTarget);
+  // const handleDropdownClose = () => setDropdownAnchor(null);
 
   const menuItems = [
     {

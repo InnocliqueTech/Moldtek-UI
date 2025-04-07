@@ -4,7 +4,6 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
   Box,
   Button,
 } from "@mui/material";
@@ -24,7 +23,7 @@ interface SliderProps {
   dateLabels?: { from: string; to: string };
 }
 
-const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Filter", tabs, searchOptions, dateLabels }) => {
+const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Filter", tabs }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (

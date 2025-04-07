@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import {
   Box,
-  Button,
   MenuItem,
   Select,
   FormControl,
-  InputLabel,
   TextField,
   Typography,
 } from "@mui/material";
@@ -15,7 +13,6 @@ import {
   filterSchema,
   FilterFormValues,
 } from "../../Components/ZodSchemas/filterValidation";
-import { Padding } from "@mui/icons-material";
 import ButtonComponent from "../../Components/ReUsable/Button";
 
 const FilterForm: React.FC = () => {
@@ -48,7 +45,7 @@ const FilterForm: React.FC = () => {
       <Controller
         name="fromDate"
         control={control}
-        render={({ field }) => (
+        render={() => (
           <TextField
             fullWidth
             type="date"
@@ -77,7 +74,7 @@ const FilterForm: React.FC = () => {
       <Controller
         name="toDate"
         control={control}
-        render={({ field }) => (
+        render={() => (
           <TextField
             fullWidth
             type="date"

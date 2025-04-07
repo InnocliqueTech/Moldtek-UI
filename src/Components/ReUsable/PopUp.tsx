@@ -6,9 +6,6 @@ import {
   DialogActions,
   Typography,
   Box,
-  Button,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
@@ -45,7 +42,6 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   dropdown,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedStructure, setSelectedStructure] = useState("");
 
   // Handle file selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

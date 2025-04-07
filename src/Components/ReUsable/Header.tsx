@@ -3,18 +3,10 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Button,
   Box,
-  TextField,
-  InputAdornment,
-  Divider,
   Typography,
-  Badge,
-  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SearchIcon from "@mui/icons-material/Search";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
 import Filter from "../../Pages/createMasterData/Filter";

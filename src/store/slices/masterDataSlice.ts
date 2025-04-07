@@ -1,6 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import DyeCutting from '../../Pages/createMasterData/DyeCuttng';
+
 
 
 
