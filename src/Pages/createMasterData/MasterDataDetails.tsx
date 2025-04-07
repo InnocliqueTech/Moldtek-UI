@@ -170,13 +170,6 @@ const MasterDataDetails: React.FC = () => {
               onChange={(e) => handleChange("tracks", e.target.value)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <ReusableInput
-              label="# Labels/Meter"
-              value={formData.labelsPerMeter}
-              onChange={(e) => handleChange("labelsPerMeter", e.target.value)}
-            />
-          </Grid>
         </Grid>
       </Box>
       <Box sx={{ display: "flex", gap: 1 }} mt={4} p={1}>
@@ -261,15 +254,6 @@ const MasterDataDetails: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="GSM"
-                  value={formData.gsm}
-                  onChange={(e) =>
-                    handleChange("gsm", e.target.value)
-                  }
-                />
-              </Grid>
             </Grid>
           </Grid>
         </Box>
@@ -334,15 +318,6 @@ const MasterDataDetails: React.FC = () => {
                   value={formData.density}
                   onChange={(e) =>
                     handleChange("density", e.target.value)
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ReusableInput
-                  label="GSM"
-                  value={formData.gsm}
-                  onChange={(e) =>
-                    handleChange("gsm", e.target.value)
                   }
                 />
               </Grid>

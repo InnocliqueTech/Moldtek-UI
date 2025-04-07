@@ -128,50 +128,54 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   return (
     <>
-      <Drawer
-        variant="permanent"
-        open={open}
-        sx={{
-          display: { xs: "none", md: "block" },
-          width: 250,
-          "& .MuiDrawer-paper": {
-            width: 250,
-            boxSizing: "border-box",
-            padding: 2,
-          },
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-          <img src={Logo} alt="Logo" />
-        </Box>
+  <Drawer
+  variant="permanent"
+  open={open}
+  sx={{
+    display: { xs: "none", md: "block" },
+    width: 250,
+    "& .MuiDrawer-paper": {
+      width: 250,
+      boxSizing: "border-box",
+      padding: 2,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+    },
+  }}
+>
+  <Box>
+    <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+      <img src={Logo} alt="Logo" />
+    </Box>
 
-        <Box
-          sx={{
-            backgroundColor: "white",
-            boxShadow: 3,
-            px: 1,
-            py: 0,
-            borderRadius: 2,
-            mb: 2,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Avatar
-            alt="User Avatar"
-            src={profileImage}
-            sx={{ width: 40, height: 40 }}
-          />
+    <Box
+      sx={{
+        backgroundColor: "white",
+        boxShadow: 3,
+        px: 1,
+        py: 0,
+        borderRadius: 2,
+        mb: 2,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      <Avatar
+        alt="User Avatar"
+        src={profileImage}
+        sx={{ width: 40, height: 40 }}
+      />
 
-          <Box sx={{ flexGrow: 1, p: 1 }}>
-            <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
-              {currentText}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              creator
-            </Typography>
-          </Box>
+      <Box sx={{ flexGrow: 1, p: 1 }}>
+        <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
+          {currentText}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          creator
+        </Typography>
+      </Box>
 
           {/* <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
             <ExpandMore />
@@ -194,115 +198,127 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               </MenuItem>
             ))}
           </Menu> */}
-        </Box>
+    </Box>
 
-        <Typography
-          variant="subtitle2"
-          sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
-        >
-          Main Menu
-        </Typography>
-        <List>
-          {menuItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-            return (
-              <ListItem
-                key={index}
-                component={Link}
-                to={item.path}
-                sx={{
-                  bgcolor: isSelected ? "white" : "transparent",
-                  boxShadow: isSelected ? 3 : 0,
-                  borderRadius: 2,
-                  "&:hover": {
-                    bgcolor: "white",
-                    boxShadow: 3,
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 30 }}>
-                  {isSelected ? item.selectedIcon : item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{
-                    color: isSelected ? "#0073B7" : "#737373",
-                    whiteSpace: "nowrap",
-                  }}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-
-        <Typography
-          variant="subtitle2"
-          sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
-        >
-          Preferences
-        </Typography>
-        <List>
-          {preferenceItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-            return (
-              <ListItem
-                key={index}
-                component={Link}
-                to={item.path}
-                sx={{
-                  bgcolor: isSelected ? "white" : "transparent",
-                  boxShadow: isSelected ? 3 : 0,
-                  borderRadius: 2,
-                  "&:hover": {
-                    bgcolor: "white",
-                    boxShadow: 3,
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: isSelected ? "#0073B7" : "#737373",
-                    minWidth: 32,
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{
-                    color: isSelected ? "#0073B7" : "#737373",
-                    whiteSpace: "nowrap",
-                  }}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-        <ListItem
-          sx={{ color: "#C82333", cursor: "pointer" }}
-          onClick={handleLogOut}
-        >
-          <ListItemIcon
+    <Typography
+      variant="subtitle2"
+      sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
+    >
+      Main Menu
+    </Typography>
+    <List>
+      {menuItems.map((item, index) => {
+        const isSelected = location.pathname === item.path;
+        return (
+          <ListItem
+            key={index}
+            component={Link}
+            to={item.path}
             sx={{
-              color: "#C82333",
-              minWidth: 32,
+              bgcolor: isSelected ? "white" : "transparent",
+              boxShadow: isSelected ? 3 : 0,
+              borderRadius: 2,
+              "&:hover": {
+                bgcolor: "white",
+                boxShadow: 3,
+              },
             }}
           >
-            <ExitToApp />
-          </ListItemIcon>
-          <ListItemText
-            primary="Logout Account"
-            sx={{ whiteSpace: "nowrap" }}
-          />
-        </ListItem>
-      </Drawer>
+            <ListItemIcon sx={{ minWidth: 30 }}>
+              {isSelected ? item.selectedIcon : item.icon}
+            </ListItemIcon>
+            <ListItemText
+              primary={item.text}
+              sx={{
+                color: isSelected ? "#0073B7" : "#737373",
+                whiteSpace: "nowrap",
+              }}
+            />
+          </ListItem>
+        );
+      })}
+    </List>
+
+    <Typography
+      variant="subtitle2"
+      sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
+    >
+      Preferences
+    </Typography>
+    <List>
+      {preferenceItems.map((item, index) => {
+        const isSelected = location.pathname === item.path;
+        return (
+          <ListItem
+            key={index}
+            component={Link}
+            to={item.path}
+            sx={{
+              bgcolor: isSelected ? "white" : "transparent",
+              boxShadow: isSelected ? 3 : 0,
+              borderRadius: 2,
+              "&:hover": {
+                bgcolor: "white",
+                boxShadow: 3,
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: isSelected ? "#0073B7" : "#737373",
+                minWidth: 32,
+              }}
+            >
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText
+              primary={item.text}
+              sx={{
+                color: isSelected ? "#0073B7" : "#737373",
+                whiteSpace: "nowrap",
+              }}
+            />
+          </ListItem>
+        );
+      })}
+    </List>
+  </Box>
+
+  {/* Bottom logout section */}
+  <Box sx={{borderTop:'1px solid #ECECEC'}}>
+    <ListItem
+      sx={{
+        color: "#C82333",
+        cursor: "pointer",
+      }}
+      onClick={handleLogOut}
+    >
+      <ListItemIcon
+        sx={{
+          color: "#C82333",
+          minWidth: 32,
+        }}
+      >
+        <ExitToApp />
+      </ListItemIcon>
+      <ListItemText primary="Logout Account" sx={{ whiteSpace: "nowrap" }} />
+    </ListItem>
+  </Box>
+</Drawer>
+
 
       {/* Sidebar for Mobile & Tablet */}
       <Drawer
         anchor="left"
         open={open}
         onClose={toggleMobileSidebar}
-        sx={{ display: { xs: "block", md: "none", lg: "none" } }}
+        sx={{ display: { xs: "block", md: "none", lg: "none" }, "& .MuiDrawer-paper": {
+          boxSizing: "border-box",
+          padding: 2,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }, }}
       >
         <Box sx={{ width: 250, padding: 2 }}>
           <img src={Logo} alt="Logo" />
@@ -450,23 +466,25 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             );
           })}
         </List>
-        <ListItem
-          sx={{ color: "#C82333", cursor: "pointer" }}
-          onClick={handleLogOut}
-        >
-          <ListItemIcon
-            sx={{
-              color: "#C82333",
-              minWidth: 32,
-            }}
-          >
-            <ExitToApp />
-          </ListItemIcon>
-          <ListItemText
-            primary="Logout Account"
-            sx={{ whiteSpace: "nowrap" }}
-          />
-        </ListItem>
+        <Box sx={{borderTop:'1px solid #ECECEC'}}>
+    <ListItem
+      sx={{
+        color: "#C82333",
+        cursor: "pointer",
+      }}
+      onClick={handleLogOut}
+    >
+      <ListItemIcon
+        sx={{
+          color: "#C82333",
+          minWidth: 32,
+        }}
+      >
+        <ExitToApp />
+      </ListItemIcon>
+      <ListItemText primary="Logout Account" sx={{ whiteSpace: "nowrap" }} />
+    </ListItem>
+  </Box>
       </Drawer>
     </>
   );

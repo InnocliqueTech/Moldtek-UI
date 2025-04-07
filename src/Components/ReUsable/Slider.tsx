@@ -58,10 +58,11 @@ const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Fil
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            border: "2px solid #007bff",
+            border: "2px solid #0073B7",
             borderRadius: "260px",
             overflow: "hidden",
             mt: 2,
+            backgroundColor:'#F5FAFF',
             p:1
           }}
         >
@@ -72,8 +73,8 @@ const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Fil
               onClick={() => setActiveTab(index)}
               sx={{
                 textTransform: "none",
-                backgroundColor: activeTab === index ? "#007bff" : "white",
-                color: activeTab === index ? "white" : "#007bff",
+                backgroundColor: activeTab === index ? "#0073B7" : "transparent",
+                color: activeTab === index ? "white" : "#656565",
                 borderRadius: '2000px',
                 fontWeight: 500,
                 "&:hover": { backgroundColor: activeTab === index ? "#0056b3" : "#f0f8ff" },

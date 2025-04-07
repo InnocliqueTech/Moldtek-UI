@@ -64,7 +64,16 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab }) => {
   );
 
   return (
-    <Box display="flex" justifyContent="center" gap={2} p={2}>
+<Box
+  display="flex"
+  flexDirection={{ xs: "column", sm: "row" }}
+  justifyContent="center"
+  alignItems="center"
+  gap={2}
+  p={2}
+  flexWrap="wrap"
+>
+
       {selectedTab === 3 ? (
         <ReusableButton
           text="Submit and Publish"

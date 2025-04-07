@@ -38,6 +38,8 @@ const Lamination: React.FC = () => {
     materialCode: "53",
     materialBrand: "273",
     materialRatio: "246",
+    viscocityRange:'ADH123',
+    adhesiveGSM:'Henkel'
   });
 
   const handleChange = (key: string, value: string) => {
@@ -112,77 +114,58 @@ const Lamination: React.FC = () => {
       </Box>
 
       <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          flexDirection: { md: "row", xs: "column" },
-        }}
-      >
-        <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              {" "}
-              <Typography
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        gap: 2,
+        border: "1px solid #ECECEC",
+        borderRadius: "16px",
+        p: 2,
+        mt: 2,
+      }}
+    >
+      {/* Printed Film Section */}
+      <Grid size={{xs:12,md:6}}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+        <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
               >
-                Printed Film
-              </Typography>
-              <InfoOutline
-                sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-              />
-            </Box>
-            <Grid container spacing={2} pt={1}>
-          {[
-            { label: "Tension (Primary)", key: "laminateTension" },
-            { label: "Width (mm)", key: "laminateWidth" },
-            { label: "Thickness (micrones)", key: "laminateThickness" },
-            { label: "GSM", key: "laminateGSM" },
-            { label: "Dyne Level", key: "laminateDyne" },
-          ].map(({ label, key }) => (
-            <Grid size={{xs:12,md:6}} key={key}>
-              <ReusableInput
-                label={label}
-                value={formData[key as keyof typeof formData]}
-                onChange={(e) => handleChange(key, e.target.value)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-          </Grid>
+            Printed Film
+          </Typography>
+          <InfoOutline sx={{ color: "#9F9F9F", fontSize: 20 }} />
         </Box>
-        <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              {" "}
-              <Typography
+        <Grid container spacing={2}>
+          <Grid size={{xs:12}}>
+            <ReusableInput
+              label="Tension (Primary)"
+              value={formData.laminateTension}
+              onChange={(e) => handleChange("laminateTension", e.target.value)}
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+
+      {/* Laminate Film Section */}
+      <Grid size={{xs:12,md:6}}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+        <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
               >
-               Laminate Film
-              </Typography>
-              <InfoOutline
-                sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-              />
-            </Box>
-            <Grid container spacing={2} pt={1}>
-          {[
-            { label: "Tension (Primary)", key: "laminateTension" },
-            { label: "Width (mm)", key: "laminateWidth" },
-            { label: "Thickness (micrones)", key: "laminateThickness" },
-            { label: "GSM", key: "laminateGSM" },
-            { label: "Dyne Level", key: "laminateDyne" },
-          ].map(({ label, key }) => (
-            <Grid size={{xs:12,md:6}} key={key}>
-              <ReusableInput
-                label={label}
-                value={formData[key as keyof typeof formData]}
-                onChange={(e) => handleChange(key, e.target.value)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-          </Grid>
+            Laminate Film
+          </Typography>
+          <InfoOutline sx={{ color: "#9F9F9F", fontSize: 20 }} />
         </Box>
-      </Box>
+        <Grid container spacing={2}>
+          <Grid size={{xs:12}}>
+            <ReusableInput
+              label="Tension (Primary)"
+              value={formData.laminateTension}
+              onChange={(e) => handleChange("laminateTension", e.target.value)}
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Box>
       <Box sx={{ display: "flex", gap: 1 }} mt={2} p={1}>
         {" "}
         <Typography
@@ -303,9 +286,8 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           {[
-            { label: "Code", key: "adhesiveCode" },
-            { label: "Brand", key: "adhesiveBrand" },
-            { label: "Ratio", key: "adhesiveRatio" },
+            { label: "Viscocity Range", key: "viscocityRange" },
+            { label: "Adhesive GSM", key: "adhesiveGSM" },
           ].map(({ label, key }) => (
             <Grid size={{xs:12,md:4}} key={key}>
               <ReusableInput

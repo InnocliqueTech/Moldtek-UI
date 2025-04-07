@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Crads";
-import { Info, InfoOutline } from "@mui/icons-material";
+import { Info, InfoOutline, LinkOutlined } from "@mui/icons-material";
 import Header from "../../Components/ReUsable/Header";
 import ReusableTable from "../../Components/ReUsable/Table";
 import Filter from "./Filter";
+import { useNavigate } from "react-router-dom";
+import UENCell, { RenderTooltip } from "../../Components/helpers";
 
 const MasterData: React.FC = () => {
+  const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
   const stats = [
     { title: "Total Jobs", value: 2000 },
     { title: "Lamination Jobs", value: 1140 },
@@ -14,7 +19,12 @@ const MasterData: React.FC = () => {
     { title: "New Jobs Added", value: 674 },
   ];
   const columns = [
-    { id: "uen", label: "Unit Effectivity Number", align: false },
+    {
+      id: "uen",
+      label: "Unit Effectivity Number",
+      align: false,
+      format: (value: string) => <UENCell value={value} />,
+    },
     {
       id: "customer",
       label: "Customer",
@@ -92,7 +102,7 @@ const MasterData: React.FC = () => {
       lastExecuted: "07/05/2016",
     },
     {
-      uen: "UEN-20240801",
+      uen: "UEN-20240802",
       customer: { image: "", customer: "Hero - Hero Corporation" },
       version: 8861,
       segment: "LB",
@@ -336,6 +346,18 @@ const MasterData: React.FC = () => {
           lastUpdate="2 hours ago"
           info={true}
           searchVisible={true}
+          actions={[
+            {
+              label: "View",
+              // icon: <VisibilityIcon fontSize="small" />,
+              onClick: (row) => navigate(`/viewMasterData`),
+            },
+            {
+              label: "Edit",
+              // icon: <EditIcon fontSize="small" />,
+              onClick: (row) => navigate(`/editMasterData`),
+            },
+          ]}
         />
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import React, { useState, JSX } from "react";
+import React, { useState, JSX, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,8 @@ import {
   Pagination,
   PaginationItem,
   Stack,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -30,6 +32,7 @@ import {
   InfoOutline,
   ReplayOutlined,
 } from "@mui/icons-material";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 interface Column {
   id: string;
@@ -38,7 +41,11 @@ interface Column {
   format?: (value: any) => JSX.Element | string;
   align: boolean;
 }
-
+interface TableAction<T> {
+  label: string;
+  icon?: JSX.Element;
+  onClick: (row: T) => void;
+}
 interface TableProps<T> {
   columns: Column[];
   data: T[];
@@ -50,6 +57,7 @@ interface TableProps<T> {
   info?: boolean;
   searchVisible?: boolean;
   label?: string;
+  actions?: TableAction<T>[];
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -63,12 +71,45 @@ function ReusableTable<T extends Record<string, any>>({
   label = "3 companies",
   searchVisible = false,
   info = false,
+  actions
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
-  const [rowsPerPage, setRowsPerPage] = useState<number>(defaultRowsPerPage);
   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
+  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px–900px
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md")); // >=900px
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedRow, setSelectedRow] = useState<T | null>(null);
+
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    row: T
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const getResponsiveRowsPerPage = () => {
+    if (isXs) return 5;
+    if (isSm) return 10;
+    return 20;
+  };
+
+  const [rowsPerPage, setRowsPerPage] = useState<number>(
+    getResponsiveRowsPerPage()
+  );
+
+  useEffect(() => {
+    setRowsPerPage(getResponsiveRowsPerPage());
+  }, [isXs, isSm, isMdUp]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
@@ -173,6 +214,7 @@ function ReusableTable<T extends Record<string, any>>({
               )}
               {columns.map((column, index) => (
                 <TableCell
+                  align={column.align ? "center" : "left"}
                   key={column.id}
                   sx={{
                     whiteSpace: "nowrap",
@@ -256,13 +298,36 @@ function ReusableTable<T extends Record<string, any>>({
                     </TableCell>
                   ))}
                   <TableCell align="right">
-                    <IconButton>
+                    <IconButton onClick={(e) => handleMenuOpen(e, row)}>
                       <MoreVertIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
+          {selectedRow && (
+  <Menu
+    anchorEl={anchorEl}
+    open={Boolean(anchorEl)}
+    onClose={handleMenuClose}
+    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    transformOrigin={{ vertical: "top", horizontal: "right" }}
+  >
+    {actions?.map((action, index) => (
+      <MenuItem
+        key={index}
+        onClick={() => {
+          handleMenuClose();
+          action.onClick(selectedRow); // Pass current row
+        }}
+      >
+        {action.icon && <Box mr={1}>{action.icon}</Box>}
+        {action.label}
+      </MenuItem>
+    ))}
+  </Menu>
+)}
+
         </Table>
       </TableContainer>
       <Box

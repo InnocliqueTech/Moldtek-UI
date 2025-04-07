@@ -153,8 +153,9 @@ const FilterForm: React.FC = () => {
           text="Search"
           borderRadius="100px"
           onClick={handleSubmit(onSubmit)}
-          color="#007BFF"
+          color="#0073B7"
           textColor="white"
+          p={2}
         />
       </Box>
     </Box>

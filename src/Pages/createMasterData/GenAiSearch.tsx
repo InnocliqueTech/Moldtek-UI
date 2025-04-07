@@ -59,10 +59,10 @@ const SearchComponent: React.FC = () => {
             <Button
               variant="contained"
               sx={{
-                borderRadius: "20px",
+                borderRadius: "100px",
                 px: 2,
                 minWidth: "auto",
-                backgroundColor: "#007bff",
+                backgroundColor: "#0073B7",
                 textTransform: "none",
                 "&:hover": { backgroundColor: "#0056b3" },
               }}
