@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReusableInput from "../ReUsable/TextField";
 import ReusableButton from "../ReUsable/Button";
 import { signInSchema } from "../ZodSchemas/signInpageValidation";
@@ -9,13 +9,14 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import { EmailOutlined, LockOutlined } from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
-import curves from "../../assets/Images/curves.png";
 
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/masterData";
 
   const handleLogin = () => {
     setErrors({});
@@ -35,7 +36,7 @@ const SignInPage: React.FC = () => {
     }
 
     localStorage.setItem("auth", "true");
-    navigate("/masterData");
+    navigate(from, { replace: true });
   };
 
   return (
@@ -125,7 +126,7 @@ const SignInPage: React.FC = () => {
       <Box
         sx={{
           flex: 1,
-          height: { xs: "auto", md: "100vh" },
+          height: "100vh",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -142,29 +143,11 @@ const SignInPage: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             backgroundColor: "white",
-            position: "relative",
           }}
         >
           {/* Image Section */}
-          <Box sx={{ flex: 0.3, position: "relative" }}>
+          <Box sx={{ flex: 0.2 }}>
             <img src={SignInImage} alt="Sign In" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-
-            {/* Curves just below the image, partially visible */}
-            <Box
-              component="img"
-              src={curves}
-              alt="Curves Background"
-              sx={{
-                position: "absolute",
-                top: "100%", // Right below the image
-                left: 0,
-                width: "100%",
-                height: "auto",
-                transform: "translateY(-20%)", // Slightly overlap upwards
-                zIndex: 1,
-                opacity: 0.15, // Adjust visibility
-              }}
-            />
           </Box>
 
           {/* Content Section */}
@@ -179,26 +162,18 @@ const SignInPage: React.FC = () => {
               alignItems: "flex-start",
               textAlign: "left",
               p: 3,
-              position: "relative",
-              overflow: "hidden",
             }}
           >
-            {/* Text content above the curve */}
-            <Box sx={{ position: "relative", zIndex: 2 }}>
-              <Box sx={{ mb: 1 }}>
-                <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
-              </Box>
-              <Typography sx={{ color: "#ECECEC", fontWeight: 600, fontSize: "20px" }}>
-                Print & Lamination Data Hub
-              </Typography>
-              <Typography sx={{ mt: 1, color: "#ECECEC", fontWeight: 400, fontSize: "15px" }}>
-                Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
-              </Typography>
+            <Box sx={{ mb: 1 }}>
+              <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
             </Box>
+            <Typography sx={{color:'#ECECEC',fontWeight:600,fontSize:'20px'}}>Print & Lamination Data Hub</Typography>
+            <Typography   sx={{ mt: 1 ,color:'#ECECEC',fontWeight:400,fontSize:'15px'}}>
+              Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
+            </Typography>
           </Box>
         </Box>
       </Box>
-
     </Box>
   );
 };
