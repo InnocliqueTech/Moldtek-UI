@@ -113,7 +113,7 @@ const dispatch = useDispatch<AppDispatch>()
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ display: "flex", gap: 1 }} mt={2} p={1}>
+      <Box sx={{ display: "flex", gap: 1 }} mt={0} p={1}>
         {" "}
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
@@ -132,7 +132,7 @@ const dispatch = useDispatch<AppDispatch>()
         border: "1px solid #ECECEC",
         borderRadius: "16px",
         p: 2,
-        mt: 2,
+        mt: 0,
       }}
     >
       {/* Printed Film Section */}
@@ -177,7 +177,7 @@ const dispatch = useDispatch<AppDispatch>()
         </Grid>
       </Grid>
     </Box>
-      <Box sx={{ display: "flex", gap: 1 }} mt={2} p={1}>
+      <Box sx={{ display: "flex", gap: 1 }} mt={0} p={1}>
         {" "}
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
@@ -188,7 +188,7 @@ const dispatch = useDispatch<AppDispatch>()
         <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
       </Box>
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 0 }}
       >
         <Box sx={{ display: "flex", gap: 1 }}>
           {" "}

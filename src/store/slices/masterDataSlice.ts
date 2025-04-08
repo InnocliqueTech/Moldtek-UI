@@ -8,7 +8,7 @@ export interface PrintingTableRow {
   stationNo: number;
   colorPantone: string;
   lfValue: number;
-  inkSupplier: string[];
+  inkSupplier: string;
   lpcm: number;
   volume: string;
   uvLed: string;
@@ -66,6 +66,7 @@ export interface MasterFormData  {
   thickness: string;
   density: string;
   gsm: string;
+  customerPicture?: string;
 }
 
 export interface DyeCuttingFormData {
@@ -129,6 +130,7 @@ const initialState: MasterDataState = {
     thickness: "",
     density: "",
     gsm: "",
+    customerPicture: ''
   },
   printingSaveFormData: {
     mountingType: "",
@@ -140,12 +142,94 @@ const initialState: MasterDataState = {
     rewinder: "",
     staticCharge: "",
     formatCorrect: "",
-    printingTableData: [
+    printingTableData:
+     [
       {
-        stationNo: 0,
+        stationNo: 1,
         colorPantone: '',
         lfValue: 0,
-        inkSupplier: [],
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 2,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 3,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 4,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 5,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 6,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 7,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 8,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 9,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
+        lpcm: 0,
+        volume: '',
+        uvLed: '',
+      },
+      {
+        stationNo: 10,
+        colorPantone: '',
+        lfValue: 0,
+        inkSupplier:"",
         lpcm: 0,
         volume: '',
         uvLed: '',

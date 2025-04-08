@@ -5,6 +5,7 @@ import {
   IconButton,
   Box,
   Typography,
+  Chip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
@@ -13,16 +14,18 @@ import Filter from "../../Pages/createMasterData/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setUploadPopup } from "../../store/slices/masterDataSlice";
+import { ReplayOutlined } from "@mui/icons-material";
 
 interface HeaderProps {
   title: string;
-  button1Text: string;
-  button2Text: string;
-  onButton1Click: () => void;
-  onButton2Click: () => void;
+  button1Text?: string;
+  button2Text?: string;
+  onButton1Click?: () => void;
+  onButton2Click?: () => void;
   onMenuClick: () => void;
   masterDataCreatePopup: boolean;
   onClosePopup: () => void;
+  lastUpdate?:string
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -34,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({
   onMenuClick,
   masterDataCreatePopup,
   onClosePopup,
+  lastUpdate
 }) => {
 
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
@@ -138,6 +142,7 @@ const handleClosePopUp= ()=>{
           </Typography>
 
           <Box display="flex" gap={2}>
+            {button1Text && 
             <ButtonComponent
               onClick={onButton1Click}
               color="white"
@@ -147,6 +152,21 @@ const handleClosePopUp= ()=>{
               border="1px solid #E5E5E5"
               p={"14px"}
             />
+}
+                {lastUpdate && (
+                  <Chip
+                    icon={<ReplayOutlined />}
+                    label={lastUpdate}
+                    sx={{
+                      backgroundColor: "#F6F6F6",
+                      color: "#2F2F2F",
+                      fontWeight: 500,
+                      border: "1px solid #2F2F2F",
+                      "& .MuiChip-icon": { color: "#2F2F2F" },
+                    }}
+                  />
+                )}
+            {button2Text &&
             <ButtonComponent
               onClick={onButton2Click}
               color="#0073B7"
@@ -156,6 +176,7 @@ const handleClosePopUp= ()=>{
               p={"4px"}
               width={"200px"}
             />
+}
           </Box>
         </Box>
         </Toolbar>

@@ -73,7 +73,7 @@ interface AutocompleteCellProps {
   handleChange: (
     rowIndex: number,
     columnId: string,
-    newValue: string[]
+    newValue: string
   ) => void;
 }
 
@@ -88,11 +88,10 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const value: string[] = Array.isArray(row[column.id]) ? row[column.id] : [];
+  const value: string = typeof row[column.id] === "string" ? row[column.id] : "";
 
   const open = Boolean(anchorEl);
 
-  // Dynamic options with "(new)" if needed
   const allOptions =
     inputValue && !column.options?.includes(inputValue)
       ? [...(column.options || []), `${inputValue} (new)`]
@@ -114,8 +113,7 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
 
   return (
     <Box>
-      {/* Box with chips & tooltip */}
-      <Tooltip title={value?.join(", ")} arrow placement="top">
+      <Tooltip title={value} arrow placement="top">
         <Box
           onClick={handleClick}
           sx={{
@@ -130,24 +128,20 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
             padding: "6px 8px",
           }}
         >
-          {value.length > 0 ? (
-            value.map((value, index) => (
-              <Chip
-                key={index}
-                label={index > 1 ? `${value[0]}...` : value}
-                size="small"
-                sx={{ fontSize: "12px" }}
-              />
-            ))
+          {value ? (
+            <Chip
+              label={value.length > 20 ? `${value.slice(0, 20)}...` : value}
+              size="small"
+              sx={{ fontSize: "12px" }}
+            />
           ) : (
             <Typography color="gray" fontSize="14px">
-              Click to add 
+              Click to add
             </Typography>
           )}
         </Box>
       </Tooltip>
 
-      {/* Tag selector popover */}
       <Popover
         open={open}
         anchorEl={anchorEl}
@@ -165,40 +159,22 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
         }}
       >
         <Autocomplete
-          multiple
           freeSolo
           autoFocus
-          filterSelectedOptions
           options={allOptions}
           value={value}
           inputValue={inputValue}
           onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
           onChange={(_, newValue) => {
-            const cleaned = newValue.map((val) =>
-              typeof val === "string" ? val.replace(" (new)", "") : val
-            );
+            const cleaned = typeof newValue === "string" ? newValue.replace(" (new)", "") : "";
             handleChange(rowIndex, column.id, cleaned);
+            handleClose(); // close after selection
           }}
-          renderTags={(selected, getTagProps) =>
-            selected.map((option, index) => (
-              <Chip
-                label={option}
-                {...getTagProps({ index })}
-                size="small"
-                sx={{
-                  fontSize: "12px",
-                  maxWidth: 180,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              />
-            ))
-          }
           renderInput={(params) => (
             <TextField
               {...params}
               inputRef={inputRef}
-              placeholder="Type or select values..."
+              placeholder="Type or select a value..."
               variant="outlined"
               size="small"
               fullWidth
@@ -209,3 +185,4 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
     </Box>
   );
 };
+

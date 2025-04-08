@@ -1,7 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import customerPicture from "../../assets/Images/customerPicture.png";
 import TextArea from "../../Components/ReUsable/TextArea";
 import { InfoOutline } from "@mui/icons-material";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
@@ -36,6 +35,7 @@ const MasterDataDetails: React.FC = () => {
     thickness: "",
     density: "",
     gsm: "",
+    customerPicture: "",
   });
 
   const handleSave = () => {
@@ -136,8 +136,55 @@ const MasterDataDetails: React.FC = () => {
               >
                 Customer Picture
               </Typography>
-              <Box component="img" src={customerPicture} alt="Customer" />
+
+              {formData.customerPicture ? (
+                <Box
+                  component="img"
+                  src={formData.customerPicture}
+                  alt="Customer"
+                  sx={{ width: 120, height: 120, borderRadius: "8px", mt: 1 }}
+                />
+              ) : (
+                <Box mt={1}>
+                  <input
+                    accept="image/*"
+                    type="file"
+                    id="upload-customer-pic"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          handleChange(
+                            "customerPicture",
+                            reader.result as string
+                          );
+                        };
+                        reader.readAsDataURL(file); // Convert to base64
+                      }
+                    }}
+                  />
+                  <label htmlFor="upload-customer-pic">
+                    <Box
+                      component="span"
+                      sx={{
+                        background: "#1976d2",
+                        color: "#fff",
+                        px: 2,
+                        py: 1,
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        display: "inline-block",
+                      }}
+                    >
+                      Upload Image
+                    </Box>
+                  </label>
+                </Box>
+              )}
             </Box>
+
             <Box sx={{ mt: 2 }}>
               <TextArea
                 label="Brand Name & Pack Description"
@@ -186,7 +233,7 @@ const MasterDataDetails: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ display: "flex", gap: 1 }} mt={4} p={1}>
+      <Box sx={{ display: "flex", gap: 1 }} mt={1} p={1}>
         {" "}
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}

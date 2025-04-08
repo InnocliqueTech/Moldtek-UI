@@ -10,6 +10,8 @@ const CreateMasterData = lazy(() => import("./Pages/createMasterData/CreateMaste
 const Layout = lazy(() => import("./Components/ReUsable/LayOut"));
 const ProtectedRoute = lazy(() => import("./Components/Authentication/ProtectedRoute"));
 const NotFoundPage = lazy(() => import("./Components/Authentication/NotFoundPage"));
+const ViewMasterData = lazy(()=>import("./Pages/viewMasterData/ViewMasterData"));
+
 
 const App: React.FC = () => {
   return (
@@ -22,6 +24,7 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/masterData" element={<MasterData />} />
               <Route path="/createMasterData" element={<CreateMasterData />} />
+              <Route path="/viewMasterData" element={<ViewMasterData/>}/>
             </Route>
           </Route>
           <Route path="*" element={<NotFoundPage />} />

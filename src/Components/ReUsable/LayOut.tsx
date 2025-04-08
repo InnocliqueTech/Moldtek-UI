@@ -21,10 +21,11 @@ const Layout = () => {
     string,
     {
       title: string;
-      button1Text: string;
-      button2Text: string;
-      onButton1Click: () => void;
-      onButton2Click: () => void;
+      button1Text?: string;
+      button2Text?: string;
+      onButton1Click?: () => void;
+      onButton2Click?: () => void;
+      lastUpdate?:string;
     }
   > = {
     "/dashboard": {
@@ -54,6 +55,10 @@ const Layout = () => {
       button2Text:   "Updated Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
+    },
+      "/viewMasterData": {
+      title:  "UEN-20240801",
+      lastUpdate:'Last Update: 2 hours ago',
     },
     "/settings": {
       title: "Settings",
@@ -107,6 +112,7 @@ const Layout = () => {
           onMenuClick={toggleSidebar} // Toggle sidebar when menu icon is clicked
           masterDataCreatePopup= {masterDataCreatePopup}
           onClosePopup = {onClosePopup}
+          lastUpdate={headerData.lastUpdate}
         />
 
         <Box sx={{ flex: 1, p: 2, backgroundColor: "#ECECEC" }}>

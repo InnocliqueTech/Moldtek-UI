@@ -21,6 +21,8 @@ interface SliderProps {
   onClose: () => void;
   title?: string;
   tabs?: TabData[];
+  content?:React.ReactNode,
+  
 }
 
 const Slider: React.FC<SliderProps> = ({
@@ -28,6 +30,8 @@ const Slider: React.FC<SliderProps> = ({
   onClose,
   title = "Master Data Filter",
   tabs,
+  content,
+  
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const theme = useTheme();
@@ -118,6 +122,7 @@ const Slider: React.FC<SliderProps> = ({
       <Box mt={2}>
         {tabs && tabs[activeTab]?.content && tabs[activeTab].content}
       </Box>
+      {content && <Box>{content}</Box>}
     </Drawer>
   );
 };

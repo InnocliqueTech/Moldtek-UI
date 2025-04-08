@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
-import { AutocompleteCell } from "../helpers";
+import { AutocompleteCell } from "../helpers"
 
 interface Column {
   id: string;
@@ -38,21 +38,14 @@ const DataTable = <T extends Record<string, any>>({
   data,
   setData,
 }: DataTableProps<T>) => {
-  const handleChange = <K extends keyof T>(
-    rowIndex: number,
-    columnId: K,
-    value: T[K]
-  ) => {
+  const handleChange = <K extends keyof T>(rowIndex: number, columnId: K, value: T[K]) => {
     const updated = [...data];
     updated[rowIndex] = { ...updated[rowIndex], [columnId]: value };
     setData(updated);
   };
 
   return (
-    <TableContainer
-      sx={{ maxWidth: "100%", overflowX: "auto" }}
-      component={Paper}
-    >
+    <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }} component={Paper}>
       <Table>
         <TableHead
           sx={{
@@ -184,11 +177,7 @@ const DataTable = <T extends Record<string, any>>({
                       column={column}
                       rowIndex={rowIndex}
                       handleChange={(rowIndex, columnId, newValue) =>
-                        handleChange(
-                          rowIndex,
-                          columnId as keyof T,
-                          newValue as T[keyof T]
-                        )
+                        handleChange(rowIndex, columnId as keyof T, newValue as T[keyof T])
                       }
                     />
                   ) : column.edit ? (
