@@ -6,6 +6,7 @@ import {
   FormControl,
   TextField,
   Typography,
+  Grid,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ import ButtonComponent from "../../Components/ReUsable/Button";
 const FilterForm: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
+
   const {
     control,
     handleSubmit,
@@ -37,124 +39,131 @@ const FilterForm: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* From Date */}
-      <Typography variant="body2" sx={{ mb: 1 }}>
-        From Date
-      </Typography>
-      <Controller
-        name="fromDate"
-        control={control}
-        render={() => (
-          <TextField
-            fullWidth
-            type="date"
-            variant="outlined"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            sx={{
-              "& .MuiInputBase-root": {
-                borderRadius: "8px",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#ccc",
-              },
-              "& .MuiInputBase-input": {
-                padding: "8px",
-              },
-            }}
-          />
-        )}
-      />
-
-      {/* To Date */}
-      <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-        To Date
-      </Typography>
-      <Controller
-        name="toDate"
-        control={control}
-        render={() => (
-          <TextField
-            fullWidth
-            type="date"
-            variant="outlined"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            sx={{
-              "& .MuiInputBase-root": {
-                borderRadius: "8px",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#ccc",
-              },
-              "& .MuiInputBase-input": {
-                padding: "8px",
-              },
-            }}
-          />
-        )}
-      />
-
-      {/* Master Data Search */}
-      <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
-        Master Data Search
-      </Typography>
-      <Box sx={{ display: "flex" }}>
-        {/* Search Type */}
-        <FormControl fullWidth>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+      <Grid container spacing={2}>
+        {/* From Date */}
+        <Grid size={{xs:12,sm:6}}>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            From Date
+          </Typography>
           <Controller
-            name="searchType"
+            name="fromDate"
             control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
+            render={() => (
+              <TextField
                 fullWidth
-                error={!!errors.searchType}
+                type="date"
+                variant="outlined"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
                 sx={{
-                  "& .MuiOutlinedInput-root": {
+                  "& .MuiInputBase-root": { borderRadius: "8px" },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ccc" },
+                  "& .MuiInputBase-input": { padding: "10px" },
+                }}
+              />
+            )}
+          />
+        </Grid>
+
+        {/* To Date */}
+        <Grid size={{xs:12,sm:6}} >
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            To Date
+          </Typography>
+          <Controller
+            name="toDate"
+            control={control}
+            render={() => (
+              <TextField
+                fullWidth
+                type="date"
+                variant="outlined"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-root": { borderRadius: "8px" },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ccc" },
+                  "& .MuiInputBase-input": { padding: "10px" },
+                }}
+              />
+            )}
+          />
+        </Grid>
+
+        {/* Master Data Search */}
+        <Grid size={{xs:12}}>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Master Data Search
+          </Typography>
+          <Grid container spacing={1}>
+            {/* Search Type */}
+            <Grid size={{xs:12,sm:4}} >
+              <FormControl fullWidth>
+                <Controller
+                  name="searchType"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      fullWidth
+                      error={!!errors.searchType}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
                     borderRight: "none",
                     borderTopRightRadius: 0,
                     borderBottomRightRadius: 0,
-                  },
-                  "& .MuiInputBase-input": { padding: "8px" },
-                }}
-              >
-                <MenuItem value="Indent No">Indent No</MenuItem>
-                <MenuItem value="Order ID">Order ID</MenuItem>
-              </Select>
-            )}
-          />
-        </FormControl>
+                        },
+                        "& .MuiInputBase-input": { padding: "10px" },
+                      }}
+                    >
+                      <MenuItem value="Indent No">Indent No</MenuItem>
+                      <MenuItem value="Order ID">Order ID</MenuItem>
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </Grid>
 
-        {/* Search Input */}
-        <Controller
-          name="searchValue"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              fullWidth
-              variant="outlined"
-              error={!!errors.searchValue}
-              helperText={errors.searchValue?.message}
-              sx={{ "& .MuiInputBase-input": { padding: "8px" } }}
+            {/* Search Input */}
+            <Grid size={{xs:12,sm:8}} >
+              <Controller
+                name="searchValue"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    variant="outlined"
+                    error={!!errors.searchValue}
+                    helperText={errors.searchValue?.message}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        borderRadius: "8px",
+                      },
+                      "& .MuiInputBase-input": { padding: "10px" },
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Search Button */}
+        <Grid size={{xs:12}}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <ButtonComponent
+              text="Search"
+              borderRadius="100px"
+              onClick={handleSubmit(onSubmit)}
+              color="#0073B7"
+              textColor="white"
+              p={2}
             />
-          )}
-        />
-      </Box>
-
-      {/* Search Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <ButtonComponent
-          text="Search"
-          borderRadius="100px"
-          onClick={handleSubmit(onSubmit)}
-          color="#0073B7"
-          textColor="white"
-          p={2}
-        />
-      </Box>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

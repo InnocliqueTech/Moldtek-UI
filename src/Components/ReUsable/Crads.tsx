@@ -7,17 +7,17 @@ interface StatsCardProps {
   icon?: React.ReactNode;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value,icon }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon }) => {
   return (
-    <Card sx={{ minWidth: 200, borderRadius: '16px' }}>
+    <Card sx={{ minWidth: 200, borderRadius: '16px', flex: 1 }}>
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{fontSize:'14px',color:'#2F2F2F',fontWeight:600}}>
+          <Typography sx={{ fontSize: '14px', color: '#2F2F2F', fontWeight: 600 }}>
             {title}
           </Typography>
           <Box>{icon}</Box>
         </Box>
-        <Typography sx={{fontSize:'20px',color:'#2F2F2F',fontWeight:600,mt:1}}>
+        <Typography sx={{ fontSize: '20px', color: '#2F2F2F', fontWeight: 600, mt: 1 }}>
           {value}
         </Typography>
       </CardContent>
@@ -25,4 +25,4 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value,icon }) => {
   );
 };
 
-export default StatsCard
+export default StatsCard;

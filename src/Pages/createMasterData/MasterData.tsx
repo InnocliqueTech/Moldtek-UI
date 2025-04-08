@@ -1,14 +1,13 @@
 import React from "react";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Crads";
-import {InfoOutline } from "@mui/icons-material";
+import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
-import  { UENCell } from "../../Components/helpers";
+import { UENCell } from "../../Components/helpers";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
-
 
   const stats = [
     { title: "Total Jobs", value: 2000 },
@@ -321,7 +320,7 @@ const MasterData: React.FC = () => {
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
         {stats.map((stat, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
             <Cards
               title={stat.title}
               value={stat.value}
@@ -334,6 +333,7 @@ const MasterData: React.FC = () => {
           </Grid>
         ))}
       </Grid>
+
       <Box sx={{ paddingTop: 2 }}>
         <ReusableTable
           columns={columns}
@@ -347,12 +347,10 @@ const MasterData: React.FC = () => {
           actions={[
             {
               label: "View",
-              // icon: <VisibilityIcon fontSize="small" />,
               onClick: () => navigate(`/viewMasterData`),
             },
             {
               label: "Edit",
-              // icon: <EditIcon fontSize="small" />,
               onClick: () => navigate(`/editMasterData`),
             },
           ]}

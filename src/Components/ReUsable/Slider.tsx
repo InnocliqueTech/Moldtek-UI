@@ -6,8 +6,10 @@ import {
   Typography,
   Box,
   Button,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import closeIcon from '../../assets/Images/close.png'
+import closeIcon from "../../assets/Images/close.png";
 
 interface TabData {
   label: string;
@@ -19,12 +21,18 @@ interface SliderProps {
   onClose: () => void;
   title?: string;
   tabs?: TabData[];
-  searchOptions?: string[];
-  dateLabels?: { from: string; to: string };
 }
 
-const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Filter", tabs }) => {
+const Slider: React.FC<SliderProps> = ({
+  open,
+  onClose,
+  title = "Master Data Filter",
+  tabs,
+}) => {
   const [activeTab, setActiveTab] = useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Drawer
@@ -33,36 +41,54 @@ const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Fil
       onClose={onClose}
       PaperProps={{
         sx: {
-          width: 400,
+          width: isMobile ? "100%" : isTablet ? 300 : 400,
           borderTopLeftRadius: 12,
           borderBottomLeftRadius: 12,
           p: 2,
-         
         },
       }}
     >
       {/* Header */}
       <AppBar position="static" color="inherit" elevation={0}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Toolbar sx={{ px: 0 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              fontSize: isMobile ? "1rem" : "1.25rem",
+              fontWeight: 600,
+            }}
+          >
             {title}
           </Typography>
-          <img src={closeIcon} alt='close' onClick={onClose} style={{width:'35px',height:'35px',cursor:'pointer'}}/>
+          <img
+            src={closeIcon}
+            alt="close"
+            onClick={onClose}
+            style={{
+              width: "30px",
+              height: "30px",
+              cursor: "pointer",
+            }}
+          />
         </Toolbar>
       </AppBar>
-      <Box  sx={{borderBottom: 1, borderColor: "#ddd"}} ></Box>
+      <Box sx={{ borderBottom: 1, borderColor: "#ddd" }} />
+
       {/* Custom Tabs */}
       {tabs && tabs.length > 0 && (
         <Box
           sx={{
             display: "flex",
+            flexDirection:  "row",
             justifyContent: "space-between",
             border: "2px solid #0073B7",
             borderRadius: "260px",
             overflow: "hidden",
             mt: 2,
-            backgroundColor:'#F5FAFF',
-            p:1
+            backgroundColor: "#F5FAFF",
+            p: 1,
+            gap: isMobile ? 1 : 0,
           }}
         >
           {tabs.map((tab, index) => (
@@ -74,12 +100,11 @@ const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Fil
                 textTransform: "none",
                 backgroundColor: activeTab === index ? "#0073B7" : "transparent",
                 color: activeTab === index ? "white" : "#656565",
-                borderRadius: '2000px',
+                borderRadius: "2000px",
                 fontWeight: 500,
-                "&:hover": { backgroundColor: activeTab === index ? "#0056b3" : "#f0f8ff" },
-                "&:focus": {
-                  outline: "none",
-                  boxShadow: "none",
+                fontSize: isMobile ? "0.85rem" : "1rem",
+                "&:hover": {
+                  backgroundColor: activeTab === index ? "#0056b3" : "#e6f2ff",
                 },
               }}
             >
@@ -90,9 +115,9 @@ const Slider: React.FC<SliderProps> = ({ open, onClose, title = "Master Data Fil
       )}
 
       {/* Tab Content */}
-      {tabs && tabs[activeTab]?.content &&
-        tabs[activeTab].content}
-
+      <Box mt={2}>
+        {tabs && tabs[activeTab]?.content && tabs[activeTab].content}
+      </Box>
     </Drawer>
   );
 };
