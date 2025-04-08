@@ -20,6 +20,8 @@ import ProductionOperatorsIcon from "../../assets/Images/prouctionOperators.png"
 import ReportsIcon from "../../assets/Images/reports.png";
 import SettingsIcon from "../../assets/Images/settings.png";
 import HelpCenterIcon from "../../assets/Images/helpCenter.png";
+import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
+import DailyPlanSelectedIcon from '../../assets/Images/dailyPlanSelectedIcon.svg'
 import { useState } from "react";
 
 interface SidebarProps {
@@ -67,6 +69,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
         />
       ),
       path: "/masterData",
+    },
+    {
+      text: "Daily Plan",
+      icon: <img src={DailyPlanIcon} alt="daily plan icon" width="20" height="20" />,
+      selectedIcon: (
+        <img
+          src={DailyPlanSelectedIcon}
+          alt="Selected"
+          width="20"
+          height="20"
+        />
+      ),
+      path: "/dailyPlan",
     },
     {
       text: "Production Operators",

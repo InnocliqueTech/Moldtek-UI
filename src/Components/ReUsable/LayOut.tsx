@@ -67,6 +67,13 @@ const Layout = () => {
       onButton1Click: () => alert("Save Changes Clicked"),
       onButton2Click: () => alert("Reset Clicked"),
     },
+    "/dailyPlan": {
+      title: "Daily Plan",
+      button1Text: "Filter",
+      button2Text: "Create Daily Plan",
+      onButton1Click: () => alert("Filter Clicked"),
+      onButton2Click: () => alert("Create Daily Plan Clicked"),
+    },
     "/": {
       title: "Home",
       button1Text: "Get Started",
