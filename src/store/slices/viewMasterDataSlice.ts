@@ -6,6 +6,18 @@ export interface RepeatTableRow {
   tracks: number;
   labels: number;
 }
+export interface PrintingMachineSettings {
+  mountingType: string;
+  cylinderTeeth: string;
+  tension: number;
+  unwinder: number;
+  infeed: string;
+  outfeed: string;
+  rewinder: number;
+  staticCharge: number;
+  formatCorrect: number;
+}
+
 export interface SubstrateTableRow {
   field: string;
   printing: string;
@@ -16,6 +28,7 @@ interface ViewMasterDataState {
   selectedTab: number;
   repeatTableData: RepeatTableRow[];
   substrateTableData: SubstrateTableRow[];
+  printingMachineSettings: PrintingMachineSettings[];
 }
 
 const initialState: ViewMasterDataState = {
@@ -35,6 +48,19 @@ const initialState: ViewMasterDataState = {
       lamination: "",
     },
   ],
+  printingMachineSettings: [
+    {
+      mountingType: "",
+      cylinderTeeth: "",
+      tension: 0,
+      unwinder: 0,
+      infeed: "",
+      outfeed: "",
+      rewinder: 0,
+      staticCharge: 0,
+      formatCorrect: 0,
+    },
+  ],
 };
 
 const viewMasterDataSlice = createSlice({
@@ -47,12 +73,27 @@ const viewMasterDataSlice = createSlice({
     setRepeatTableData: (state, action: PayloadAction<RepeatTableRow[]>) => {
       state.repeatTableData = { ...state.repeatTableData, ...action.payload };
     },
-    setSubstrateTableData: (state, action: PayloadAction<SubstrateTableRow[]>) => {
-        state.substrateTableData = { ...state.substrateTableData, ...action.payload };
-      },
+    setSubstrateTableData: (
+      state,
+      action: PayloadAction<SubstrateTableRow[]>
+    ) => {
+      state.substrateTableData = {
+        ...state.substrateTableData,
+        ...action.payload,
+      };
+    },
+    setPrintingMachineSettingsData: (
+      state,
+      action: PayloadAction<PrintingMachineSettings[]>
+    ) => {
+      state.printingMachineSettings = {
+        ...state.printingMachineSettings,
+        ...action.payload,
+      };
+    },
   },
 });
 
-export const { setSelectedTab, setRepeatTableData,setSubstrateTableData } =
+export const { setSelectedTab, setRepeatTableData, setSubstrateTableData,setPrintingMachineSettingsData } =
   viewMasterDataSlice.actions;
 export default viewMasterDataSlice.reducer;

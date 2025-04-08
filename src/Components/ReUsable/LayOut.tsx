@@ -64,14 +64,14 @@ const Layout = () => {
     "/createMasterData": {
       title: "Create Master Data",
       button1Text: "Created on: 15-Mar-2025",
-      button2Text: "Updated Master Data",
+      button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",
-      button1Text: "Created on: 15-Mar-2025",
-      button2Text: "Save Master Data",
+      button1Text: "Updated on: 15-Mar-2025",
+      button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
     },
