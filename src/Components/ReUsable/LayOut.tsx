@@ -1,22 +1,32 @@
-import { useLocation, Outlet, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  Outlet,
+  useNavigate,
+  useParams,
+  matchPath,
+} from "react-router-dom";
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
 import { useState } from "react";
-import { setOpenSlider, setSelectedTab, setUploadPopup } from "../../store/slices/masterDataSlice";
+import {
+  setOpenSlider,
+  setSelectedTab,
+  setUploadPopup,
+} from "../../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-
-
-
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
-  const [masterDataCreatePopup,setMasterDataCreatePopup] = useState(false);
+  const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const isEditMode = Boolean(id);
   const pageData: Record<
     string,
     {
@@ -25,7 +35,7 @@ const Layout = () => {
       button2Text?: string;
       onButton1Click?: () => void;
       onButton2Click?: () => void;
-      lastUpdate?:string;
+      lastUpdate?: string;
     }
   > = {
     "/dashboard": {
@@ -43,22 +53,35 @@ const Layout = () => {
       onButton2Click: () => alert("Change Password Clicked"),
     },
     "/masterData": {
-      title:"Master Data",
-      button1Text:"Filter",
-      button2Text:"Create Maser Data",
+      title: "Master Data",
+      button1Text: "Filter",
+      button2Text: "Create Maser Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
-      onButton2Click: () =>{navigate('/createMasterData'),dispatch(setSelectedTab(0))},
+      onButton2Click: () => {
+        navigate("/createMasterData"), dispatch(setSelectedTab(0));
+      },
     },
     "/createMasterData": {
-      title:  "Create Master Data",
-      button1Text:   "Created on: 15-Mar-2025",
-      button2Text:   "Updated Master Data",
+      title: "Create Master Data",
+      button1Text: "Created on: 15-Mar-2025",
+      button2Text: "Updated Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
     },
-      "/viewMasterData": {
-      title:  "UEN-20240801",
-      lastUpdate:'Last Update: 2 hours ago',
+    "/updateMasterData/:id": {
+      title: "Update Master Data",
+      button1Text: "Created on: 15-Mar-2025",
+      button2Text: "Save Master Data",
+      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton2Click: () => dispatch(setUploadPopup(true)),
+    },
+    "/viewMasterData": {
+      title: "UEN-20240801",
+      lastUpdate: "Last Update: 2 hours ago",
+    },
+    "/viewJobsList": {
+      title: "UEN-20240801",
+      lastUpdate: "Last Update: 2 hours ago",
     },
     "/settings": {
       title: "Settings",
@@ -83,9 +106,16 @@ const Layout = () => {
     },
   };
 
-  const currentPath = location.pathname;
-  const headerData = pageData[currentPath] || pageData["/"]; // Fallback to "/" if path is not found in pageData
-  const onClosePopup = ()=> setMasterDataCreatePopup(false)
+  let headerData = pageData["/"];
+
+  for (const path in pageData) {
+    const match = matchPath({ path, end: true }, location.pathname);
+    if (match) {
+      headerData = pageData[path];
+      break;
+    }
+  }
+  const onClosePopup = () => setMasterDataCreatePopup(false);
 
   return (
     <Box
@@ -117,8 +147,8 @@ const Layout = () => {
           onButton1Click={headerData.onButton1Click}
           onButton2Click={headerData.onButton2Click}
           onMenuClick={toggleSidebar} // Toggle sidebar when menu icon is clicked
-          masterDataCreatePopup= {masterDataCreatePopup}
-          onClosePopup = {onClosePopup}
+          masterDataCreatePopup={masterDataCreatePopup}
+          onClosePopup={onClosePopup}
           lastUpdate={headerData.lastUpdate}
         />
 

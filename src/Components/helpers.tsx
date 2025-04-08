@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LinkOutlined } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import {
   Autocomplete,
   Box,
@@ -11,13 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 
-// Props for rendering text with tooltip if too long
+
 interface RenderTooltipProps {
   content: string;
   strLength: number;
 }
 
-// Tooltip render logic for long strings
+
 export const RenderTooltip: React.FC<RenderTooltipProps> = ({
   content,
   strLength,
@@ -32,26 +31,23 @@ export const RenderTooltip: React.FC<RenderTooltipProps> = ({
   return <span>{content}</span>;
 };
 
-// Props for the UEN clickable cell
+
 interface UENCellProps {
   value: string;
+  onClick: () => void;
 }
 
-// Cell with clickable UEN navigation
-export const UENCell: React.FC<UENCellProps> = ({ value }) => {
+
+export const UENCell: React.FC<UENCellProps> = ({ value, onClick }) => {
   const [hovered, setHovered] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <div
-      onClick={() => navigate(`/viewMasterData`)}
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
       }}
     >
       <span style={{ textDecoration: hovered ? "underline" : "none" }}>
@@ -62,7 +58,7 @@ export const UENCell: React.FC<UENCellProps> = ({ value }) => {
   );
 };
 
-// Props for the editable Autocomplete cell
+
 interface AutocompleteCellProps {
   row: Record<string, any>;
   column: {
@@ -70,13 +66,8 @@ interface AutocompleteCellProps {
     options?: string[];
   };
   rowIndex: number;
-  handleChange: (
-    rowIndex: number,
-    columnId: string,
-    newValue: string
-  ) => void;
+  handleChange: (rowIndex: number, columnId: string, newValue: string) => void;
 }
-
 
 export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   row,
@@ -88,7 +79,8 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const value: string = typeof row[column.id] === "string" ? row[column.id] : "";
+  const value: string =
+    typeof row[column.id] === "string" ? row[column.id] : "";
 
   const open = Boolean(anchorEl);
 
@@ -166,9 +158,12 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
           inputValue={inputValue}
           onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
           onChange={(_, newValue) => {
-            const cleaned = typeof newValue === "string" ? newValue.replace(" (new)", "") : "";
+            const cleaned =
+              typeof newValue === "string"
+                ? newValue.replace(" (new)", "")
+                : "";
             handleChange(rowIndex, column.id, cleaned);
-            handleClose(); // close after selection
+            handleClose();
           }}
           renderInput={(params) => (
             <TextField
@@ -185,4 +180,3 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
     </Box>
   );
 };
-

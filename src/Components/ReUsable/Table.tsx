@@ -56,6 +56,8 @@ interface TableProps<T> {
   searchVisible?: boolean;
   label?: string;
   actions?: TableAction<T>[];
+  action?: boolean;
+  boxShadow?:boolean;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -67,7 +69,9 @@ function ReusableTable<T extends Record<string, any>>({
   label = "3 companies",
   searchVisible = false,
   info = false,
-  actions
+  actions,
+  action = false,
+  boxShadow=false
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -133,105 +137,107 @@ function ReusableTable<T extends Record<string, any>>({
   );
 
   return (
-    <Paper sx={{ borderRadius: "12px", overflow: "hidden", boxShadow: 3 }}>
-    <Toolbar
-  sx={{
-    display: "flex",
-    flexDirection: {
-      xs: "column",
-      sm: "column",
-      md: "row",
-    },
-    alignItems: {
-      xs: "flex-start",
-      sm: "flex-start",
-      md: "center",
-    },
-    justifyContent: "space-between",
-    gap: 2,
-    p: 2,
-  }}
->
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      flexWrap: "wrap",
-      gap: 1,
-    }}
-  >
-    <Typography variant="h6">{title}</Typography>
-    {info && (
-      <Tooltip title="Table information">
-        <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
-      </Tooltip>
-    )}
-    {label && (
-      <Chip
-        label={label}
+    <Paper sx={{ borderRadius:!boxShadow ? '0px':"12px", overflow: "hidden", boxShadow:!boxShadow ? 0: 3 }}>
+      <Toolbar
         sx={{
-          backgroundColor: "#F8FCFF",
-          color: "#0447A8",
-          border: "1px solid #0447A8",
-          fontWeight: 500,
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            sm: "column",
+            md: "row",
+          },
+          alignItems: {
+            xs: "flex-start",
+            sm: "flex-start",
+            md: "center",
+          },
+          justifyContent: "space-between",
+          gap: !boxShadow ?0:2,
+          p: !boxShadow ?0:2,
         }}
-      />
-    )}
-  </Box>
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <Typography variant="h6">{title}</Typography>
+          {info && (
+            <Tooltip title="Table information">
+              <InfoOutline
+                sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+              />
+            </Tooltip>
+          )}
+          {label && (
+            <Chip
+              label={label}
+              sx={{
+                backgroundColor: "#F8FCFF",
+                color: "#0447A8",
+                border: "1px solid #0447A8",
+                fontWeight: 500,
+              }}
+            />
+          )}
+        </Box>
 
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      flexWrap: "wrap",
-      gap: 1.5,
-      width: {
-        xs: "100%",
-        md: "auto",
-      },
-    }}
-  >
-    {lastUpdate && (
-      <Chip
-        icon={<ReplayOutlined />}
-        label={`Last Update: ${lastUpdate}`}
-        sx={{
-          backgroundColor: "#F6F6F6",
-          color: "#2F2F2F",
-          fontWeight: 500,
-          border: "1px solid #2F2F2F",
-          "& .MuiChip-icon": { color: "#2F2F2F" },
-        }}
-      />
-    )}
-    {searchVisible && (
-      <TextField
-        size="small"
-        variant="outlined"
-        placeholder="Search"
-        onChange={(e) => setSearch(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <IconButton>
-              <SearchIcon />
-            </IconButton>
-          ),
-        }}
-        fullWidth={isXs || isSm}
-        sx={{
-          minWidth: {
-            xs: "100%",
-            sm: "100%",
-            md: "240px",
-          },
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "50px",
-          },
-        }}
-      />
-    )}
-  </Box>
-</Toolbar>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 1.5,
+            width: {
+              xs: "100%",
+              md: "auto",
+            },
+          }}
+        >
+          {lastUpdate && (
+            <Chip
+              icon={<ReplayOutlined />}
+              label={`Last Update: ${lastUpdate}`}
+              sx={{
+                backgroundColor: "#F6F6F6",
+                color: "#2F2F2F",
+                fontWeight: 500,
+                border: "1px solid #2F2F2F",
+                "& .MuiChip-icon": { color: "#2F2F2F" },
+              }}
+            />
+          )}
+          {searchVisible && (
+            <TextField
+              size="small"
+              variant="outlined"
+              placeholder="Search"
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <IconButton>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+              fullWidth={isXs || isSm}
+              sx={{
+                minWidth: {
+                  xs: "100%",
+                  sm: "100%",
+                  md: "240px",
+                },
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "50px",
+                },
+              }}
+            />
+          )}
+        </Box>
+      </Toolbar>
 
       <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
         <Table>
@@ -265,7 +271,7 @@ function ReusableTable<T extends Record<string, any>>({
                     fontWeight: 500,
                   }}
                 >
-                  {index !== 0 && !column.disableSorting ? (
+                  {!column.disableSorting ? (
                     <TableSortLabel
                       active={orderBy === column.id} // Highlights only the clicked column
                       direction={orderBy === column.id ? order : "desc"} // Default sorting is 'desc'
@@ -284,20 +290,21 @@ function ReusableTable<T extends Record<string, any>>({
                   )}
                 </TableCell>
               ))}
-
-              <TableCell
-                sx={{
-                  whiteSpace: "nowrap",
-                  padding: "4px 8px", // Reduce space inside the cell
-                  height: "32px", // Ensure row height is minimal
-                  lineHeight: "1", // Reduce text line spacing
-                  color: "#656565",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                }}
-              >
-                Action
-              </TableCell>
+              {action && (
+                <TableCell
+                  sx={{
+                    whiteSpace: "nowrap",
+                    padding: "4px 8px", // Reduce space inside the cell
+                    height: "32px", // Ensure row height is minimal
+                    lineHeight: "1", // Reduce text line spacing
+                    color: "#656565",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                  }}
+                >
+                  Action
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody
@@ -336,37 +343,38 @@ function ReusableTable<T extends Record<string, any>>({
                         : row[column.id]}
                     </TableCell>
                   ))}
-                  <TableCell align="right">
-                    <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
+                  {action && (
+                    <TableCell align="right">
+                      <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
           </TableBody>
           {selectedRow && (
-  <Menu
-    anchorEl={anchorEl}
-    open={Boolean(anchorEl)}
-    onClose={handleMenuClose}
-    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-    transformOrigin={{ vertical: "top", horizontal: "right" }}
-  >
-    {actions?.map((action, index) => (
-      <MenuItem
-        key={index}
-        onClick={() => {
-          handleMenuClose();
-          action.onClick(selectedRow); // Pass current row
-        }}
-      >
-        {action.icon && <Box mr={1}>{action.icon}</Box>}
-        {action.label}
-      </MenuItem>
-    ))}
-  </Menu>
-)}
-
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              {actions?.map((action, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={() => {
+                    handleMenuClose();
+                    action.onClick(selectedRow); // Pass current row
+                  }}
+                >
+                  {action.icon && <Box mr={1}>{action.icon}</Box>}
+                  {action.label}
+                </MenuItem>
+              ))}
+            </Menu>
+          )}
         </Table>
       </TableContainer>
       <Box

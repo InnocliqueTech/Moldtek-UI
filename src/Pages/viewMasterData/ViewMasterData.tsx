@@ -8,7 +8,8 @@ import ViewMasterDataDetails from "./ViewMasterDataDetails";
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyePrinting from "./ViewDyePrinting";
-import customerImage from "../../assets/Images/customerPicture.png"
+import customerImage from "../../assets/Images/customerPicture.png";
+import { useNavigate } from "react-router-dom";
 
 const mockData = [
   { label: "Unit Effectivity Number", value: "UEN-20240801" },
@@ -34,19 +35,22 @@ const tabs = [
 
 const ViewMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedTab } = useSelector((state: RootState) => state.viewMasterData);
-
+  const { selectedTab } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
+  const navigate = useNavigate();
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
 
   const handleBack = () => {
-    alert("Go back!");
+    navigate("/masterData");
   };
 
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-
+    <Box
+      sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}
+    >
       <Box
         sx={{
           width: "100%",
@@ -60,7 +64,7 @@ const ViewMasterData: React.FC = () => {
           data={mockData}
           onBack={handleBack}
           button1Click={() => alert("Version history")}
-          button2Click={() => alert("Modify master data")}
+          button2Click={() => navigate(`/updateMasterData/${123}`)}
           button1Text="Version History"
           button2Text="Modify Master Data"
         />
@@ -81,10 +85,10 @@ const ViewMasterData: React.FC = () => {
           onChange={handleTabChange}
         />
         <Box sx={{ padding: 2 }}>
-          {selectedTab === 0 && <ViewMasterDataDetails/>}
-          {selectedTab === 1 && <ViewPrinting/>}
-          {selectedTab === 2 && <ViewLamination/>}
-          {selectedTab === 3 && <ViewDyePrinting/>}
+          {selectedTab === 0 && <ViewMasterDataDetails />}
+          {selectedTab === 1 && <ViewPrinting />}
+          {selectedTab === 2 && <ViewLamination />}
+          {selectedTab === 3 && <ViewDyePrinting />}
         </Box>
       </Box>
     </Box>

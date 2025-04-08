@@ -1,11 +1,7 @@
 import React from "react";
 import {
-  Card,
-  CardContent,
   Typography,
   Grid,
-  Button,
-  Avatar,
   IconButton,
   Box,
 } from "@mui/material";
@@ -45,7 +41,9 @@ const OrderCard: React.FC<OrderCardProps> = ({
       >
         <Grid display="flex" alignItems="center">
           <Box sx={{ border: "1px solid #ECECEC", borderRadius: "10px" }}>
-            <IconButton onClick={onBack} sx={{ mr: 0 }}>
+            <IconButton onClick={onBack} sx={{ mr: 0, '&:hover': {
+        backgroundColor: 'transparent',
+      }, }}>
               <ArrowBackIcon />
             </IconButton>
           </Box>

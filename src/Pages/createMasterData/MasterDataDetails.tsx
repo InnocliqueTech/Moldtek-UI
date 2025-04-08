@@ -10,8 +10,15 @@ import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import { setSaveFormData } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
+import { useParams } from "react-router-dom";
 
 const MasterDataDetails: React.FC = () => {
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      console.log("EDITEDDATA");
+    }
+  }, []);
   const { selectedTab, saveFormData } = useSelector(
     (state: RootState) => state.masterData
   );

@@ -20,12 +20,14 @@ const MasterData: React.FC = () => {
       id: "uen",
       label: "Unit Effectivity Number",
       align: false,
-      format: (value: string) => <UENCell value={value} />,
+      format: (value: string) => <UENCell value={value} onClick={() => navigate('/viewMasterData')} />,
+      disableSorting: true,
     },
     {
       id: "customer",
       label: "Customer",
       align: false,
+      disableSorting: false,
       format: (value: { image?: string; customer: string }) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Avatar
@@ -46,11 +48,17 @@ const MasterData: React.FC = () => {
         </Box>
       ),
     },
-    { id: "version", label: "Version Number", align: true },
+    {
+      id: "version",
+      label: "Version Number",
+      align: true,
+      disableSorting: false,
+    },
     {
       id: "segment",
       label: "Segment",
       align: true,
+      disableSorting: false,
       format: (value: string) => (
         <Box
           sx={{
@@ -65,9 +73,24 @@ const MasterData: React.FC = () => {
         </Box>
       ),
     },
-    { id: "createdOn", label: "Created On", align: false },
-    { id: "lastUpdated", label: "Last Updated", align: false },
-    { id: "lastExecuted", label: "Last Executed", align: false },
+    {
+      id: "createdOn",
+      label: "Created On",
+      align: false,
+      disableSorting: false,
+    },
+    {
+      id: "lastUpdated",
+      label: "Last Updated",
+      align: false,
+      disableSorting: false,
+    },
+    {
+      id: "lastExecuted",
+      label: "Last Executed",
+      align: false,
+      disableSorting: false,
+    },
   ];
 
   const data = [
@@ -344,14 +367,15 @@ const MasterData: React.FC = () => {
           lastUpdate="2 hours ago"
           info={true}
           searchVisible={true}
+          action={true}
           actions={[
             {
               label: "View",
-              onClick: () => navigate(`/viewMasterData`),
+              onClick: () => navigate(`/viewJobsList`),
             },
             {
               label: "Edit",
-              onClick: () => navigate(`/editMasterData`),
+              onClick: () => navigate(`/updateMasterData/${123}`),
             },
           ]}
         />
