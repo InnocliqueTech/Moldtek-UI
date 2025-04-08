@@ -14,7 +14,7 @@ const Printing: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
 
   const columns = [
-    { id: "stationNo", label: "Station No",edit:true },
+    { id: "stationNo", label: "Station No" },
     { id: "colorPantone", label: "Color Pantone",edit:true  },
     { id: "lfValue", label: "LF Value",edit:true  },
     {

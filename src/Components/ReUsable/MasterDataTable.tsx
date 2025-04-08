@@ -29,7 +29,7 @@ interface Column {
 
 interface DataTableProps<T> {
   data: T[];
-  setData: React.Dispatch<React.SetStateAction<T[]>>;
+  setData?: React.Dispatch<React.SetStateAction<T[]>>;
   columns: Column[];
 }
 
@@ -41,7 +41,9 @@ const DataTable = <T extends Record<string, any>>({
   const handleChange = <K extends keyof T>(rowIndex: number, columnId: K, value: T[K]) => {
     const updated = [...data];
     updated[rowIndex] = { ...updated[rowIndex], [columnId]: value };
+    if(setData){
     setData(updated);
+    }
   };
 
   return (
@@ -65,18 +67,18 @@ const DataTable = <T extends Record<string, any>>({
         >
           <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
             {columns.map((column) => (
-              <TableCell
-                key={column.id}
-                align="center"
-                sx={{
+    <TableCell
+      key={column.id}
+      align="center"
+      sx={{
                   fontWeight: 500,
-                  border: "1px solid #ccc",
-                  color: "#656565",
+        border: "1px solid #ccc",
+        color: "#656565",
                   maxWidth: 180,
                 }}
               >
                 {column.label}
-              </TableCell>
+    </TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -94,7 +96,7 @@ const DataTable = <T extends Record<string, any>>({
             },
           }}
         >
-          {data.map((row, rowIndex) => (
+          {Array.isArray(data) && data?.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
               {columns.map((column) => (
                 <TableCell
@@ -104,6 +106,7 @@ const DataTable = <T extends Record<string, any>>({
                     border: "1px solid #ccc",
                     maxWidth: 180,
                     overflow: "hidden",
+                    backgroundColor: column.id === "field" ? "#F0F0F0" : "inherit", 
                   }}
                 >
                   {column.isDropdown ? (

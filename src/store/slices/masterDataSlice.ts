@@ -69,7 +69,7 @@ export interface MasterFormData  {
   customerPicture?: string;
 }
 
-export interface DyeCuttingFormData {
+export interface DyePrintingFormData {
   dyeCutMachineType: string,
   machine: string,
   dyeCode: string,
@@ -100,7 +100,7 @@ interface MasterDataState {
   saveFormData: MasterFormData;
   printingSaveFormData:PrintingFormValues;
   laminaionFormData:LaminationFormData;
-  dyeCuttingFormData:DyeCuttingFormData;
+  DyePrintingFormData:DyePrintingFormData;
 }
 
 const initialState: MasterDataState = {
@@ -268,7 +268,7 @@ const initialState: MasterDataState = {
     viscocityRange: "",
     adhesiveGSM: "",
   },
-  dyeCuttingFormData:{
+  DyePrintingFormData:{
     dyeCutMachineType: "",
     machine: "",
     dyeCode: "",
@@ -308,13 +308,13 @@ const masterDataSlice = createSlice({
     setLaminationFormData:(state,action:PayloadAction<LaminationFormData>)=>{
       state.laminaionFormData = {...state.laminaionFormData,...action.payload}
     },
-    setDyeCuttingFormData:(state,action:PayloadAction<DyeCuttingFormData>)=>{
-      state.dyeCuttingFormData = {...state.dyeCuttingFormData,...action.payload}
+    setDyePrintingFormData:(state,action:PayloadAction<DyePrintingFormData>)=>{
+      state.DyePrintingFormData = {...state.DyePrintingFormData,...action.payload}
     }
     
     
   },
 });
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyeCuttingFormData } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

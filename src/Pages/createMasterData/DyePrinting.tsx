@@ -5,10 +5,10 @@ import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { setDyeCuttingFormData } from "../../store/slices/masterDataSlice";
+import { setDyePrintingFormData } from "../../store/slices/masterDataSlice";
 
-const DyeCutting: React.FC = () => {
-  const { selectedTab, dyeCuttingFormData } = useSelector(
+const DyePrinting: React.FC = () => {
+  const { selectedTab, DyePrintingFormData } = useSelector(
     (state: RootState) => state.masterData
   );
   const dispatch = useDispatch<AppDispatch>();
@@ -25,13 +25,13 @@ const DyeCutting: React.FC = () => {
   };
 
   const handleSave = () => {
-    dispatch(setDyeCuttingFormData(formData));
+    dispatch(setDyePrintingFormData(formData));
   };
   useEffect(() => {
-    if (dyeCuttingFormData) {
-      setFormData(dyeCuttingFormData);
+    if (DyePrintingFormData) {
+      setFormData(DyePrintingFormData);
     }
-  }, [dyeCuttingFormData]);
+  }, [DyePrintingFormData]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -74,4 +74,4 @@ const DyeCutting: React.FC = () => {
   );
 };
 
-export default DyeCutting;
+export default DyePrinting;

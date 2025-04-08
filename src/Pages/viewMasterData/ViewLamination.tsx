@@ -1,0 +1,120 @@
+import { Box, Typography } from "@mui/material";
+import DataTable from "../../Components/ReUsable/MasterDataTable";
+import { InfoOutline } from "@mui/icons-material";
+
+const zoneTemperatureColumns = [
+    { id: "zone1Temp", label: "Zone-1 Temp (°C)" },
+    { id: "zone2Temp", label: "Zone-2 Temp (°C)" },
+    { id: "npPressure", label: "Np Pressure (Bar)" },
+    { id: "speed", label: "Speed (m/min)" },
+    { id: "lamiSetTension", label: "Lami Set Tension" },
+    { id: "rewinderTension", label: "Rewinder Tension" },
+  ];
+  
+  const zoneTemperatureData = [
+    {
+      zone1Temp: 110,
+      zone2Temp: 120,
+      npPressure: 3.5,
+      speed: 65,
+      lamiSetTension: "2.5 n/mm",
+      rewinderTension: "--",
+    },
+  ];
+  
+
+  const unwindingRewindingColumns = [
+    { id: "field", label: "Field" },
+    { id: "printedFilm", label: "Printed Film" },
+    { id: "laminateFilm", label: "Laminate Film" },
+  ];
+  
+  const unwindingRewindingData = [
+    { field: "Tension (Primary)", printedFilm: "2.5 N/mm", laminateFilm: "--" },
+    { field: "Width (mm)", printedFilm: "1200", laminateFilm: "1200" },
+    { field: "Thickness (microns)", printedFilm: "12", laminateFilm: "12" },
+    { field: "GSM", printedFilm: "16.4", laminateFilm: "16.8" },
+    { field: "Dyne Level", printedFilm: "42 Dynes", laminateFilm: "42 Dynes" },
+  ];
+  const bondingMaterialColumns = [
+    { id: "field", label: "Field" },
+    { id: "code", label: "Code" },
+    { id: "brand", label: "Brand" },
+    { id: "ratio", label: "Ratio" },
+  ];
+  
+  const bondingMaterialData = [
+    { field: "Adhesive", code: "ADH123", brand: "Henkel", ratio: "1.2" },
+    { field: "Hardener", code: "ADH123", brand: "Henkel", ratio: "1.2" },
+    { field: "Ethyl Acetate", code: "ADH123", brand: "Henkel", ratio: "1.2" },
+    { field: "Material Details", code: "ADH123", brand: "Henkel", ratio: "1.2" },
+  ];
+    
+
+const ViewLamination: React.FC = () => {
+  // const { repeatTableData, substrateTableData } = useSelector(
+  //   (state: RootState) => state.viewMasterData
+  // );
+  // const dispatch = useDispatch<AppDispatch>();
+  // useEffect(() => {
+  //   dispatch(setRepeatTableData(data));
+  //   dispatch(setSubstrateTableData(substrateData));
+  // }, []);
+
+  return (
+    <Box sx={{ borderRadius: "0px " }}>
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Typography
+          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+          gutterBottom
+        >
+          Zone Temperature & Pressing Conditions
+        </Typography>
+        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+      </Box>
+      <DataTable columns={zoneTemperatureColumns} data={zoneTemperatureData} />
+      <Box
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+            gutterBottom
+          >
+            Unwinding & Rewinding Process
+          </Typography>
+          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        </Box>
+        <DataTable columns={unwindingRewindingColumns} data={unwindingRewindingData} />
+      </Box>
+      <Box
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+            gutterBottom
+          >
+            Bonding Material Specifications
+          </Typography>
+          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        </Box>
+        <DataTable columns={bondingMaterialColumns} data={bondingMaterialData} />
+      </Box>
+    </Box>
+  );
+};
+
+export default ViewLamination;
