@@ -1,8 +1,8 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { InfoOutline } from "@mui/icons-material";
+import { Edit, InfoOutline } from "@mui/icons-material";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -145,12 +145,48 @@ const MasterDataDetails: React.FC = () => {
               </Typography>
 
               {formData.customerPicture ? (
-                <Box
+                 <Box position="relative" width={120} height={120} mt={1}>
+                 <Box
                   component="img"
                   src={formData.customerPicture}
                   alt="Customer"
-                  sx={{ width: 120, height: 120, borderRadius: "8px", mt: 1 }}
+                  sx={{ width:'100%',height:'100%', borderRadius: "8px", mt: 1, objectFit: "cover", }}
                 />
+                 <input
+                   accept="image/*"
+                   type="file"
+                   id="reupload-customer-pic"
+                   style={{ display: "none" }}
+                   onChange={(e) => {
+                     const file = e.target.files?.[0];
+                     if (file) {
+                       const reader = new FileReader();
+                       reader.onloadend = () => {
+                         handleChange("customerPicture", reader.result as string);
+                       };
+                       reader.readAsDataURL(file);
+                     }
+                   }}
+                 />
+                 <label htmlFor="reupload-customer-pic">
+                   <IconButton
+                     size="small"
+                     sx={{
+                       position: "absolute",
+                       top: 4,
+                       right: 4,
+                       backgroundColor: "rgba(0,0,0,0.6)",
+                       color: "#fff",
+                       "&:hover": {
+                         backgroundColor: "rgba(0,0,0,0.8)",
+                       },
+                     }}
+                     component="span"
+                   >
+                     <Edit fontSize="small" />
+                   </IconButton>
+                 </label>
+               </Box>
               ) : (
                 <Box mt={1}>
                   <input
