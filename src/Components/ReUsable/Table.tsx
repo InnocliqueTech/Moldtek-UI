@@ -257,7 +257,7 @@ function ReusableTable<T extends Record<string, any>>({
                   <Checkbox />
                 </TableCell>
               )}
-              {columns.map((column, index) => (
+              {columns.map((column) => (
                 <TableCell
                   align={column.align ? "center" : "left"}
                   key={column.id}

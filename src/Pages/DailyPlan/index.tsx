@@ -263,14 +263,14 @@ const data = [
   },
 ];
 
-const DailyPlan: React.FC<DailyPlanProps> = ({ title = 'Daily Plan' }) => {
+const DailyPlan: React.FC<DailyPlanProps> = () => {
   const navigate = useNavigate();
    const columns = [
       {
         id: "uen",
         label: "Unit Effectivity Number",
         align: false,
-        format: (value: string) => <UENCell value={value} />,
+        format: (value: string) => <UENCell value={value} onClick={()=>{}} />,
       },
       {
         id: "customer",

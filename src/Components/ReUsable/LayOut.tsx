@@ -2,7 +2,6 @@ import {
   useLocation,
   Outlet,
   useNavigate,
-  useParams,
   matchPath,
 } from "react-router-dom";
 import Sidebar from "./SideBar";
@@ -24,9 +23,6 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const isEditMode = Boolean(id);
   const pageData: Record<
     string,
     {
