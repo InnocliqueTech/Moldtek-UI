@@ -16,7 +16,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
    const columns = [
       {
         id: "uen",
-        label: "Unit Effectivity Number",
+        label: "Effective Unit Number",
         align: false,
         format: (value: string) => <UENCell value={value} onClick={()=>{}} />,
       },
@@ -44,7 +44,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
           </Box>
         ),
       },
-      { id: "version", label: "Version Number", align: true },
+      { id: "version", label: "Indent Number", align: true },
       {
         id: "segment",
         label: "Segment",
@@ -63,9 +63,14 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
           </Box>
         ),
       },
+      {
+        id: "masterDataVersion",
+        label: "Master Data Version",
+        align: true,
+      },
       { id: "createdOn", label: "Created On", align: false },
-      { id: "lastUpdated", label: "Last Updated", align: false },
-      { id: "lastExecuted", label: "Last Executed", align: false },
+      // { id: "lastUpdated", label: "Last Updated", align: false },
+      { id: "lastExecuted", label: "Scheduled On", align: false },
     ];
   return (
      <Box sx={{ p: 0 }}>
@@ -91,23 +96,28 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               data={data}
               selectable={true}
               label="42 Companies"
-              title="List of Companies"
-              lastUpdate="2 hours ago"
+              title="List of Job Tracker"
+              // lastUpdate="2 hours ago"
               info={true}
               searchVisible={true}
-              // action={true}
+              action={true}
               onSelectionChange={(selectedItems) => {
                 console.log('Selected items:', selectedItems);
               }}
               rowIdentifier="_id" 
               actions={[
-                {
-                  label: "View",
-                  onClick: () => navigate(`/viewMasterData`),
-                },
+               
                 {
                   label: "Edit",
                   onClick: () => navigate(`/editMasterData`),
+                },
+                {
+                  label: "Download",
+                  onClick: () => navigate(`/viewMasterData`),
+                },
+                {
+                  label: "InActive",
+                  onClick: () => navigate(`/viewMasterData`),
                 },
               ]}
               boxShadow={true}

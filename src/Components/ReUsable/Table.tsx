@@ -152,7 +152,7 @@ function ReusableTable<T extends Record<string, any>>({
     if (onSelectionChange) onSelectionChange([]);
   };
 
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, row: T) => {
+  const handleSelect = (row: T) => {
     const selectedIndex = selected.findIndex(
       (item) => item[rowIdentifier] === row[rowIdentifier]
     );
@@ -237,32 +237,26 @@ function ReusableTable<T extends Record<string, any>>({
             gap: 1,
           }}
         >
-          {selected.length > 0 ? (
-            <Typography variant="h6">{selected.length} selected</Typography>
-          ) : (
-            <>
-              <Typography
-                variant="h6"
+          <Typography
+            variant="h6"
+            sx={{
+              mt: searchSize ? "-14px" : "0px",
+              ml: searchSize ? "6px" : "0px",
+            }}
+          >
+            {title}
+          </Typography>
+          {info && (
+            <Tooltip title="Table information">
+              <InfoOutline
                 sx={{
+                  color: "#9F9F9F",
+                  width: "20px",
+                  height: "20px",
                   mt: searchSize ? "-14px" : "0px",
-                  ml: searchSize ? "6px" : "0px",
                 }}
-              >
-                {title}
-              </Typography>
-              {info && (
-                <Tooltip title="Table information">
-                  <InfoOutline
-                    sx={{
-                      color: "#9F9F9F",
-                      width: "20px",
-                      height: "20px",
-                      mt: searchSize ? "-14px" : "0px",
-                    }}
-                  />
-                </Tooltip>
-              )}
-            </>
+              />
+            </Tooltip>
           )}
           {label && (
             <Chip
@@ -476,7 +470,7 @@ function ReusableTable<T extends Record<string, any>>({
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
-                          onChange={(event) => handleSelect(event, row)}
+                          onChange={() => handleSelect(row)}
                           onClick={(event) => event.stopPropagation()}
                         />
                       </TableCell>
