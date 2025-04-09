@@ -73,6 +73,7 @@ const ViewMasterData: React.FC = () => {
           backgroundColor: "white",
           borderRadius: "10px",
           overflow: "hidden",
+          mt:1
         }}
       >
         <TabsComponent
