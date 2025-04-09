@@ -85,12 +85,6 @@ const MasterData: React.FC = () => {
       align: false,
       disableSorting: false,
     },
-    {
-      id: "lastExecuted",
-      label: "Last Executed",
-      align: false,
-      disableSorting: false,
-    },
   ];
 
   const data = [
@@ -357,8 +351,9 @@ const MasterData: React.FC = () => {
         ))}
       </Grid>
 
-      <Box sx={{ paddingTop: 1 }}>
+      <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
+        boxShadow={true}
           columns={columns}
           data={data}
           selectable={false}

@@ -212,31 +212,31 @@ const JobsList: React.FC = () => {
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ mb: 2 }}
-        >
-          <Grid display="flex" alignItems="center">
-            <Box sx={{ border: "1px solid #ECECEC", borderRadius: "10px" }}>
-              <IconButton
-                onClick={onBack}
-                sx={{
-                  mr: 0,
-                  "&:hover": {
-                    backgroundColor: "transparent",
-                  },
-                }}
-              >
-                <ArrowBackIcon />
-              </IconButton>
-            </Box>
+      <Grid
+        container
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 1 }}
+      >
+        <Grid display="flex" alignItems="center">
+          <Box sx={{ border: "1px solid #ECECEC", borderRadius: "10px" }}>
+            <IconButton
+              onClick={onBack}
+              sx={{
+                mr: 0,
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              <ArrowBackIcon sx={{ width: 20, height: 20 }} />
+            </IconButton>
+          </Box>
             <Typography variant="h6" sx={{ ml: "4px" }}>
               Master Data Details{" "}
             </Typography>
-          </Grid>
-          <Grid container spacing={2}>
+        </Grid>
+        <Grid container spacing={1} justifyContent="flex-end">
             <Grid>
               <ButtonComponent
                 text={"Version History"}
@@ -259,10 +259,10 @@ const JobsList: React.FC = () => {
                 p={1}
               />
             </Grid>
-          </Grid>
         </Grid>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 3 }}>
+      </Grid>
+        <Grid container spacing={0}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -275,7 +275,7 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -288,7 +288,7 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -308,7 +308,7 @@ const JobsList: React.FC = () => {
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -321,7 +321,7 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -334,7 +334,7 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -347,7 +347,7 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
               variant="caption"
               fontWeight={500}
@@ -360,13 +360,12 @@ const JobsList: React.FC = () => {
             </Typography>
           </Grid>
           </Grid>
-        <Box sx={{ paddingTop: 2 }}>
+        <Box sx={{ paddingTop: 1 }}>
           <Box
             sx={{
               border: "1px solid #ECECEC",
-              borderRadius: "16px",
-              p: 0,
-              py: 2,
+              borderRadius: "18px",
+           
             }}
           >
             <ReusableTable

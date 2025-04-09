@@ -52,17 +52,29 @@ const DataTable = <T extends Record<string, any>>({
 
   return (
     <TableContainer
-      sx={{ maxWidth: "100%", overflowX: "auto" }}
-      component={Paper}
+      sx={{
+        maxHeight: 300,
+        overflowY: "auto",
+        overflowX: "auto",
+        position: "relative",
+      }}
     >
-      <Table>
+      <Table
+        stickyHeader
+        sx={{
+          minWidth: 1000,
+        }}
+      >
         <TableHead
           sx={{
+            position: "sticky",
+            top: "-1px",
+            zIndex: 2,
             backgroundColor: "#F5F5F5",
-            height: "32px", // Reduce overall height
+            height: "24px", // Reduce overall height
             "& .MuiTableCell-root": {
-              padding: "4px 8px",
-              height: "32px",
+              padding: "2px 4px",
+              height: "24px",
               maxWidth: 180,
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -82,6 +94,7 @@ const DataTable = <T extends Record<string, any>>({
                   border: "1px solid #ccc",
                   color: "#656565",
                   maxWidth: 180,
+                  backgroundColor: "#F5F5F5",
                 }}
               >
                 {column.label}
@@ -93,8 +106,8 @@ const DataTable = <T extends Record<string, any>>({
         <TableBody
           sx={{
             "& .MuiTableCell-root": {
-              padding: "4px 8px",
-              height: "32px",
+              padding: "2px 4px",
+              height: "24px",
               maxWidth: 180,
               whiteSpace: "nowrap",
               overflow: "hidden",

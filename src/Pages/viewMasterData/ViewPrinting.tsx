@@ -20,6 +20,29 @@ const machineSettingColumns = [
   { id: "staticCharge", label: "Static Charge" },
   { id: "formatCorrect", label: "Format Correct" },
 ];
+
+const printingSubstarteColumns= [
+    { id: "substrateType", label: "Substrate Type" },
+    { id: "supplier", label: "Supplier" },
+    { id: "dyneLevel", label: "Dyne Level" },
+    { id: "width", label: "Width (mm)" },
+    { id: "thickness", label: "Thickness (microns)" },
+    { id: "density", label: "Density (g/cm³)" },
+    { id: "gsm", label: "RGSM" },
+  ];
+
+
+  const printingSubstrateData = [
+    {
+      substrateType: "PET",
+      supplier: "UFlex Ltd.",
+      dyneLevel: "42 Dynes",
+      width: 1200,
+      thickness: 12,
+      density: 1.37,
+      gsm: 16.4,
+    },
+  ];
 const machineSettingData = [
   {
     mountingType: "Standard",
@@ -153,8 +176,8 @@ const ViewPrinting: React.FC = () => {
   }, [dispatch, inkStationData, machineSettingData]);
 
   return (
-    <Box sx={{ borderRadius: "0px " }}>
-      <Box sx={{ display: "flex", gap: 1 }}>
+    <Box sx={{ borderRadius: "0px ",p:1 }}>
+      <Box sx={{ display: "flex", gap: 2 }}>
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
@@ -167,6 +190,21 @@ const ViewPrinting: React.FC = () => {
         columns={machineSettingColumns}
         data={printingMachineSettings}
       />
+
+<Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
+        <Typography
+          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+          gutterBottom
+        >
+          Printing Substrate
+        </Typography>
+        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+      </Box>
+      <DataTable
+        columns={printingSubstarteColumns}
+        data={printingSubstrateData}
+      />
+
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
       >

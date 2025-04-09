@@ -148,7 +148,7 @@ const Layout = () => {
           lastUpdate={headerData.lastUpdate}
         />
 
-        <Box sx={{ flex: 1, p: 1, backgroundColor: "#ECECEC" }}>
+        <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>
           <Outlet />
         </Box>
       </Box>

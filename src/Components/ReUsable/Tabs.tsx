@@ -19,7 +19,6 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
       variant="scrollable"
       scrollButtons="auto"
       allowScrollButtonsMobile
-      TabIndicatorProps={{ style: { display: "none" }  }}
       sx={{
         minHeight: "50px",
         borderRadius: "8px 8px 0 0",
@@ -58,6 +57,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
               outline: "none",
               boxShadow: "none",
             },
+            // p:1
           }}
         />
       ))}

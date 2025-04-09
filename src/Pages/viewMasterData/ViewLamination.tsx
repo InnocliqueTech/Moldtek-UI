@@ -30,6 +30,29 @@ const zoneTemperatureData = [
   },
 ];
 
+const laminatingSubstarteColumns= [
+  { id: "substrateType", label: "Substrate Type" },
+  { id: "supplier", label: "Supplier" },
+  { id: "dyneLevel", label: "Dyne Level" },
+  { id: "width", label: "Width (mm)" },
+  { id: "thickness", label: "Thickness (microns)" },
+  { id: "density", label: "Density (g/cm³)" },
+  { id: "gsm", label: "RGSM" },
+];
+
+
+const laminatingSubstrateData = [
+  {
+    substrateType: "ALU Foil",
+    supplier: "Huhtamaki",
+    dyneLevel: "38 Dynes",
+    width: 1200,
+    thickness: 7,
+    density: 1.37,
+    gsm: 16.4,
+  },
+];
+
 const unwindingRewindingColumns = [
   { id: "field", label: "Field" },
   { id: "printedFilm", label: "Printed Film" },
@@ -80,7 +103,7 @@ const ViewLamination: React.FC = () => {
   ]);
 
   return (
-    <Box sx={{ borderRadius: "0px " }}>
+    <Box sx={{ borderRadius: "0px ",p:2 }}>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
@@ -91,8 +114,21 @@ const ViewLamination: React.FC = () => {
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
       <DataTable columns={zoneTemperatureColumns} data={laminationSettings} />
+      <Box sx={{ display: "flex", gap: 1,mt:1 }}>
+              <Typography
+                sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+                gutterBottom
+              >
+               Lamination Substrate
+              </Typography>
+              <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+            </Box>
+            <DataTable
+              columns={laminatingSubstarteColumns}
+              data={laminatingSubstrateData}
+            />
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
       >
         <Box
           sx={{
@@ -115,7 +151,7 @@ const ViewLamination: React.FC = () => {
         />
       </Box>
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
       >
         <Box
           sx={{

@@ -71,7 +71,7 @@ const ViewMasterDataDetails: React.FC = () => {
       </Box>
       <DataTable columns={columns} data={repeatTableData} />
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
       >
         <Box
           sx={{

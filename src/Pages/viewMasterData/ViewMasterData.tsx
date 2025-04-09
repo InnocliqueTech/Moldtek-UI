@@ -27,7 +27,6 @@ const mockData = [
 ];
 
 const tabs = [
-  "Master Data Details",
   "Master Data - Printing",
   "Master Data - Lamination",
   "Master Data - Dye Printing",
@@ -49,7 +48,7 @@ const ViewMasterData: React.FC = () => {
 
   return (
     <Box
-      sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}
+      sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}
     >
       <Box
         sx={{
@@ -60,7 +59,6 @@ const ViewMasterData: React.FC = () => {
         }}
       >
         <OrderCard
-          orderId="ORD-1001"
           data={mockData}
           onBack={handleBack}
           button1Click={() => alert("Version history")}
@@ -84,11 +82,10 @@ const ViewMasterData: React.FC = () => {
           value={selectedTab}
           onChange={handleTabChange}
         />
-        <Box sx={{ padding: 2 }}>
-          {selectedTab === 0 && <ViewMasterDataDetails />}
-          {selectedTab === 1 && <ViewPrinting />}
-          {selectedTab === 2 && <ViewLamination />}
-          {selectedTab === 3 && <ViewDyePrinting />}
+        <Box sx={{ padding: 1 }}>
+          {selectedTab === 0 && <ViewPrinting />}
+          {selectedTab === 1 && <ViewLamination />}
+          {selectedTab === 2 && <ViewDyePrinting />}
         </Box>
       </Box>
     </Box>

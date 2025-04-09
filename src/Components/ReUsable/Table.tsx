@@ -111,9 +111,7 @@ function ReusableTable<T extends Record<string, any>>({
     setSelectedRow(null);
   };
 
-const rowsPerPage = 10
-
-
+  const rowsPerPage = 10;
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
@@ -141,7 +139,7 @@ const rowsPerPage = 10
   );
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target,"inside selectAll");
+    console.log(event.target, "inside selectAll");
     if (event.target.checked) {
       const newSelected = filteredData.slice(
         page * rowsPerPage,
@@ -157,7 +155,7 @@ const rowsPerPage = 10
   };
 
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, row: T) => {
-    console.log(row,"inside oneSelect");
+    console.log(row, "inside oneSelect");
     const selectedIndex = selected.findIndex(
       (item) => item[rowIdentifier] === row[rowIdentifier]
     );
@@ -203,7 +201,7 @@ const rowsPerPage = 10
     console.log("Download selected:", selected);
     // Implement your download logic here
   };
-  
+
   const handleUpload = () => {
     console.log("Upload selected:", selected);
     // Implement your upload logic here
@@ -215,9 +213,9 @@ const rowsPerPage = 10
       sx={{ borderRadius: !boxShadow ? "0px" : "12px", overflow: "hidden" }}
     >
       <Toolbar
-      disableGutters
+        disableGutters
         sx={{
-          minHeight:'55px !important' ,
+          minHeight: "55px !important",
           display: "flex",
           flexDirection: {
             xs: "column",
@@ -231,7 +229,7 @@ const rowsPerPage = 10
           },
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
-          px: 1
+          px: !boxShadow ? 0 : 1.5,
         }}
       >
         <Box
@@ -243,9 +241,7 @@ const rowsPerPage = 10
           }}
         >
           {selected.length > 0 ? (
-            <Typography variant="h6">
-              {selected.length} selected
-            </Typography>
+            <Typography variant="h6">{selected.length} selected</Typography>
           ) : (
             <>
               <Typography variant="h6">{title}</Typography>
@@ -327,7 +323,7 @@ const rowsPerPage = 10
 
       <TableContainer
         sx={{
-          maxHeight:  300,
+          maxHeight: 300,
           overflowY: "auto",
           overflowX: "auto",
           position: "relative",
@@ -345,10 +341,10 @@ const rowsPerPage = 10
               top: "-1px",
               zIndex: 2,
               backgroundColor: "#F5F5F5",
-              height: "24px", // Reduce overall height
+              height: "32px", // Reduce overall height
               "& .MuiTableCell-root": {
-                padding: "2px 4px", // Reduce padding inside header cells
-                height: "24px", // Reduce row height
+                padding: "4px 8px", // Reduce padding inside header cells
+                height: "32px", // Reduce row height
                 backgroundColor: "#F5F5F5",
               },
             }}
@@ -370,7 +366,7 @@ const rowsPerPage = 10
                   />
                 </TableCell>
               )}
-              {columns.map((column) => (
+              {columns.map((column, index) => (
                 <TableCell
                   align={column.align ? "center" : "left"}
                   key={column.id}
@@ -380,6 +376,7 @@ const rowsPerPage = 10
                     color: "#656565",
                     fontSize: "12px",
                     fontWeight: 500,
+                    marginLeft: index === 0 ? "8px" : undefined,
                   }}
                 >
                   {!column.disableSorting ? (
@@ -419,8 +416,8 @@ const rowsPerPage = 10
           <TableBody
             sx={{
               "& .MuiTableCell-root": {
-                padding: "2px 4px", // Apply to all table cells
-                height: "24px",
+                padding: "4px 8px",
+                height: "32px",
               },
               "& .MuiTableRow-root.Mui-selected": {
                 backgroundColor: "#e3f2fd",
@@ -448,7 +445,7 @@ const rowsPerPage = 10
                     //   }
                     // }}
                     sx={{
-                      cursor: selectable ? 'pointer' : 'default',
+                      cursor: selectable ? "pointer" : "default",
                     }}
                   >
                     {selectable && (
@@ -460,7 +457,7 @@ const rowsPerPage = 10
                         />
                       </TableCell>
                     )}
-                    {columns.map((column) => (
+                    {columns.map((column, index) => (
                       <TableCell
                         align={column.align ? "center" : "left"}
                         key={column.id}
@@ -472,6 +469,7 @@ const rowsPerPage = 10
                           color: "#2F2F2F",
                           fontSize: "14px",
                           fontWeight: 500,
+                          marginLeft: index === 0 ? "8px" : undefined,
                         }}
                       >
                         {column.format
@@ -519,8 +517,8 @@ const rowsPerPage = 10
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          p: 1,
-          borderTop:'1px solid #ECECEC'
+          p: 0.5,
+          borderTop: "1px solid #ECECEC",
         }}
       >
         <Typography
@@ -569,28 +567,33 @@ const rowsPerPage = 10
       </Box>
       {showSelectionBar && (
         <Fade in={showSelectionBar}>
-          <Slide direction="up" in={showSelectionBar} mountOnEnter unmountOnExit>
+          <Slide
+            direction="up"
+            in={showSelectionBar}
+            mountOnEnter
+            unmountOnExit
+          >
             <Box
               sx={{
-                position: 'fixed',
+                position: "fixed",
                 bottom: 60,
-                left: '45%',
-                transform: 'translateX(-50%)',
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
-                padding: '8px 16px',
-                display: 'flex',
-                alignItems: 'center',
+                left: "45%",
+                transform: "translateX(-50%)",
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
+                padding: "8px 16px",
+                display: "flex",
+                alignItems: "center",
                 gap: 2,
                 zIndex: 1000,
-                border: '1px solid #e0e0e0',
+                border: "1px solid #e0e0e0",
               }}
             >
               <IconButton
                 onClick={handleClearSelection}
                 size="small"
-                sx={{ color: 'text.secondary' }}
+                sx={{ color: "text.secondary" }}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
@@ -613,7 +616,7 @@ const rowsPerPage = 10
                 startIcon={<FileDownloadIcon />}
                 onClick={handleDownload}
                 size="small"
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: "none" }}
               >
                 Download
               </Button>
@@ -623,7 +626,7 @@ const rowsPerPage = 10
                 startIcon={<FileUploadIcon />}
                 onClick={handleUpload}
                 size="small"
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: "none" }}
               >
                 Upload
               </Button>
