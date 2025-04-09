@@ -62,8 +62,8 @@ const handleClosePopUp= ()=>{
           overflowY: "auto",
         }}
       >
-        <Toolbar
-          sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+        <Toolbar disableGutters
+          sx={{ display: "flex", justifyContent: "space-between", width: "100%",px:0 }}
         >
           <IconButton
             sx={{ display: { xs: "block", md: "none", lg: "none" } }}
@@ -132,9 +132,9 @@ const handleClosePopUp= ()=>{
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          px={2}
+          px={0.5}
           paddingTop="0px"
-          paddingBottom="8px"
+          paddingBottom="0px"
           width="100%"
         >
           <Typography variant="h6" sx={{ fontWeight: 500 }}>

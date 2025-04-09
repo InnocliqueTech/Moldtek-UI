@@ -357,7 +357,7 @@ const MasterData: React.FC = () => {
         ))}
       </Grid>
 
-      <Box sx={{ paddingTop: 2 }}>
+      <Box sx={{ paddingTop: 1 }}>
         <ReusableTable
           columns={columns}
           data={data}

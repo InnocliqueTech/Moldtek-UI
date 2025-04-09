@@ -21,7 +21,7 @@ import ReportsIcon from "../../assets/Images/reports.png";
 import SettingsIcon from "../../assets/Images/settings.png";
 import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
-import DailyPlanSelectedIcon from '../../assets/Images/dailyPlanSelectedIcon.svg'
+import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
 
 interface SidebarProps {
@@ -72,7 +72,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     },
     {
       text: "Daily Plan",
-      icon: <img src={DailyPlanIcon} alt="daily plan icon" width="20" height="20" />,
+      icon: (
+        <img src={DailyPlanIcon} alt="daily plan icon" width="20" height="20" />
+      ),
       selectedIcon: (
         <img
           src={DailyPlanSelectedIcon}
@@ -139,11 +141,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
         open={open}
         sx={{
           display: { xs: "none", md: "block" },
-          width: 250,
+          width: 220,
           "& .MuiDrawer-paper": {
-            width: 250,
+            width: 220,
             boxSizing: "border-box",
-            padding: 2,
+            padding: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -208,11 +210,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
           <Typography
             variant="subtitle2"
-            sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
+            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
           >
             Main Menu
           </Typography>
-          <List>
+          <List sx={{ py: 0 }}>
             {menuItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
               return (
@@ -223,15 +225,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   component={Link}
                   to={item.path}
                   sx={{
+                    py: 0.5,
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
                     "&:hover": {
-                      bgcolor: "transparent", // no bg on hover
+                      bgcolor: "transparent",
                       "& .MuiListItemText-primary": {
-                        color: "#0073B7", // text color change on hover
+                        color: "#0073B7",
                       },
                     },
+                    pl: "8px",
+                    pr: 0,
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
@@ -241,6 +246,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: "14px",
+                      fontWeight: 400, 
+                    }}
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
                       whiteSpace: "nowrap",
@@ -253,11 +262,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
           <Typography
             variant="subtitle2"
-            sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
+            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
           >
             Preferences
           </Typography>
-          <List>
+          <List sx={{ py: 0 }}>
             {preferenceItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
               return (
@@ -268,15 +277,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   onMouseLeave={() => setPreferenceHoveredIndex(null)}
                   to={item.path}
                   sx={{
+                    py: 0.5,
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
                     "&:hover": {
-                      bgcolor: "transparent", // no bg on hover
+                      bgcolor: "transparent",
                       "& .MuiListItemText-primary": {
-                        color: "#0073B7", // text color change on hover
+                        color: "#0073B7",
                       },
                     },
+                    pl: "8px",
+                    pr: 0,
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
@@ -286,6 +298,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: "14px",
+                      fontWeight: 400, 
+                    }}
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
                       whiteSpace: "nowrap",
@@ -329,50 +345,51 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
         onClose={toggleMobileSidebar}
         sx={{
           display: { xs: "block", md: "none", lg: "none" },
+          width: 220,
           "& .MuiDrawer-paper": {
+            width: 220,
             boxSizing: "border-box",
-            padding: 2,
+            padding: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
           },
         }}
       >
-        <Box sx={{ width: 250, padding: 2 }}>
-          <img src={Logo} alt="Logo" />
-        </Box>
-
-        <Box
-          sx={{
-            backgroundColor: "white",
-            boxShadow: 3,
-            px: 1,
-            py: 0,
-            borderRadius: 2,
-            mb: 2,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            width: "220px",
-            marginLeft: "14px",
-          }}
-        >
-          <Avatar
-            alt="User Avatar"
-            src={profileImage}
-            sx={{ width: 40, height: 40 }}
-          />
-
-          <Box sx={{ flexGrow: 1, p: 1 }}>
-            <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
-              {currentText}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              creator
-            </Typography>
+         <Box>
+         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+            <img src={Logo} alt="Logo" />
           </Box>
-          {/* 
-          <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
+
+          <Box
+            sx={{
+              backgroundColor: "white",
+              boxShadow: 3,
+              px: 1,
+              py: 0,
+              borderRadius: 2,
+              mb: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Avatar
+              alt="User Avatar"
+              src={profileImage}
+              sx={{ width: 40, height: 40 }}
+            />
+
+            <Box sx={{ flexGrow: 1, p: 1 }}>
+              <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
+                {currentText}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                creator
+              </Typography>
+            </Box>
+
+            {/* <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
             <ExpandMore />
           </IconButton>
 
@@ -393,95 +410,112 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               </MenuItem>
             ))}
           </Menu> */}
-        </Box>
-
+          </Box>
         <Typography
-          variant="subtitle2"
-          sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
-        >
-          Main Menu
-        </Typography>
-        <List>
-          {menuItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-            return (
-              <ListItem
-                onClick={toggleMobileSidebar}
-                key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                component={Link}
-                to={item.path}
-                sx={{
-                  bgcolor: isSelected ? "white" : "transparent",
-                  boxShadow: isSelected ? 3 : 0,
-                  borderRadius: 2,
-                  "&:hover": {
-                    bgcolor: "white",
-                    boxShadow: 3,
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 30 }}>
-                  {isSelected || hoveredIndex === index
-                    ? item.selectedIcon
-                    : item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
+            variant="subtitle2"
+            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
+          >
+            Main Menu
+          </Typography>
+          <List sx={{ py: 0 }}>
+            {menuItems.map((item, index) => {
+              const isSelected = location.pathname === item.path;
+              return (
+                <ListItem
+                  key={index}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  component={Link}
+                  to={item.path}
                   sx={{
-                    color: isSelected ? "#0073B7" : "#737373",
-                    whiteSpace: "nowrap",
+                    py: 0.5,
+                    bgcolor: isSelected ? "white" : "transparent",
+                    boxShadow: isSelected ? 3 : 0,
+                    borderRadius: 2,
+                    "&:hover": {
+                      bgcolor: "transparent",
+                      "& .MuiListItemText-primary": {
+                        color: "#0073B7",
+                      },
+                    },
+                    pl: "8px",
+                    pr: 0,
                   }}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
+                >
+                  <ListItemIcon sx={{ minWidth: 30 }}>
+                    {isSelected || hoveredIndex === index
+                      ? item.selectedIcon
+                      : item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: "14px",
+                      fontWeight: 400, 
+                    }}
+                    sx={{
+                      fontSize:'16px',
+                      color: isSelected ? "#0073B7" : "#737373",
+                      whiteSpace: "nowrap",
+                    }}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
 
-        <Typography
-          variant="subtitle2"
-          sx={{ mt: 2, mb: 1, px: 2, fontWeight: "500", color: "#A3A3A3" }}
-        >
-          Preferences
-        </Typography>
-        <List>
-          {preferenceItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-            return (
-              <ListItem
-                onMouseEnter={() => setPreferenceHoveredIndex(index)}
-                onMouseLeave={() => setPreferenceHoveredIndex(null)}
-                key={index}
-                component={Link}
-                to={item.path}
-                sx={{
-                  bgcolor: isSelected ? "white" : "transparent",
-                  boxShadow: isSelected ? 3 : 0,
-                  borderRadius: 2,
-                  "&:hover": {
-                    bgcolor: "white",
-                    boxShadow: 3,
-                  },
-                }}
-                onClick={toggleMobileSidebar}
-              >
-                <ListItemIcon sx={{ minWidth: 30 }}>
-                  {isSelected || preferenceHoveredIndex === index
-                    ? item.selectedIcon
-                    : item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
+          <Typography
+            variant="subtitle2"
+            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
+          >
+            Preferences
+          </Typography>
+          <List sx={{ py: 0 }}>
+            {preferenceItems.map((item, index) => {
+              const isSelected = location.pathname === item.path;
+              return (
+                <ListItem
+                  key={index}
+                  component={Link}
+                  onMouseEnter={() => setPreferenceHoveredIndex(index)}
+                  onMouseLeave={() => setPreferenceHoveredIndex(null)}
+                  to={item.path}
                   sx={{
-                    color: isSelected ? "#0073B7" : "#737373",
-                    whiteSpace: "nowrap",
+                    py: 0.5,
+                    bgcolor: isSelected ? "white" : "transparent",
+                    boxShadow: isSelected ? 3 : 0,
+                    borderRadius: 2,
+                    "&:hover": {
+                      bgcolor: "transparent",
+                      "& .MuiListItemText-primary": {
+                        color: "#0073B7",
+                      },
+                    },
+                    pl: "8px",
+                    pr: 0,
                   }}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
+                >
+                  <ListItemIcon sx={{ minWidth: 30 }}>
+                    {isSelected || preferenceHoveredIndex === index
+                      ? item.selectedIcon
+                      : item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: "14px",
+                      fontWeight: 400, 
+                    }}
+                    sx={{
+                      color: isSelected ? "#0073B7" : "#737373",
+                      whiteSpace: "nowrap",
+                    }}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
+          </Box>
         <Box sx={{ borderTop: "1px solid #ECECEC" }}>
           <ListItem
             sx={{

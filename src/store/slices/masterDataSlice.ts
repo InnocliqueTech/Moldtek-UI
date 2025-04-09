@@ -310,11 +310,17 @@ const masterDataSlice = createSlice({
     },
     setDyePrintingFormData:(state,action:PayloadAction<DyePrintingFormData>)=>{
       state.DyePrintingFormData = {...state.DyePrintingFormData,...action.payload}
+    },
+    clearDyePrintingFormData: (state) => {
+      state.DyePrintingFormData = {
+        dyeCutMachineType: "",
+        machine: "",
+        dyeCode: "",
+        runSpeed: "",
+      };
     }
     
-    
-  },
-});
+}});
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData,clearDyePrintingFormData } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

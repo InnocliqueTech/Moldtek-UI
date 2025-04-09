@@ -5,9 +5,16 @@ import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { setDyePrintingFormData } from "../../store/slices/masterDataSlice";
+import {
+  setDyePrintingFormData,
+  clearDyePrintingFormData, 
+} from "../../store/slices/masterDataSlice";
+import { useLocation } from "react-router-dom";
 
 const DyePrinting: React.FC = () => {
+
+  const location = useLocation();
+const currentPath = location.pathname;
   const { selectedTab, DyePrintingFormData } = useSelector(
     (state: RootState) => state.masterData
   );
@@ -20,18 +27,31 @@ const DyePrinting: React.FC = () => {
     runSpeed: "",
   });
 
+  const [isSaved, setIsSaved] = useState(false); // <--- track if saved
+
   const handleChange = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
     dispatch(setDyePrintingFormData(formData));
+    setIsSaved(true); // <--- mark as saved
   };
+
   useEffect(() => {
     if (DyePrintingFormData) {
       setFormData(DyePrintingFormData);
     }
   }, [DyePrintingFormData]);
+
+  // Clear unsaved data on unmount
+  useEffect(() => {
+    return () => {
+      if (currentPath === "/createMasterData" && !isSaved) {
+        dispatch(clearDyePrintingFormData());
+      }
+    };
+  }, [isSaved, dispatch]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
