@@ -63,7 +63,7 @@ const handleClosePopUp= ()=>{
         }}
       >
         <Toolbar disableGutters
-          sx={{ display: "flex", justifyContent: "space-between", width: "100%",px:0 }}
+          sx={{ display: "flex", justifyContent: "space-between", width: "100%",px:0,minHeight:'50px !important' }}
         >
           <IconButton
             sx={{ display: { xs: "block", md: "none", lg: "none" } }}

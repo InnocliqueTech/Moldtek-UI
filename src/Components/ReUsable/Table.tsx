@@ -57,7 +57,7 @@ interface TableProps<T> {
   label?: string;
   actions?: TableAction<T>[];
   action?: boolean;
-  boxShadow?:boolean;
+  boxShadow?: boolean;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -71,7 +71,7 @@ function ReusableTable<T extends Record<string, any>>({
   info = false,
   actions,
   action = false,
-  boxShadow=false
+  boxShadow = false,
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -80,7 +80,6 @@ function ReusableTable<T extends Record<string, any>>({
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px–900px
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md")); // >=900px
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
 
@@ -97,19 +96,9 @@ function ReusableTable<T extends Record<string, any>>({
     setSelectedRow(null);
   };
 
-  const getResponsiveRowsPerPage = () => {
-    if (isXs) return 5;
-    if (isSm) return 10;
-    return 20;
-  };
+const rowsPerPage = 10
 
-  const [rowsPerPage, setRowsPerPage] = useState<number>(
-    getResponsiveRowsPerPage()
-  );
 
-  useEffect(() => {
-    setRowsPerPage(getResponsiveRowsPerPage());
-  }, [isXs, isSm, isMdUp]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
@@ -137,9 +126,14 @@ function ReusableTable<T extends Record<string, any>>({
   );
 
   return (
-    <Paper  elevation={0} sx={{ borderRadius:!boxShadow ? '0px':"12px", overflow: "hidden"  }}>
+    <Paper
+      elevation={0}
+      sx={{ borderRadius: !boxShadow ? "0px" : "12px", overflow: "hidden" }}
+    >
       <Toolbar
+      disableGutters
         sx={{
+          minHeight:'55px !important' ,
           display: "flex",
           flexDirection: {
             xs: "column",
@@ -152,8 +146,8 @@ function ReusableTable<T extends Record<string, any>>({
             md: "center",
           },
           justifyContent: "space-between",
-          gap: !boxShadow ?0:2,
-          p: !boxShadow ?0:2,
+          gap: !boxShadow ? 0 : 2,
+          px: boxShadow ?0:1
         }}
       >
         <Box
@@ -164,7 +158,7 @@ function ReusableTable<T extends Record<string, any>>({
             gap: 1,
           }}
         >
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6" sx={{fontSize:'18px'}}>{title}</Typography>
           {info && (
             <Tooltip title="Table information">
               <InfoOutline
@@ -239,15 +233,31 @@ function ReusableTable<T extends Record<string, any>>({
         </Box>
       </Toolbar>
 
-      <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
-        <Table>
+      <TableContainer
+        sx={{
+          maxHeight:  300,
+          overflowY: "auto",
+          overflowX: "auto",
+          position: "relative",
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: 1000,
+          }}
+        >
           <TableHead
             sx={{
+              position: "sticky",
+              top: "-1px",
+              zIndex: 2,
               backgroundColor: "#F5F5F5",
-              height: "32px", // Reduce overall height
+              height: "24px", // Reduce overall height
               "& .MuiTableCell-root": {
-                padding: "4px 8px", // Reduce padding inside header cells
-                height: "32px", // Reduce row height
+                padding: "2px 4px", // Reduce padding inside header cells
+                height: "24px", // Reduce row height
+                backgroundColor: "#F5F5F5",
               },
             }}
           >
@@ -263,8 +273,6 @@ function ReusableTable<T extends Record<string, any>>({
                   key={column.id}
                   sx={{
                     whiteSpace: "nowrap",
-                    padding: "4px 8px", // Reduce space inside the cell
-                    height: "32px", // Ensure row height is minimal
                     lineHeight: "1", // Reduce text line spacing
                     color: "#656565",
                     fontSize: "12px",
@@ -294,8 +302,6 @@ function ReusableTable<T extends Record<string, any>>({
                 <TableCell
                   sx={{
                     whiteSpace: "nowrap",
-                    padding: "4px 8px", // Reduce space inside the cell
-                    height: "32px", // Ensure row height is minimal
                     lineHeight: "1", // Reduce text line spacing
                     color: "#656565",
                     fontSize: "12px",
@@ -310,8 +316,8 @@ function ReusableTable<T extends Record<string, any>>({
           <TableBody
             sx={{
               "& .MuiTableCell-root": {
-                padding: "4px 8px", // Apply to all table cells
-                height: "32px",
+                padding: "2px 4px", // Apply to all table cells
+                height: "24px",
               },
             }}
           >
@@ -382,7 +388,8 @@ function ReusableTable<T extends Record<string, any>>({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          p: 2,
+          p: 1,
+          borderTop:'1px solid #ECECEC'
         }}
       >
         <Typography

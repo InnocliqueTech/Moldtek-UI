@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
-import Cards from "../../Components/ReUsable/Crads";
+import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
@@ -50,7 +50,7 @@ const MasterData: React.FC = () => {
     },
     {
       id: "version",
-      label: "Version Number",
+      label: "Version No",
       align: true,
       disableSorting: false,
     },
@@ -364,7 +364,6 @@ const MasterData: React.FC = () => {
           selectable={false}
           label="42 Companies"
           title="List of Companies"
-          lastUpdate="2 hours ago"
           info={true}
           searchVisible={true}
           action={true}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Box, Grid, Typography } from "@mui/material";
-import Cards from '../../Components/ReUsable/Crads'
+import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
 import { UENCell } from '../../Components/helpers';
