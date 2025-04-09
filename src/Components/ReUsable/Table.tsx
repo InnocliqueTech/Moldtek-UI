@@ -137,7 +137,7 @@ function ReusableTable<T extends Record<string, any>>({
   );
 
   return (
-    <Paper sx={{ borderRadius:!boxShadow ? '0px':"12px", overflow: "hidden", boxShadow:!boxShadow ? 0: 3 }}>
+    <Paper  elevation={0} sx={{ borderRadius:!boxShadow ? '0px':"12px", overflow: "hidden"  }}>
       <Toolbar
         sx={{
           display: "flex",

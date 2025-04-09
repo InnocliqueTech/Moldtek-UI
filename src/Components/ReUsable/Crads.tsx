@@ -9,7 +9,7 @@ interface StatsCardProps {
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon }) => {
   return (
-    <Card sx={{ minWidth: 200, borderRadius: '16px', flex: 1 }}>
+    <Card variant="outlined" sx={{ minWidth: 200, borderRadius: '16px', flex: 1 }}>
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: '14px', color: '#2F2F2F', fontWeight: 600 }}>
