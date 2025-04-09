@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid,Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
-import ButtonComponent from "../../Components/ReUsable/Button";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import customerPicture from "../../assets/Images/customerPicture.png";
 import { UENCell } from "../../Components/helpers";
 import { useDispatch, useSelector } from "react-redux";
@@ -195,9 +193,7 @@ const JobsList: React.FC = () => {
     },
   ];
 
-  const onBack = () => {
-    navigate("/masterData");
-  };
+
 
   const dispatch = useDispatch<AppDispatch>();
   const { jobListData, viewMasterDataDetails } = useSelector(

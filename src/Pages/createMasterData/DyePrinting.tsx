@@ -7,15 +7,10 @@ import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   setDyePrintingFormData,
-  clearDyePrintingFormData,
   setIsDyeCuttingSave, 
 } from "../../store/slices/masterDataSlice";
-import { useLocation } from "react-router-dom";
 
 const DyePrinting: React.FC = () => {
-
-  const location = useLocation();
-const currentPath = location.pathname;
   const { selectedTab, DyePrintingFormData } = useSelector(
     (state: RootState) => state.masterData
   );

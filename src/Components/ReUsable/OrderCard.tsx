@@ -20,7 +20,7 @@ interface OrderCardProps {
   button2Click?: () => void;
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({ data }) => {
+const OrderCard: React.FC<OrderCardProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { repeatTableData } = useSelector(
     (state: RootState) => state.viewMasterData
