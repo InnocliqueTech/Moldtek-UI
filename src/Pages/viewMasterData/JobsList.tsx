@@ -212,55 +212,6 @@ const JobsList: React.FC = () => {
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ mb: 1 }}
-      >
-        <Grid display="flex" alignItems="center">
-          <Box sx={{ border: "1px solid #ECECEC", borderRadius: "10px" }}>
-            <IconButton
-              onClick={onBack}
-              sx={{
-                mr: 0,
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <ArrowBackIcon sx={{ width: 20, height: 20 }} />
-            </IconButton>
-          </Box>
-            <Typography variant="h6" sx={{ ml: "4px" }}>
-              Master Data Details{" "}
-            </Typography>
-        </Grid>
-        <Grid container spacing={1} justifyContent="flex-end">
-            <Grid>
-              <ButtonComponent
-                text={"Version History"}
-                onClick={() => {}}
-                textColor="#2F2F2F"
-                color="white"
-                borderRadius="100px"
-                p={1}
-                border="1px solid #ECECEC"
-              />
-            </Grid>
-            <Grid>
-              <ButtonComponent
-                text={"Modify Master Data"}
-                onClick={() => navigate(`/updateMasterData/${123}`)}
-                textColor="#2F2F2F"
-                color="white"
-                borderRadius="100px"
-                border="1px solid #ECECEC"
-                p={1}
-              />
-            </Grid>
-        </Grid>
-      </Grid>
         <Grid container spacing={0}>
           <Grid size={{ xs: 12, md:2.5 }}>
             <Typography
@@ -365,7 +316,8 @@ const JobsList: React.FC = () => {
             sx={{
               border: "1px solid #ECECEC",
               borderRadius: "18px",
-           
+              overflow: "hidden",
+             
             }}
           >
             <ReusableTable
@@ -378,6 +330,7 @@ const JobsList: React.FC = () => {
               searchVisible={true}
               action={false}
               boxShadow={false}
+              searchSize={true}
             />
           </Box>
         </Box>

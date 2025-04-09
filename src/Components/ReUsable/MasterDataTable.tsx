@@ -31,12 +31,14 @@ interface DataTableProps<T> {
   data: T[];
   setData?: React.Dispatch<React.SetStateAction<T[]>>;
   columns: Column[];
+  tableTitle?: boolean;
 }
 
 const DataTable = <T extends Record<string, any>>({
   columns,
   data,
   setData,
+  tableTitle = false,
 }: DataTableProps<T>) => {
   const handleChange = <K extends keyof T>(
     rowIndex: number,
@@ -56,22 +58,22 @@ const DataTable = <T extends Record<string, any>>({
         maxHeight: 300,
         overflow: "auto",
         position: "relative",
-        borderRadius: 2,
+        borderRadius: tableTitle ? "none" : 2,
         "& table": {
           borderCollapse: "separate",
           borderSpacing: 0,
         },
         "& thead th:first-of-type": {
-          borderTopLeftRadius: 8,
+          borderTopLeftRadius: tableTitle ? "none" : 8,
         },
         "& thead th:last-of-type": {
-          borderTopRightRadius: 8,
+          borderTopRightRadius: tableTitle ? "none" : 8,
         },
         "& tbody tr:last-of-type td:first-of-type": {
-          borderBottomLeftRadius: 8,
+          borderBottomLeftRadius: tableTitle ? "none" : 8,
         },
         "& tbody tr:last-of-type td:last-of-type": {
-          borderBottomRightRadius: 8,
+          borderBottomRightRadius: tableTitle ? "none" : 8,
         },
       }}
     >
@@ -114,8 +116,13 @@ const DataTable = <T extends Record<string, any>>({
                   maxWidth: 180,
                   backgroundColor: "#F5F5F5",
                   borderRight:
-                    index === columns.length - 1 ? "1px solid #ccc" : "none",
+                    index === columns.length - 1 && !tableTitle
+                      ? "1px solid #ccc"
+                      : tableTitle
+                      ? "none"
+                      : "none",
                   borderBottom: "none",
+                  borderLeft: tableTitle ? "none" : "1px solid #ccc",
                 }}
               >
                 {column.label}
@@ -151,13 +158,22 @@ const DataTable = <T extends Record<string, any>>({
                       backgroundColor:
                         column.id === "field" ? "#F0F0F0" : "inherit",
                       borderRight:
-                        index === columns.length - 1
+                        index === columns.length - 1 && !tableTitle
                           ? "1px solid #ccc"
+                          : tableTitle
+                          ? "none"
                           : "none",
                       borderBottom:
-                        rowIndex === data.length - 1
+                        rowIndex === data.length - 1 && !tableTitle
                           ? "1px solid #ccc"
+                          : tableTitle
+                          ? "none"
                           : "none",
+                      borderLeft: tableTitle ? "none" : "1px solid #ccc",
+                      borderBottomLeftRadius:
+                        rowIndex === data.length - 1 && tableTitle
+                          ? "12px"
+                          : "0px",
                     }}
                   >
                     {column.isDropdown ? (

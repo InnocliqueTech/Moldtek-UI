@@ -188,7 +188,7 @@ const MasterDataDetails: React.FC = () => {
                  </label>
                </Box>
               ) : (
-                <Box mt={1}>
+                <Box mt={0}>
                   <input
                     accept="image/*"
                     type="file"
@@ -215,7 +215,7 @@ const MasterDataDetails: React.FC = () => {
                         background: "#1976d2",
                         color: "#fff",
                         px: 2,
-                        py: 1,
+                        py: 0.7,
                         borderRadius: "6px",
                         cursor: "pointer",
                         display: "inline-block",
@@ -228,7 +228,7 @@ const MasterDataDetails: React.FC = () => {
               )}
             </Box>
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1 }}>
               <TextArea
                 label="Brand Name & Pack Description"
                 value={formData.brandDescription}

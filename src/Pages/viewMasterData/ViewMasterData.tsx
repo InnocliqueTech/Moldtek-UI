@@ -4,7 +4,6 @@ import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
-import ViewMasterDataDetails from "./ViewMasterDataDetails";
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyePrinting from "./ViewDyePrinting";
@@ -15,7 +14,6 @@ const mockData = [
   { label: "Unit Effectivity Number", value: "UEN-20240801" },
   { label: "Customer Name", value: "Nestlé" },
   { label: "Customer Picture", value: customerImage, isImage: true },
-  { label: "Brand Name & Pack", value: "KitKat 50g Wrapper" },
   { label: "ITEM Code", value: "KK-50G-123" },
   {
     label: "Brand Name & Pack Description",
@@ -29,7 +27,7 @@ const mockData = [
 const tabs = [
   "Master Data - Printing",
   "Master Data - Lamination",
-  "Master Data - Dye Printing",
+  "Master Data - Dye Cutting",
 ];
 
 const ViewMasterData: React.FC = () => {

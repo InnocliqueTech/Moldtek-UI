@@ -18,6 +18,20 @@ const zoneTemperatureColumns = [
   { id: "lamiSetTension", label: "Lami Set Tension" },
   { id: "rewinderTension", label: "Rewinder Tension" },
 ];
+const materialDetailsColumns = [
+  { id: "viscocityRange", label: "Visco City Range" },
+  { id: "adhesiveGsm", label: "Adhesive GSM" },
+  { id: "gsm", label: "GSM" },
+  { id: "compositeGsm", label: "Composite GSM" },
+];
+const materialDetailsData = [
+  {
+    viscocityRange: 110,
+    adhesiveGsm: 120,
+    gsm: 3.5,
+    compositeGsm: 65,
+  },
+]
 
 const zoneTemperatureData = [
   {
@@ -37,7 +51,7 @@ const laminatingSubstarteColumns= [
   { id: "width", label: "Width (mm)" },
   { id: "thickness", label: "Thickness (microns)" },
   { id: "density", label: "Density (g/cm³)" },
-  { id: "gsm", label: "RGSM" },
+  { id: "gsm", label: "GSM" },
 ];
 
 
@@ -77,7 +91,6 @@ const bondingMaterialData = [
   { field: "Adhesive", code: "ADH123", brand: "Henkel", ratio: "1.2" },
   { field: "Hardener", code: "ADH123", brand: "Henkel", ratio: "1.2" },
   { field: "Ethyl Acetate", code: "ADH123", brand: "Henkel", ratio: "1.2" },
-  { field: "Material Details", code: "ADH123", brand: "Henkel", ratio: "1.2" },
 ];
 
 const ViewLamination: React.FC = () => {
@@ -114,7 +127,7 @@ const ViewLamination: React.FC = () => {
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
       <DataTable columns={zoneTemperatureColumns} data={laminationSettings} />
-      <Box sx={{ display: "flex", gap: 1,mt:1 }}>
+      <Box sx={{ display: "flex", gap: 1,mt:1.5}}>
               <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
                 gutterBottom
@@ -128,13 +141,14 @@ const ViewLamination: React.FC = () => {
               data={laminatingSubstrateData}
             />
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
       >
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            p:1
           }}
         >
           <Typography
@@ -148,16 +162,18 @@ const ViewLamination: React.FC = () => {
         <DataTable
           columns={unwindingRewindingColumns}
           data={laminationDetails}
+          tableTitle={true}
         />
       </Box>
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
       >
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            p:1
           }}
         >
           <Typography
@@ -168,8 +184,18 @@ const ViewLamination: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} />
+        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} tableTitle={true} />
       </Box>
+         <Box sx={{ display: "flex", gap: 1,p:1 }}>
+        <Typography
+          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+          gutterBottom
+        >
+          Material Details
+        </Typography>
+          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        </Box>
+        <DataTable columns={materialDetailsColumns} data={materialDetailsData} />
     </Box>
   );
 };

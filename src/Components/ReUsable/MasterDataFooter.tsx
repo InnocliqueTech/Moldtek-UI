@@ -23,7 +23,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
   const buttonText = [
     "Next: Master Data - Printing",
     "Next: Master Data - Lamination",
-    "Next: Master Data - Dye Printing",
+    "Next: Master Data - Dye Cutting",
   ];
 
   const handleNextClick = () => {

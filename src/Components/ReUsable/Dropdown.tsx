@@ -85,7 +85,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             borderRadius: '8px', // Changed border-radius
             backgroundColor: 'white',
             '& .MuiSelect-select': {
-              padding: '10px', // Decrease padding to reduce height
+              padding: '4px', // Decrease padding to reduce height
               color: "black",
             },
           }}

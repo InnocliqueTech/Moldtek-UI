@@ -24,6 +24,7 @@ import {
   Fade,
   Slide,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -34,7 +35,7 @@ import {
   ReplayOutlined,
 } from "@mui/icons-material";
 import { useMediaQuery, useTheme } from "@mui/material";
-import CancelIcon from '../../assets/Images/cancel.png';
+import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
 interface Column {
   id: string;
@@ -64,6 +65,7 @@ interface TableProps<T> {
   boxShadow?: boolean;
   onSelectionChange?: (selectedItems: T[]) => void;
   rowIdentifier?: keyof T; // Key to identify unique rows
+  searchSize?: boolean;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -80,6 +82,7 @@ function ReusableTable<T extends Record<string, any>>({
   boxShadow = false,
   onSelectionChange,
   rowIdentifier = "id" as keyof T, // Default to 'id' if not specified
+  searchSize = false,
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -238,11 +241,24 @@ function ReusableTable<T extends Record<string, any>>({
             <Typography variant="h6">{selected.length} selected</Typography>
           ) : (
             <>
-              <Typography variant="h6">{title}</Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  mt: searchSize ? "-14px" : "0px",
+                  ml: searchSize ? "6px" : "0px",
+                }}
+              >
+                {title}
+              </Typography>
               {info && (
                 <Tooltip title="Table information">
                   <InfoOutline
-                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                    sx={{
+                      color: "#9F9F9F",
+                      width: "20px",
+                      height: "20px",
+                      mt: searchSize ? "-14px" : "0px",
+                    }}
                   />
                 </Tooltip>
               )}
@@ -256,6 +272,7 @@ function ReusableTable<T extends Record<string, any>>({
                 color: "#0447A8",
                 border: "1px solid #0447A8",
                 fontWeight: 500,
+                mt: searchSize ? "-14px" : "0px",
               }}
             />
           )}
@@ -294,10 +311,17 @@ function ReusableTable<T extends Record<string, any>>({
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
                 startAdornment: (
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
+                  <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
                 ),
+                sx: {
+                  pl: 1.2,
+                  pr: 1,
+                  py: 0.5, // Reduce vertical padding
+                  mt: searchSize ? "-14px" : "0px",
+                  mr: searchSize ? "6px" : "0px",
+                },
               }}
               fullWidth={isXs || isSm}
               sx={{
@@ -308,6 +332,11 @@ function ReusableTable<T extends Record<string, any>>({
                 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "50px",
+                  padding: "2px 8px", // tight padding inside the input
+                },
+                "& input": {
+                  padding: searchSize ? "2px 0px" : "6px 8px", // control actual input text padding
+                  fontSize: "0.875rem", // optional: smaller font size
                 },
               }}
             />
@@ -321,6 +350,7 @@ function ReusableTable<T extends Record<string, any>>({
           overflowY: "auto",
           overflowX: "auto",
           position: "relative",
+          marginTop: searchSize ? "-12px" : "0px",
         }}
       >
         <Table
@@ -581,7 +611,7 @@ function ReusableTable<T extends Record<string, any>>({
                 alignItems: "center",
                 gap: 2,
                 zIndex: 1000,
-                border: '1px solid #3A63D2',
+                border: "1px solid #3A63D2",
               }}
             >
               <IconButton
@@ -589,10 +619,8 @@ function ReusableTable<T extends Record<string, any>>({
                 size="small"
                 sx={{ color: "text.secondary" }}
               >
-                <img src={CancelIcon} alt="cancel icon"/>
+                <img src={CancelIcon} alt="cancel icon" />
               </IconButton>
-
-            
 
               <Typography variant="body2" sx={{ minWidth: 100 }}>
                 {/* <Badge
@@ -600,10 +628,15 @@ function ReusableTable<T extends Record<string, any>>({
                   color="primary"
                   sx={{ mr: 1 }}
                 /> */}
-                {selected.length} {selected.length > 1 ? "Jobs" : "Job"} selected
+                {selected.length} {selected.length > 1 ? "Jobs" : "Job"}{" "}
+                selected
               </Typography>
 
-              <Divider orientation="vertical" flexItem   sx={{ borderRightWidth: 2 }}/>
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ borderRightWidth: 2 }}
+              />
 
               <ButtonComponent
                 text={"Upload"}
@@ -624,7 +657,6 @@ function ReusableTable<T extends Record<string, any>>({
                 p={2}
                 border="1px solid #0073B7"
               />
-
             </Box>
           </Slide>
         </Fade>

@@ -206,13 +206,14 @@ const ViewPrinting: React.FC = () => {
       />
 
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 2 }}
       >
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            p:1
           }}
         >
           <Typography
@@ -223,7 +224,7 @@ const ViewPrinting: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={inkStationColumns} data={printingInkStatinData} />
+        <DataTable columns={inkStationColumns} data={printingInkStatinData} tableTitle={true} />
       </Box>
     </Box>
   );

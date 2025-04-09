@@ -84,7 +84,12 @@ const Layout = () => {
     },
     "/viewJobsList": {
       title: "UEN-20240801",
-      lastUpdate: "Last Update: 2 hours ago",
+      button1Text: "Version History",
+      button2Text: "Modify Master Data",
+      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      headerButton:true,
+      onBack:()=>navigate('/masterData') 
     },
     "/settings": {
       title: "Settings",

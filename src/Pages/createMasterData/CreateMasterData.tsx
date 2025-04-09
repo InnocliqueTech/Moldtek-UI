@@ -13,7 +13,7 @@ const tabs = [
   "Master Data Details",
   "Master Data - Printing",
   "Master Data - Lamination",
-  "Master Data - Dye Printing",
+  "Master Data - Dye Cutting",
 ];
 
 const CreateMasterData: React.FC = () => {
