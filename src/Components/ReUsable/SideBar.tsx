@@ -23,6 +23,9 @@ import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
 import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
+import { clearDyePrintingFormData } from "../../store/slices/masterDataSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 
 interface SidebarProps {
   open: boolean;
@@ -43,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const currentText = dynamicTexts[0];
 
   const navigate = useNavigate();
+  const {isDyeCuttingDataSave} = useSelector((state:RootState)=>state.masterData)
 
   // const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
   //   setDropdownAnchor(event.currentTarget);
@@ -133,6 +137,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     navigate("/");
     localStorage.setItem("auth", "false");
   };
+  const dispatch = useDispatch<AppDispatch>();
+
+  const itemClick = ()=>{
+    if(!isDyeCuttingDataSave){
+      dispatch(clearDyePrintingFormData())
+    }
+  } 
 
   return (
     <>
@@ -238,6 +249,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
+                   onClick={() => itemClick()}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || hoveredIndex === index
@@ -290,6 +302,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
+                  onClick={() => itemClick()}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || preferenceHoveredIndex === index
@@ -441,6 +454,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
+                  onClick={() => itemClick()}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || hoveredIndex === index
@@ -494,6 +508,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
+                  onClick={() => itemClick()}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || preferenceHoveredIndex === index

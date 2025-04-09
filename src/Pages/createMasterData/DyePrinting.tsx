@@ -7,7 +7,8 @@ import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   setDyePrintingFormData,
-  clearDyePrintingFormData, 
+  clearDyePrintingFormData,
+  setIsDyeCuttingSave, 
 } from "../../store/slices/masterDataSlice";
 import { useLocation } from "react-router-dom";
 
@@ -27,31 +28,24 @@ const currentPath = location.pathname;
     runSpeed: "",
   });
 
-  const [isSaved, setIsSaved] = useState(false); // <--- track if saved
+ 
 
   const handleChange = (key: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+    const updated = { ...formData, [key]: value };
+    setFormData(updated);    
+    dispatch(setDyePrintingFormData(updated)); 
   };
-
+  
   const handleSave = () => {
     dispatch(setDyePrintingFormData(formData));
-    setIsSaved(true); // <--- mark as saved
+    dispatch(setIsDyeCuttingSave(true)); // <--- mark as saved
   };
 
   useEffect(() => {
     if (DyePrintingFormData) {
       setFormData(DyePrintingFormData);
     }
-  }, [DyePrintingFormData]);
-
-  // Clear unsaved data on unmount
-  useEffect(() => {
-    return () => {
-      if (currentPath === "/createMasterData" && !isSaved) {
-        dispatch(clearDyePrintingFormData());
-      }
-    };
-  }, [isSaved, dispatch]);
+  }, [DyePrintingFormData]); 
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

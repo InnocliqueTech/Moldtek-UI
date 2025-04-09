@@ -101,6 +101,7 @@ interface MasterDataState {
   printingSaveFormData:PrintingFormValues;
   laminaionFormData:LaminationFormData;
   DyePrintingFormData:DyePrintingFormData;
+  isDyeCuttingDataSave:boolean;
 }
 
 const initialState: MasterDataState = {
@@ -273,7 +274,8 @@ const initialState: MasterDataState = {
     machine: "",
     dyeCode: "",
     runSpeed: "",
-  }
+  },
+  isDyeCuttingDataSave:false
   
 };
 
@@ -318,9 +320,12 @@ const masterDataSlice = createSlice({
         dyeCode: "",
         runSpeed: "",
       };
+    },
+    setIsDyeCuttingSave :(state,action:PayloadAction<boolean>)=>{
+state.isDyeCuttingDataSave = action.payload
     }
     
 }});
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData,clearDyePrintingFormData } = masterDataSlice.actions;
+export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData,clearDyePrintingFormData,setIsDyeCuttingSave } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
