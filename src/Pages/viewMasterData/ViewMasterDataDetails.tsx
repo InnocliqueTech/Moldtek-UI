@@ -1,7 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { InfoOutline } from "@mui/icons-material";
-
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { useEffect } from "react";
+import {
+  setRepeatTableData,
+  setSubstrateTableData,
+} from "../../store/slices/viewMasterDataSlice";
 
 const columns = [
   { id: "repeat", label: "Repeat" },
@@ -38,31 +44,32 @@ const substrateData = [
 ];
 
 const ViewMasterDataDetails: React.FC = () => {
-  // const { repeatTableData, substrateTableData } = useSelector(
-  //   (state: RootState) => state.viewMasterData
-  // );
-  // const dispatch = useDispatch<AppDispatch>();
-  // useEffect(() => {
-  //   dispatch(setRepeatTableData(data));
-  //   dispatch(setSubstrateTableData(substrateData));
-  // }, []);
+  const dispatch = useDispatch<AppDispatch>();
+  const { repeatTableData, substrateTableData } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
 
-
-
-
+  useEffect(() => {
+    if (data.length >= 0) {
+      dispatch(setRepeatTableData(data));
+    }
+    if (substrateData.length >= 0) {
+      dispatch(setSubstrateTableData(substrateData));
+    }
+  }, [dispatch, data, substrateData]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
-        <Box sx={{display:'flex',gap:1}}>
-      <Typography
-        sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-        gutterBottom
-      >
-        Repeat Length & Label Coverage
-      </Typography>
-      <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Typography
+          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+          gutterBottom
+        >
+          Repeat Length & Label Coverage
+        </Typography>
+        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={repeatTableData} />
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
       >
@@ -81,7 +88,7 @@ const ViewMasterDataDetails: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={substrateColumns} data={substrateData} />
+        <DataTable columns={substrateColumns} data={substrateTableData} />
       </Box>
     </Box>
   );

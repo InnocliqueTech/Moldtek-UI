@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,12 @@ import ButtonComponent from "../../Components/ReUsable/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import customerPicture from "../../assets/Images/customerPicture.png";
 import { UENCell } from "../../Components/helpers";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import {
+  setJobsListData,
+  setViewMasterDataDetails,
+} from "../../store/slices/viewMasterDataSlice";
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +37,9 @@ const JobsList: React.FC = () => {
       label: "Indent No.",
       align: true,
       disableSorting: false,
-       format: (value: string) => <UENCell value={value} onClick={() => navigate('/viewMasterData')} />,
+      format: (value: string) => (
+        <UENCell value={value} onClick={() => navigate("/viewMasterData")} />
+      ),
     },
     {
       id: "segment",
@@ -191,6 +199,16 @@ const JobsList: React.FC = () => {
     navigate("/masterData");
   };
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { jobListData, viewMasterDataDetails } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
+
+  useEffect(() => {
+    dispatch(setJobsListData(data));
+    dispatch(setViewMasterDataDetails(masterDataDetails));
+  }, [dispatch]);
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
@@ -253,7 +271,7 @@ const JobsList: React.FC = () => {
               Unit Effectivity Number
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.uen}
+              {viewMasterDataDetails.uen}
             </Typography>
           </Grid>
 
@@ -266,7 +284,7 @@ const JobsList: React.FC = () => {
               Customer / Company Name
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.customerName}
+              {viewMasterDataDetails.customerName}
             </Typography>
           </Grid>
 
@@ -279,10 +297,14 @@ const JobsList: React.FC = () => {
               Customer / Company Picture
             </Typography>
             <Box display="flex" alignItems="center" gap={1}>
-              <img
-                src={masterDataDetails.customerPicture}
-                alt="customerPicture"
-              />
+              {viewMasterDataDetails.customerPicture ? (
+                <img
+                  src={viewMasterDataDetails.customerPicture}
+                  alt="customerPicture"
+                  width={100}
+                  height={100}
+                />
+              ) : null}
             </Box>
           </Grid>
 
@@ -295,7 +317,7 @@ const JobsList: React.FC = () => {
               Brand Name & Pack
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.brandPack}
+              {viewMasterDataDetails.brandPack}
             </Typography>
           </Grid>
 
@@ -308,7 +330,7 @@ const JobsList: React.FC = () => {
               Item Code
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.itemCode}
+              {viewMasterDataDetails.itemCode}
             </Typography>
           </Grid>
 
@@ -321,7 +343,7 @@ const JobsList: React.FC = () => {
               Jar/Cap
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.jarCap}
+              {viewMasterDataDetails.jarCap}
             </Typography>
           </Grid>
 
@@ -334,24 +356,10 @@ const JobsList: React.FC = () => {
               Structure
             </Typography>
             <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.structure}
+              {viewMasterDataDetails.structure}
             </Typography>
           </Grid>
-
-          <Grid size={{ xs: 12, md: 3 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Brand Name & Pack
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {masterDataDetails.brandPack}
-            </Typography>
           </Grid>
-        </Grid>
-
         <Box sx={{ paddingTop: 2 }}>
           <Box
             sx={{
@@ -363,7 +371,7 @@ const JobsList: React.FC = () => {
           >
             <ReusableTable
               columns={columns}
-              data={data}
+              data={jobListData}
               selectable={false}
               label="24 Versions"
               title="List of executed jobs"

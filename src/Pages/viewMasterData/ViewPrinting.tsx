@@ -1,6 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { InfoOutline } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { useEffect } from "react";
+import {
+  setPrintingInkStationData,
+  setPrintingMachineSettingsData,
+} from "../../store/slices/viewMasterDataSlice";
 
 const machineSettingColumns = [
   { id: "mountingType", label: "Mounting Type" },
@@ -131,14 +138,19 @@ const inkStationData = [
 ];
 
 const ViewPrinting: React.FC = () => {
-  // const { repeatTableData, substrateTableData } = useSelector(
-  //   (state: RootState) => state.viewMasterData
-  // );
-  // const dispatch = useDispatch<AppDispatch>();
-  // useEffect(() => {
-  //   dispatch(setRepeatTableData(data));
-  //   dispatch(setSubstrateTableData(substrateData));
-  // }, []);
+  const dispatch = useDispatch<AppDispatch>();
+  const { printingInkStatinData, printingMachineSettings } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
+
+  useEffect(() => {
+    if (inkStationData.length >= 0) {
+      dispatch(setPrintingInkStationData(inkStationData));
+    }
+    if (machineSettingData.length >= 0) {
+      dispatch(setPrintingMachineSettingsData(machineSettingData));
+    }
+  }, [dispatch, inkStationData, machineSettingData]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -151,7 +163,10 @@ const ViewPrinting: React.FC = () => {
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={machineSettingColumns} data={machineSettingData} />
+      <DataTable
+        columns={machineSettingColumns}
+        data={printingMachineSettings}
+      />
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 2 }}
       >
@@ -170,7 +185,7 @@ const ViewPrinting: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={inkStationColumns} data={inkStationData} />
+        <DataTable columns={inkStationColumns} data={printingInkStatinData} />
       </Box>
     </Box>
   );

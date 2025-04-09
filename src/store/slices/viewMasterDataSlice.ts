@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
 export interface RepeatTableRow {
   repeat: number;
   ups: number;
@@ -23,12 +24,72 @@ export interface SubstrateTableRow {
   printing: string;
   lamination: string;
 }
+export interface PrintingInkStationData {
+  stationNo: number;
+  colorPantone: string;
+  lfValue: number;
+  inkSupplier: string;
+  lpcm: number;
+  volume: string;
+  uvLed: string;
+}
+export interface LaminationSettings {
+  zone1Temp: number;
+  zone2Temp: number;
+  npPressure: number;
+  speed: number;
+  lamiSetTension: string;
+  rewinderTension: string;
+}
+
+export interface LaminationDetail {
+  field: string;
+  printedFilm: string;
+  laminateFilm: string;
+}
+
+export interface LaminationAdhesiveDetail {
+  field: string;
+  code: string;
+  brand: string;
+  ratio: string;
+}
+export interface DyePrintingSettings {
+  dyeCutMachineType: string;
+  machine: string;
+  dyeCode: string;
+  runSpeed: string;
+}
+export interface JobListData {
+  uen: string;
+  segment: string;
+  status: string;
+  lastUpdated: string;
+  lastExecuted: string;
+  comment: number;
+}
+export interface ViewMasterDataDetails {
+  uen: string;
+  customerName: string;
+  customerPicture: string;
+  jarCap: string;
+  itemCode: string;
+  brandPack: string;
+  structure: string;
+}
 
 interface ViewMasterDataState {
   selectedTab: number;
   repeatTableData: RepeatTableRow[];
   substrateTableData: SubstrateTableRow[];
   printingMachineSettings: PrintingMachineSettings[];
+  printingInkStatinData: PrintingInkStationData[];
+  laminationSettings: LaminationSettings[];
+  laminationDetails: LaminationDetail[];
+  laminationAdhesive: LaminationAdhesiveDetail[];
+  dyePrintingSettings: DyePrintingSettings[];
+  viewMasterDataDetails:ViewMasterDataDetails;
+  jobListData:JobListData[];
 }
 
 const initialState: ViewMasterDataState = {
@@ -61,6 +122,69 @@ const initialState: ViewMasterDataState = {
       formatCorrect: 0,
     },
   ],
+  printingInkStatinData: [
+    {
+      stationNo: 0,
+      colorPantone: "",
+      lfValue: 0,
+      inkSupplier: "",
+      lpcm: 0,
+      volume: "",
+      uvLed: "",
+    },
+  ],
+  laminationAdhesive: [
+    {
+      field: "",
+      code: "",
+      brand: "",
+      ratio: "",
+    },
+  ],
+  laminationDetails: [
+    {
+      field: "",
+      printedFilm: "",
+      laminateFilm: "",
+    },
+  ],
+  laminationSettings: [
+    {
+      zone1Temp: 0,
+      zone2Temp: 0,
+      npPressure: 0,
+      speed: 0,
+      lamiSetTension: "",
+      rewinderTension: "",
+    },
+  ],
+  dyePrintingSettings: [
+    {
+      dyeCutMachineType: "",
+      machine: "",
+      dyeCode: "",
+      runSpeed: "",
+    },
+  ],
+  viewMasterDataDetails:{
+    uen: "",
+    customerName: "",
+    customerPicture: "",
+    jarCap: "",
+    itemCode: "",
+    brandPack: "",
+    structure: "",
+  },
+  jobListData:[
+    {
+      uen: "",
+      segment: "",
+      status: "",
+      lastUpdated: "",
+      lastExecuted: "",
+      comment: 0,
+    }
+  ]
 };
 
 const viewMasterDataSlice = createSlice({
@@ -71,29 +195,76 @@ const viewMasterDataSlice = createSlice({
       state.selectedTab = action.payload;
     },
     setRepeatTableData: (state, action: PayloadAction<RepeatTableRow[]>) => {
-      state.repeatTableData = { ...state.repeatTableData, ...action.payload };
+      state.repeatTableData = action.payload;
     },
     setSubstrateTableData: (
       state,
       action: PayloadAction<SubstrateTableRow[]>
     ) => {
-      state.substrateTableData = {
-        ...state.substrateTableData,
-        ...action.payload,
-      };
+      state.substrateTableData = action.payload;
     },
     setPrintingMachineSettingsData: (
       state,
       action: PayloadAction<PrintingMachineSettings[]>
     ) => {
-      state.printingMachineSettings = {
-        ...state.printingMachineSettings,
-        ...action.payload,
-      };
+      state.printingMachineSettings = action.payload;
+    },
+    setPrintingInkStationData: (
+      state,
+      action: PayloadAction<PrintingInkStationData[]>
+    ) => {
+      state.printingInkStatinData = action.payload;
+    },
+    setLaminationSettings: (
+      state,
+      action: PayloadAction<LaminationSettings[]>
+    ) => {
+      state.laminationSettings = action.payload;
+    },
+    setLaminationDetails: (
+      state,
+      action: PayloadAction<LaminationDetail[]>
+    ) => {
+      state.laminationDetails = action.payload;
+    },
+    setLaminationAdhesiveDetails: (
+      state,
+      action: PayloadAction<LaminationAdhesiveDetail[]>
+    ) => {
+      state.laminationAdhesive = action.payload;
+    },
+    setDyePrintingSettings: (
+      state,
+      action: PayloadAction<DyePrintingSettings[]>
+    ) => {
+      state.dyePrintingSettings = action.payload;
+    },
+    setJobsListData: (
+      state,
+      action: PayloadAction<JobListData[]>
+    ) => {
+      state.jobListData = action.payload;
+    },
+    setViewMasterDataDetails: (
+      state,
+      action: PayloadAction<ViewMasterDataDetails>
+    ) => {
+      state.viewMasterDataDetails = action.payload;
     },
   },
 });
 
-export const { setSelectedTab, setRepeatTableData, setSubstrateTableData,setPrintingMachineSettingsData } =
-  viewMasterDataSlice.actions;
+export const {
+  setSelectedTab,
+  setRepeatTableData,
+  setSubstrateTableData,
+  setPrintingMachineSettingsData,
+  setPrintingInkStationData,
+  setDyePrintingSettings,
+  setLaminationAdhesiveDetails,
+  setLaminationDetails,
+  setLaminationSettings,
+  setJobsListData,
+  setViewMasterDataDetails
+} = viewMasterDataSlice.actions;
 export default viewMasterDataSlice.reducer;
