@@ -58,6 +58,8 @@ interface TableProps<T> {
   actions?: TableAction<T>[];
   action?: boolean;
   boxShadow?: boolean;
+  onSelectionChange?: (selectedItems: T[]) => void;
+  rowIdentifier?: keyof T; // Key to identify unique rows
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -72,6 +74,8 @@ function ReusableTable<T extends Record<string, any>>({
   actions,
   action = false,
   boxShadow = false,
+  onSelectionChange,
+  rowIdentifier = "id" as keyof T, // Default to 'id' if not specified
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -80,6 +84,8 @@ function ReusableTable<T extends Record<string, any>>({
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px–900px
+
+  const [selected, setSelected] = useState<T[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
 
@@ -121,9 +127,61 @@ const rowsPerPage = 10
 
   const filteredData = sortedData.filter((row) =>
     Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
+      value?.toString().toLowerCase().includes(search.toLowerCase())
     )
   );
+
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target,"inside selectAll");
+    if (event.target.checked) {
+      const newSelected = filteredData.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      );
+      setSelected(newSelected);
+      if (onSelectionChange) onSelectionChange(newSelected);
+      return;
+    }
+    setSelected([]);
+    if (onSelectionChange) onSelectionChange([]);
+  };
+
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, row: T) => {
+    console.log(row,"inside oneSelect");
+    const selectedIndex = selected.findIndex(
+      (item) => item[rowIdentifier] === row[rowIdentifier]
+    );
+    let newSelected: T[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, row);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+    if (onSelectionChange) onSelectionChange(newSelected);
+  };
+
+  const isSelected = (row: T) => {
+    return selected.some((item) => item[rowIdentifier] === row[rowIdentifier]);
+  };
+
+  const isAllSelected = () => {
+    if (filteredData.length === 0) return false;
+    const currentPageRows = filteredData.slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage
+    );
+    return currentPageRows.every((row) => isSelected(row));
+  };
 
   return (
     <Paper
@@ -158,13 +216,21 @@ const rowsPerPage = 10
             gap: 1,
           }}
         >
-          <Typography variant="h6" sx={{fontSize:'18px'}}>{title}</Typography>
-          {info && (
-            <Tooltip title="Table information">
-              <InfoOutline
-                sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-              />
-            </Tooltip>
+          {selected.length > 0 ? (
+            <Typography variant="h6">
+              {selected.length} selected
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="h6">{title}</Typography>
+              {info && (
+                <Tooltip title="Table information">
+                  <InfoOutline
+                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                  />
+                </Tooltip>
+              )}
+            </>
           )}
           {label && (
             <Chip
@@ -264,7 +330,18 @@ const rowsPerPage = 10
             <TableRow>
               {selectable && (
                 <TableCell padding="checkbox">
-                  <Checkbox />
+                  <Checkbox
+                    checked={isAllSelected()}
+                    onChange={handleSelectAll}
+                    indeterminate={
+                      selected.length > 0 &&
+                      selected.length <
+                        Math.min(
+                          rowsPerPage,
+                          filteredData.length - page * rowsPerPage
+                        )
+                    }
+                  />
                 </TableCell>
               )}
               {columns.map((column) => (
@@ -319,45 +396,73 @@ const rowsPerPage = 10
                 padding: "2px 4px", // Apply to all table cells
                 height: "24px",
               },
+              "& .MuiTableRow-root.Mui-selected": {
+                backgroundColor: "#e3f2fd",
+                "&:hover": {
+                  backgroundColor: "#bbdefb",
+                },
+              },
             }}
           >
             {filteredData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <TableRow key={index} hover>
-                  {selectable && (
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
-                  )}
-                  {columns.map((column) => (
-                    <TableCell
-                      align={column.align ? "center" : "left"}
-                      key={column.id}
-                      sx={{
-                        whiteSpace: "nowrap",
-                        padding: "4px 8px",
-                        height: "32px",
-                        lineHeight: "1",
-                        color: "#2F2F2F",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {column.format
-                        ? column.format(row[column.id])
-                        : row[column.id]}
-                    </TableCell>
-                  ))}
-                  {action && (
-                    <TableCell align="right">
-                      <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                        <MoreVertIcon />
-                      </IconButton>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
+              .map((row, index) => {
+                const isItemSelected = isSelected(row);
+                return (
+                  <TableRow
+                    key={index}
+                    hover
+                    selected={isItemSelected}
+                    // onClick={(event) => {
+                    //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
+                    //     const fakeEvent = {
+                    //       target: { checked: !isItemSelected },
+                    //     } as React.ChangeEvent<HTMLInputElement>;
+                    //     handleSelect(fakeEvent, row);
+                    //   }
+                    // }}
+                    sx={{
+                      cursor: selectable ? 'pointer' : 'default',
+                    }}
+                  >
+                    {selectable && (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          onChange={(event) => handleSelect(event, row)}
+                          onClick={(event) => event.stopPropagation()}
+                        />
+                      </TableCell>
+                    )}
+                    {columns.map((column) => (
+                      <TableCell
+                        align={column.align ? "center" : "left"}
+                        key={column.id}
+                        sx={{
+                          whiteSpace: "nowrap",
+                          padding: "4px 8px",
+                          height: "32px",
+                          lineHeight: "1",
+                          color: "#2F2F2F",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {column.format
+                          ? column.format(row[column.id])
+                          : row[column.id]}
+                      </TableCell>
+                    ))}
+                    {action && (
+                      <TableCell align="right">
+                        <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
           </TableBody>
           {selectedRow && (
             <Menu

@@ -89,12 +89,17 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
             <ReusableTable
               columns={columns}
               data={data}
-              selectable={false}
+              selectable={true}
               label="42 Companies"
               title="List of Companies"
               lastUpdate="2 hours ago"
               info={true}
               searchVisible={true}
+              // action={true}
+              onSelectionChange={(selectedItems) => {
+                console.log('Selected items:', selectedItems);
+              }}
+              rowIdentifier="_id" 
               actions={[
                 {
                   label: "View",
