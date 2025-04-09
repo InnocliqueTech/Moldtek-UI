@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setUploadPopup } from "../../store/slices/masterDataSlice";
 import { ReplayOutlined } from "@mui/icons-material";
+import  ArrowBackIcon  from '@mui/icons-material/ArrowBack';
 
 interface HeaderProps {
   title: string;
@@ -25,7 +26,9 @@ interface HeaderProps {
   onMenuClick: () => void;
   masterDataCreatePopup: boolean;
   onClosePopup: () => void;
-  lastUpdate?:string
+  lastUpdate?:string;
+  headerButton?:boolean;
+  onBack?:()=>void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -37,7 +40,9 @@ const Header: React.FC<HeaderProps> = ({
   onMenuClick,
   masterDataCreatePopup,
   onClosePopup,
-  lastUpdate
+  lastUpdate,
+  headerButton,
+  onBack
 }) => {
 
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
@@ -65,6 +70,7 @@ const handleClosePopUp= ()=>{
         <Toolbar disableGutters
           sx={{ display: "flex", justifyContent: "space-between", width: "100%",px:0,minHeight:'50px !important' }}
         >
+
           <IconButton
             sx={{ display: { xs: "block", md: "none", lg: "none" } }}
             onClick={onMenuClick}
@@ -137,10 +143,24 @@ const handleClosePopUp= ()=>{
           paddingBottom="0px"
           width="100%"
         >
+          <Box display={"flex"} flexDirection={"row"}>
+            {headerButton && 
+          <IconButton
+              onClick={onBack}
+              sx={{
+                mr: 0,
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              <ArrowBackIcon sx={{ width: 20, height: 20 }} />
+            </IconButton>
+}
           <Typography variant="h6" sx={{ fontWeight: 500 }}>
             {title}
           </Typography>
-
+          </Box>
           <Box display="flex" gap={2}>
             {button1Text && 
             <ButtonComponent
@@ -169,10 +189,11 @@ const handleClosePopUp= ()=>{
             {button2Text &&
             <ButtonComponent
               onClick={onButton2Click}
-              color="#0073B7"
+              color={headerButton ?"white":"#0073B7"}
               text={button2Text}
-              textColor="#FFFFFF"
+              textColor={headerButton ? "#0E0E0E":"#FFFFFF"}
               borderRadius="100px"
+              border={headerButton ?"1px solid #E5E5E5":'none'}
               p={"4px"}
               width={"200px"}
             />

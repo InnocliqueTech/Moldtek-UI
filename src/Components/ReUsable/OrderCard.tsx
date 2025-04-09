@@ -50,80 +50,25 @@ const OrderCard: React.FC<OrderCardProps> = ({
       label: "# Labels/Meter",
     },
   ];
-  const Tabledata = useMemo(() => [
-    {
-      repeat: 53,
-      ups: 2783,
-      tracks: 246,
-      labels: 121,
-    },
-  ], []);
-  
+  const Tabledata = useMemo(
+    () => [
+      {
+        repeat: 53,
+        ups: 2783,
+        tracks: 246,
+        labels: 121,
+      },
+    ],
+    []
+  );
+
   useEffect(() => {
-      dispatch(setRepeatTableData(Tabledata));
+    dispatch(setRepeatTableData(Tabledata));
   }, [dispatch, Tabledata]);
 
   return (
     <Box>
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ mb: 0 }}
-      >
-        <Grid display="flex" alignItems="center">
-          <Box sx={{ border: "1px solid #ECECEC", borderRadius: "10px" }}>
-            <IconButton
-              onClick={onBack}
-              sx={{
-                mr: 0,
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <ArrowBackIcon sx={{ width: 20, height: 20 }} />
-            </IconButton>
-          </Box>
-          {orderId && (
-            <Typography variant="h6" sx={{ ml: "4px" }}>
-              {orderId}
-            </Typography>
-          )}
-        </Grid>
-        <Grid container spacing={1} justifyContent="flex-end">
-          {button1Text && (
-            <Grid>
-              <ButtonComponent
-                text={button1Text}
-                onClick={button1Click}
-                textColor="#2F2F2F"
-                color="white"
-                borderRadius="100px"
-                p={1}
-                border="1px solid #ECECEC"
-              />
-            </Grid>
-          )}
-          {button2Text && (
-            <Grid>
-              <ButtonComponent
-                text={button2Text}
-                onClick={button2Click}
-                textColor="#2F2F2F"
-                color="white"
-                borderRadius="100px"
-                border="1px solid #ECECEC"
-                p={1}
-              />
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
-
-      <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
-      >
+      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1 }}>
         <Grid container spacing={1} alignItems="flex-start">
           {reorderedData.map((item, index) => {
             const isFullWidth = item.label === "Brand Name & Pack Description";
@@ -166,7 +111,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           })}
         </Grid>
       </Box>
-      <Box sx={{ display: "flex", gap: 1,mt:1 }}>
+      <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
@@ -175,7 +120,30 @@ const OrderCard: React.FC<OrderCardProps> = ({
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={columns} data={repeatTableData} />
+      {repeatTableData.map((item, idx) => (
+        <Box
+          key={idx}
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            p: 1.5,
+            border: "1px solid #ECECEC",
+            borderRadius: "16px",
+          }}
+        >
+          {Object.entries(item).map(([key, value]) => (
+            <Box key={key} sx={{ minWidth: "200px" }}>
+              <Typography variant="body2" color="textSecondary">
+                {columns.find((col) => col.id === key)?.label || key}
+              </Typography>
+              <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                {value}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      ))}
     </Box>
   );
 };

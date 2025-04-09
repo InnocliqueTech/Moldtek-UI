@@ -54,15 +54,33 @@ const DataTable = <T extends Record<string, any>>({
     <TableContainer
       sx={{
         maxHeight: 300,
-        overflowY: "auto",
-        overflowX: "auto",
+        overflow: "auto",
         position: "relative",
+        borderRadius: 2,
+        "& table": {
+          borderCollapse: "separate",
+          borderSpacing: 0,
+        },
+        "& thead th:first-of-type": {
+          borderTopLeftRadius: 8,
+        },
+        "& thead th:last-of-type": {
+          borderTopRightRadius: 8,
+        },
+        "& tbody tr:last-of-type td:first-of-type": {
+          borderBottomLeftRadius: 8,
+        },
+        "& tbody tr:last-of-type td:last-of-type": {
+          borderBottomRightRadius: 8,
+        },
       }}
     >
       <Table
         stickyHeader
         sx={{
           minWidth: 1000,
+          borderCollapse: "separate",
+          borderSpacing: 0,
         }}
       >
         <TableHead
@@ -85,7 +103,7 @@ const DataTable = <T extends Record<string, any>>({
           }}
         >
           <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-            {columns.map((column) => (
+            {columns.map((column, index) => (
               <TableCell
                 key={column.id}
                 align="center"
@@ -95,6 +113,9 @@ const DataTable = <T extends Record<string, any>>({
                   color: "#656565",
                   maxWidth: 180,
                   backgroundColor: "#F5F5F5",
+                  borderRight:
+                    index === columns.length - 1 ? "1px solid #ccc" : "none",
+                  borderBottom: "none",
                 }}
               >
                 {column.label}
@@ -119,7 +140,7 @@ const DataTable = <T extends Record<string, any>>({
           {Array.isArray(data) &&
             data?.map((row, rowIndex) => (
               <TableRow key={rowIndex}>
-                {columns.map((column) => (
+                {columns.map((column, index) => (
                   <TableCell
                     key={column.id}
                     align="center"
@@ -128,11 +149,15 @@ const DataTable = <T extends Record<string, any>>({
                       maxWidth: 180,
                       overflow: "hidden",
                       backgroundColor:
-                        column.id === "field"
-                          ? "#F0F0F0"
-                          : column.id === "cylinderTeeth"
-                          ? "#FFFAF2"
-                          : "inherit",
+                        column.id === "field" ? "#F0F0F0" : "inherit",
+                      borderRight:
+                        index === columns.length - 1
+                          ? "1px solid #ccc"
+                          : "none",
+                      borderBottom:
+                        rowIndex === data.length - 1
+                          ? "1px solid #ccc"
+                          : "none",
                     }}
                   >
                     {column.isDropdown ? (
@@ -241,20 +266,6 @@ const DataTable = <T extends Record<string, any>>({
                           },
                         }}
                       />
-                    ) : column.id === "cylinderTeeth" ? (
-                      <div>
-                        <span
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            backgroundColor: "#EB7724",
-                            display: "inline-block",
-                            marginRight: "8px",
-                          }}
-                        />
-                        <span>{row[column.id]}</span>
-                      </div>
                     ) : (
                       <Tooltip title={String(row[column.id])} arrow>
                         <Box

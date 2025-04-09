@@ -223,7 +223,7 @@ function ReusableTable<T extends Record<string, any>>({
           },
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
-          px: 1.5
+          px: !boxShadow ? 0 : 1.5,
         }}
       >
         <Box
@@ -472,7 +472,7 @@ function ReusableTable<T extends Record<string, any>>({
                       </TableCell>
                     ))}
                     {action && (
-                      <TableCell align="right">
+                      <TableCell align="left">
                         <IconButton onClick={(e) => handleMenuOpen(e, row)}>
                           <MoreVertIcon />
                         </IconButton>

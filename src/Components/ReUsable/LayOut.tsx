@@ -32,6 +32,8 @@ const Layout = () => {
       onButton1Click?: () => void;
       onButton2Click?: () => void;
       lastUpdate?: string;
+      headerButton?:boolean
+      onBack?:()=>void
     }
   > = {
     "/dashboard": {
@@ -73,7 +75,12 @@ const Layout = () => {
     },
     "/viewMasterData": {
       title: "UEN-20240801",
-      lastUpdate: "Last Update: 2 hours ago",
+      button1Text: "Version History",
+      button2Text: "Modify Master Data",
+      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      headerButton:true,
+      onBack:()=>navigate('/masterData')
     },
     "/viewJobsList": {
       title: "UEN-20240801",
@@ -146,6 +153,8 @@ const Layout = () => {
           masterDataCreatePopup={masterDataCreatePopup}
           onClosePopup={onClosePopup}
           lastUpdate={headerData.lastUpdate}
+          headerButton={headerData.headerButton}
+          onBack={headerData.onBack}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>
