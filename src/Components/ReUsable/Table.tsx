@@ -1,4 +1,4 @@
-import React, { useState, JSX, useEffect } from "react";
+import React, { useState, JSX } from "react";
 import {
   Table,
   TableBody,
@@ -21,9 +21,17 @@ import {
   Stack,
   Menu,
   MenuItem,
+  Button,
+  Fade,
+  Slide,
+  Badge,
+  Divider,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CloseIcon from "@mui/icons-material/Close";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   ChevronLeft,
   ChevronRight,
@@ -88,6 +96,7 @@ function ReusableTable<T extends Record<string, any>>({
   const [selected, setSelected] = useState<T[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
+  const [showSelectionBar, setShowSelectionBar] = useState(false);
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -139,6 +148,7 @@ const rowsPerPage = 10
         page * rowsPerPage + rowsPerPage
       );
       setSelected(newSelected);
+      setShowSelectionBar(event.target.checked);
       if (onSelectionChange) onSelectionChange(newSelected);
       return;
     }
@@ -168,6 +178,7 @@ const rowsPerPage = 10
 
     setSelected(newSelected);
     if (onSelectionChange) onSelectionChange(newSelected);
+    setShowSelectionBar(newSelected.length > 0);
   };
 
   const isSelected = (row: T) => {
@@ -181,6 +192,21 @@ const rowsPerPage = 10
       page * rowsPerPage + rowsPerPage
     );
     return currentPageRows.every((row) => isSelected(row));
+  };
+
+  const handleClearSelection = () => {
+    setSelected([]);
+    setShowSelectionBar(false);
+  };
+
+  const handleDownload = () => {
+    console.log("Download selected:", selected);
+    // Implement your download logic here
+  };
+  
+  const handleUpload = () => {
+    console.log("Upload selected:", selected);
+    // Implement your upload logic here
   };
 
   return (
@@ -205,7 +231,7 @@ const rowsPerPage = 10
           },
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
-          px: boxShadow ?0:1
+          px: 1
         }}
       >
         <Box
@@ -541,6 +567,70 @@ const rowsPerPage = 10
           />
         </Stack>
       </Box>
+      {showSelectionBar && (
+        <Fade in={showSelectionBar}>
+          <Slide direction="up" in={showSelectionBar} mountOnEnter unmountOnExit>
+            <Box
+              sx={{
+                position: 'fixed',
+                bottom: 60,
+                left: '45%',
+                transform: 'translateX(-50%)',
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
+                padding: '8px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                zIndex: 1000,
+                border: '1px solid #e0e0e0',
+              }}
+            >
+              <IconButton
+                onClick={handleClearSelection}
+                size="small"
+                sx={{ color: 'text.secondary' }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+
+              <Divider orientation="vertical" flexItem />
+
+              <Typography variant="body2" sx={{ minWidth: 100 }}>
+                <Badge
+                  badgeContent={selected.length}
+                  color="primary"
+                  sx={{ mr: 1 }}
+                />
+                selected
+              </Typography>
+
+              <Divider orientation="vertical" flexItem />
+
+              <Button
+                variant="text"
+                startIcon={<FileDownloadIcon />}
+                onClick={handleDownload}
+                size="small"
+                sx={{ textTransform: 'none' }}
+              >
+                Download
+              </Button>
+
+              <Button
+                variant="text"
+                startIcon={<FileUploadIcon />}
+                onClick={handleUpload}
+                size="small"
+                sx={{ textTransform: 'none' }}
+              >
+                Upload
+              </Button>
+            </Box>
+          </Slide>
+        </Fade>
+      )}
     </Paper>
   );
 }
