@@ -21,17 +21,12 @@ import {
   Stack,
   Menu,
   MenuItem,
-  Button,
   Fade,
   Slide,
-  Badge,
   Divider,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CloseIcon from "@mui/icons-material/Close";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   ChevronLeft,
   ChevronRight,
@@ -39,7 +34,8 @@ import {
   ReplayOutlined,
 } from "@mui/icons-material";
 import { useMediaQuery, useTheme } from "@mui/material";
-
+import CancelIcon from '../../assets/Images/cancel.png';
+import ButtonComponent from "./Button";
 interface Column {
   id: string;
   label: string;
@@ -139,7 +135,6 @@ function ReusableTable<T extends Record<string, any>>({
   );
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target, "inside selectAll");
     if (event.target.checked) {
       const newSelected = filteredData.slice(
         page * rowsPerPage,
@@ -155,7 +150,6 @@ function ReusableTable<T extends Record<string, any>>({
   };
 
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>, row: T) => {
-    console.log(row, "inside oneSelect");
     const selectedIndex = selected.findIndex(
       (item) => item[rowIdentifier] === row[rowIdentifier]
     );
@@ -229,7 +223,7 @@ function ReusableTable<T extends Record<string, any>>({
           },
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
-          px: !boxShadow ? 0 : 1.5,
+          px: 1.5
         }}
       >
         <Box
@@ -580,14 +574,14 @@ function ReusableTable<T extends Record<string, any>>({
                 left: "45%",
                 transform: "translateX(-50%)",
                 backgroundColor: "#fff",
-                borderRadius: "8px",
+                borderRadius: "12px",
                 boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
                 padding: "8px 16px",
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
                 zIndex: 1000,
-                border: "1px solid #e0e0e0",
+                border: '1px solid #3A63D2',
               }}
             >
               <IconButton
@@ -595,41 +589,42 @@ function ReusableTable<T extends Record<string, any>>({
                 size="small"
                 sx={{ color: "text.secondary" }}
               >
-                <CloseIcon fontSize="small" />
+                <img src={CancelIcon} alt="cancel icon"/>
               </IconButton>
 
-              <Divider orientation="vertical" flexItem />
+            
 
               <Typography variant="body2" sx={{ minWidth: 100 }}>
-                <Badge
+                {/* <Badge
                   badgeContent={selected.length}
                   color="primary"
                   sx={{ mr: 1 }}
-                />
-                selected
+                /> */}
+                {selected.length} {selected.length > 1 ? "Jobs" : "Job"} selected
               </Typography>
 
-              <Divider orientation="vertical" flexItem />
+              <Divider orientation="vertical" flexItem   sx={{ borderRightWidth: 2 }}/>
 
-              <Button
-                variant="text"
-                startIcon={<FileDownloadIcon />}
-                onClick={handleDownload}
-                size="small"
-                sx={{ textTransform: "none" }}
-              >
-                Download
-              </Button>
-
-              <Button
-                variant="text"
-                startIcon={<FileUploadIcon />}
+              <ButtonComponent
+                text={"Upload"}
                 onClick={handleUpload}
-                size="small"
-                sx={{ textTransform: "none" }}
-              >
-                Upload
-              </Button>
+                textColor="#0073B7"
+                color="white"
+                borderRadius="100px"
+                p={2}
+                border="1px solid #0073B7"
+              />
+
+              <ButtonComponent
+                text={"Download"}
+                onClick={handleDownload}
+                textColor="#0073B7"
+                color="white"
+                borderRadius="100px"
+                p={2}
+                border="1px solid #0073B7"
+              />
+
             </Box>
           </Slide>
         </Fade>
