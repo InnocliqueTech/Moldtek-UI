@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography,  } from "@mui/material";
 import InfoOutline from "@mui/icons-material/InfoOutlined";
 import DataTable from "./MasterDataTable"; // Adjust the import path as needed
+import InfoContainer,{InfoItem} from "./InfoContainer";
 
 interface Column {
   id: string;
@@ -14,27 +15,34 @@ interface Column {
 
 interface TitledDataTableProps<T> {
   title?: string;
-  columns: Column[];
-  data: T[];
+  columns?: Column[];
+  data?: T[];
   setData?: React.Dispatch<React.SetStateAction<T[]>>;
   borderColor?: string;
   borderRadius?: string | number;
   titleColor?: string;
   infoIconColor?: string;
-  firstRow?: boolean
+  firstRow?: boolean;
+  infoItems?: InfoItem[];
+  showInfoSection?: boolean;
+  showTableSection?:boolean;
 }
 
 const TitledDataTable = <T extends Record<string, any>>({
   title = "",
-  columns,
-  data,
+  columns = [],
+  data = [],
   setData,
   borderColor = "#ECECEC",
   borderRadius = "16px",
   titleColor = "#2F2FF",
   infoIconColor = "#9F9F9F",
-  firstRow = false
+  firstRow = false,
+  infoItems = [],
+  showInfoSection = false,
+  showTableSection = true,
 }: TitledDataTableProps<T>) => {
+  console.log(infoItems,"inside titleDataTable");
   return (
     <Box
       sx={{
@@ -66,7 +74,7 @@ const TitledDataTable = <T extends Record<string, any>>({
           sx={{ color: infoIconColor, width: 20, height: 20 }}
         />
       </Box>
-      <Box sx={{
+      {showTableSection && <Box sx={{
         borderBottom: `1px solid ${borderColor}`,
         borderRadius: borderRadius,
       }}>
@@ -77,68 +85,15 @@ const TitledDataTable = <T extends Record<string, any>>({
           tableTitle={true}
           firstRow={firstRow ? true : false}
         />
-      </Box>
-      <Box className="mt-4 p-4 ">
-        <Box>
-          <Grid container spacing={2} pt={1}>
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <Typography variant="body2" color="text.secondary" fontWeight={500}>
-                Unit Effectivity Number
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                UEN-20240801
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              {/* <Box sx={{ mt: 2 }}> */}
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                ITEM Code
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                KK-50G-123
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Jar/Cap
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                N/A (For flexible packaging)
-              </Typography>
-              {/* </Box> */}
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+      </Box>}
+      {/* container with title and text  */}
+
+      {showInfoSection && infoItems.length > 0 && (
+        <InfoContainer 
+          infoItems={infoItems} 
+          borderColor={borderColor}
+        />
+      )}
     </Box>
   );
 };

@@ -417,3 +417,26 @@ export const analoxColumns = [
       dyne: "623",
     },
   ];
+
+  export const plateMountingReport = [
+    { label: "Plates Inspection", value: "721" },
+    { label: "Mounter", value: "21426152" },
+    { label: "Approver", value: "564" },
+    { label: "Ink Kitchen Supervisor", value: "--" },
+    { label: "Plate Mounting Supervisor", value: "--" },
+    { label: "Shift QC Incharge", value: "-" }
+  ];
+
+  export const printingMCData = [
+    { label: "Plain Film Weight Per Repeat", value: "12112" },
+    { label: "Printed Film Weight Per Repeat", value: "21426152" },
+    { label: "Ink Weight Per Repeat", value: "564" },
+    { label: "Operator", value: "--" },
+    { label: "Supervisor", value: "--" },
+    { label: "Shift Qc", value: "-" },
+    { label: "Left Over Roll Meters", value: "3267" },
+    { label: "Left Over Roll Kg’s", value: "JAR" },
+    { label: "Printing M/C", value: "--" }
+  ];
+  
+  

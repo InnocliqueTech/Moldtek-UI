@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { analoxData, analoxColumns, tapeColumns, tapeRows, materialColumns, materialData } from "../data";
+import { analoxData, analoxColumns, tapeColumns, tapeRows, materialColumns, materialData,plateMountingReport } from "../data";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -117,6 +117,17 @@ const MakeReady: React.FC = () => {
           data={materialData}
         />
       </Box>
+
+      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+        <TitledDataTable
+          title="Plate Mounting Supervisor Report"
+          
+          showInfoSection={true}
+          showTableSection={false}
+          infoItems={plateMountingReport}
+        />
+      </Box>
+      
     </>
   );
 };

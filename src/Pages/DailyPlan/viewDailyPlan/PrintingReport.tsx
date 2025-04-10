@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
+import {printingMCData} from "../../DailyPlan/data"
 
 const columns = [
   { id: "stationNo", label: "Station No" },
@@ -243,6 +244,14 @@ const PrintingReport: React.FC = () => {
       columns={printingProcessColumns1}
       data={printingProcessData1}
       firstRow={true}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="Printing M/C"
+      showInfoSection={true}
+      showTableSection={false}
+      infoItems={printingMCData}
     />
   </Box>
   </>
