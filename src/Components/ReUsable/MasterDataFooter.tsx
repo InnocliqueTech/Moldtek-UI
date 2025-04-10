@@ -11,13 +11,15 @@ import {
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate } from "react-router-dom";
 
-
 interface MasterDataFooterProps {
   selectedTab: number;
-  handleSave?:()=>void
+  handleSave?: () => void;
 }
 
-const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleSave }) => {
+const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
+  selectedTab,
+  handleSave,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const buttonText = [
@@ -32,9 +34,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
     }
   };
 
-  const handleSubmitPopupOpen = () => {
-    dispatch(setSubmitPopup(true));
-  };
   const handleSubmitPopupClose = () => {
     dispatch(setSubmitPopup(false));
   };
@@ -43,7 +42,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
       dispatch(setSubmitAndPublishPopup(true));
     }
   };
-  
+
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(true));
@@ -53,29 +52,27 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
   };
-  const handleSubmitPopupConfirmClick = ()=>{
+  const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
     navigate("/masterData");
-  }
+  };
 
-  const { submitPopup, submitPopupConfirm,submitAndPublish } = useSelector(
+  const { submitPopup, submitPopupConfirm, submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
-  
 
   return (
-<Box
-  display="flex"
-  flexDirection={{ xs: "column", sm: "row" }}
-  justifyContent="center"
-  alignItems="center"
-  gap={2}
-  p={2}
-  flexWrap="wrap"
->
-
+    <Box
+      display="flex"
+      flexDirection={{ xs: "column", sm: "row" }}
+      justifyContent="center"
+      alignItems="center"
+      gap={2}
+      p={2}
+      flexWrap="wrap"
+    >
       {selectedTab === 3 ? (
         <ReusableButton
           text="Submit and Publish"
@@ -89,15 +86,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
       ) : (
         <>
           <ReusableButton
-            text={buttonText[selectedTab] || "Next: Master Data - Printing"}
-            color=""
-            borderRadius="100px"
-            border="1px solid #ECECEC"
-            textColor="#656565"
-            p={2}
-            onClick={handleNextClick}
-          />
-          <ReusableButton
             text="Save"
             color=""
             borderRadius="100px"
@@ -107,6 +95,16 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
             onClick={handleSave}
           />
           <ReusableButton
+            text={buttonText[selectedTab] || "Next: Master Data - Printing"}
+            color=""
+            borderRadius="100px"
+            border="1px solid #ECECEC"
+            textColor="#656565"
+            p={2}
+            onClick={handleNextClick}
+          />
+
+          {/* <ReusableButton
             text="Submit"
             color="#0073B7"
             borderRadius="100px"
@@ -114,10 +112,10 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
             textColor="white"
             p={2}
             onClick={handleSubmitPopupOpen}
-          />
+          /> */}
         </>
       )}
-  
+
       {/* Popup Rendering - Always include them regardless of tab */}
       <ConfirmPopup
         open={submitPopup}
@@ -150,7 +148,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({ selectedTab,handleS
       />
     </Box>
   );
-  
 };
 
 export default MasterDataFooter;

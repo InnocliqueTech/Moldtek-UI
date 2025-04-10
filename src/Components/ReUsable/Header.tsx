@@ -13,9 +13,12 @@ import ReusablePopup from "./PopUp";
 import Filter from "../../Pages/createMasterData/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setUploadPopup } from "../../store/slices/masterDataSlice";
+import {
+  setSubmitAndPublishPopup,
+  setUploadPopup,
+} from "../../store/slices/masterDataSlice";
 import { ReplayOutlined } from "@mui/icons-material";
-import  ArrowBackIcon  from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 
 interface HeaderProps {
@@ -27,9 +30,9 @@ interface HeaderProps {
   onMenuClick: () => void;
   masterDataCreatePopup: boolean;
   onClosePopup: () => void;
-  lastUpdate?:string;
-  headerButton?:boolean;
-  onBack?:()=>void;
+  lastUpdate?: string;
+  headerButton?: boolean;
+  onBack?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -43,15 +46,18 @@ const Header: React.FC<HeaderProps> = ({
   onClosePopup,
   lastUpdate,
   headerButton,
-  onBack
+  onBack,
 }) => {
-
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
- const {updatePopup} = useSelector((store:RootState)=>store.masterData);
- const dispatch = useDispatch<AppDispatch>()
-const handleClosePopUp= ()=>{
-  dispatch(setUploadPopup(false))
-}
+  const { updatePopup } = useSelector((store: RootState) => store.masterData);
+  const dispatch = useDispatch<AppDispatch>();
+  const handleClosePopUp = () => {
+    dispatch(setUploadPopup(false));
+  };
+  const handleSubmitAndPublishPopupOpen = () => {
+    dispatch(setUploadPopup(false));
+    dispatch(setSubmitAndPublishPopup(true));
+  };
 
   return (
     <>
@@ -69,10 +75,16 @@ const handleClosePopUp= ()=>{
           overflowY: "auto",
         }}
       >
-        <Toolbar disableGutters
-          sx={{ display: "flex", justifyContent: "space-between", width: "100%",px:0,minHeight:'50px !important' }}
+        <Toolbar
+          disableGutters
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            px: 0,
+            minHeight: "50px !important",
+          }}
         >
-
           <IconButton
             sx={{ display: { xs: "block", md: "none", lg: "none" } }}
             onClick={onMenuClick}
@@ -131,77 +143,77 @@ const handleClosePopUp= ()=>{
             </Box>
           </Badge> */}
 
-{/* 
+          {/* 
         <Box sx={{ height: 10 }} />
         <Divider />
         <Box sx={{ height: 10 }} /> */}
 
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          px={0.5}
-          paddingTop="0px"
-          paddingBottom="0px"
-          width="100%"
-        >
-          <Box display={"flex"} flexDirection={"row"}>
-            {headerButton && 
-          <IconButton
-              onClick={onBack}
-              sx={{
-                mr: 0,
-                "&:hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <ArrowBackIcon sx={{ width: 20, height: 20 }} />
-            </IconButton>
-}
-          <Typography variant="h6" sx={{ fontWeight: 500 }}>
-            {title}
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            px={0.5}
+            paddingTop="0px"
+            paddingBottom="0px"
+            width="100%"
+          >
+            <Box display={"flex"} flexDirection={"row"}>
+              {headerButton && (
+                <IconButton
+                  onClick={onBack}
+                  sx={{
+                    mr: 0,
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  <ArrowBackIcon sx={{ width: 20, height: 20 }} />
+                </IconButton>
+              )}
+              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                {title}
+              </Typography>
+            </Box>
+            <Box display="flex" gap={2}>
+              {button1Text && (
+                <ButtonComponent
+                  onClick={onButton1Click}
+                  color="white"
+                  text={button1Text}
+                  textColor="#0E0E0E"
+                  borderRadius="100px"
+                  border="1px solid #E5E5E5"
+                  p={"14px"}
+                />
+              )}
+              {lastUpdate && (
+                <Chip
+                  icon={<ReplayOutlined />}
+                  label={lastUpdate}
+                  sx={{
+                    backgroundColor: "#F6F6F6",
+                    color: "#2F2F2F",
+                    fontWeight: 500,
+                    border: "1px solid #2F2F2F",
+                    "& .MuiChip-icon": { color: "#2F2F2F" },
+                  }}
+                />
+              )}
+              {button2Text && (
+                <ButtonComponent
+                  onClick={onButton2Click}
+                  color={headerButton ? "white" : "#0073B7"}
+                  text={button2Text}
+                  textColor={headerButton ? "#0E0E0E" : "#FFFFFF"}
+                  borderRadius="100px"
+                  border={headerButton ? "1px solid #E5E5E5" : "none"}
+                  p={"4px"}
+                  width={"200px"}
+                />
+              )}
+            </Box>
           </Box>
-          <Box display="flex" gap={2}>
-            {button1Text && 
-            <ButtonComponent
-              onClick={onButton1Click}
-              color="white"
-              text={button1Text}
-              textColor="#0E0E0E"
-              borderRadius="100px"
-              border="1px solid #E5E5E5"
-              p={"14px"}
-            />
-}
-                {lastUpdate && (
-                  <Chip
-                    icon={<ReplayOutlined />}
-                    label={lastUpdate}
-                    sx={{
-                      backgroundColor: "#F6F6F6",
-                      color: "#2F2F2F",
-                      fontWeight: 500,
-                      border: "1px solid #2F2F2F",
-                      "& .MuiChip-icon": { color: "#2F2F2F" },
-                    }}
-                  />
-                )}
-            {button2Text &&
-            <ButtonComponent
-              onClick={onButton2Click}
-              color={headerButton ?"white":"#0073B7"}
-              text={button2Text}
-              textColor={headerButton ? "#0E0E0E":"#FFFFFF"}
-              borderRadius="100px"
-              border={headerButton ?"1px solid #E5E5E5":'none'}
-              p={"4px"}
-              width={"200px"}
-            />
-}
-          </Box>
-        </Box>
         </Toolbar>
       </AppBar>
 
@@ -213,23 +225,23 @@ const handleClosePopUp= ()=>{
         confirmText="Continue"
         onConfirm={() => console.log("Masterdata Created!")}
         text="Upload Picture"
-        dropdownOptions={structureOptions}  // Dynamic dropdown options
+        dropdownOptions={structureOptions} // Dynamic dropdown options
         upload={true}
         textField={true}
         dropdown={true}
       />
-      <ReusablePopup 
-      open={updatePopup}
-      upload={true}
-      onConfirm={()=>console.log("Upload Master Data")}
-      confirmText="Upload"
-      title="Create Master Data"
-      onClose={handleClosePopUp}
-      subText="Upload Master Data"
+      <ReusablePopup
+        open={updatePopup}
+        upload={true}
+        onConfirm={handleSubmitAndPublishPopupOpen}
+        confirmText="Submit"
+        title="Create Master Data"
+        onClose={handleClosePopUp}
+        subText="Upload Master Data"
       />
 
-            <Filter/>
-            <VersinDetails/>
+      <Filter />
+      <VersinDetails />
     </>
   );
 };

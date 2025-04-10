@@ -27,6 +27,7 @@ const Printing: React.FC = () => {
     { id: "lpcm", label: "LPCM" ,edit:true },
     { id: "volume", label: "Volume",edit:true  },
     { id: "uvLed", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
+    { id: "uvledintensity", label: "UV/LED Intensity",edit:true  },
   ];
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
@@ -40,6 +41,12 @@ const Printing: React.FC = () => {
     rewinder: "",
     staticCharge: "",
     formatCorrect: "",
+    substrateType: "",
+    supplier: "",
+    dyneLevel: "",
+    width: "",
+    thickness: "",
+    density: "",
     printingTableData: [
       {
         stationNo: 1,
@@ -49,6 +56,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 2,
@@ -58,6 +66,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 3,
@@ -67,6 +76,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 4,
@@ -76,6 +86,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 5,
@@ -85,6 +96,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 6,
@@ -94,6 +106,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 7,
@@ -103,6 +116,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 8,
@@ -112,6 +126,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 9,
@@ -121,6 +136,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+        uvledintensity:''
       },
       {
         stationNo: 10,
@@ -130,6 +146,7 @@ const Printing: React.FC = () => {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       }
     ]
   });
@@ -251,8 +268,72 @@ const Printing: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
+              <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography
+                    sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+                  >
+                    Printing Substrate
+                  </Typography>
+                  <Grid container spacing={2} pt={1}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <DropdownComponent
+                        label="Substrate Type"
+                        options={["PET"]}
+                        value={formValues.substrateType}
+                        onChange={(value) => handleChange("substrateType", value)}
+                        isMultiSelect={false}
+                        checkbox={false}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <DropdownComponent
+                        label="Supplier"
+                        options={[
+                          "U-Flex Ltd.",
+                          "Huhtamaki",
+                          "Huhtamaki",
+                          "Gulf Pack Supplier",
+                        ]}
+                        value={formValues.supplier}
+                        onChange={(value) => handleChange("supplier", value)}
+                        isMultiSelect={false}
+                        checkbox={false}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <ReusableInput
+                        label="Dyne Level"
+                        value={formValues.dyneLevel}
+                        onChange={(e) => handleChange("dyneLevel", e.target.value)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <ReusableInput
+                        label="Width (mm)"
+                        value={formValues.width}
+                        onChange={(e) => handleChange("width", e.target.value)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <ReusableInput
+                        label="Thickness"
+                        value={formValues.thickness}
+                        onChange={(e) => handleChange("thickness", e.target.value)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <ReusableInput
+                        label="Density (g/cm)"
+                        value={formValues.density}
+                        onChange={(e) => handleChange("density", e.target.value)}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 2 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5 }}
       >
         <Grid size={{ xs: 12, md: 6 }}>
           <Box
@@ -261,6 +342,7 @@ const Printing: React.FC = () => {
               justifyContent: "space-between",
               alignItems: "center",
               width: "100%",
+              p:1
             }}
           >
             <Typography
@@ -272,8 +354,8 @@ const Printing: React.FC = () => {
               sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
             />
           </Box>
-          <Box sx={{ mt: 2 }}>
-          <DataTable columns={columns} data={tableData} setData={setTableData} />
+          <Box>
+          <DataTable columns={columns} data={tableData} setData={setTableData} tableTitle={true} />
 
           </Box>
         </Grid>

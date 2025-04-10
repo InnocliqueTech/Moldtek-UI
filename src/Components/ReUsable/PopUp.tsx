@@ -66,7 +66,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
     sx={{
       "& .MuiPaper-root": {
         borderRadius: "16px",
-        width: table ? "1000px" : "600px", // 👈 Custom width here
+        width: table ? "1000px" : "400px", // 👈 Custom width here
         maxWidth: "100%", // Responsive fallback
       },
     }}
@@ -77,7 +77,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
 }
 
       {/* Popup Body */}
-      <DialogContent sx={{        p:table ?"0px":"0px",mt:table?"14px":'0px'}}>
+      <DialogContent sx={{        p:table ?"0px":"24px",mt:table?"14px":'0px'}}>
         <Box display="flex" flexDirection="column" gap="10px">
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}

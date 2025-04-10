@@ -13,7 +13,7 @@ const MasterData: React.FC = () => {
     { title: "Total Jobs", value: 2000 },
     { title: "Lamination Jobs", value: 1140 },
     { title: "Non-Lamination Jobs", value: 860 },
-    { title: "New Jobs Added", value: 674 },
+    { title: "Total Customers", value: 674 },
   ];
   const columns = [
     {

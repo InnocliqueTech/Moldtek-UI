@@ -12,6 +12,7 @@ export interface PrintingTableRow {
   lpcm: number;
   volume: string;
   uvLed: string;
+   uvledintensity:string
 }
 
 export interface LaminationFormData {
@@ -45,6 +46,12 @@ export interface LaminationFormData {
     materialRatio: string;
     viscocityRange: string;
     adhesiveGSM: string;
+    substrateType: string,
+    supplier: string,
+    dyneLevel: string,
+    width: string,
+    thickness: string,
+    density: string,
   
 }
 export interface MasterFormData  {
@@ -87,6 +94,12 @@ export interface PrintingFormValues {
   rewinder: string;
   staticCharge: string;
   formatCorrect: string;
+  substrateType: string,
+  supplier:string,
+  dyneLevel: string,
+  width:string,
+  thickness: string,
+  density: string,
   printingTableData: PrintingTableRow[];
 }
 
@@ -143,6 +156,12 @@ const initialState: MasterDataState = {
     rewinder: "",
     staticCharge: "",
     formatCorrect: "",
+    substrateType: "",
+    supplier: "",
+    dyneLevel: "",
+    width: "",
+    thickness: "",
+    density: "",
     printingTableData:
      [
       {
@@ -153,6 +172,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 2,
@@ -162,6 +182,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 3,
@@ -171,6 +192,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 4,
@@ -180,6 +202,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 5,
@@ -189,6 +212,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 6,
@@ -198,6 +222,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 7,
@@ -207,6 +232,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 8,
@@ -216,6 +242,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       },
       {
         stationNo: 9,
@@ -225,6 +252,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+        uvledintensity:''
       },
       {
         stationNo: 10,
@@ -234,6 +262,7 @@ const initialState: MasterDataState = {
         lpcm: 0,
         volume: '',
         uvLed: '',
+         uvledintensity:''
       }
     ]
   },
@@ -268,6 +297,12 @@ const initialState: MasterDataState = {
     materialRatio: "",
     viscocityRange: "",
     adhesiveGSM: "",
+    substrateType: "",
+    supplier: "",
+    dyneLevel: "",
+    width: "",
+    thickness: "",
+    density: "",
   },
   DyePrintingFormData:{
     dyeCutMachineType: "",

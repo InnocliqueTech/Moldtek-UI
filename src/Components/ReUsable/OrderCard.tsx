@@ -176,7 +176,7 @@ const OrderCard: React.FC<OrderCardProps> = () => {
                 Customer Picture
               </Typography>
               <img src={customerImage} alt="customer picture" />
-            <Box sx={{ mt: 2 }}>
+            <Box>
               <Typography
                 variant="body2"
                 color="text.secondary"
