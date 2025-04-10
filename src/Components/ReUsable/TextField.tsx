@@ -37,7 +37,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        type={type === "password" && !showPassword ? "password" : "text"}
+        type={type === "password" && !showPassword ? "password" : type}
         fullWidth
         variant="outlined"
         error={error}

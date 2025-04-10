@@ -11,6 +11,7 @@ interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   borderRadius?: string; // Custom border radius
   loading?: boolean; // Loading state
   p?: string | number;
+  styles?:{}
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -23,6 +24,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   borderRadius = "8px", 
   loading,
   p = "2px",
+  styles={},
   ...props
 }) => {
 
@@ -45,6 +47,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
           backgroundColor: color ? `${color}D9` : "transparent",
         },
         ...(color === "none" && { color: textColor || "black" }),
+        ...styles
       }}
     >
       {loading ? "Loading..." : text}
