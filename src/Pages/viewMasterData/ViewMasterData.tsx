@@ -46,14 +46,28 @@ const ViewMasterData: React.FC = () => {
 
   return (
     <Box
-      sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}
+      sx={{
+        height:
+          selectedTab !== 2
+            ? {
+                xl: "136vh",
+                lg: "144vh",
+                md: "152vh",
+                sm: "310vh",
+                xs: "400vh",
+              }
+            : { xl:'auto',lg: "auto", md: "auto",sm:"auto",xs:'auto' },
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
+      {/* Static top section (OrderCard) */}
       <Box
         sx={{
-          width: "100%",
           backgroundColor: "white",
           padding: 2,
           borderRadius: "10px",
+          mb: 1,
         }}
       >
         <OrderCard
@@ -66,22 +80,36 @@ const ViewMasterData: React.FC = () => {
         />
       </Box>
 
-      {/* Tabs Section */}
+      {/* Scrollable section */}
       <Box
         sx={{
-          width: "100%",
+          flex: 1,
+          overflow: "auto",
           backgroundColor: "white",
           borderRadius: "10px",
-          overflow: "hidden",
-          mt:1
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <TabsComponent
-          tabs={tabs}
-          value={selectedTab}
-          onChange={handleTabChange}
-        />
-        <Box sx={{ padding: 1 }}>
+        {/* Sticky Tabs */}
+        <Box
+          sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+            backgroundColor: "white",
+            borderBottom: "1px solid #e0e0e0",
+          }}
+        >
+          <TabsComponent
+            tabs={tabs}
+            value={selectedTab}
+            onChange={handleTabChange}
+          />
+        </Box>
+
+        {/* Tab Content */}
+        <Box sx={{ padding: 2 }}>
           {selectedTab === 0 && <ViewPrinting />}
           {selectedTab === 1 && <ViewLamination />}
           {selectedTab === 2 && <ViewDyePrinting />}

@@ -30,7 +30,7 @@ const CreateMasterData: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh", // or 100% if wrapped by a parent with set height
+        height: selectedTab !==3 ?"100vh":'auto', // or 100% if wrapped by a parent with set height
         width: "100%",
       }}
     >
