@@ -14,6 +14,7 @@ const ViewMasterData = lazy(()=>import("./Pages/viewMasterData/ViewMasterData"))
 const DailyPlan = lazy(()=>import("./Pages/DailyPlan"));
 const JobsList = lazy(()=>import("./Pages/viewMasterData/JobsList"));
 const CreatePlan = lazy(()=>import("./Pages/DailyPlan/createPlan"));
+const ViewDailyPlan = lazy(()=>import("./Pages/DailyPlan/viewDailyPlan"));
 
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
               <Route path="/dailyPlan" element={<DailyPlan/>} />
               <Route path="/viewJobsList" element={<JobsList/>}/>
               <Route path="/createPlan" element={<CreatePlan/>}/>
+              <Route path="/viewDailyPlan" element={<ViewDailyPlan/>}/>         
             </Route>
           </Route>
           <Route path="*" element={<NotFoundPage />} />

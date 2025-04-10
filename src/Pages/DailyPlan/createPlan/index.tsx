@@ -85,7 +85,7 @@ const CreatePlan: React.FC = () => {
             styles={{ marginRight: '.5rem' }}
             onClick={handleAddNewJob}
           />
-          <ButtonComponent
+          {/* <ButtonComponent
             text="Reset"
             textColor="#0073B7"
             color="white"
@@ -94,7 +94,7 @@ const CreatePlan: React.FC = () => {
             border="1px solid #0073B7"
             styles={{ marginRight: '.5rem' }}
             onClick={handleReset}
-          />
+          /> */}
           <ButtonComponent
             text="Save"
             textColor="#0073B7"

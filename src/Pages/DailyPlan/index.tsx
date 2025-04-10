@@ -18,7 +18,9 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         id: "uen",
         label: "Effective Unit Number",
         align: false,
-        format: (value: string) => <UENCell value={value} onClick={()=>{}} />,
+        format: (value: string) => <UENCell value={value} onClick={()=>{
+          navigate('/viewDailyPlan')
+        }} />,
       },
       {
         id: "customer",
