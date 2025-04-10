@@ -208,7 +208,7 @@ const ViewLamination: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} tableTitle={true} />
+        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} tableTitle={true} firstRow={true} />
       </Box>
          <Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
         <Typography

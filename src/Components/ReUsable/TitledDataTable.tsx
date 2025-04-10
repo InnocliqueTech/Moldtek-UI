@@ -38,7 +38,7 @@ const TitledDataTable = <T extends Record<string, any>>({
       sx={{
         border: `1px solid ${borderColor}`,
         borderRadius: borderRadius,
-        py: 1,
+        py: 0,
         mt: 2,
       }}
     >
@@ -69,6 +69,7 @@ const TitledDataTable = <T extends Record<string, any>>({
         data={data}
         setData={setData}
         tableTitle={true}
+        firstRow={true}
       />
     </Box>
   );

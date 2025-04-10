@@ -5,10 +5,13 @@ import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { setSelectedTab } from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
-
+const dispatch = useDispatch<AppDispatch>();
   const stats = [
     { title: "Total Jobs", value: 2000 },
     { title: "Lamination Jobs", value: 1140 },
@@ -20,7 +23,7 @@ const MasterData: React.FC = () => {
       id: "uen",
       label: "Unit Effectivity Number",
       align: false,
-      format: (value: string) => <UENCell value={value} onClick={() => navigate('/viewMasterData')} />,
+      format: (value: string) => <UENCell value={value} onClick={() => {dispatch(setSelectedTab(0)),navigate('/viewMasterData')}} />,
       disableSorting: true,
     },
     {

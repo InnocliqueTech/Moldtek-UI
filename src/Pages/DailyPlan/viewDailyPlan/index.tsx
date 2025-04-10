@@ -10,6 +10,7 @@ import ViewLamination from "../../viewMasterData/ViewLamination";
 import ViewDyePrinting from "../../viewMasterData/ViewDyePrinting";
 import customerImage from "../../../assets/Images/customerPicture.png";
 import { useNavigate } from "react-router-dom";
+import PrintingReport from "./PrintingReport";
 
 const mockData = [
   { label: "Unit Effectivity Number", value: "UEN-20240801" },
@@ -86,7 +87,7 @@ const ViewDailyPlan: React.FC = () => {
         />
         <Box sx={{ padding: 1 }}>
           {selectedTab === 0 && <MakeReady />}
-          {selectedTab === 1 && <ViewLamination />}
+          {selectedTab === 1 && <PrintingReport />}
           {selectedTab === 2 && <ViewDyePrinting />}
         </Box>
       </Box>

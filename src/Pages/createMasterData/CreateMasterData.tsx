@@ -9,7 +9,6 @@ import DyePrinting from "./DyePrinting";
 import Printing from "./Printing";
 import Lamination from "./Lamination";
 
-
 const tabs = [
   "Master Data Details",
   "Master Data - Printing",
@@ -30,7 +29,7 @@ const CreateMasterData: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: selectedTab !==3 ?"100vh":'auto', // or 100% if wrapped by a parent with set height
+        height: selectedTab !== 3 ? "100vh" : "auto", // or 100% if wrapped by a parent with set height
         width: "100%",
       }}
     >
@@ -38,12 +37,11 @@ const CreateMasterData: React.FC = () => {
       <Box
         sx={{
           position: "sticky",
-         top: {
-  xs: "96.5px",  // for small screens and below
-  sm:'52.5px',
-  md: "50.9px",  // for medium screens and up
-}
-,
+          top: {
+            xs: "96.5px", // for small screens and below
+            sm: "52.5px",
+            md: "50.9px", // for medium screens and up
+          },
           zIndex: 100,
           backgroundColor: "white",
         }}

@@ -31,6 +31,7 @@ interface DataTableProps<T> {
   setData?: React.Dispatch<React.SetStateAction<T[]>>;
   columns: Column[];
   tableTitle?: boolean;
+  firstRow?:boolean;
 }
 
 const DataTable = <T extends Record<string, any>>({
@@ -38,6 +39,7 @@ const DataTable = <T extends Record<string, any>>({
   data,
   setData,
   tableTitle = false,
+  firstRow=false
 }: DataTableProps<T>) => {
   const handleChange = <K extends keyof T>(
     rowIndex: number,
@@ -158,7 +160,7 @@ const DataTable = <T extends Record<string, any>>({
                       maxWidth: 180,
                       overflow: "hidden",
                       backgroundColor:
-                        column.id === "field" ? "#F0F0F0" : "inherit",
+                      firstRow&&index===0 ? "#F0F0F0" : "inherit",
                       borderRight:
                         index === columns.length - 1 && !tableTitle
                           ? "1px solid #ccc"

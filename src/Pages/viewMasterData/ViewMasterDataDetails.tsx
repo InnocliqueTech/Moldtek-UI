@@ -88,7 +88,7 @@ const ViewMasterDataDetails: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={substrateColumns} data={substrateTableData} />
+        <DataTable columns={substrateColumns} data={substrateTableData} firstRow={true} />
       </Box>
     </Box>
   );
