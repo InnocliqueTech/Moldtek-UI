@@ -304,3 +304,116 @@ export const data = [
         lastExecuted: "07/05/2016",
     },
 ];
+
+export const tapeColumns = [
+    { id: "stationNo", label: "Station No" },
+    { id: "1", label: "1" },
+     { id: "2", label: "2" },
+     { id: "3", label: "3" },
+     { id: "4", label: "4" },
+     { id: "5", label: "5" },
+     { id: "6", label: "6" },
+     { id: "7", label: "7" },
+     { id: "8", label: "8" },
+      { id: "9", label: "9" },
+     { id: "10", label: "10" },
+  ];
+  
+ export const tapeRows = [
+  {stationNo:"soft",
+      1:"--",
+      2:"--",
+      3:"--",
+      4:"--",
+      5:"--",
+      6:"--",
+      7:"--",
+      8:"--",
+      9:"--",
+      10:"--",
+  },
+  {stationNo:"Medium",
+      1:"--",
+      2:"--",
+      3:"--",
+      4:"--",
+      5:"--",
+      6:"--",
+      7:"--",
+      8:"--",
+      9:"--",
+      10:"--",
+  },
+  {stationNo:"Hard",
+      1:"--",
+      2:"--",
+      3:"--",
+      4:"--",
+      5:"--",
+      6:"--",
+      7:"--",
+      8:"--",
+      9:"--",
+      10:"--",
+  }
+  ]
+  
+
+export const analoxColumns = [
+    { id: "parameter", label: "Parameter" },
+    { id: "station1", label: "Station 1" },
+    { id: "station2", label: "Station 2" },
+    { id: "station3", label: "Station 3" },
+    { id: "station4", label: "Station 4" },
+    { id: "station5", label: "Station 5" },
+    { id: "station6", label: "Station 6" },
+    { id: "station7", label: "Station 7" },
+    { id: "station8", label: "Station 8" },
+    { id: "station9", label: "Station 9" },
+    { id: "station10", label: "Station 10" },
+  ];
+  
+  export const analoxData = [
+    {
+      parameter: "LPCM",
+      station1: 23,
+      station2: 23,
+      station3: 23,
+      station4: 23,
+      station5: 23,
+      station6: 23,
+      station7: 23,
+      station8: 23,
+      station9: 23,
+      station10: 23,
+    },
+    {
+      parameter: "Vol.",
+      station1: 36,
+      station2: 36,
+      station3: 36,
+      station4: 36,
+      station5: 36,
+      station6: 36,
+      station7: 36,
+      station8: 36,
+      station9: 36,
+      station10: 36,
+    },
+  ];
+
+ export  const materialColumns = [
+    { id: "widthMm", label: "Width mm" },
+    { id: "thicknessMicrons", label: "Thickness Microns" },
+    { id: "gsm", label: "GSM" },
+    { id: "dyne", label: "DYNE" },
+  ];
+  
+  export const materialData = [
+    {
+      widthMm: "623",
+      thicknessMicrons: "623",
+      gsm: "623",
+      dyne: "623",
+    },
+  ];

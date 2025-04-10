@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
+import { analoxData, analoxColumns, tapeColumns, tapeRows, materialColumns, materialData } from "../data";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -87,13 +88,36 @@ const inkCoatingData = [
 
 const MakeReady: React.FC = () => {
   return (
-    <Box sx={{ borderRadius: "0px ", p: 1 }}>
-      <TitledDataTable
-        title="Ink & Coating Specifications"
-        columns={inkCoatingColumns}
-        data={inkCoatingData}
-      />
-    </Box>
+    <>
+      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+        <TitledDataTable
+          title="Ink & Coating Specifications"
+          columns={inkCoatingColumns}
+          data={inkCoatingData}
+        />
+      </Box>
+      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+        <TitledDataTable
+          title="Analox Specifications"
+          columns={analoxColumns}
+          data={analoxData}
+        />
+      </Box>
+      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+        <TitledDataTable
+          title="Tape Specifications."
+          columns={tapeColumns}
+          data={tapeRows}
+        />
+      </Box>
+      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+        <TitledDataTable
+          title="Material Specifications"
+          columns={materialColumns}
+          data={materialData}
+        />
+      </Box>
+    </>
   );
 };
 

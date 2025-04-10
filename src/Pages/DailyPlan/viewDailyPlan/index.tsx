@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { setSelectedTab } from "../../../store/slices/viewMasterDataSlice";
 import MakeReady from "./makeReady";
-import ViewLamination from "../../viewMasterData/ViewLamination";
-import ViewDyePrinting from "../../viewMasterData/ViewDyePrinting";
 import customerImage from "../../../assets/Images/customerPicture.png";
 import { useNavigate } from "react-router-dom";
 import PrintingReport from "./PrintingReport";
