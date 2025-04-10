@@ -1,8 +1,4 @@
-
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-
-
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface PrintingTableRow {
   stationNo: number;
@@ -12,49 +8,56 @@ export interface PrintingTableRow {
   lpcm: number;
   volume: string;
   uvLed: string;
-   uvledintensity:string
+  uvledintensity: string;
 }
+export interface LaminatingTableRow {
+    filed:string,
+    code: string,
+    brand: string,
+    ratio: string,
+  }
+
 
 export interface LaminationFormData {
-    zone1Temp: string;
-    zone2Temp: string;
-    nipPressure: string;
-    speed: string;
-    lamiTension: string;
-    rewinderTension: string;
-    printedTension: string;
-    printedWidth: string;
-    printedThickness: string;
-    printedGSM: string;
-    printedDyne: string;
-    laminateTension: string;
-    laminateWidth: string;
-    laminateThickness: string;
-    laminateGSM: string;
-    laminateDyne: string;
-    adhesiveCode: string;
-    adhesiveBrand: string;
-    adhesiveRatio: string;
-    hardenerCode: string;
-    hardenerBrand: string;
-    hardenerRatio: string;
-    ethylCode: string;
-    ethylBrand: string;
-    ethylRatio: string;
-    materialCode: string;
-    materialBrand: string;
-    materialRatio: string;
-    viscocityRange: string;
-    adhesiveGSM: string;
-    substrateType: string,
-    supplier: string,
-    dyneLevel: string,
-    width: string,
-    thickness: string,
-    density: string,
-  
+  zone1Temp: string;
+  zone2Temp: string;
+  nipPressure: string;
+  speed: string;
+  lamiTension: string;
+  rewinderTension: string;
+  printedTension: string;
+  printedWidth: string;
+  printedThickness: string;
+  printedGSM: string;
+  printedDyne: string;
+  laminateTension: string;
+  laminateWidth: string;
+  laminateThickness: string;
+  laminateGSM: string;
+  laminateDyne: string;
+  adhesiveCode: string;
+  adhesiveBrand: string;
+  adhesiveRatio: string;
+  hardenerCode: string;
+  hardenerBrand: string;
+  hardenerRatio: string;
+  ethylCode: string;
+  ethylBrand: string;
+  ethylRatio: string;
+  materialCode: string;
+  materialBrand: string;
+  materialRatio: string;
+  viscocityRange: string;
+  adhesiveGSM: string;
+  substrateType: string;
+  supplier: string;
+  dyneLevel: string;
+  width: string;
+  thickness: string;
+  density: string;
+  laminatingTableData: LaminatingTableRow[]
 }
-export interface MasterFormData  {
+export interface MasterFormData {
   unitEffectivityNumber: string;
   typeOfLabel: string;
   jarCap: string;
@@ -77,12 +80,11 @@ export interface MasterFormData  {
 }
 
 export interface DyePrintingFormData {
-  dyeCutMachineType: string,
-  machine: string,
-  dyeCode: string,
-  runSpeed: string,
+  dyeCutMachineType: string;
+  machine: string;
+  dyeCode: string;
+  runSpeed: string;
 }
-
 
 export interface PrintingFormValues {
   mountingType: string;
@@ -94,36 +96,39 @@ export interface PrintingFormValues {
   rewinder: string;
   staticCharge: string;
   formatCorrect: string;
-  substrateType: string,
-  supplier:string,
-  dyneLevel: string,
-  width:string,
-  thickness: string,
-  density: string,
+  substrateType: string;
+  supplier: string;
+  dyneLevel: string;
+  width: string;
+  thickness: string;
+  density: string;
   printingTableData: PrintingTableRow[];
 }
 
 interface MasterDataState {
   selectedTab: number;
-  openSider:boolean;
-  updatePopup:boolean;
-  submitPopupConfirm:boolean;
-  submitPopup:boolean;
-  submitAndPublish:boolean;
+  openSider: boolean;
+  updatePopup: boolean;
+  submitPopupConfirm: boolean;
+  submitPopup: boolean;
+  submitAndPublish: boolean;
   saveFormData: MasterFormData;
-  printingSaveFormData:PrintingFormValues;
-  laminaionFormData:LaminationFormData;
-  DyePrintingFormData:DyePrintingFormData;
-  isDyeCuttingDataSave:boolean;
+  printingSaveFormData: PrintingFormValues;
+  laminaionFormData: LaminationFormData;
+  DyePrintingFormData: DyePrintingFormData;
+  isDyeCuttingDataSave: boolean;
+  isMasterDetaisDataSave: boolean;
+  isPrintingDataSave: boolean;
+  isLaminationDataSave: boolean;
 }
 
 const initialState: MasterDataState = {
   selectedTab: 0,
-  openSider:false,
-  updatePopup:false,
-  submitPopup:false,
-  submitPopupConfirm:false,
-  submitAndPublish:false,
+  openSider: false,
+  updatePopup: false,
+  submitPopup: false,
+  submitPopupConfirm: false,
+  submitAndPublish: false,
   saveFormData: {
     unitEffectivityNumber: "",
     typeOfLabel: "",
@@ -131,8 +136,7 @@ const initialState: MasterDataState = {
     customer: "",
     itemCode: "",
     structure: "",
-    brandDescription:
-      "",
+    brandDescription: "",
     repeat: "",
     ups: "",
     tracks: "",
@@ -144,7 +148,7 @@ const initialState: MasterDataState = {
     thickness: "",
     density: "",
     gsm: "",
-    customerPicture: ''
+    customerPicture: "",
   },
   printingSaveFormData: {
     mountingType: "",
@@ -162,111 +166,110 @@ const initialState: MasterDataState = {
     width: "",
     thickness: "",
     density: "",
-    printingTableData:
-     [
+    printingTableData: [
       {
         stationNo: 1,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 2,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 3,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 4,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 5,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 6,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 7,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 8,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 9,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-        uvledintensity:''
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
       },
       {
         stationNo: 10,
-        colorPantone: '',
+        colorPantone: "",
         lfValue: 0,
-        inkSupplier:"",
+        inkSupplier: "",
         lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      }
-    ]
+        volume: "",
+        uvLed: "",
+        uvledintensity: "",
+      },
+    ],
   },
-  laminaionFormData:{
+  laminaionFormData: {
     zone1Temp: "",
     zone2Temp: "",
     nipPressure: "",
@@ -303,50 +306,90 @@ const initialState: MasterDataState = {
     width: "",
     thickness: "",
     density: "",
+    laminatingTableData: [
+      {
+      filed:'Adhesive',
+      code: "",
+      brand: "",
+      ratio: "",
+    },
+    {
+      filed:"Hardener",
+      code: "",
+      brand: "",
+      ratio: "",
+    },
+    {
+      filed:"Ethyl Acetate",
+      code: "",
+      brand: "",
+      ratio: "",
+    }
+  ],
   },
-  DyePrintingFormData:{
+  DyePrintingFormData: {
     dyeCutMachineType: "",
     machine: "",
     dyeCode: "",
     runSpeed: "",
   },
-  isDyeCuttingDataSave:false
-  
+  isDyeCuttingDataSave: false,
+  isMasterDetaisDataSave: false,
+  isLaminationDataSave: false,
+  isPrintingDataSave: false,
 };
 
 const masterDataSlice = createSlice({
-  name: 'masterData',
+  name: "masterData",
   initialState,
   reducers: {
     setSelectedTab: (state, action: PayloadAction<number>) => {
       state.selectedTab = action.payload;
     },
-    setOpenSlider:(state,action:PayloadAction<boolean>) =>{
-      state.openSider = action.payload
+    setOpenSlider: (state, action: PayloadAction<boolean>) => {
+      state.openSider = action.payload;
     },
-    setUploadPopup:(state,action:PayloadAction<boolean>) =>{
-    state.updatePopup =  action.payload
+    setUploadPopup: (state, action: PayloadAction<boolean>) => {
+      state.updatePopup = action.payload;
     },
-    setSubmitPopupConfirm:(state,action:PayloadAction<boolean>)=>{
-     state.submitPopupConfirm = action.payload
+    setSubmitPopupConfirm: (state, action: PayloadAction<boolean>) => {
+      state.submitPopupConfirm = action.payload;
     },
-    setSubmitPopup:(state,action:PayloadAction<boolean>)=>{
-    state.submitPopup = action.payload
+    setSubmitPopup: (state, action: PayloadAction<boolean>) => {
+      state.submitPopup = action.payload;
     },
-    setSubmitAndPublishPopup:(state,action:PayloadAction<boolean>)=>{
-      state.submitAndPublish = action.payload
+    setSubmitAndPublishPopup: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublish = action.payload;
     },
     setSaveFormData: (state, action: PayloadAction<MasterFormData>) => {
       state.saveFormData = { ...state.saveFormData, ...action.payload };
     },
-    setSavePrintingFormData: (state, action: PayloadAction<PrintingFormValues>) => {
-      state.printingSaveFormData = { ...state.printingSaveFormData, ...action.payload };
+    setSavePrintingFormData: (
+      state,
+      action: PayloadAction<PrintingFormValues>
+    ) => {
+      state.printingSaveFormData = {
+        ...state.printingSaveFormData,
+        ...action.payload,
+      };
     },
-    setLaminationFormData:(state,action:PayloadAction<LaminationFormData>)=>{
-      state.laminaionFormData = {...state.laminaionFormData,...action.payload}
+    setLaminationFormData: (
+      state,
+      action: PayloadAction<LaminationFormData>
+    ) => {
+      state.laminaionFormData = {
+        ...state.laminaionFormData,
+        ...action.payload,
+      };
     },
-    setDyePrintingFormData:(state,action:PayloadAction<DyePrintingFormData>)=>{
-      state.DyePrintingFormData = {...state.DyePrintingFormData,...action.payload}
+    setDyePrintingFormData: (
+      state,
+      action: PayloadAction<DyePrintingFormData>
+    ) => {
+      state.DyePrintingFormData = {
+        ...state.DyePrintingFormData,
+        ...action.payload,
+      };
     },
     clearDyePrintingFormData: (state) => {
       state.DyePrintingFormData = {
@@ -356,11 +399,243 @@ const masterDataSlice = createSlice({
         runSpeed: "",
       };
     },
-    setIsDyeCuttingSave :(state,action:PayloadAction<boolean>)=>{
-state.isDyeCuttingDataSave = action.payload
-    }
-    
-}});
+    setIsDyeCuttingSave: (state, action: PayloadAction<boolean>) => {
+      state.isDyeCuttingDataSave = action.payload;
+    },
+    setIsMasterDetailsDataSave: (state, action: PayloadAction<boolean>) => {
+      state.isMasterDetaisDataSave = action.payload;
+    },
+    setIsLaminatingDataSave: (state, action: PayloadAction<boolean>) => {
+      state.isLaminationDataSave = action.payload;
+    },
+    setIsPrintingDataSave: (state, action: PayloadAction<boolean>) => {
+      state.isPrintingDataSave = action.payload;
+    },
+    clearMasterDetaisData: (state) => {
+      state.saveFormData = {
+        unitEffectivityNumber: "",
+        typeOfLabel: "",
+        jarCap: "",
+        customer: "",
+        itemCode: "",
+        structure: "",
+        brandDescription: "",
+        repeat: "",
+        ups: "",
+        tracks: "",
+        labelsPerMeter: "",
+        substrateType: "",
+        supplier: "",
+        dyneLevel: "",
+        width: "",
+        thickness: "",
+        density: "",
+        gsm: "",
+        customerPicture: "",
+      };
+    },
+    clearPrintingFormData: (state) => {
+      state.printingSaveFormData = {
+        mountingType: "",
+        cylinderTeeth: "",
+        tension: "",
+        unwinder: "",
+        infeed: "",
+        outfeed: "",
+        rewinder: "",
+        staticCharge: "",
+        formatCorrect: "",
+        substrateType: "",
+        supplier: "",
+        dyneLevel: "",
+        width: "",
+        thickness: "",
+        density: "",
+        printingTableData: [
+          {
+            stationNo: 1,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 2,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 3,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 4,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 5,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 6,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 7,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 8,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 9,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+          {
+            stationNo: 10,
+            colorPantone: "",
+            lfValue: 0,
+            inkSupplier: "",
+            lpcm: 0,
+            volume: "",
+            uvLed: "",
+            uvledintensity: "",
+          },
+        ],
+      };
+    },
+    clearLaminatingFormData: (state) => {
+      state.laminaionFormData = {
+        zone1Temp: "",
+        zone2Temp: "",
+        nipPressure: "",
+        speed: "",
+        lamiTension: "",
+        rewinderTension: "",
+        printedTension: "",
+        printedWidth: "",
+        printedThickness: "",
+        printedGSM: "",
+        printedDyne: "",
+        laminateTension: "",
+        laminateWidth: "",
+        laminateThickness: "",
+        laminateGSM: "",
+        laminateDyne: "",
+        adhesiveCode: "",
+        adhesiveBrand: "",
+        adhesiveRatio: "",
+        hardenerCode: "",
+        hardenerBrand: "",
+        hardenerRatio: "",
+        ethylCode: "",
+        ethylBrand: "",
+        ethylRatio: "",
+        materialCode: "",
+        materialBrand: "",
+        materialRatio: "",
+        viscocityRange: "",
+        adhesiveGSM: "",
+        substrateType: "",
+        supplier: "",
+        dyneLevel: "",
+        width: "",
+        thickness: "",
+        density: "",
+        laminatingTableData: [
+          {
+          filed:'Adhesive',
+          code: "",
+          brand: "",
+          ratio: "",
+        },
+        {
+          filed:"Hardener",
+          code: "",
+          brand: "",
+          ratio: "",
+        },
+        {
+          filed:"Ethyl Acetate",
+          code: "",
+          brand: "",
+          ratio: "",
+        }
+      ],
+      };
+    },
+  },
+});
 
-export const { setSelectedTab,setOpenSlider,setUploadPopup,setSubmitPopupConfirm,setSubmitPopup,setSubmitAndPublishPopup,setSaveFormData,setSavePrintingFormData,setLaminationFormData,setDyePrintingFormData,clearDyePrintingFormData,setIsDyeCuttingSave } = masterDataSlice.actions;
+export const {
+  setSelectedTab,
+  setOpenSlider,
+  setUploadPopup,
+  setSubmitPopupConfirm,
+  setSubmitPopup,
+  setSubmitAndPublishPopup,
+  setSaveFormData,
+  setSavePrintingFormData,
+  setLaminationFormData,
+  setDyePrintingFormData,
+  clearDyePrintingFormData,
+  setIsDyeCuttingSave,
+  setIsMasterDetailsDataSave,
+  setIsLaminatingDataSave,
+  setIsPrintingDataSave,
+  clearLaminatingFormData,
+  clearMasterDetaisData,
+  clearPrintingFormData
+} = masterDataSlice.actions;
 export default masterDataSlice.reducer;

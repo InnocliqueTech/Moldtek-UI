@@ -41,7 +41,7 @@ const CreateMasterData: React.FC = () => {
          top: {
   xs: "96.5px",  // for small screens and below
   sm:'52.5px',
-  md: "53px",  // for medium screens and up
+  md: "50.9px",  // for medium screens and up
 }
 ,
           zIndex: 100,

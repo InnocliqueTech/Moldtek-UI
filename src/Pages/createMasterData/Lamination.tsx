@@ -5,25 +5,33 @@ import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { LaminationFormData, setLaminationFormData } from "../../store/slices/masterDataSlice";
+import {
+  LaminatingTableRow,
+  LaminationFormData,
+  setIsLaminatingDataSave,
+  setLaminationFormData,
+} from "../../store/slices/masterDataSlice";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 
 const Lamination: React.FC = () => {
-  const { selectedTab,laminaionFormData } = useSelector((state: RootState) => state.masterData);
-const dispatch = useDispatch<AppDispatch>();
-const bondingMaterialColumns = [
-  { id: "field", label: "Field" },
-  { id: "code", label: "Code",edit:true },
-  { id: "brand", label: "Brand",edit:true },
-  { id: "ratio", label: "Ratio",edit:true },
-];
+  const { selectedTab, laminaionFormData } = useSelector(
+    (state: RootState) => state.masterData
+  );
+   const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const bondingMaterialColumns = [
+    { id: "field", label: "Field" },
+    { id: "code", label: "Code", edit: true },
+    { id: "brand", label: "Brand", edit: true },
+    { id: "ratio", label: "Ratio", edit: true },
+  ];
 
-const bondingMaterialData = [
-  { field: "Adhesive", code: "", brand: "", ratio: "" },
-  { field: "Hardener", code: "", brand: "", ratio: "" },
-  { field: "Ethyl Acetate", code: "", brand: "", ratio: "" },
-];
+  const bondingMaterialData = [
+    { field: "Adhesive", code: "", brand: "", ratio: "" },
+    { field: "Hardener", code: "", brand: "", ratio: "" },
+    { field: "Ethyl Acetate", code: "", brand: "", ratio: "" },
+  ];
   const [formData, setFormData] = useState<LaminationFormData>({
     zone1Temp: "",
     zone2Temp: "",
@@ -61,41 +69,78 @@ const bondingMaterialData = [
     width: "",
     thickness: "",
     density: "",
+    laminatingTableData: [
+      {
+        filed: "Adhesive",
+        code: "",
+        brand: "",
+        ratio: "",
+      },
+      {
+        filed: "Hardener",
+        code: "",
+        brand: "",
+        ratio: "",
+      },
+      {
+        filed: "Ethyl Acetate",
+        code: "",
+        brand: "",
+        ratio: "",
+      },
+    ],
   });
 
-    const handleSave = () => {
-      dispatch(setLaminationFormData(formData));
+  const handleSave = () => {
+    const finalSaveData = {
+      ...formData,
+      laminaionFormData: tableData,
     };
-    useEffect(() => {
-      if (laminaionFormData) {
-        setFormData(laminaionFormData);
-
+    dispatch(setLaminationFormData(finalSaveData));
+     dispatch(setIsLaminatingDataSave(true));
+  };
+  useEffect(() => {
+    if (laminaionFormData) {
+      setFormData(laminaionFormData);
+      if (laminaionFormData.laminatingTableData) {
+        setTableData(laminaionFormData.laminatingTableData);
       }
-    }, [laminaionFormData]);
+    }
+  }, [laminaionFormData]);
 
   const handleChange = (
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: Array.isArray(value)
-        ? value
-        : typeof value === "string"
-        ? value
-        : value.target.value,
-    }));
+    const newValue = Array.isArray(value)
+      ? value
+      : typeof value === "string"
+      ? value
+      : value.target.value;
+  
+    const updatedFormData = {
+      ...formData,
+      [field]: newValue,
+    };
+  
+    setFormData(updatedFormData);
+    dispatch(setLaminationFormData(updatedFormData)); 
   };
+  
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", gap: 1 }}>
-            <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}>
+            <Typography
+              sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+            >
               Zone Temperature & Pressing Conditions
             </Typography>
-            <InfoOutline sx={{ color: "#9F9F9F", width: "20px", height: "20px" }} />
+            <InfoOutline
+              sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+            />
           </Box>
           <Grid container spacing={2} pt={1}>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -137,36 +182,41 @@ const bondingMaterialData = [
               <ReusableInput
                 label="Rewinder Tension"
                 value={formData.rewinderTension}
-                onChange={(e) => handleChange("rewinderTension", e.target.value)}
+                onChange={(e) =>
+                  handleChange("rewinderTension", e.target.value)
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Printed Film Tension"
                 value={formData.printedTension}
-                onChange={(e) => handleChange("rewinderTension", e.target.value)}
+                onChange={(e) =>
+                  handleChange("rewinderTension", e.target.value)
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Laminated Film Tension"
                 value={formData.laminateTension}
-                onChange={(e) => handleChange("rewinderTension", e.target.value)}
+                onChange={(e) =>
+                  handleChange("rewinderTension", e.target.value)
+                }
               />
             </Grid>
           </Grid>
         </Grid>
       </Box>
-      
+
       <Box
         sx={{
           display: "flex",
           gap: 2,
           flexDirection: { md: "row", xs: "column" },
-          mt:1.5
+          mt: 1.5,
         }}
       >
-
         <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography
@@ -233,14 +283,19 @@ const bondingMaterialData = [
         </Box>
       </Box>
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
+        sx={{
+          border: "1px solid #ECECEC",
+          borderRadius: "16px",
+          pY: 1,
+          mt: 1.5,
+        }}
       >
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            p:1
+            p: 1,
           }}
         >
           <Typography
@@ -251,7 +306,12 @@ const bondingMaterialData = [
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={bondingMaterialColumns} data={bondingMaterialData} tableTitle={true} />
+        <DataTable
+          columns={bondingMaterialColumns}
+          data={tableData}
+          tableTitle={true}
+          setData={setTableData}
+        />
       </Box>
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 2 }}
@@ -262,7 +322,7 @@ const bondingMaterialData = [
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-           Material Details
+            Material Details
           </Typography>
           <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -273,10 +333,10 @@ const bondingMaterialData = [
             { label: "Viscocity Range", key: "viscocityRange" },
             { label: "Adhesive GSM", key: "adhesiveGSM" },
           ].map(({ label, key }) => (
-            <Grid size={{xs:12,md:6}} key={key}>
+            <Grid size={{ xs: 12, md: 6 }} key={key}>
               <ReusableInput
                 label={label}
-                value={formData[key as keyof typeof formData]}
+                value={formData[key as keyof LaminationFormData] as string}
                 onChange={(e) => handleChange(key, e.target.value)}
               />
             </Grid>

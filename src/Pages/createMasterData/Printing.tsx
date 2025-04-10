@@ -7,27 +7,62 @@ import { InfoOutline } from "@mui/icons-material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useEffect, useState } from "react";
-import { PrintingFormValues, PrintingTableRow, setSavePrintingFormData } from "../../store/slices/masterDataSlice";
+import {
+  PrintingFormValues,
+  PrintingTableRow,
+  setIsPrintingDataSave,
+  setSavePrintingFormData,
+} from "../../store/slices/masterDataSlice";
+
+const machineFields = [
+  {
+    id: "mountingType",
+    label: "Mounting Type",
+    options: ["Standard", "Actual"],
+  },
+  { id: "cylinderTeeth", label: "Cylinder Teeth" },
+  { id: "tension", label: "Tension" },
+  { id: "unwinder", label: "Unwinder" },
+  { id: "infeed", label: "Infeed" },
+  { id: "outfeed", label: "Outfeed" },
+  { id: "rewinder", label: "Rewinder" },
+  { id: "staticCharge", label: "Static Charge" },
+  { id: "formatCorrect", label: "Format Correct" },
+];
+
+const substrateFields = [
+  { id: "substrateType", label: "Substrate Type", options: ["PET"] },
+  {
+    id: "supplier",
+    label: "Supplier",
+    options: ["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"],
+  },
+  { id: "dyneLevel", label: "Dyne Level" },
+  { id: "width", label: "Width (mm)" },
+  { id: "thickness", label: "Thickness" },
+  { id: "density", label: "Density (g/cm³)" },
+];
 
 const Printing: React.FC = () => {
-  const { selectedTab,printingSaveFormData } = useSelector((state: RootState) => state.masterData);
-  const dispatch = useDispatch<AppDispatch>()
+  const { selectedTab, printingSaveFormData } = useSelector(
+    (state: RootState) => state.masterData
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   const columns = [
     { id: "stationNo", label: "Station No" },
-    { id: "colorPantone", label: "Color Pantone",edit:true  },
-    { id: "lfValue", label: "LF Value",edit:true  },
+    { id: "colorPantone", label: "Color Pantone", edit: true },
+    { id: "lfValue", label: "LF Value", edit: true },
     {
       id: "inkSupplier",
       label: "Ink Supplier",
-      // isDropdown: true,
+      editSelect: true,
       options: ["Siegwerk", "Flint Group"],
-      editSelect:true
     },
-    { id: "lpcm", label: "LPCM" ,edit:true },
-    { id: "volume", label: "Volume",edit:true  },
+    { id: "lpcm", label: "LPCM", edit: true },
+    { id: "volume", label: "Volume", edit: true },
     { id: "uvLed", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
-    { id: "uvledintensity", label: "UV/LED Intensity",edit:true  },
+    { id: "uvledintensity", label: "UV/LED Intensity", edit: true },
   ];
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
@@ -47,116 +82,78 @@ const Printing: React.FC = () => {
     width: "",
     thickness: "",
     density: "",
-    printingTableData: [
-      {
-        stationNo: 1,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 2,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 3,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 4,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 5,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 6,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 7,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 8,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      },
-      {
-        stationNo: 9,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-        uvledintensity:''
-      },
-      {
-        stationNo: 10,
-        colorPantone: '',
-        lfValue: 0,
-        inkSupplier:"",
-        lpcm: 0,
-        volume: '',
-        uvLed: '',
-         uvledintensity:''
-      }
-    ]
+    printingTableData: Array.from({ length: 10 }, (_, i) => ({
+      stationNo: i + 1,
+      colorPantone: "",
+      lfValue: 0,
+      inkSupplier: "",
+      lpcm: 0,
+      volume: "",
+      uvLed: "",
+      uvledintensity: "",
+    })),
   });
+
+ const handleChange = (
+    field: string,
+    value: string | string[] | SelectChangeEvent<string | string[]>
+  ) => {
+    const newValue = Array.isArray(value)
+      ? value
+      : typeof value === "string"
+      ? value
+      : value.target.value;
+  
+    const updatedFormData = {
+      ...formValues,
+      [field]: newValue,
+    };
+  
+    setFormValues(updatedFormData);
+    dispatch(setSavePrintingFormData(updatedFormData)); 
+  };
+  
+
+  const renderField = (field: {
+    id: string;
+    label: string;
+    options?: string[];
+  }) => {
+    const value = formValues[field.id as keyof PrintingFormValues] as string;
+
+    if (field.options) {
+      return (
+        <DropdownComponent
+          key={field.id}
+          label={field.label}
+          value={value}
+          onChange={(value) => handleChange(field.id, value)}
+          options={field.options}
+          isMultiSelect={false}
+          checkbox={false}
+        />
+      );
+    }
+
+    return (
+      <ReusableInput
+        key={field.id}
+        label={field.label}
+        value={value}
+        onChange={(e) => handleChange(field.id, e.target.value)}
+      />
+    );
+  };
+
   const handleSave = () => {
     const finalSaveData = {
       ...formValues,
       printingTableData: tableData,
     };
     dispatch(setSavePrintingFormData(finalSaveData));
+     dispatch(setIsPrintingDataSave(true));
   };
+
   useEffect(() => {
     if (printingSaveFormData) {
       setFormValues(printingSaveFormData);
@@ -165,205 +162,75 @@ const Printing: React.FC = () => {
       }
     }
   }, [printingSaveFormData]);
-  
-    
-
-  const handleChange = (
-    field: string,
-    value: string | string[] | SelectChangeEvent<string | string[]>
-  ) => {
-    setFormValues((prev) => ({
-      ...prev,
-      [field]: Array.isArray(value)
-        ? value
-        : typeof value === "string"
-        ? value
-        : value.target.value,
-    }));
-  };
-
 
   return (
-    <Box sx={{ borderRadius: "0px " }}>
+    <Box sx={{ borderRadius: "0px" }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Typography
-              sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-            >
-              Machine Settings
-            </Typography>
-            <InfoOutline
-              sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-            />
-          </Box>
-          <Grid container spacing={2} pt={1}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <DropdownComponent
-                label="Mounting Type"
-                value={formValues.mountingType}
-                onChange={(value) =>  handleChange("mountingType", value)}
-                options={["Standard", "Actual"]}
-                isMultiSelect={false}
-                checkbox={false}
-              />
+        <Typography
+          sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+        >
+          Machine Settings
+        </Typography>
+        <Grid container spacing={2} pt={1}>
+          {machineFields.map((field) => (
+            <Grid size={{ xs: 12, md: 4 }} id={field.id}>
+              {renderField(field)}
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Cylinder Teeth"
-                value={formValues.cylinderTeeth}
-                onChange={(e) => handleChange("cylinderTeeth", e.target.value)}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Tension"
-                value={formValues.tension}
-                onChange={(e) => handleChange("tension", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Unwinder"
-                value={formValues.unwinder}
-                onChange={(e) => handleChange("unwinder", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Infeed"
-                value={formValues.infeed}
-                onChange={(e) => handleChange("infeed", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Outfeed"
-                value={formValues.outfeed}
-                onChange={(e) => handleChange("outfeed", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Rewinder"
-                value={formValues.rewinder}
-                onChange={(e) => handleChange("rewinder", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Static Charge"
-                value={formValues.staticCharge}
-                onChange={(e) => handleChange("staticCharge", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Format Correct"
-                value={formValues.formatCorrect}
-                onChange={(e) => handleChange("formatCorrect", e.target.value)}
-              />
-            </Grid>
-          </Grid>
+          ))}
         </Grid>
       </Box>
-              <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography
-                    sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-                  >
-                    Printing Substrate
-                  </Typography>
-                  <Grid container spacing={2} pt={1}>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <DropdownComponent
-                        label="Substrate Type"
-                        options={["PET"]}
-                        value={formValues.substrateType}
-                        onChange={(value) => handleChange("substrateType", value)}
-                        isMultiSelect={false}
-                        checkbox={false}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <DropdownComponent
-                        label="Supplier"
-                        options={[
-                          "U-Flex Ltd.",
-                          "Huhtamaki",
-                          "Huhtamaki",
-                          "Gulf Pack Supplier",
-                        ]}
-                        value={formValues.supplier}
-                        onChange={(value) => handleChange("supplier", value)}
-                        isMultiSelect={false}
-                        checkbox={false}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <ReusableInput
-                        label="Dyne Level"
-                        value={formValues.dyneLevel}
-                        onChange={(e) => handleChange("dyneLevel", e.target.value)}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <ReusableInput
-                        label="Width (mm)"
-                        value={formValues.width}
-                        onChange={(e) => handleChange("width", e.target.value)}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <ReusableInput
-                        label="Thickness"
-                        value={formValues.thickness}
-                        onChange={(e) => handleChange("thickness", e.target.value)}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <ReusableInput
-                        label="Density (g/cm)"
-                        value={formValues.density}
-                        onChange={(e) => handleChange("density", e.target.value)}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
+
       <Box
-        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5 }}
+        sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2, mt: 2 }}
       >
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              p:1
-            }}
-          >
-            <Typography
-              sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-            >
-              Station-wise Metric
-            </Typography>
-            <InfoOutline
-              sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-            />
-          </Box>
-          <Box>
-          <DataTable columns={columns} data={tableData} setData={setTableData} tableTitle={true} />
-
-          </Box>
+        <Typography
+          sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+        >
+          Printing Substrate
+        </Typography>
+        <Grid container spacing={2} pt={1}>
+          {substrateFields.map((field) => (
+            <Grid size={{ xs: 12, md: 6 }} id={field.id}>
+              {renderField(field)}
+            </Grid>
+          ))}
         </Grid>
       </Box>
+
+      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            p: 1,
+          }}
+        >
+          <Typography
+            sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+          >
+            Station-wise Metric
+          </Typography>
+          <InfoOutline
+            sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+          />
+        </Box>
+        <Box>
+          <DataTable
+            columns={columns}
+            data={tableData}
+            setData={setTableData}
+            tableTitle={true}
+          />
+        </Box>
+      </Box>
+
       <Box mt={1} display="flex" justifyContent="flex-end">
         <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );
 };
+
 export default Printing;

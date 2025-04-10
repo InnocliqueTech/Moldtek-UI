@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
-import { setSaveFormData } from "../../store/slices/masterDataSlice";
+import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 
@@ -47,21 +47,28 @@ const MasterDataDetails: React.FC = () => {
 
   const handleSave = () => {
     dispatch(setSaveFormData(formData));
+     dispatch(setIsMasterDetailsDataSave(true));
   };
 
   const handleChange = (
-    field: string,
-    value: string | string[] | SelectChangeEvent<string | string[]>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: Array.isArray(value)
-        ? value
-        : typeof value === "string"
-        ? value
-        : value.target.value,
-    }));
-  };
+     field: string,
+     value: string | string[] | SelectChangeEvent<string | string[]>
+   ) => {
+     const newValue = Array.isArray(value)
+       ? value
+       : typeof value === "string"
+       ? value
+       : value.target.value;
+   
+     const updatedFormData = {
+       ...formData,
+       [field]: newValue,
+     };
+   
+     setFormData(updatedFormData);
+     dispatch(setSaveFormData(updatedFormData)); 
+   };
+   
 
   useEffect(() => {
     if (saveFormData) {
