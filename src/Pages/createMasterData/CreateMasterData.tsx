@@ -19,32 +19,51 @@ const tabs = [
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector((state: RootState) => state.masterData);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh", // or 100% if wrapped by a parent with set height
+        width: "100%",
+      }}
+    >
+      {/* Fixed Tabs */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 50.5,
+          zIndex: 100,
+          backgroundColor: "white",
+        }}
+      >
         <TabsComponent
           tabs={tabs}
           value={selectedTab}
           onChange={handleTabChange}
         />
-        <Box
-          sx={{
-            backgroundColor: "white",
-            padding: 2,
-            borderRadius: "0px",
-            borderBottomLeftRadius: "10px",
-            borderBottomRightRadius: "10px",
-          }}
-        >
-          {selectedTab === 0 && <MasterDataDetails />}
-          {selectedTab === 1 && <Printing />}
-          {selectedTab === 2 && <Lamination />}
-          {selectedTab === 3 && <DyePrinting />}
-        </Box>
+      </Box>
+
+      {/* Scrollable content */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          backgroundColor: "white",
+          padding: 2,
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+        }}
+      >
+        {selectedTab === 0 && <MasterDataDetails />}
+        {selectedTab === 1 && <Printing />}
+        {selectedTab === 2 && <Lamination />}
+        {selectedTab === 3 && <DyePrinting />}
       </Box>
     </Box>
   );
