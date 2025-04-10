@@ -26,12 +26,6 @@ const Lamination: React.FC = () => {
     { id: "brand", label: "Brand", edit: true },
     { id: "ratio", label: "Ratio", edit: true },
   ];
-
-  const bondingMaterialData = [
-    { field: "Adhesive", code: "", brand: "", ratio: "" },
-    { field: "Hardener", code: "", brand: "", ratio: "" },
-    { field: "Ethyl Acetate", code: "", brand: "", ratio: "" },
-  ];
   const [formData, setFormData] = useState<LaminationFormData>({
     zone1Temp: "",
     zone2Temp: "",

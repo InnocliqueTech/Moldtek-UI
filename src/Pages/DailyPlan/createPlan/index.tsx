@@ -64,9 +64,9 @@ const CreatePlan: React.FC = () => {
     console.log('Add new job button clicked');
   };
 
-  const handleReset = () => {
-    setFormFields(initialFormFields);
-  };
+  // const handleReset = () => {
+  //   setFormFields(initialFormFields);
+  // };
 
   return (
     <Box className="bg-white rounded-xl px-5 py-6">
