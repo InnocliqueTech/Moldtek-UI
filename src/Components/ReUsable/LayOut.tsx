@@ -15,6 +15,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
+import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -77,7 +78,7 @@ const Layout = () => {
       title: "UEN-20240801",
       button1Text: "Version History",
       button2Text: "Modify Master Data",
-      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton1Click: () =>  dispatch(setVersionPopup(true)),
       onButton2Click: () => navigate(`/updateMasterData/${123}`),
       headerButton:true,
       onBack:()=>navigate('/masterData')
@@ -86,7 +87,7 @@ const Layout = () => {
       title: "UEN-20240801",
       button1Text: "Version History",
       button2Text: "Modify Master Data",
-      onButton1Click: () => alert("Edit Profile Clicked"),
+      onButton1Click: () => dispatch(setVersionPopup(true)),
       onButton2Click: () => navigate(`/updateMasterData/${123}`),
       headerButton:true,
       onBack:()=>navigate('/masterData') 

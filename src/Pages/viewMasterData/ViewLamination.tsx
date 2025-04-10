@@ -15,13 +15,12 @@ const zoneTemperatureColumns = [
   { id: "zone2Temp", label: "Zone-2 Temp (°C)" },
   { id: "npPressure", label: "Np Pressure (Bar)" },
   { id: "speed", label: "Speed (m/min)" },
-  { id: "lamiSetTension", label: "Lami Set Tension" },
-  { id: "rewinderTension", label: "Rewinder Tension" },
+  // { id: "lamiSetTension", label: "Lami Set Tension" },
+  // { id: "rewinderTension", label: "Rewinder Tension" },
 ];
 const materialDetailsColumns = [
   { id: "viscocityRange", label: "Visco City Range" },
   { id: "adhesiveGsm", label: "Adhesive GSM" },
-  { id: "gsm", label: "GSM" },
   { id: "compositeGsm", label: "Composite GSM" },
 ];
 const materialDetailsData = [
@@ -67,11 +66,26 @@ const laminatingSubstrateData = [
   },
 ];
 
-const unwindingRewindingColumns = [
-  { id: "field", label: "Field" },
-  { id: "printedFilm", label: "Printed Film" },
-  { id: "laminateFilm", label: "Laminate Film" },
-];
+// const unwindingRewindingColumns = [
+//   { id: "field", label: "Field" },
+//   { id: "printedFilm", label: "Printed Film" },
+//   { id: "laminateFilm", label: "Laminate Film" },
+// ];
+
+const tensionColumns = [
+  { id: "rewinderTension", label: "Rewinder Tension" },
+  { id: "rewinderTension", label: "Rewinder Tension" },
+  { id: "printedFilmTension", label: "Printed Film Tension" },
+  { id: "laminatedFilmTension", label: "Laminated Film Tension" },
+]
+const tensionData = [
+  {
+    lamiSetTension: "2.5 n/mm",
+    rewinderTension: "--",
+    printedFilmTension:"12",
+    laminatedFilmTension:"12"
+  },
+]
 
 const unwindingRewindingData = [
   { field: "Tension (Primary)", printedFilm: "2.5 N/mm", laminateFilm: "--" },
@@ -140,7 +154,17 @@ const ViewLamination: React.FC = () => {
               columns={laminatingSubstarteColumns}
               data={laminatingSubstrateData}
             />
-      <Box
+                 <Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
+        <Typography
+          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+          gutterBottom
+        >
+          Tensions Details
+        </Typography>
+        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+      </Box>
+      <DataTable columns={tensionColumns} data={tensionData} />
+      {/* <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
       >
         <Box
@@ -164,7 +188,7 @@ const ViewLamination: React.FC = () => {
           data={laminationDetails}
           tableTitle={true}
         />
-      </Box>
+      </Box> */}
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
       >
@@ -186,7 +210,7 @@ const ViewLamination: React.FC = () => {
         </Box>
         <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} tableTitle={true} />
       </Box>
-         <Box sx={{ display: "flex", gap: 1,p:1 }}>
+         <Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom

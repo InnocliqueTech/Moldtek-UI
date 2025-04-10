@@ -91,6 +91,7 @@ interface ViewMasterDataState {
   dyePrintingSettings: DyePrintingSettings[];
   viewMasterDataDetails:ViewMasterDataDetails;
   jobListData:JobListData[];
+  versionPopup:boolean
 }
 
 const initialState: ViewMasterDataState = {
@@ -186,7 +187,8 @@ const initialState: ViewMasterDataState = {
       lastExecuted: "",
       comment: 0,
     }
-  ]
+  ],
+  versionPopup:false
 };
 
 const viewMasterDataSlice = createSlice({
@@ -253,6 +255,9 @@ const viewMasterDataSlice = createSlice({
     ) => {
       state.viewMasterDataDetails = action.payload;
     },
+    setVersionPopup:(state,action:PayloadAction<boolean>)=>{
+      state.versionPopup = action.payload
+    }
   },
 });
 
@@ -267,6 +272,7 @@ export const {
   setLaminationDetails,
   setLaminationSettings,
   setJobsListData,
-  setViewMasterDataDetails
+  setViewMasterDataDetails,
+  setVersionPopup
 } = viewMasterDataSlice.actions;
 export default viewMasterDataSlice.reducer;

@@ -143,20 +143,8 @@ const OrderCard: React.FC<OrderCardProps> = () => {
               >
                 PET
               </Typography>
-              <Box sx={{ mt: 2 }} />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Customer Picture
-              </Typography>
-              <img src={customerImage} alt="customer picture" />
             </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
+            <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
                 sx={{ fontWeight: 500 }}
@@ -175,7 +163,19 @@ const OrderCard: React.FC<OrderCardProps> = () => {
                 Kitkat 50gm Wrapper
               </Typography>
             </Box>
+          </Grid>
 
+          <Grid size={{ xs: 12, md: 4 }}>
+
+            <Box  />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Customer Picture
+              </Typography>
+              <img src={customerImage} alt="customer picture" />
             <Box sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
@@ -200,41 +200,46 @@ const OrderCard: React.FC<OrderCardProps> = () => {
           </Grid>
         </Grid>
       </Box>
+      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1.5 }}>
+  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+    <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }} gutterBottom>
+      Repeat Length & Label Coverage
+    </Typography>
+    <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+  </Box>
 
-      <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-        <Typography
-          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-          gutterBottom
-        >
-          Repeat Length & Label Coverage
-        </Typography>
-        <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
-      </Box>
-
-      {repeatTableData.map((item, idx) => (
+  {repeatTableData.map((item, idx) => (
+    <Box
+      key={idx}
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: 2,
+        p: 1.5,
+      }}
+    >
+      {Object.entries(item).map(([key, value]) => (
         <Box
-          key={idx}
+          key={key}
           sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-            p: 1.5,
-            border: "1px solid #ECECEC",
-            borderRadius: "16px",
+            flex: "1 1 200px",
+            maxWidth: "calc(33.33% - 16px)", // fits 3 in a row with spacing
           }}
         >
-          {Object.entries(item).map(([key, value]) => (
-            <Box key={key} sx={{ minWidth: "200px" }}>
-              <Typography variant="body2" color="textSecondary">
-                {columns.find((col) => col.id === key)?.label || key}
-              </Typography>
-              <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {value}
-              </Typography>
-            </Box>
-          ))}
+          <Typography variant="body2" color="textSecondary">
+            {columns.find((col) => col.id === key)?.label || key}
+          </Typography>
+          <Typography variant="body1" sx={{ fontWeight: 500 }}>
+            {value}
+          </Typography>
         </Box>
       ))}
+    </Box>
+  ))}
+</Box>
+
+
     </Box>
   );
 };

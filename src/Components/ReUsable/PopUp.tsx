@@ -10,21 +10,25 @@ import {
 import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
-import { CloudUpload } from "@mui/icons-material";
+import { CloudUpload, Padding } from "@mui/icons-material";
+import ReusableTable from "./Table";
 
 interface ReusablePopupProps {
   open: boolean;
   onClose: () => void;
-  title: string;
-  confirmText: string;
-  onConfirm: () => void;
+  title?: string;
+  confirmText?: string;
+  onConfirm?: () => void;
   text?: string;
   subText?: string;
-  dropdownOptions?: string[]; // Dynamic dropdown values
+  dropdownOptions?: string[]; 
   upload?: boolean;
   textField?: boolean;
   dropdown?: boolean;
   cancel?: boolean;
+  table?: boolean;
+  tableData?: any[];
+  tableColumns?: any[];
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -35,11 +39,14 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   onConfirm,
   text,
   subText,
-  dropdownOptions = [], // Default to an empty array if no values are provided
+  dropdownOptions = [], 
   upload,
   textField,
   cancel,
   dropdown,
+  table,
+  tableData = [],
+  tableColumns = [],
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -52,21 +59,25 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
 
   return (
     <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      sx={{
-        "& .MuiPaper-root": {
-          borderRadius: "16px", // 👈 Customize border radius here
-        },
-      }}
-    >
+    open={open}
+    onClose={onClose}
+    maxWidth={false} // Disable MUI's default width handling
+    fullWidth
+    sx={{
+      "& .MuiPaper-root": {
+        borderRadius: "16px",
+        width: table ? "1000px" : "600px", // 👈 Custom width here
+        maxWidth: "100%", // Responsive fallback
+      },
+    }}
+  >
       {/* Popup Header */}
+      {title&&
       <DialogTitle>{title}</DialogTitle>
+}
 
       {/* Popup Body */}
-      <DialogContent>
+      <DialogContent sx={{        p:table ?"0px":"0px",mt:table?"14px":'0px'}}>
         <Box display="flex" flexDirection="column" gap="10px">
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
@@ -184,6 +195,19 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
               checkbox={false}
             />
           )}
+            {table && tableColumns.length > 0 && tableData.length > 0 && (
+            <ReusableTable
+              columns={tableColumns}
+              data={tableData}
+              selectable={false}
+              label="24 Versions"
+              title="List of executed jobs"
+              info={true}
+              searchVisible={true}
+              action={false}
+               boxShadow={true}
+            />
+          )}
         </Box>
       </DialogContent>
 
@@ -197,6 +221,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
             textColor="#0E0E0E"
           />
         )}
+        {confirmText &&
         <ButtonComponent
           onClick={onConfirm}
           text={confirmText}
@@ -205,6 +230,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
           borderRadius="100px"
           width={cancel ? "" : "100%"}
         />
+}
       </DialogActions>
     </Dialog>
   );

@@ -16,6 +16,7 @@ import { AppDispatch, RootState } from "../../store";
 import { setUploadPopup } from "../../store/slices/masterDataSlice";
 import { ReplayOutlined } from "@mui/icons-material";
 import  ArrowBackIcon  from '@mui/icons-material/ArrowBack';
+import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 
 interface HeaderProps {
   title: string;
@@ -51,6 +52,7 @@ const Header: React.FC<HeaderProps> = ({
 const handleClosePopUp= ()=>{
   dispatch(setUploadPopup(false))
 }
+
   return (
     <>
       <AppBar
@@ -225,7 +227,9 @@ const handleClosePopUp= ()=>{
       onClose={handleClosePopUp}
       subText="Upload Master Data"
       />
+
             <Filter/>
+            <VersinDetails/>
     </>
   );
 };

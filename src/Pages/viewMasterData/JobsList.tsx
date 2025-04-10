@@ -302,27 +302,7 @@ const JobsList: React.FC = () => {
               >
                 {viewMasterDataDetails.structure}
               </Typography>
-              <Box sx={{ mt: 2 }} />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Customer Picture
-              </Typography>
-              {viewMasterDataDetails.customerPicture ? (
-                <img
-                  src={viewMasterDataDetails.customerPicture}
-                  alt="customerPicture"
-                  width={100}
-                  height={100}
-                />
-              ) : null}
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }} >
               <Typography
                 variant="body2"
                 sx={{ fontWeight: 500 }}
@@ -341,6 +321,27 @@ const JobsList: React.FC = () => {
                 {viewMasterDataDetails.typeOfLabel}
               </Typography>
             </Box>
+
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+          <Box />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Customer Picture
+              </Typography>
+              {viewMasterDataDetails.customerPicture ? (
+                <img
+                  src={viewMasterDataDetails.customerPicture}
+                  alt="customerPicture"
+                  width={100}
+                  height={100}
+                />
+              ) : null}
 
             <Box sx={{ mt: 2 }}>
               <Typography
