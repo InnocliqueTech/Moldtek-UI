@@ -109,7 +109,7 @@ const bondingMaterialData = [
 
 const ViewLamination: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { laminationAdhesive, laminationDetails, laminationSettings } =
+  const { laminationAdhesive, laminationSettings } =
     useSelector((state: RootState) => state.viewMasterData);
 
   useEffect(() => {

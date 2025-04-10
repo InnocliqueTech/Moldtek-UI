@@ -10,7 +10,7 @@ import {
 import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
-import { CloudUpload, Padding } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 import ReusableTable from "./Table";
 
 interface ReusablePopupProps {

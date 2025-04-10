@@ -10,7 +10,7 @@ import {
   setJobsListData,
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
-import customerImage from "../../assets/Images/customerPicture.png";
+
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
