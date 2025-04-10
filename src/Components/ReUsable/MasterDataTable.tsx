@@ -117,11 +117,14 @@ const DataTable = <T extends Record<string, any>>({
                   borderRight:
                     index === columns.length - 1 && !tableTitle
                       ? "1px solid #ccc"
-                      : tableTitle
+                      : index == columns.length && tableTitle
                       ? "none"
                       : "none",
                   borderBottom: "none",
-                  borderLeft: tableTitle ? "none" : "1px solid #ccc",
+                  borderLeft:
+                    index == columns.length && tableTitle
+                      ? "none"
+                      : "1px solid #ccc",
                 }}
               >
                 {column.label}
@@ -159,18 +162,23 @@ const DataTable = <T extends Record<string, any>>({
                       borderRight:
                         index === columns.length - 1 && !tableTitle
                           ? "1px solid #ccc"
-                          : tableTitle
+                          : index !== columns.length - 1 && tableTitle
                           ? "none"
                           : "none",
                       borderBottom:
                         rowIndex === data.length - 1 && !tableTitle
                           ? "1px solid #ccc"
-                          : tableTitle
+                          : rowIndex == data.length && tableTitle
                           ? "none"
                           : "none",
-                      borderLeft: tableTitle ? "none" : "1px solid #ccc",
+                      borderLeft:
+                        rowIndex == data.length && tableTitle
+                          ? "none"
+                          : "1px solid #ccc",
                       borderBottomLeftRadius:
-                        rowIndex === data.length - 1 && tableTitle
+                        rowIndex === data.length - 1 &&
+                        index === 0 &&
+                        tableTitle
                           ? "12px"
                           : "0px",
                     }}

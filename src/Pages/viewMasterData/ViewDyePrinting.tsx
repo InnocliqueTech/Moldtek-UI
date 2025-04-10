@@ -35,7 +35,7 @@ const ViewDyePrinting: React.FC = () => {
   }, [dispatch, dyePrintingData]);
 
   return (
-    <Box sx={{ borderRadius: "0px " ,p:1}}>
+    <Box sx={{ borderRadius: "0px "}}>
       <Box sx={{ display: "flex", gap: 1 }}>
         <Typography
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
