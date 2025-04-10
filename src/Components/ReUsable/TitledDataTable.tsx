@@ -21,6 +21,7 @@ interface TitledDataTableProps<T> {
   borderRadius?: string | number;
   titleColor?: string;
   infoIconColor?: string;
+  firstRow?:boolean
 }
 
 const TitledDataTable = <T extends Record<string, any>>({
@@ -32,6 +33,7 @@ const TitledDataTable = <T extends Record<string, any>>({
   borderRadius = "16px",
   titleColor = "#2F2FF",
   infoIconColor = "#9F9F9F",
+  firstRow=false
 }:TitledDataTableProps<T>) => {
   return (
     <Box
@@ -69,7 +71,7 @@ const TitledDataTable = <T extends Record<string, any>>({
         data={data}
         setData={setData}
         tableTitle={true}
-        firstRow={true}
+        firstRow={firstRow ?true:false}
       />
     </Box>
   );

@@ -169,24 +169,9 @@ const Tensioncolumns = [
     { particular: 'Printed Film Issued For Next Process (Good Mtr) Mtrs', target: '777', roll1: '23', roll2: '23' },
   ];
          
-  const printingProcessColumns1 = [
-    { id: 'particular', label: '' },
-    { id: 'roll1', label: 'Roll-1' },
-    { id: 'roll2', label: 'Roll-2' },
-  ];
-  
-  const printingProcessData1 = [
-    { particular: 'Cylinder Loading Change Over Time', roll1: '29', roll2: '28' },
-    { particular: 'Creasing Makeready Minutes', roll1: '23', roll2: '25' },
-    { particular: 'Job Starting Time', roll1: '23', roll2: '23' },
-    { particular: 'Job Ending Time', roll1: '23', roll2: '23' },
-    { particular: 'Total Time', roll1: '23', roll2: '23' },
-    { particular: 'Machine Speed Mtr./Min.', roll1: '23', roll2: '23' },
-    { particular: 'Average Speed (K.V) Mtr./Min', roll1: '23', roll2: '23' },
-  ];
-  
 
-const PrintingReport: React.FC = () => {
+
+const LaminationReport: React.FC = () => {
   return (
     <>
     <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -240,8 +225,8 @@ const PrintingReport: React.FC = () => {
   <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
       title="Printing Process Report"
-      columns={printingProcessColumns1}
-      data={printingProcessData1}
+      columns={Tensioncolumns}
+      data={TensionData}
       firstRow={true}
     />
   </Box>
@@ -249,4 +234,4 @@ const PrintingReport: React.FC = () => {
   );
 };
 
-export default PrintingReport;
+export default LaminationReport;
