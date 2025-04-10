@@ -5,7 +5,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 interface ReusableInputProps {
   label: string;
   placeholder?: string;
-  value: string;
+  value:  string | string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   error?: boolean;
