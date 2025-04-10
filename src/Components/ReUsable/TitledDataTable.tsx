@@ -41,7 +41,7 @@ const TitledDataTable = <T extends Record<string, any>>({
         border: `1px solid ${borderColor}`,
         borderRadius: borderRadius,
         py: 0,
-        mt: 2,
+        mt: 0,
       }}
     >
       <Box

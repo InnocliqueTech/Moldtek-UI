@@ -1,173 +1,117 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 
-const columns = [
-  { id: "stationNo", label: "Station No" },
-  { id: "1", label: "1" },
-  { id: "2", label: "2" },
-  { id: "3", label: "3" },
-  { id: "4", label: "4" },
-  { id: "5", label: "5" },
-  { id: "6", label: "6" },
-  { id: "7", label: "7" },
-  { id: "8", label: "8" },
-  { id: "9", label: "9" },
-  { id: "10", label: "10" },
-];
-const inkCoatingData = [
-  {
-    stationNo: "Color Pantone",
-    1: 23,
-    2: 23,
-    3: 23,
-    4: 23,
-    5: 23,
-    6:23,
-    7:23,
-    8:23,
-    9:23,
-    10:23
-  },
-  {
-    stationNo: "Mixing on GEC",
-    1: 36,
-    2: 36,
-    3: 36,
-    4: 36,
-    5: 36,
-    6:36,
-    7:36,
-    8:36,
-    9:36,
-    10:36
-  },
-  {
-    stationNo: "MTPL Code",
-    1: "--",
-    2: "--",
-    3: "--",
-    4: "--",
-    5: "--",
-    6:"--",
-    7:"--",
-    8:"--",
-    9:"--",
-    10:"--"
-  },
-  {
-    stationNo: "LF Value",
-    1: 36,
-    2: 36,
-    3: 36,
-    4: 36,
-    5: 36,
-    6:36,
-    7:36,
-    8:36,
-    9:36,
-    10:36
-  },
-  {
-    stationNo: "Supplier Batch No",
-    1: 36,
-    2: 36,
-    3: 36,
-    4: 36,
-    5: 36,
-    6:36,
-    7:36,
-    8:36,
-    9:36,
-    10:36
-  },
-];
-const Tensioncolumns = [
+const zoneTempPressingColumns = [
+    { id: 'particular', label: '' },
+    { id: 'zone1', label: 'Zone - 1 Temp' },
+    { id: 'zone2', label: 'Zone - 2 Temp' },
+    { id: 'nipPressure', label: 'NIP Pressure' },
+    { id: 'speed', label: 'Speed Mtr/min' },
+  ];
+  
+  const zoneTempPressingData = [
+    { particular: 'STD', zone1: '23', zone2: '23', nipPressure: '23', speed: '23' },
+    { particular: 'Actual', zone1: '23', zone2: '23', nipPressure: '23', speed: '23' },
+  ];
+  
+  const unwindRewindColumns = [
+    { id: 'particular', label: '' },
+    { id: 'priLaminated', label: 'Pri.Laminated (Printed Film)' },
+    { id: 'secUnwinder', label: 'Sec.Unwinder (Plain Film)' },
+    { id: 'lamiSet', label: 'Lami-Set' },
+    { id: 'rewinder', label: 'Re-Winder' },
+  ];
+  
+  const unwindRewindData = [
+    { particular: 'STD', priLaminated: '23', secUnwinder: '23', lamiSet: '23', rewinder: '23' },
+    { particular: 'Actual', priLaminated: '23', secUnwinder: '23', lamiSet: '23', rewinder: '23' },
+  ];
+  
+  const laminationFilmColumns = [
+    { id: 'spec', label: '' },
+    { id: 'priLaminated', label: 'Pri.Laminated (Printed Film)' },
+    { id: 'secUnwinder', label: 'Sec.Unwinder (Plain Film)' },
+  ];
+  
+  const laminationFilmData = [
+    { spec: 'Width', priLaminated: '23', secUnwinder: '23' },
+    { spec: 'Thickness (Microns)', priLaminated: '23', secUnwinder: '23' },
+    { spec: 'GSM', priLaminated: '23', secUnwinder: '23' },
+    { spec: 'DYNE', priLaminated: '--', secUnwinder: '--' },
+  ];
+  
+  const repeatColumns = [
     { id: 'label', label: '' },
-    { id: 'unwinder', label: 'Unwinder' },
-    { id: 'infeed', label: 'Infeed' },
-    { id: 'outfeed', label: 'Outfeed' },
-    { id: 'rewinder', label: 'Rewinder' },
+    { id: 'printedFilm', label: 'Printed Film' },
+    { id: 'afterLamination', label: 'After Lamination' },
   ];
-  const TensionData = [
-    {
-      label: 'STD',
-      unwinder: '623',
-      infeed: '--',
-      outfeed: '623',
-      rewinder: '623',
-    },
-    {
-      label: 'Actuals',
-      unwinder: '623',
-      infeed: '--',
-      outfeed: '623',
-      rewinder: '623',
-    },
+  
+  const repeatData = [
+    { label: 'Repeat (MM)', printedFilm: '12', afterLamination: '--' },
   ];
-  const printRepeatColumns = [
-    { id: 'repeatInMM', label: 'Repeat in MM' },
-    { id: 'ups', label: 'UPS' },
-    { id: 'jarCap', label: 'JAR/CAP' },
-    { id: 'labelsPerMtrs', label: 'Labels Per Mtrs' },
+  
+  const bondingMaterialColumns = [
+    { id: 'material', label: 'Bonding Material' },
+    { id: 'code', label: 'Code' },
+    { id: 'brand', label: 'Brand' },
+    { id: 'mixingRatio', label: 'Mixing Ratio' },
+    { id: 'actual', label: 'Actual' },
   ];
-  const printRepeatData = [
-    {
-      repeatInMM: '623',
-      ups: '623',
-      jarCap: '--',
-      labelsPerMtrs: '623',
-    },
+  
+  const bondingMaterialData = [
+    { material: 'Adhesive', code: 'ADH232', brand: 'Henkel', mixingRatio: '1.2/6', actual: '21' },
+    { material: 'Hardener', code: 'ADH235', brand: 'Henkel', mixingRatio: '1.2/6', actual: '12' },
+    { material: 'Ethyl Acetate', code: 'ADH323', brand: 'Henkel', mixingRatio: '1.2/6', actual: '43' },
   ];
-  const materialSpecsColumns = [
-    { id: 'width', label: 'Width mm' },
-    { id: 'thickness', label: 'Thickness Microns' },
-    { id: 'gsm', label: 'GSM' },
-    { id: 'dyne', label: 'DYNE' },
-    { id: 'staticCharge', label: 'Static Charge' },
-    { id: 'formatCorrection', label: 'Format Correction' },
+  
+  const viscosityWeightColumns = [
+    { id: 'metric', label: '' },
+    { id: 'viscosityRange', label: 'Viscosity Range' },
+    { id: 'viscosityActual', label: 'Actual' },
+    { id: 'gsmRange', label: 'GSM Range' },
+    { id: 'gsmActual', label: 'Actual' },
   ];
-  const materialSpecsData = [
-    {
-      width: '623',
-      thickness: '623',
-      gsm: '--',
-      dyne: '623',
-      staticCharge: '23',
-      formatCorrection: '23',
-    },
+  
+  const viscosityWeightData = [
+    { metric: '', viscosityRange: '16 - 17', viscosityActual: '16 - 17', gsmRange: '16 - 17', gsmActual: '16 - 17' },
   ];
-  const foilConsumptionColumns = [
-    { id: 'foilInputRoll', label: 'Foil Input Roll' },
-    { id: 'foilReturnRoll', label: 'Foil Return Roll' },
-    { id: 'consumption', label: 'Consumption' },
-    { id: 'foilWidth', label: 'Foil Width' },
-  ];
-  const foilConsumptionData = [
-    {
-      foilInputRoll: '23',
-      foilReturnRoll: '777',
-      consumption: '23',
-      foilWidth: '23',
-    },
-  ];
-  const printingProcessColumns = [
-    { id: 'particular', label: 'Particular' },
+  const laminationProcessColumns = [
+    { id: 'stage', label: '' },
     { id: 'target', label: 'Target' },
-    { id: 'roll1', label: 'Roll-1' },
-    { id: 'roll2', label: 'Roll-2' },
+    { id: 'actual', label: 'Actual' },
   ];
-  const printingProcessData = [
-    { particular: 'Repeat Length', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Input Plain Film For Printing Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: "Input Film For Printing Kg's", target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Impression Setting Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Registration Settings Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Shade Matching Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Process Wastage', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Total Printing Process Wastage Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Un Fore Seen 100% Inspections Mtrs', target: '777', roll1: '23', roll2: '23' },
-    { particular: 'Printed Film Issued For Next Process (Good Mtr) Mtrs', target: '777', roll1: '23', roll2: '23' },
+  
+  const laminationProcessData = [
+    { stage: 'Starting Time', target: '12.00', actual: '21' },
+    { stage: 'Completion Time', target: '12.00', actual: '21' },
+    { stage: 'Total Time', target: '12.00', actual: '21' },
+    { stage: 'Accepted Printed Film Mtrs', target: '12.00', actual: '21' },
+    { stage: 'Input Plain Film Mtrs', target: '12.00', actual: '21' },
+    { stage: 'Set-Up Wastage', target: '12.00', actual: '12' },
+    { stage: 'In-Process Wastage', target: '12.00', actual: '12' },
+    { stage: 'Doctoring Wastage Mtrs', target: '12.00', actual: '43' },
+    { stage: 'Lamination Wastage Mtrs', target: '12.00', actual: '43' },
+    { stage: 'Laminated Film Issued For Next Process', target: '12.00', actual: '43' },
   ];
+  const qcCheckColumns = [
+    { id: 'repeat', label: 'Repeat' },
+    { id: 'curling', label: 'Curling' },
+    { id: 'bondStrength', label: 'Bond Strength' },
+    { id: 'others', label: 'Others' },
+  ];
+  
+  const qcCheckData = [
+    { repeat: '12', curling: '--', bondStrength: '--', others: '--' },
+  ];
+  const plainFilmLeftColumns = [
+    { id: 'meters', label: 'Meters' },
+    { id: 'kgs', label: 'Kgs.' },
+  ];
+  
+  const plainFilmLeftData = [
+    { meters: '12', kgs: '--' },
+  ];
+        
          
 
 
@@ -176,58 +120,74 @@ const LaminationReport: React.FC = () => {
     <>
     <Box sx={{ borderRadius: "0px ", p: 1 }}>
       <TitledDataTable
-        title="Ink & Coating Specifications"
-        columns={columns}
-        data={inkCoatingData}
+        title="Zone Temperature & Pressing Conditions"
+        columns={zoneTempPressingColumns}
+        data={zoneTempPressingData}
         firstRow={true}
       />
     </Box>
     <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Tension Control"
-      columns={Tensioncolumns}
-      data={TensionData}
+      title="Unwinding & Rewinding Process"
+      columns={unwindRewindColumns}
+      data={unwindRewindData}
       firstRow={true}
     />
   </Box>
   <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Print Repeat & Labelling Details"
-      columns={printRepeatColumns}
-      data={printRepeatData}
-      firstRow={false}
-    />
-  </Box>
-  <Box sx={{ borderRadius: "0px ", p: 1 }}>
-    <TitledDataTable
-      title="Material Specifications"
-      columns={materialSpecsColumns}
-      data={materialSpecsData}
-      firstRow={false}
-    />
-  </Box>
-  <Box sx={{ borderRadius: "0px ", p: 1 }}>
-    <TitledDataTable
-      title="Foil Roll Consumption Details"
-      columns={foilConsumptionColumns}
-      data={foilConsumptionData}
-      firstRow={false}
-    />
-  </Box>
-  <Box sx={{ borderRadius: "0px ", p: 1 }}>
-    <TitledDataTable
-      title="Printing Process Report"
-      columns={printingProcessColumns}
-      data={printingProcessData}
+      title="Lamination Film Specifications"
+      columns={laminationFilmColumns}
+      data={laminationFilmData}
       firstRow={true}
     />
   </Box>
   <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Printing Process Report"
-      columns={Tensioncolumns}
-      data={TensionData}
+      title="Repeat (MM)"
+      columns={repeatColumns}
+      data={repeatData}
+      firstRow={false}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="Bonding Material Specifications"
+      columns={bondingMaterialColumns}
+      data={bondingMaterialData}
       firstRow={true}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="Viscosity & Weight Metrics"
+      columns={viscosityWeightColumns}
+      data={viscosityWeightData}
+      firstRow={false}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="Lamination Process Report"
+      columns={laminationProcessColumns}
+      data={laminationProcessData}
+      firstRow={true}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="QC Check"
+      columns={qcCheckColumns}
+      data={qcCheckData}
+      firstRow={false}
+    />
+  </Box>
+  <Box sx={{ borderRadius: "0px ", p: 1 }}>
+    <TitledDataTable
+      title="Plain Film Left Over Roll"
+      columns={plainFilmLeftColumns}
+      data={plainFilmLeftData}
+      firstRow={false}
     />
   </Box>
   </>
