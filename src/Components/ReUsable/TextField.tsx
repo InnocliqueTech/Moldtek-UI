@@ -62,7 +62,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
           "& .MuiOutlinedInput-root": {
             borderRadius: "8px",
             "& input": {
-              padding: "4px",
+              padding: "6px 12px",
               color: "black",
             },
           },

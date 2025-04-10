@@ -109,15 +109,15 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
                
                 {
                   label: "Edit",
-                  onClick: () => navigate(`/editMasterData`),
+                  onClick: () => navigate(`/edit`),
                 },
                 {
                   label: "Download",
-                  onClick: () => navigate(`/viewMasterData`),
+                  onClick: () => navigate(`/download`),
                 },
                 {
                   label: "InActive",
-                  onClick: () => navigate(`/viewMasterData`),
+                  onClick: () => navigate(`/inactive`),
                 },
               ]}
               boxShadow={true}
