@@ -64,7 +64,7 @@ interface TableProps<T> {
   action?: boolean;
   boxShadow?: boolean;
   onSelectionChange?: (selectedItems: T[]) => void;
-  rowIdentifier?: keyof T; // Key to identify unique rows
+  rowIdentifier?: keyof T;
   searchSize?: boolean;
 }
 
@@ -119,16 +119,14 @@ function ReusableTable<T extends Record<string, any>>({
   };
 
   const sortedData = [...data].sort((a, b) => {
-    if (orderBy) {
-      return order === "asc"
-        ? a[orderBy] > b[orderBy]
-          ? 1
-          : -1
-        : a[orderBy] < b[orderBy]
+    if (!orderBy) return 0;
+    return order === "asc"
+      ? a[orderBy] > b[orderBy]
         ? 1
-        : -1;
-    }
-    return 0;
+        : -1
+      : a[orderBy] < b[orderBy]
+      ? 1
+      : -1;
   });
 
   const filteredData = sortedData.filter((row) =>
@@ -143,9 +141,9 @@ function ReusableTable<T extends Record<string, any>>({
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       );
-      setSelected(newSelected);
+    setSelected(newSelected);
       setShowSelectionBar(event.target.checked);
-      if (onSelectionChange) onSelectionChange(newSelected);
+    if (onSelectionChange) onSelectionChange(newSelected);
       return;
     }
     setSelected([]);
@@ -207,7 +205,7 @@ function ReusableTable<T extends Record<string, any>>({
   return (
     <Paper
       elevation={0}
-      sx={{ borderRadius: !boxShadow ? "0px" : "12px", overflow: "hidden" }}
+      sx={{ borderRadius: !boxShadow ? 0 : 2, overflow: "hidden" }}
     >
       <Toolbar
         disableGutters
@@ -226,47 +224,26 @@ function ReusableTable<T extends Record<string, any>>({
           },
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
-          px: !boxShadow ? 0 : 1.5,
+          px: !boxShadow ? 1 : 1.5,
+          mt:{md:!boxShadow ?'-8px':0,sm:0}
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 1,
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              mt: searchSize ? "-14px" : "0px",
-              ml: searchSize ? "6px" : "0px",
-            }}
-          >
-            {title}
-          </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
+          <Typography  fontSize={searchSize?"1rem":"1.25rem"}>{title}</Typography>
           {info && (
-            <Tooltip title="Table information">
-              <InfoOutline
-                sx={{
-                  color: "#9F9F9F",
-                  width: "20px",
-                  height: "20px",
-                  mt: searchSize ? "-14px" : "0px",
-                }}
-              />
+            <Tooltip title="Table Info">
+              <InfoOutline fontSize="small" sx={{ color: "#777" }} />
             </Tooltip>
           )}
           {label && (
             <Chip
               label={label}
+              size="small"
               sx={{
                 backgroundColor: "#F8FCFF",
                 color: "#0447A8",
                 border: "1px solid #0447A8",
                 fontWeight: 500,
-                mt: searchSize ? "-14px" : "0px",
               }}
             />
           )}
@@ -275,19 +252,17 @@ function ReusableTable<T extends Record<string, any>>({
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
+            flexDirection: "row" ,
+            alignItems: { xs: "flex-start", sm: "center" },flexWrap: "wrap",
             gap: 1.5,
-            width: {
-              xs: "100%",
-              md: "auto",
-            },
+            width: { xs: "100%", sm: "auto" },
           }}
         >
           {lastUpdate && (
             <Chip
               icon={<ReplayOutlined />}
               label={`Last Update: ${lastUpdate}`}
+              size="small"
               sx={{
                 backgroundColor: "#F6F6F6",
                 color: "#2F2F2F",
@@ -310,16 +285,16 @@ function ReusableTable<T extends Record<string, any>>({
                   </InputAdornment>
                 ),
                 sx: {
+                  borderRadius: "50px",
                   pl: 1.2,
                   pr: 1,
-                  py: 0.5, // Reduce vertical padding
-                  mt: searchSize ? "-14px" : "0px",
-                  mr: searchSize ? "6px" : "0px",
+                  py: 0.5, 
+                  fontSize: "0.875rem",
                 },
               }}
               fullWidth={isXs || isSm}
               sx={{
-                minWidth: {
+                 minWidth: {
                   xs: "100%",
                   sm: "100%",
                   md: "240px",
@@ -338,18 +313,10 @@ function ReusableTable<T extends Record<string, any>>({
         </Box>
       </Toolbar>
 
-      <TableContainer
-        sx={{
-          maxHeight: 300,
-          overflowY: "auto",
+      <TableContainer sx={{ maxHeight: 400,          overflowY: "auto",
           overflowX: "auto",
-          position: "relative",
-          marginTop: searchSize ? "-12px" : "0px",
-        }}
-      >
-        <Table
-          stickyHeader
-          sx={{
+          position: "relative", mt:{md:!boxShadow ?'-8px':0,sm:0} }}>
+        <Table stickyHeader  sx={{
             minWidth: 1000,
           }}
         >
@@ -466,15 +433,15 @@ function ReusableTable<T extends Record<string, any>>({
                       cursor: selectable ? "pointer" : "default",
                     }}
                   >
-                    {selectable && (
-                      <TableCell padding="checkbox">
-                        <Checkbox
+                  {selectable && (
+                    <TableCell padding="checkbox">
+                      <Checkbox
                           checked={isItemSelected}
-                          onChange={() => handleSelect(row)}
+                        onChange={() => handleSelect(row)}
                           onClick={(event) => event.stopPropagation()}
-                        />
-                      </TableCell>
-                    )}
+                      />
+                    </TableCell>
+                  )}
                     {columns.map((column, index) => (
                       <TableCell
                         align={column.align ? "center" : "left"}
@@ -493,40 +460,40 @@ function ReusableTable<T extends Record<string, any>>({
                         {column.format
                           ? column.format(row[column.id])
                           : row[column.id]}
-                      </TableCell>
-                    ))}
-                    {action && (
+                    </TableCell>
+                  ))}
+                  {action && (
                       <TableCell align="left">
-                        <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </TableCell>
-                    )}
-                  </TableRow>
+                      <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  )}
+                </TableRow>
                 );
               })}
           </TableBody>
-          {selectedRow && (
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
+      {selectedRow && (
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
-            >
+        >
               {actions?.map((action, index) => (
-                <MenuItem
+            <MenuItem
                   key={index}
-                  onClick={() => {
-                    handleMenuClose();
+              onClick={() => {
+                handleMenuClose();
                     action.onClick(selectedRow); // Pass current row
-                  }}
-                >
+              }}
+            >
                   {action.icon && <Box mr={1}>{action.icon}</Box>}
-                  {action.label}
-                </MenuItem>
-              ))}
-            </Menu>
+              {action.label}
+            </MenuItem>
+          ))}
+        </Menu>
           )}
         </Table>
       </TableContainer>

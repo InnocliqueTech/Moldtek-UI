@@ -28,7 +28,7 @@ const printingSubstarteColumns= [
     { id: "width", label: "Width (mm)" },
     { id: "thickness", label: "Thickness (microns)" },
     { id: "density", label: "Density (g/cm³)" },
-    { id: "gsm", label: "RGSM" },
+    { id: "gsm", label: "GSM" },
   ];
 
 

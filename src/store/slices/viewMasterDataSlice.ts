@@ -76,6 +76,7 @@ export interface ViewMasterDataDetails {
   itemCode: string;
   brandPack: string;
   structure: string;
+  typeOfLabel:string;
 }
 
 interface ViewMasterDataState {
@@ -174,6 +175,7 @@ const initialState: ViewMasterDataState = {
     itemCode: "",
     brandPack: "",
     structure: "",
+    typeOfLabel:""
   },
   jobListData:[
     {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid,Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import customerPicture from "../../assets/Images/customerPicture.png";
@@ -10,6 +10,7 @@ import {
   setJobsListData,
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
+import customerImage from "../../assets/Images/customerPicture.png";
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
@@ -138,8 +139,10 @@ const JobsList: React.FC = () => {
     customerPicture: customerPicture,
     jarCap: "N/A (For flexible packaging)",
     itemCode: "KK-50G-123",
-    brandPack: "KitKat 50g Wrapper",
+    brandPack:
+      "0 LTR_AP_DTS_L.WT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779J] (IML) ASIAN PAINTS",
     structure: "PET",
+    typeOfLabel: "Kitkat 50gm Wrapper",
   };
 
   const data = [
@@ -193,8 +196,6 @@ const JobsList: React.FC = () => {
     },
   ];
 
-
-
   const dispatch = useDispatch<AppDispatch>();
   const { jobListData, viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -205,45 +206,110 @@ const JobsList: React.FC = () => {
     dispatch(setViewMasterDataDetails(masterDataDetails));
   }, [dispatch]);
 
+  const maxChars = 120;
+  const isLong = viewMasterDataDetails.brandPack.length > maxChars;
+  const displayText = isLong
+    ? viewMasterDataDetails.brandPack.slice(0, maxChars) + "..."
+    : viewMasterDataDetails.brandPack;
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
-        <Grid container spacing={0}>
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
+        <Grid container spacing={2} pt={1}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Unit Effectivity Number
             </Typography>
-            <Typography variant="body2" fontWeight={600}>
+            <Typography
+              variant="body1"
+              sx={{
+                mt: 0.5,
+                wordBreak: "break-word",
+                whiteSpace: "pre-line",
+              }}
+            >
               {viewMasterDataDetails.uen}
             </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                ITEM Code
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {viewMasterDataDetails.itemCode}
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Jar/Cap
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {viewMasterDataDetails.jarCap}
+              </Typography>
+            </Box>
           </Grid>
 
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Customer / Company Name
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+              Customer Name
             </Typography>
-            <Typography variant="body2" fontWeight={600}>
+            <Typography
+              variant="body1"
+              sx={{
+                mt: 0.5,
+                wordBreak: "break-word",
+                whiteSpace: "pre-line",
+              }}
+            >
               {viewMasterDataDetails.customerName}
             </Typography>
-          </Grid>
-
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Customer / Company Picture
-            </Typography>
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Structure
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {viewMasterDataDetails.structure}
+              </Typography>
+              <Box sx={{ mt: 2 }} />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Customer Picture
+              </Typography>
               {viewMasterDataDetails.customerPicture ? (
                 <img
                   src={viewMasterDataDetails.customerPicture}
@@ -255,65 +321,61 @@ const JobsList: React.FC = () => {
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Brand Name & Pack
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {viewMasterDataDetails.brandPack}
-            </Typography>
-          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500 }}
+                color="#656565"
+              >
+                Type Of Label
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {viewMasterDataDetails.typeOfLabel}
+              </Typography>
+            </Box>
 
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Item Code
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {viewMasterDataDetails.itemCode}
-            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Brand Name & Pack Description
+              </Typography>
+              <Tooltip
+                title={isLong ? viewMasterDataDetails.brandPack : ""}
+                placement="top"
+                arrow
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    mt: 0.5,
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {displayText}
+                </Typography>
+              </Tooltip>
+            </Box>
           </Grid>
-
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Jar/Cap
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {viewMasterDataDetails.jarCap}
-            </Typography>
-          </Grid>
-
-          <Grid size={{ xs: 12, md:2.5 }}>
-            <Typography
-              variant="caption"
-              fontWeight={500}
-              color="text.secondary"
-            >
-              Structure
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {viewMasterDataDetails.structure}
-            </Typography>
-          </Grid>
-          </Grid>
-        <Box sx={{ paddingTop: 1 }}>
+        </Grid>
+        <Box sx={{ paddingTop: 1.5 }}>
           <Box
             sx={{
               border: "1px solid #ECECEC",
               borderRadius: "18px",
               overflow: "hidden",
-             
+              mt: 1,
             }}
           >
             <ReusableTable
