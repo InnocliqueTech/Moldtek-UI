@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -20,6 +20,9 @@ import {
 import { ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
+import ConfirmPopup from "./ConfirmPopup";
+import { boolean } from "zod";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   title: string;
@@ -56,14 +59,40 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup } = useSelector((store: RootState) => store.masterData);
+  const [submitPopup,setSubmitPopup] = useState<boolean>(false);
+  const [submitPopupConfirm,setSubmitPopupConfirm]=useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const handleClosePopUp = () => {
     dispatch(setUploadPopup(false));
   };
+  const location = useLocation();
+  const navigate = useNavigate();
   const handleSubmitAndPublishPopupOpen = () => {
     dispatch(setUploadPopup(false));
+    console.log(location.pathname,"PATHNAME")
+    if(location.pathname ==='/viewDailyPlan'||location.pathname ==='/createPlan'){
+      setSubmitPopup(true)
+    }
+    else{
     dispatch(setSubmitAndPublishPopup(true));
+    }
+    
   };
+  const handleSubmitPopupClose =()=>{
+    setSubmitPopup(false);
+  };
+  const handleSubmitPopupConfirmOpen = ()=>{
+    setSubmitPopupConfirm(true)
+  }
+  const handleSubmitPopupConfirmClose = ()=>{
+    setSubmitPopup(false)
+    setSubmitPopupConfirm(false)
+  }
+  const handleSubmitPopupConfirmClick = ()=>{
+    setSubmitPopup(false)
+    setSubmitPopupConfirm(false)
+    navigate('/dailyPlan')
+  }
 
   return (
     <>
@@ -245,7 +274,25 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleClosePopUp}
         subText={uploadSubTitle?uploadSubTitle:''}
       />
-      
+            <ConfirmPopup
+        open={submitPopup}
+        title="Are you sure you want submit ? Daily Plan"
+        message=""
+        buttonText="No"
+        buttonText2="Yes,Save it!"
+        gifSrc=""
+        onClose={handleSubmitPopupClose}
+        onClick={handleSubmitPopupConfirmOpen}
+      />
+      <ConfirmPopup
+        open={submitPopupConfirm}
+        title="You have successfully add a daily job"
+        message=""
+        buttonText2="Go back to Daily Plan"
+        gifSrc=""
+        onClose={handleSubmitPopupConfirmClose}
+        onClick={handleSubmitPopupConfirmClick}
+      />
       <Filter filterTitle={filterTitle?filterTitle:''} />
       <VersinDetails />
     </>
