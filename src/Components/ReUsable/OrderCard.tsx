@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, Grid, Box, Tooltip } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import customerImage from "../../assets/Images/customerPicture.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
@@ -144,7 +143,7 @@ const OrderCard: React.FC = () => {
               >
                 Customer Picture
               </Typography>
-              <img src={customerImage} alt="customer picture" />
+              <img src={viewMasterDataDetails.customer_logo} alt="customer picture" />
             <Box>
               <Typography
                 variant="body2"

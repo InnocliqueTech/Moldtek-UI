@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
-import customerPicture from "../../assets/Images/customerPicture.png";
 import { UENCell } from "../../Components/helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -323,10 +322,8 @@ const JobsList: React.FC = () => {
               </Typography>
               {viewMasterDataDetails.customer_logo ? (
                 <img
-                  src={customerPicture}
+                  src={viewMasterDataDetails.customer_logo}
                   alt="customerPicture"
-                  width={100}
-                  height={100}
                 />
               ) : null}
 

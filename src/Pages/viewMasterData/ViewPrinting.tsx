@@ -1,10 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { InfoOutline } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import { useEffect } from "react";
-import { setPrintingInkStationData } from "../../store/slices/viewMasterDataSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+
 
 const machineSettingColumns = [
   { id: "mounting_tape", label: "Mounting Type" },
@@ -42,7 +41,6 @@ const inkStationColumns = [
 
 
 const ViewPrinting: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { printingInkStatinData, printingMachineSettings,printingSubstrateSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
