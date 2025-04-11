@@ -73,7 +73,8 @@ const laminatingSubstrateData = [
 // ];
 
 const tensionColumns = [
-  { id: "rewinderTension", label: "Lami-set Tension" },
+  { id: "lamiSetTension", label: "Lami-set Tension" },
+  { id: "rewinderTension", label: "Rewinder Tension" },
   { id: "printedFilmTension", label: "Printed Film Tension" },
   { id: "laminatedFilmTension", label: "Laminated Film Tension" },
 ]

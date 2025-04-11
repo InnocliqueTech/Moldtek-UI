@@ -3,14 +3,18 @@ import OrderCard from "../../Components/ReUsable/OrderCard";
 import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setSelectedTab, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
+import {
+  setPrintingInkStationData,
+  setPrintingMachineSettingsData,
+  setPrintingSubstrate,
+  setSelectedTab,
+  setViewMasterDataDetails,
+} from "../../store/slices/viewMasterDataSlice";
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyePrinting from "./ViewDyePrinting";
 import { useEffect } from "react";
 import { mockData } from "./data";
-
-
 
 const tabs = [
   "Master Data - Printing",
@@ -27,15 +31,22 @@ const ViewMasterData: React.FC = () => {
     dispatch(setSelectedTab(newValue));
   };
 
-
-
-  useEffect(()=>{
-dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
-dispatch(setPrintingMachineSettingsData(mockData.masterDataPrinting.printingDetails));
-dispatch(setPrintingSubstrate(mockData.masterDataPrinting.printingSubstrateSettings));
-dispatch(setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics))
-  },[])
-
+  useEffect(() => {
+    dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
+    dispatch(
+      setPrintingMachineSettingsData(
+        mockData.masterDataPrinting.printingDetails
+      )
+    );
+    dispatch(
+      setPrintingSubstrate(
+        mockData.masterDataPrinting.printingSubstrateSettings
+      )
+    );
+    dispatch(
+      setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
+    );
+  }, []);
 
   return (
     <Box
@@ -49,7 +60,7 @@ dispatch(setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetric
                 sm: "310vh",
                 xs: "400vh",
               }
-            : { xl:'auto',lg: "auto", md: "auto",sm:"auto",xs:'auto' },
+            : { xl: "auto", lg: "auto", md: "auto", sm: "auto", xs: "auto" },
         display: "flex",
         flexDirection: "column",
       }}
@@ -63,7 +74,7 @@ dispatch(setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetric
           mb: 1,
         }}
       >
-        <OrderCard/>
+        <OrderCard />
       </Box>
 
       {/* Scrollable section */}
