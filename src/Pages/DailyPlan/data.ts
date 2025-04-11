@@ -476,6 +476,58 @@ export const analoxColumns = [
     { label: "HOD", value: "Peter" },
     { label: "Operator", value: "Nick" }
   ];
+
+ export const laminationColumns = [
+    { id: "category", label: "Category" },
+    { id: "target", label: "Target" },
+    { id: "actuals", label: "Actuals" },
+  ];
   
+  export const laminationData = [
+    {
+      category: "Total Laminate",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Lamination Process Waste",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Inspection Wastage",
+      target: "--",
+      actuals: "--"
+    },
+    {
+      category: "Laminate Film Issued For Next Process",
+      target: "23",
+      actuals: "23"
+    }
+  ];
+  
+  export const labelCuttingColumns = [
+    { id: "category", label: "Category" },
+    { id: "target", label: "Target" },
+    { id: "actuals", label: "Actuals" },
+  ];
+  
+  export const labelCuttingData = [
+    {
+      category: "Printed Film Issued For Label Cutting",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Total Cutting Process Waste",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Output Labels Qty",
+      target: "--",
+      actuals: "--"
+    }
+  ];
   
   
