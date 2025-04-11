@@ -3,10 +3,12 @@ import OrderCard from "../../Components/ReUsable/OrderCard";
 import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
+import { setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setSelectedTab, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyePrinting from "./ViewDyePrinting";
+import { useEffect } from "react";
+import { mockData } from "./data";
 
 
 
@@ -25,6 +27,14 @@ const ViewMasterData: React.FC = () => {
     dispatch(setSelectedTab(newValue));
   };
 
+
+
+  useEffect(()=>{
+dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
+dispatch(setPrintingMachineSettingsData(mockData.masterDataPrinting.printingDetails));
+dispatch(setPrintingSubstrate(mockData.masterDataPrinting.printingSubstrateSettings));
+dispatch(setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics))
+  },[])
 
 
   return (

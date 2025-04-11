@@ -2,21 +2,24 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 export interface RepeatTableRow {
-  repeat: number;
-  ups: number;
-  tracks: number;
-  labels: number;
+  repeat_length: number,
+  ups: number,
+  tracks: number,
+  labels_per_meter: number,
 }
 export interface PrintingMachineSettings {
-  mountingType: string;
-  cylinderTeeth: string;
-  tension: number;
-  unwinder: number;
-  infeed: string;
-  outfeed: string;
-  rewinder: number;
-  staticCharge: number;
-  formatCorrect: number;
+   machine_settings_id : number,
+   job_master_id : number,
+   mounting_tape : string,
+   cylinder_teeth : number,
+   tension : number,
+   unwinder : number,
+   rewinder : number,
+   infeed : number,
+   outfeed : number,
+   static_charge : number,
+   format_correct : number
+
 }
 
 export interface SubstrateTableRow {
@@ -25,14 +28,14 @@ export interface SubstrateTableRow {
   lamination: string;
 }
 export interface PrintingInkStationData {
-  stationNo: number;
-  colorPantone: string;
-  lfValue: number;
-  inkSupplier: string;
+  station_no: number;
+  color_pantone: string;
+  lf_value: number;
+  ink_supplier: string;
   lpcm: number;
   volume: string;
-  uvLed: string;
-   uvLedIntensity:string
+  uv_led: string;
+  uv_led_intensity:string
 }
 export interface LaminationSettings {
   zone1Temp: number;
@@ -61,6 +64,19 @@ export interface DyePrintingSettings {
   dyeCode: string;
   runSpeed: string;
 }
+
+export interface  PrintingSubstrateSettings {
+  print_substrate_id: number,
+  machine_settings_id: number,
+  substrate_type: string,
+  supplier: string,
+  dyne_level: string,
+  width: number,
+  thickness: number,
+  density: number,
+  gsm: number
+}
+
 export interface JobListData {
   uen: string;
   segment: string;
@@ -70,21 +86,26 @@ export interface JobListData {
   comment: number;
 }
 export interface ViewMasterDataDetails {
-  uen: string;
-  customerName: string;
-  customerPicture: string;
-  jarCap: string;
-  itemCode: string;
-  brandPack: string;
-  structure: string;
-  typeOfLabel:string;
+job_master_id: number,
+   unit_effectivity_number : string,
+   customer_name : string,
+   customer_logo : string,
+   item_code : string,
+   brand_description : string,
+   jar_cap : string,
+   structure : string,
+   brand_name : string,
+  repeat_length: number,
+  ups: number,
+  tracks: number,
+  labels_per_meter: number,
 }
 
 interface ViewMasterDataState {
   selectedTab: number;
-  repeatTableData: RepeatTableRow[];
+  repeatTableData: RepeatTableRow;
   substrateTableData: SubstrateTableRow[];
-  printingMachineSettings: PrintingMachineSettings[];
+  printingMachineSettings: PrintingMachineSettings;
   printingInkStatinData: PrintingInkStationData[];
   laminationSettings: LaminationSettings[];
   laminationDetails: LaminationDetail[];
@@ -92,19 +113,19 @@ interface ViewMasterDataState {
   dyePrintingSettings: DyePrintingSettings[];
   viewMasterDataDetails:ViewMasterDataDetails;
   jobListData:JobListData[];
-  versionPopup:boolean
+  versionPopup:boolean;
+  printingSubstrateSettings: PrintingSubstrateSettings;
 }
 
 const initialState: ViewMasterDataState = {
   selectedTab: 0,
-  repeatTableData: [
+  repeatTableData: 
     {
-      repeat: 0,
+      repeat_length: 0,
       ups: 0,
       tracks: 0,
-      labels: 0,
+      labels_per_meter: 0,
     },
-  ],
   substrateTableData: [
     {
       field: "",
@@ -112,29 +133,31 @@ const initialState: ViewMasterDataState = {
       lamination: "",
     },
   ],
-  printingMachineSettings: [
+  printingMachineSettings: 
     {
-      mountingType: "",
-      cylinderTeeth: "",
-      tension: 0,
-      unwinder: 0,
-      infeed: "",
-      outfeed: "",
-      rewinder: 0,
-      staticCharge: 0,
-      formatCorrect: 0,
+      machine_settings_id : 0,
+      job_master_id : 0,
+      mounting_tape : '',
+      cylinder_teeth : 0,
+      tension : 0,
+      unwinder : 0,
+      rewinder : 0,
+      infeed : 0,
+      outfeed : 0,
+      static_charge : 0,
+      format_correct : 0
     },
-  ],
   printingInkStatinData: [
     {
-      stationNo: 0,
-      colorPantone: "",
-      lfValue: 0,
-      inkSupplier: "",
+      station_no: 0,
+      color_pantone: "",
+      lf_value: 0,
+      ink_supplier: "",
       lpcm: 0,
       volume: "",
-      uvLed: "",
-       uvLedIntensity:""
+      uv_led: "",
+      uv_led_intensity:""
+
     },
   ],
   laminationAdhesive: [
@@ -171,14 +194,19 @@ const initialState: ViewMasterDataState = {
     },
   ],
   viewMasterDataDetails:{
-    uen: "",
-    customerName: "",
-    customerPicture: "",
-    jarCap: "",
-    itemCode: "",
-    brandPack: "",
-    structure: "",
-    typeOfLabel:""
+    job_master_id:  0,
+   unit_effectivity_number : "",
+   customer_name : "",
+   customer_logo : "",
+   item_code : "",
+   brand_description : "",
+   jar_cap : "",
+   structure : "",
+   brand_name : "",
+    repeat_length: 0,
+    ups: 0,
+    tracks: 0,
+    labels_per_meter: 0,
   },
   jobListData:[
     {
@@ -190,6 +218,17 @@ const initialState: ViewMasterDataState = {
       comment: 0,
     }
   ],
+  printingSubstrateSettings:{
+    print_substrate_id: 0,
+  machine_settings_id: 0,
+  substrate_type: "",
+  supplier: "",
+  dyne_level: "",
+  width: 0,
+  thickness: 0,
+  density: 0,
+  gsm: 0
+  },
   versionPopup:false
 };
 
@@ -200,7 +239,7 @@ const viewMasterDataSlice = createSlice({
     setSelectedTab: (state, action: PayloadAction<number>) => {
       state.selectedTab = action.payload;
     },
-    setRepeatTableData: (state, action: PayloadAction<RepeatTableRow[]>) => {
+    setRepeatTableData: (state, action: PayloadAction<RepeatTableRow>) => {
       state.repeatTableData = action.payload;
     },
     setSubstrateTableData: (
@@ -211,7 +250,7 @@ const viewMasterDataSlice = createSlice({
     },
     setPrintingMachineSettingsData: (
       state,
-      action: PayloadAction<PrintingMachineSettings[]>
+      action: PayloadAction<PrintingMachineSettings>
     ) => {
       state.printingMachineSettings = action.payload;
     },
@@ -259,6 +298,9 @@ const viewMasterDataSlice = createSlice({
     },
     setVersionPopup:(state,action:PayloadAction<boolean>)=>{
       state.versionPopup = action.payload
+    },
+    setPrintingSubstrate:(state,action:PayloadAction<PrintingSubstrateSettings>)=>{
+      state.printingSubstrateSettings= action.payload
     }
   },
 });
@@ -275,6 +317,7 @@ export const {
   setLaminationSettings,
   setJobsListData,
   setViewMasterDataDetails,
-  setVersionPopup
+  setVersionPopup,
+  setPrintingSubstrate
 } = viewMasterDataSlice.actions;
 export default viewMasterDataSlice.reducer;

@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { Typography, Grid, Box, Tooltip } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import { setRepeatTableData } from "../../store/slices/viewMasterDataSlice";
 import customerImage from "../../assets/Images/customerPicture.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 
 
 const OrderCard: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { repeatTableData } = useSelector(
+  const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const columns = [
@@ -19,27 +17,10 @@ const OrderCard: React.FC = () => {
     { id: "tracks", label: "Tracks" },
     { id: "labels", label: "# Labels/Meter" },
   ];
-  const Tabledata = useMemo(
-    () => [
-      {
-        repeat: 53,
-        ups: 2783,
-        tracks: 246,
-        labels: 121,
-      },
-    ],
-    []
-  );
 
-  useEffect(() => {
-    dispatch(setRepeatTableData(Tabledata));
-  }, [dispatch, Tabledata]);
-
-  const text =
-    "0 LTR_AP_DTS_L.WT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779J] (IML) ASIAN PAINTS ";
   const maxChars = 120;
-  const isLong = text.length > maxChars;
-  const displayText = isLong ? text.slice(0, maxChars) + "..." : text;
+  const isLong = viewMasterDataDetails.brand_description.length > maxChars;
+  const displayText = isLong ?viewMasterDataDetails.brand_description.slice(0, maxChars) + "..." : viewMasterDataDetails.brand_description;
 
   return (
     <Box>
@@ -57,7 +38,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              UEN-20240801
+              {viewMasterDataDetails.unit_effectivity_number}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -75,7 +56,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                KK-50G-123
+                {viewMasterDataDetails.item_code}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -94,7 +75,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                N/A (For flexible packaging)
+                {viewMasterDataDetails.jar_cap}
               </Typography>
             </Box>
           </Grid>
@@ -111,7 +92,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              Nestle
+              {viewMasterDataDetails.customer_name}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -129,7 +110,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                PET
+                {viewMasterDataDetails.structure}
               </Typography>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
@@ -148,7 +129,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                Kitkat 50gm Wrapper
+               {viewMasterDataDetails.brand_name}
               </Typography>
             </Box>
           </Grid>
@@ -172,7 +153,7 @@ const OrderCard: React.FC = () => {
               >
                 Brand Name & Pack Description
               </Typography>
-              <Tooltip title={isLong ? text : ""} placement="top" arrow>
+              <Tooltip title={isLong ? viewMasterDataDetails.brand_description : ""} placement="top" arrow>
                 <Typography
                   variant="body1"
                   sx={{
@@ -188,7 +169,7 @@ const OrderCard: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1,pt:0.2}}>
+      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1, pt: 0.2 }}>
   <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
     <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }} gutterBottom>
       Repeat & Label Metrics
@@ -196,34 +177,36 @@ const OrderCard: React.FC = () => {
     <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
   </Box>
 
-  {repeatTableData.map((item, idx) => (
-    <Box
-      key={idx}
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-between",
-        gap: 2,
-      }}
-    >
-      {Object.entries(item).map(([key, value]) => (
-        <Box
-          key={key}
-          sx={{
-            flex: "1 1 200px",
-            maxWidth: "calc(33.33% - 16px)", // fits 3 in a row with spacing
-          }}
-        >
-          <Typography variant="body2" color="textSecondary">
-            {columns.find((col) => col.id === key)?.label || key}
-          </Typography>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            {value}
-          </Typography>
-        </Box>
-      ))}
-    </Box>
-  ))}
+  <Box
+    sx={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      gap: 2,
+    }}
+  >
+    {Object.entries({
+      repeat: viewMasterDataDetails.repeat_length,
+      ups: viewMasterDataDetails.ups,
+      tracks: viewMasterDataDetails.tracks,
+      labels: viewMasterDataDetails.labels_per_meter,
+    }).map(([key, value]) => (
+      <Box
+        key={key}
+        sx={{
+          flex: "1 1 200px",
+          maxWidth: "calc(33.33% - 16px)",
+        }}
+      >
+        <Typography variant="body2" color="textSecondary">
+          {columns.find((col) => col.id === key)?.label || key}
+        </Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          {value}
+        </Typography>
+      </Box>
+    ))}
+  </Box>
 </Box>
 
 

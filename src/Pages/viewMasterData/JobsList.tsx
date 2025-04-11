@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setJobsListData,
-  setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
 
 
@@ -133,17 +132,6 @@ const JobsList: React.FC = () => {
     },
   ];
 
-  const masterDataDetails = {
-    uen: "UEN-20240801",
-    customerName: "Nestlé",
-    customerPicture: customerPicture,
-    jarCap: "N/A (For flexible packaging)",
-    itemCode: "KK-50G-123",
-    brandPack:
-      "0 LTR_AP_DTS_L.WT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779J] (IML) ASIAN PAINTS",
-    structure: "PET",
-    typeOfLabel: "Kitkat 50gm Wrapper",
-  };
 
   const data = [
     {
@@ -203,14 +191,13 @@ const JobsList: React.FC = () => {
 
   useEffect(() => {
     dispatch(setJobsListData(data));
-    dispatch(setViewMasterDataDetails(masterDataDetails));
   }, [dispatch]);
 
   const maxChars = 120;
-  const isLong = viewMasterDataDetails.brandPack.length > maxChars;
+  const isLong = viewMasterDataDetails.brand_description.length > maxChars;
   const displayText = isLong
-    ? viewMasterDataDetails.brandPack.slice(0, maxChars) + "..."
-    : viewMasterDataDetails.brandPack;
+    ? viewMasterDataDetails.brand_description.slice(0, maxChars) + "..."
+    : viewMasterDataDetails.brand_description;
 
   return (
     <Box sx={{ p: 0 }}>
@@ -228,7 +215,7 @@ const JobsList: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.uen}
+              {viewMasterDataDetails.unit_effectivity_number}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -246,7 +233,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.itemCode}
+                {viewMasterDataDetails.item_code}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -265,7 +252,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.jarCap}
+                {viewMasterDataDetails.jar_cap}
               </Typography>
             </Box>
           </Grid>
@@ -282,7 +269,7 @@ const JobsList: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.customerName}
+              {viewMasterDataDetails.customer_name}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -318,7 +305,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.typeOfLabel}
+                {viewMasterDataDetails.brand_name}
               </Typography>
             </Box>
 
@@ -334,9 +321,9 @@ const JobsList: React.FC = () => {
               >
                 Customer Picture
               </Typography>
-              {viewMasterDataDetails.customerPicture ? (
+              {viewMasterDataDetails.customer_logo ? (
                 <img
-                  src={viewMasterDataDetails.customerPicture}
+                  src={customerPicture}
                   alt="customerPicture"
                   width={100}
                   height={100}
@@ -352,7 +339,7 @@ const JobsList: React.FC = () => {
                 Brand Name & Pack Description
               </Typography>
               <Tooltip
-                title={isLong ? viewMasterDataDetails.brandPack : ""}
+                title={isLong ? viewMasterDataDetails.brand_description : ""}
                 placement="top"
                 arrow
               >

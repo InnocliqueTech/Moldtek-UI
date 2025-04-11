@@ -74,7 +74,6 @@ const laminatingSubstrateData = [
 
 const tensionColumns = [
   { id: "rewinderTension", label: "Rewinder Tension" },
-  { id: "rewinderTension", label: "Rewinder Tension" },
   { id: "printedFilmTension", label: "Printed Film Tension" },
   { id: "laminatedFilmTension", label: "Laminated Film Tension" },
 ]

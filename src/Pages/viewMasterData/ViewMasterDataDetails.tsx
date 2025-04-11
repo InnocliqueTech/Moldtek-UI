@@ -5,19 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect } from "react";
 import {
-  setRepeatTableData,
   setSubstrateTableData,
 } from "../../store/slices/viewMasterDataSlice";
 
-const columns = [
-  { id: "repeat", label: "Repeat" },
-  { id: "ups", label: "UPs" },
-  { id: "tracks", label: "Tracks" },
-  {
-    id: "labels",
-    label: "# Labels/Meter",
-  },
-];
+
 const data = [
   {
     repeat: 53,
@@ -45,13 +36,13 @@ const substrateData = [
 
 const ViewMasterDataDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { repeatTableData, substrateTableData } = useSelector(
+  const { substrateTableData } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
   useEffect(() => {
     if (data.length >= 0) {
-      dispatch(setRepeatTableData(data));
+      // dispatch(setRepeatTableData(data));
     }
     if (substrateData.length >= 0) {
       dispatch(setSubstrateTableData(substrateData));
@@ -69,7 +60,7 @@ const ViewMasterDataDetails: React.FC = () => {
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={columns} data={repeatTableData} />
+      {/* <DataTable columns={columns} data={repeatTableData} /> */}
       <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1, mt: 1 }}
       >

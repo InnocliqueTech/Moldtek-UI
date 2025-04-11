@@ -14,14 +14,13 @@ interface DailyPlanProps {
 const DailyPlan: React.FC<DailyPlanProps> = () => {
   const navigate = useNavigate();
    const columns = [
-    { id: "version", label: "Indent Number", align: false },
+    { id: "version", label: "Indent Number", align: false,        format: (value: string) => <UENCell value={value} onClick={()=>{
+      navigate('/viewDailyPlan')
+    }} />, },
       {
         id: "uen",
         label: "Effective Unit Number",
         align: false,
-        format: (value: string) => <UENCell value={value} onClick={()=>{
-          navigate('/viewDailyPlan')
-        }} />,
       },
       {
         id: "customer",
