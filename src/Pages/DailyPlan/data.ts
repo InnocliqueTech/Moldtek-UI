@@ -308,56 +308,59 @@ export const data = [
 export const tapeColumns = [
     { id: "stationNo", label: "Station No" },
     { id: "1", label: "1" },
-     { id: "2", label: "2" },
-     { id: "3", label: "3" },
-     { id: "4", label: "4" },
-     { id: "5", label: "5" },
-     { id: "6", label: "6" },
-     { id: "7", label: "7" },
-     { id: "8", label: "8" },
-      { id: "9", label: "9" },
-     { id: "10", label: "10" },
-  ];
-  
- export const tapeRows = [
-  {stationNo:"soft",
-      1:"--",
-      2:"--",
-      3:"--",
-      4:"--",
-      5:"--",
-      6:"--",
-      7:"--",
-      8:"--",
-      9:"--",
-      10:"--",
-  },
-  {stationNo:"Medium",
-      1:"--",
-      2:"--",
-      3:"--",
-      4:"--",
-      5:"--",
-      6:"--",
-      7:"--",
-      8:"--",
-      9:"--",
-      10:"--",
-  },
-  {stationNo:"Hard",
-      1:"--",
-      2:"--",
-      3:"--",
-      4:"--",
-      5:"--",
-      6:"--",
-      7:"--",
-      8:"--",
-      9:"--",
-      10:"--",
-  }
-  ]
-  
+    { id: "2", label: "2" },
+    { id: "3", label: "3" },
+    { id: "4", label: "4" },
+    { id: "5", label: "5" },
+    { id: "6", label: "6" },
+    { id: "7", label: "7" },
+    { id: "8", label: "8" },
+    { id: "9", label: "9" },
+    { id: "10", label: "10" },
+];
+
+export const tapeRows = [
+    {
+        stationNo: "soft",
+        1: "--",
+        2: "--",
+        3: "--",
+        4: "--",
+        5: "--",
+        6: "--",
+        7: "--",
+        8: "--",
+        9: "--",
+        10: "--",
+    },
+    {
+        stationNo: "Medium",
+        1: "--",
+        2: "--",
+        3: "--",
+        4: "--",
+        5: "--",
+        6: "--",
+        7: "--",
+        8: "--",
+        9: "--",
+        10: "--",
+    },
+    {
+        stationNo: "Hard",
+        1: "--",
+        2: "--",
+        3: "--",
+        4: "--",
+        5: "--",
+        6: "--",
+        7: "--",
+        8: "--",
+        9: "--",
+        10: "--",
+    }
+]
+
 
 export const analoxColumns = [
     { id: "parameter", label: "Parameter" },
@@ -371,166 +374,168 @@ export const analoxColumns = [
     { id: "station8", label: "Station 8" },
     { id: "station9", label: "Station 9" },
     { id: "station10", label: "Station 10" },
-  ];
-  
-  export const analoxData = [
-    {
-      parameter: "LPCM",
-      station1: 23,
-      station2: 23,
-      station3: 23,
-      station4: 23,
-      station5: 23,
-      station6: 23,
-      station7: 23,
-      station8: 23,
-      station9: 23,
-      station10: 23,
-    },
-    {
-      parameter: "Vol.",
-      station1: 36,
-      station2: 36,
-      station3: 36,
-      station4: 36,
-      station5: 36,
-      station6: 36,
-      station7: 36,
-      station8: 36,
-      station9: 36,
-      station10: 36,
-    },
-  ];
+];
 
- export  const materialColumns = [
-    { id: "widthMm", label: "Width mm" },
-    { id: "thicknessMicrons", label: "Thickness Microns" },
+export const analoxData = [
+    {
+        parameter: "LPCM",
+        station1: 23,
+        station2: 23,
+        station3: 23,
+        station4: 23,
+        station5: 23,
+        station6: 23,
+        station7: 23,
+        station8: 23,
+        station9: 23,
+        station10: 23,
+    },
+    {
+        parameter: "Vol.",
+        station1: 36,
+        station2: 36,
+        station3: 36,
+        station4: 36,
+        station5: 36,
+        station6: 36,
+        station7: 36,
+        station8: 36,
+        station9: 36,
+        station10: 36,
+    },
+];
+
+export const materialColumns = [
+    { id: "widthMm", label: "Width(mm)" },
+    { id: "thicknessMicrons", label: "Thickness(Microns)" },
     { id: "gsm", label: "GSM" },
     { id: "dyne", label: "DYNE" },
-  ];
-  
-  export const materialData = [
-    {
-      widthMm: "623",
-      thicknessMicrons: "623",
-      gsm: "623",
-      dyne: "623",
-    },
-  ];
+];
 
-  export const plateMountingReport = [
+export const materialData = [
+    {
+        widthMm: "623",
+        thicknessMicrons: "623",
+        gsm: "623",
+        dyne: "623",
+    },
+];
+
+export const plateMountingReport = [
     { label: "Plates Inspection", value: "721" },
     { label: "Mounter", value: "21426152" },
     { label: "Approver", value: "564" },
     { label: "Ink Kitchen Supervisor", value: "--" },
-    { label: "Plate Mounting Supervisor", value: "--" },
+    { label: "Shift Supervisor Report", value: "--" },
     { label: "Shift QC Incharge", value: "-" }
-  ];
+];
 
-  export const printingMCData = [
+export const printingMCData = [
     { label: "Plain Film Weight Per Repeat", value: "12112" },
     { label: "Printed Film Weight Per Repeat", value: "21426152" },
     { label: "Ink Weight Per Repeat", value: "564" },
-    { label: "Operator", value: "--" },
-    { label: "Supervisor", value: "--" },
-    { label: "Shift Qc", value: "-" },
+    { label: "Printing M/C Name", value: "--" },
     { label: "Left Over Roll Meters", value: "3267" },
     { label: "Left Over Roll Kg’s", value: "JAR" },
-    { label: "Printing M/C", value: "--" }
-  ];
+    { label: "Operator", value: "--" },
+    { label: "Shift Qc", value: "-" },
+    { label: "Supervisor", value: "--" },
+    { label: "Remarks", value: "--" }
+];
 
-  export const printingColumns = [
-    { id: "category", label: "" },
+export const printingColumns = [
+    { id: "category", label: "Category" },
     { id: "target", label: "Target" },
     { id: "actuals", label: "Actuals" },
-  ];
-  
-  export const printingData = [
-    {
-      category: "Total Printing",
-      target: "23",
-      actuals: "23"
-    },
-    {
-      category: "Total Printing Process Waste",
-      target: "23",
-      actuals: "23"
-    },
-    {
-      category: "Inspection Wastage",
-      target: "--",
-      actuals: "--"
-    },
-    {
-      category: "Printed Film Issued For Next Process",
-      target: "23",
-      actuals: "23"
-    }
-  ];
+];
 
-  export const jobDetails = [
+export const printingData = [
+    {
+        category: "Total Printing",
+        target: "23",
+        actuals: "23"
+    },
+    {
+        category: "Total Printing Process Waste",
+        target: "23",
+        actuals: "23"
+    },
+    {
+        category: "Inspection Wastage",
+        target: "--",
+        actuals: "--"
+    },
+    {
+        category: "Printed Film Issued For Next Process",
+        target: "23",
+        actuals: "23"
+    }
+];
+
+export const jobDetails = [
     { label: "Job Starting Time", value: "21-Sep-2025" },
     { label: "Completion Time", value: "--" },
     { label: "Total Printing Time", value: "5234" },
+    { label: "Operator", value: "Nick" },
     { label: "Supervisor", value: "John" },
     { label: "HOD", value: "Peter" },
-    { label: "Operator", value: "Nick" }
-  ];
 
- export const laminationColumns = [
-    { id: "category", label: "" },
+];
+
+export const laminationColumns = [
+    { id: "category", label: "Category" },
     { id: "target", label: "Target" },
     { id: "actuals", label: "Actuals" },
-  ];
-  
-  export const laminationData = [
+];
+
+export const laminationData = [
     {
-      category: "Total Laminate",
-      target: "23",
-      actuals: "23"
+        category: "Total Laminate",
+        target: "23",
+        actuals: "23"
     },
     {
-      category: "Lamination Process Waste",
-      target: "23",
-      actuals: "23"
+        category: "Lamination Process Waste",
+        target: "23",
+        actuals: "23"
     },
     {
-      category: "Inspection Wastage",
-      target: "--",
-      actuals: "--"
+        category: "Inspection Wastage",
+        target: "--",
+        actuals: "--"
     },
     {
-      category: "Laminate Film Issued For Next Process",
-      target: "23",
-      actuals: "23"
+        category: "Laminate Film Issued For Next Process",
+        target: "23",
+        actuals: "23"
     }
-  ];
-  
-  export const labelCuttingColumns = [
-    { id: "category", label: "" },
+];
+
+export const labelCuttingColumns = [
+    { id: "category", label: "Category" },
     { id: "target", label: "Target" },
     { id: "actuals", label: "Actuals" },
-  ];
-  
-  export const labelCuttingData = [
-    {
-      category: "Printed Film Issued For Label Cutting",
-      target: "23",
-      actuals: "23"
-    },
-    {
-      category: "Total Cutting Process Waste",
-      target: "23",
-      actuals: "23"
-    },
-    {
-      category: "Output Labels Qty",
-      target: "--",
-      actuals: "--"
-    }
-  ];
+];
 
- export const jobMetadata = [
+export const labelCuttingData = [
+    {
+        category: "Printed Film Issued For Label Cutting",
+        target: "23",
+        actuals: "23"
+    },
+    {
+        category: "Total Cutting Process Waste",
+        target: "23",
+        actuals: "23"
+    },
+    {
+        category: "Output Labels Qty",
+        target: "--",
+        actuals: "--"
+    }
+];
+
+export const jobMetadata = [
     { label: "Effectivity Unit Number", value: "UEN-20240801" },
     { label: "Indent Number", value: "21426152" },
     { label: "Customer Name", value: "Nestlé" },
@@ -543,7 +548,22 @@ export const analoxColumns = [
     { label: "Date", value: "8-Sep-2025" },
     { label: "Shift", value: "Morning" },
     { label: "Work Order Number", value: "233443" }
-  ];
-  
-  
-  
+];
+
+export const labelDispatchColums = [
+    { id: "required", label: "REQUIRED LABELS FOR DISPATCH" },
+    { id: "dispatched", label: "DISPATCHED LABELS" },
+    { id: "balance", label: "BALANCE LABELS" },
+    { id: "HODcomments", label:"HOD Comments"}
+]
+
+export const labelDispatchRows = [
+    {
+        required: '--',
+        dispatched: '--',
+        balance: '--',
+        HODcomments:'--'
+    }
+]
+
+

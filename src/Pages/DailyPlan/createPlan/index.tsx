@@ -16,22 +16,23 @@ interface FormField {
 const CreatePlan: React.FC = () => {
   const initialFormFields: FormField[] = [
     { id: 'indentNumber', label: 'Indent Number:', value: '' },
+    { id: 'unitEffNumber', label: 'Unit Effective Number:', value: '' },
     { id: 'ppcIndentQty', label: 'PPC Indent Qty (NOS):', value: '' },
     { id: 'colorsForSettings', label: 'No of Colors for settings', value: '' },
-    { id: 'colorsForCirMatch', label: 'No Of Colours for Cir match', value: '' },
+    { id: 'colorsForCirMatch', label: 'No Of Colours for Clr match', value: '' },
     { id: 'webLength', label: '1 Web Length for Colours Match', value: '' },
     { id: 'colorMatching', label: 'Colour Matching', value: '' },
     { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
     {
       id: 'labelType',
-      label: 'Type of Label',
+      label: 'No of Rolls',
       component: 'dropdown',
       options: ['KitKat 50g Wrapper'],
       value: ''
     },
     { id: 'batToPrint', label: 'Bat to Print Indent Qty (Mtrs) planned', value: '' },
-    { id: 'dieCutWastage', label: 'Die-Cut Wastage', value: '' },
-    { id: 'laminationWastage', label: 'Lamination Wastage', value: '' },
+    // { id: 'dieCutWastage', label: 'Die-Cut Wastage', value: '' },
+    // { id: 'laminationWastage', label: 'Lamination Wastage', value: '' },
     { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
   ];
 

@@ -56,7 +56,8 @@ const TitledDataTable = <T extends Record<string, any>>({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          p: 1,
+          // padding: !showTableSection?  "8px 8px 0px 8px" : "8px",
+          padding:"8px 8px 0px 8px"
         }}
       >
         <Typography
@@ -76,6 +77,7 @@ const TitledDataTable = <T extends Record<string, any>>({
       {showTableSection && <Box sx={{
         borderBottom: `1px solid ${borderColor}`,
         borderRadius: borderRadius,
+        marginBottom: showInfoSection ? "1rem" :"0px"
       }}>
         <DataTable
           columns={columns}

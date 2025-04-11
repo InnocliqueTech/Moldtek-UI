@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { printingColumns, printingData, jobDetails ,laminationColumns,laminationData,labelCuttingColumns,labelCuttingData} from "../data";
+import { printingColumns, printingData, jobDetails ,laminationColumns,laminationData,labelCuttingColumns,labelCuttingData,labelDispatchColums,labelDispatchRows} from "../data";
 
 const TravelCard: React.FC = () => {
     return (
@@ -36,6 +36,17 @@ const TravelCard: React.FC = () => {
                     firstRow={true}
                     infoItems={jobDetails}
                     showInfoSection={true}
+                />
+            </Box>
+
+            <Box sx={{ borderRadius: "0px ", p: 1 }}>
+                <TitledDataTable
+                    title="Label Dispatch Summary"
+                    columns={labelDispatchColums}
+                    data={labelDispatchRows}
+                    // firstRow={true}
+                    // infoItems={jobDetails}
+                    // showInfoSection={true}
                 />
             </Box>
         </>

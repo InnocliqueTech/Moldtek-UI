@@ -5,7 +5,7 @@ const LabelCutting: React.FC = () => {
     return (
         <>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
-                <Typography>LabelCutting under Construction</Typography>
+                <Typography variant="h2">LabelCutting under Construction</Typography>
             </Box>
         </>
     );

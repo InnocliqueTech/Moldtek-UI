@@ -65,15 +65,16 @@ const zoneTempPressingColumns = [
   ];
   
   const viscosityWeightColumns = [
-    { id: 'metric', label: '' },
+    // { id: 'metric', label: '' },
     { id: 'viscosityRange', label: 'Viscosity Range' },
     { id: 'viscosityActual', label: 'Actual' },
     { id: 'gsmRange', label: 'GSM Range' },
+    { id: 'mixingComposition', label:"Mixing Composition"},
     { id: 'gsmActual', label: 'Actual' },
   ];
   
   const viscosityWeightData = [
-    { metric: '', viscosityRange: '16 - 17', viscosityActual: '16 - 17', gsmRange: '16 - 17', gsmActual: '16 - 17' },
+    { viscosityRange: '16 - 17', viscosityActual: '16 - 17', gsmRange: '16 - 17',mixingComposition:"24" ,gsmActual: '16 - 17' },
   ];
   const laminationProcessColumns = [
     { id: 'stage', label: '' },
@@ -111,6 +112,13 @@ const zoneTempPressingColumns = [
   const plainFilmLeftData = [
     { meters: '12', kgs: '--' },
   ];
+
+  const plainFilmInfoItems = [
+    { label: "Plain Film Left Over Roll(meters)", value: "721" },
+    { label: "Plain Film Left Over Roll(Kgs)", value: "72" },
+    { label: "QC Approval", value: "--" },
+    { label: "Incharge comments", value: "--" },
+  ]
         
          
 
@@ -128,7 +136,7 @@ const LaminationReport: React.FC = () => {
     </Box>
     <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Unwinding & Rewinding Process"
+      title="Unwinding & Rewinding Tension"
       columns={unwindRewindColumns}
       data={unwindRewindData}
       firstRow={true}
@@ -188,6 +196,9 @@ const LaminationReport: React.FC = () => {
       columns={plainFilmLeftColumns}
       data={plainFilmLeftData}
       firstRow={false}
+      showTableSection={false}
+      infoItems={plainFilmInfoItems}
+      showInfoSection={true}
     />
   </Box>
   </>

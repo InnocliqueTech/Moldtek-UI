@@ -240,7 +240,7 @@ const PrintingReport: React.FC = () => {
   </Box>
   <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Printing Process Report"
+      title="Printing Run Metrics"
       columns={printingProcessColumns1}
       data={printingProcessData1}
       firstRow={true}
@@ -248,7 +248,7 @@ const PrintingReport: React.FC = () => {
   </Box>
   <Box sx={{ borderRadius: "0px ", p: 1 }}>
     <TitledDataTable
-      title="Printing M/C"
+      title="Material Usaige and Shift details"
       showInfoSection={true}
       showTableSection={false}
       infoItems={printingMCData}

@@ -107,7 +107,7 @@ const MakeReady: React.FC = () => {
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
-          title="Tape Specifications."
+          title="Mounting Tape Specifications"
           columns={tapeColumns}
           data={tapeRows}
           firstRow={true}
