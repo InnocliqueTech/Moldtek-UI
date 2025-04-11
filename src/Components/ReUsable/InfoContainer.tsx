@@ -22,8 +22,9 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
   // borderColor = "#ECECEC",
 }) => {
   return (
-    <Box className="px-4"  sx={{
-        // borderTop: `1px solid ${borderColor}`,
+    <Box className="px-4 py-2"  sx={{
+        // border: `1px solid ${borderColor}`,
+        mt:2
       }}>
       <Box>
         <Grid container spacing={2} pt={1}>

@@ -1,11 +1,20 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
+import { printingColumns, printingData, jobDetails } from "../data";
 
 const TravelCard: React.FC = () => {
     return (
         <>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
-                <Typography>TravelCard under Construction</Typography>
+                <TitledDataTable
+                    title="Printing Machine"
+                    columns={printingColumns}
+                    data={printingData}
+                    firstRow={true}
+                    infoItems={jobDetails}
+                    showInfoSection={true}
+                />
             </Box>
         </>
     );

@@ -438,5 +438,44 @@ export const analoxColumns = [
     { label: "Left Over Roll Kg’s", value: "JAR" },
     { label: "Printing M/C", value: "--" }
   ];
+
+  export const printingColumns = [
+    { id: "category", label: "" },
+    { id: "target", label: "Target" },
+    { id: "actuals", label: "Actuals" },
+  ];
+  
+  export const printingData = [
+    {
+      category: "Total Printing",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Total Printing Process Waste",
+      target: "23",
+      actuals: "23"
+    },
+    {
+      category: "Inspection Wastage",
+      target: "--",
+      actuals: "--"
+    },
+    {
+      category: "Printed Film Issued For Next Process",
+      target: "23",
+      actuals: "23"
+    }
+  ];
+
+  export const jobDetails = [
+    { label: "Job Starting Time", value: "21-Sep-2025" },
+    { label: "Completion Time", value: "--" },
+    { label: "Total Printing Time", value: "5234" },
+    { label: "Supervisor", value: "John" },
+    { label: "HOD", value: "Peter" },
+    { label: "Operator", value: "Nick" }
+  ];
+  
   
   
