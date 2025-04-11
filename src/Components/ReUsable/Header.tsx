@@ -33,7 +33,9 @@ interface HeaderProps {
   lastUpdate?: string;
   headerButton?: boolean;
   onBack?: () => void;
-  filterTitle?:string
+  filterTitle?:string;
+  uploadTitle?:string;
+  uploadSubTitle?:string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -49,6 +51,8 @@ const Header: React.FC<HeaderProps> = ({
   headerButton,
   onBack,
   filterTitle,
+  uploadTitle,
+  uploadSubTitle
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup } = useSelector((store: RootState) => store.masterData);
@@ -237,9 +241,9 @@ const Header: React.FC<HeaderProps> = ({
         upload={true}
         onConfirm={handleSubmitAndPublishPopupOpen}
         confirmText="Submit"
-        title="Create Master Data"
+        title={uploadTitle?uploadTitle:''}
         onClose={handleClosePopUp}
-        subText="Upload Master Data"
+        subText={uploadSubTitle?uploadSubTitle:''}
       />
       
       <Filter filterTitle={filterTitle?filterTitle:''} />

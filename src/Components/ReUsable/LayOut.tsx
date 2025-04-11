@@ -35,7 +35,9 @@ const Layout = () => {
       lastUpdate?: string;
       headerButton?:boolean
       onBack?:()=>void;
-      filterTitle?:string
+      filterTitle?:string;
+      uploadTitle?:string;
+      uploadSubTitle?:string
     }
   > = {
     "/dashboard": {
@@ -75,6 +77,8 @@ const Layout = () => {
       button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
+      uploadTitle:'Create Master Data',
+      uploadSubTitle: 'Upload Master Data'
     },
     "/viewMasterData": {
       title: "UEN-20240801",
@@ -114,16 +118,20 @@ const Layout = () => {
       button1Text: "View Template",
       button2Text: "Upload Job Data",
       onButton1Click: () => dispatch(setVersionPopup(true)),
-      onButton2Click: () => alert("Upload Data"),
+      onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton:true,
-      onBack:()=>navigate('/dailyPlan') 
+      onBack:()=>navigate('/dailyPlan') ,
+      uploadTitle:'Upload Job Data',
+      uploadSubTitle:''
     },
     "/createPlan": {
       title: "Create Daily Plan",
       button1Text: "Upload Data",
       button2Text: "Submit",
-      onButton1Click: () => alert("Upload Data"),
+      onButton1Click: () => dispatch(setUploadPopup(true)),
       onButton2Click: () => alert("Submit"),
+       uploadTitle:'Create Daily Plan',
+      uploadSubTitle: 'Upload Daily Plan'
     },
     "/": {
       title: "Home",
@@ -181,6 +189,8 @@ const Layout = () => {
           headerButton={headerData.headerButton}
           onBack={headerData.onBack}
           filterTitle={headerData.filterTitle}
+          uploadTitle={headerData.uploadTitle}
+          uploadSubTitle={headerData.uploadSubTitle}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>
