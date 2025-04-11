@@ -478,7 +478,7 @@ export const analoxColumns = [
   ];
 
  export const laminationColumns = [
-    { id: "category", label: "Category" },
+    { id: "category", label: "" },
     { id: "target", label: "Target" },
     { id: "actuals", label: "Actuals" },
   ];
@@ -507,7 +507,7 @@ export const analoxColumns = [
   ];
   
   export const labelCuttingColumns = [
-    { id: "category", label: "Category" },
+    { id: "category", label: "" },
     { id: "target", label: "Target" },
     { id: "actuals", label: "Actuals" },
   ];
@@ -529,5 +529,21 @@ export const analoxColumns = [
       actuals: "--"
     }
   ];
+
+ export const jobMetadata = [
+    { label: "Effectivity Unit Number", value: "UEN-20240801" },
+    { label: "Indent Number", value: "21426152" },
+    { label: "Customer Name", value: "Nestlé" },
+    { label: "Brand Name & Pack", value: "KitKat 50g Wrapper" },
+    { label: "PPC Indent Qty", value: "6123512" },
+    { label: "Target Labels Qty", value: "6123512" },
+    { label: "Target Film Mtrs", value: "5234" },
+    { label: "Film Required For Printing", value: "3267" },
+    { label: "JAR/CAP", value: "JAR" },
+    { label: "Date", value: "8-Sep-2025" },
+    { label: "Shift", value: "Morning" },
+    { label: "Work Order Number", value: "233443" }
+  ];
+  
   
   

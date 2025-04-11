@@ -94,6 +94,7 @@ const MakeReady: React.FC = () => {
           title="Ink & Coating Specifications"
           columns={inkCoatingColumns}
           data={inkCoatingData}
+          firstRow={true}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -101,6 +102,7 @@ const MakeReady: React.FC = () => {
           title="Analox Specifications"
           columns={analoxColumns}
           data={analoxData}
+          firstRow={true}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -108,6 +110,7 @@ const MakeReady: React.FC = () => {
           title="Tape Specifications."
           columns={tapeColumns}
           data={tapeRows}
+          firstRow={true}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
