@@ -21,7 +21,6 @@ import { ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
-import { boolean } from "zod";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface HeaderProps {

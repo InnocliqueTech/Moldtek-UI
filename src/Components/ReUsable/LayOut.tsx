@@ -117,7 +117,7 @@ const Layout = () => {
       title: "View Daily Plan",
       button1Text: "View Template",
       button2Text: "Upload Job Data",
-      onButton1Click: () => dispatch(setVersionPopup(true)),
+      onButton1Click:  () => alert("View Template Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton:true,
       onBack:()=>navigate('/dailyPlan') ,
