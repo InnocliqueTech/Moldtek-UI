@@ -13,7 +13,7 @@ import {
 const zoneTemperatureColumns = [
   { id: "zone1Temp", label: "Zone-1 Temp (°C)" },
   { id: "zone2Temp", label: "Zone-2 Temp (°C)" },
-  { id: "npPressure", label: "Np Pressure (Bar)" },
+  { id: "npPressure", label: "NIP Pressure (Bar)" },
   { id: "speed", label: "Speed (m/min)" },
   // { id: "lamiSetTension", label: "Lami Set Tension" },
   // { id: "rewinderTension", label: "Rewinder Tension" },
