@@ -9,7 +9,7 @@ import {
   setSubmitPopupConfirm,
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface MasterDataFooterProps {
   selectedTab: number;
@@ -62,6 +62,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const { submitPopup, submitPopupConfirm, submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
+  const {id} = useParams();
 
   return (
     <Box
@@ -75,7 +76,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     >
       {selectedTab === 3 ? (
         <ReusableButton
-          text="Submit and Publish"
+          text={id ? "Update and Publish":"Submit and Publish"}
           color="#0073B7"
           borderRadius="100px"
           border="1px solid #0073B7"
@@ -129,7 +130,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitPopupConfirm}
-        title="You have successfully created master data your version is 4253. "
+        title={id?"You have successfully updated master data your version is 4253.":"You have successfully created master data your version is 4253."}
         message="You're all set! Let’s get started."
         buttonText2="Go back to Master Data"
         gifSrc=""
@@ -138,7 +139,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitAndPublish}
-        title="Are you sure you want submit and publish? This version is 4243."
+        title={id ?"Are you sure you want update and publish? This version is 4243.":"Are you sure you want submit and publish? This version is 4243."}
         message=""
         buttonText="No"
         buttonText2="Yes, Publish it!"

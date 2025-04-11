@@ -14,6 +14,7 @@ interface DailyPlanProps {
 const DailyPlan: React.FC<DailyPlanProps> = () => {
   const navigate = useNavigate();
    const columns = [
+    { id: "version", label: "Indent Number", align: false },
       {
         id: "uen",
         label: "Effective Unit Number",
@@ -46,10 +47,9 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
           </Box>
         ),
       },
-      { id: "version", label: "Indent Number", align: true },
       {
         id: "segment",
-        label: "Segment",
+        label: "Type Of Label",
         align: true,
         format: (value: string) => (
           <Box

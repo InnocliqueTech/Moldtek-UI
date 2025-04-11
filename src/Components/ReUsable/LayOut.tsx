@@ -79,7 +79,7 @@ const Layout = () => {
       button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
-      uploadTitle:'Create Master Data',
+      uploadTitle:'Update Master Data',
       uploadSubTitle: 'Upload Master Data'
     },
     "/viewMasterData": {

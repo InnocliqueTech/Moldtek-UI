@@ -65,6 +65,7 @@ const inkStationColumns = [
   { id: "lpcm", label: "LPCM" },
   { id: "volume", label: "Volume" },
   { id: "uvLed", label: "UV/LED" },
+  {id:'uvLedIntensity',label:'UV/LED Intensity'}
 ];
 
 const inkStationData = [
@@ -76,6 +77,7 @@ const inkStationData = [
     lpcm: 65,
     volume: "460ml",
     uvLed: "LED",
+    uvLedIntensity:'30%'
   },
   {
     stationNo: 2,
@@ -85,6 +87,7 @@ const inkStationData = [
     lpcm: 65,
     volume: "550ml",
     uvLed: "UV",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 3,
@@ -94,6 +97,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "LED",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 4,
@@ -103,6 +107,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "UV",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 5,
@@ -112,6 +117,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "LED",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 6,
@@ -121,6 +127,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "UV",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 7,
@@ -130,6 +137,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "LED",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 8,
@@ -139,6 +147,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "UV",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 9,
@@ -148,6 +157,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "LED",
+     uvLedIntensity:'30%'
   },
   {
     stationNo: 10,
@@ -157,6 +167,7 @@ const inkStationData = [
     lpcm: 60,
     volume: "480ml",
     uvLed: "UV",
+     uvLedIntensity:'30%'
   },
 ];
 

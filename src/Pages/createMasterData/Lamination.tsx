@@ -21,7 +21,7 @@ const Lamination: React.FC = () => {
    const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const bondingMaterialColumns = [
-    { id: "field", label: "Field" },
+    { id: "filed", label: "Field" },
     { id: "code", label: "Code", edit: true },
     { id: "brand", label: "Brand", edit: true },
     { id: "ratio", label: "Ratio", edit: true },
@@ -130,7 +130,7 @@ const Lamination: React.FC = () => {
             <Typography
               sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             >
-              Zone Temperature & Pressing Conditions
+              Lamination Zone Settings
             </Typography>
             <InfoOutline
               sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
@@ -219,7 +219,7 @@ const Lamination: React.FC = () => {
               Lamination Substrate
             </Typography>
             <Grid container spacing={2} pt={1}>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownComponent
                   label="Substrate Type"
                   options={["PET"]}
@@ -229,7 +229,7 @@ const Lamination: React.FC = () => {
                   checkbox={false}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownComponent
                   label="Supplier"
                   options={[
@@ -244,28 +244,28 @@ const Lamination: React.FC = () => {
                   checkbox={false}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Dyne Level"
                   value={formData.dyneLevel}
                   onChange={(e) => handleChange("dyneLevel", e.target.value)}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4}}>
                 <ReusableInput
                   label="Width (mm)"
                   value={formData.width}
                   onChange={(e) => handleChange("width", e.target.value)}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Thickness"
                   value={formData.thickness}
                   onChange={(e) => handleChange("thickness", e.target.value)}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Density (g/cm)"
                   value={formData.density}
@@ -305,6 +305,7 @@ const Lamination: React.FC = () => {
           data={tableData}
           tableTitle={true}
           setData={setTableData}
+          firstRow={true}
         />
       </Box>
       <Box

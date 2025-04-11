@@ -136,7 +136,7 @@ const ViewLamination: React.FC = () => {
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Zone Temperature & Pressing Conditions
+           Lamination Zone Settings
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>

@@ -24,7 +24,7 @@ const dispatch = useDispatch<AppDispatch>();
       label: "Unit Effectivity Number",
       align: false,
       format: (value: string) => <UENCell value={value} onClick={() => {dispatch(setSelectedTab(0)),navigate('/viewMasterData')}} />,
-      disableSorting: true,
+      disableSorting: false,
     },
     {
       id: "customer",
@@ -59,7 +59,7 @@ const dispatch = useDispatch<AppDispatch>();
     },
     {
       id: "segment",
-      label: "Segment",
+      label: "Type Of Label",
       align: true,
       disableSorting: false,
       format: (value: string) => (
@@ -367,11 +367,11 @@ const dispatch = useDispatch<AppDispatch>();
           action={true}
           actions={[
             {
-              label: "View",
+              label: "View Job Data",
               onClick: () => navigate(`/viewJobsList`),
             },
             {
-              label: "Edit",
+              label: "Update",
               onClick: () => navigate(`/updateMasterData/${123}`),
             },
           ]}

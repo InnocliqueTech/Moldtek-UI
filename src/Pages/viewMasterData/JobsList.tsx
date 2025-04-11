@@ -42,7 +42,7 @@ const JobsList: React.FC = () => {
     },
     {
       id: "segment",
-      label: "Segment",
+      label: "Type Of Label",
       align: true,
       disableSorting: true,
       format: (value: string) => (

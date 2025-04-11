@@ -32,6 +32,7 @@ export interface PrintingInkStationData {
   lpcm: number;
   volume: string;
   uvLed: string;
+   uvLedIntensity:string
 }
 export interface LaminationSettings {
   zone1Temp: number;
@@ -133,6 +134,7 @@ const initialState: ViewMasterDataState = {
       lpcm: 0,
       volume: "",
       uvLed: "",
+       uvLedIntensity:""
     },
   ],
   laminationAdhesive: [

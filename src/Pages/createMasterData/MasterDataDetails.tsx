@@ -83,7 +83,7 @@ const MasterDataDetails: React.FC = () => {
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Basic Information
+          SKU Master Data
         </Typography>
 
         <Grid container spacing={2} pt={1}>
@@ -257,7 +257,7 @@ const MasterDataDetails: React.FC = () => {
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Additional Information
+          Repeat & Label Metrics
         </Typography>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 3 }}>

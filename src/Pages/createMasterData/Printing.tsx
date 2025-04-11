@@ -190,7 +190,7 @@ const Printing: React.FC = () => {
         </Typography>
         <Grid container spacing={2} pt={1}>
           {substrateFields.map((field) => (
-            <Grid size={{ xs: 12, md: 6 }} id={field.id}>
+            <Grid size={{ xs: 12, md: 4 }} id={field.id}>
               {renderField(field)}
             </Grid>
           ))}
