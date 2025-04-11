@@ -220,7 +220,7 @@ const ViewPrinting: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Ink Station-wise Entry{" "}
+            Ink Station-wise Configuration{" "}
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>

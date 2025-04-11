@@ -43,7 +43,7 @@ const Layout = () => {
     "/dashboard": {
       title: "Dashboard",
       button1Text: "Uploaded Data",
-      button2Text: "Create Maser Data",
+      button2Text: "Create Master Data",
       onButton1Click: () => alert("Add Item Clicked"),
       onButton2Click: () => setMasterDataCreatePopup(true),
     },
@@ -57,7 +57,7 @@ const Layout = () => {
     "/masterData": {
       title: "Master Data",
       button1Text: "Filter",
-      button2Text: "Create Maser Data",
+      button2Text: "Create Master Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: () => {
         navigate("/createMasterData"), dispatch(setSelectedTab(0));
@@ -70,6 +70,8 @@ const Layout = () => {
       button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
+      uploadTitle:'Create Master Data',
+      uploadSubTitle: 'Upload Master Data'
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",

@@ -61,23 +61,23 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
     <Dialog
     open={open}
     onClose={onClose}
-    maxWidth={false} // Disable MUI's default width handling
+    maxWidth={false} 
     fullWidth
     sx={{
       "& .MuiPaper-root": {
         borderRadius: "16px",
-        width: table ? "1000px" : "400px", // 👈 Custom width here
-        maxWidth: "100%", // Responsive fallback
+        width: table ? "1000px" : "350px",
+        maxWidth: "100%", 
       },
     }}
   >
       {/* Popup Header */}
       {title&&
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{pb:'6px',ml:'-12px'}}>{title}</DialogTitle>
 }
 
       {/* Popup Body */}
-      <DialogContent sx={{        p:table ?"0px":"24px",mt:table?"14px":'0px'}}>
+      <DialogContent sx={{        p:table ?"0px":"16px", mt:table?"10px":'0px'}}>
         <Box display="flex" flexDirection="column" gap="10px">
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
@@ -212,7 +212,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
       </DialogContent>
 
       {/* Popup Actions (Confirm & Close) */}
-      <DialogActions sx={{ paddingBottom: "16px" }}>
+      <DialogActions sx={{ paddingBottom: "16px",mt:'-6px' }}>
         {cancel && (
           <ButtonComponent
             onClick={onClose}

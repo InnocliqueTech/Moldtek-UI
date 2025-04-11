@@ -188,10 +188,10 @@ const OrderCard: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1.5 }}>
+      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1,pt:0.2}}>
   <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
     <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }} gutterBottom>
-      Repeat Length & Label Coverage
+      Repeat & Label Metrics
     </Typography>
     <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
   </Box>
@@ -204,7 +204,6 @@ const OrderCard: React.FC = () => {
         flexWrap: "wrap",
         justifyContent: "space-between",
         gap: 2,
-        p: 1.5,
       }}
     >
       {Object.entries(item).map(([key, value]) => (
