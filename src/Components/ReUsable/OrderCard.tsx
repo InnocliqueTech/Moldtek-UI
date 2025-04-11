@@ -6,21 +6,9 @@ import { AppDispatch, RootState } from "../../store";
 import { setRepeatTableData } from "../../store/slices/viewMasterDataSlice";
 import customerImage from "../../assets/Images/customerPicture.png";
 
-interface OrderCardProps {
-  orderId?: string;
-  data: {
-    label: string;
-    value: string;
-    isImage?: boolean;
-  }[];
-  button1Text?: string;
-  button2Text?: string;
-  onBack?: () => void;
-  button1Click?: () => void;
-  button2Click?: () => void;
-}
 
-const OrderCard: React.FC<OrderCardProps> = () => {
+
+const OrderCard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { repeatTableData } = useSelector(
     (state: RootState) => state.viewMasterData

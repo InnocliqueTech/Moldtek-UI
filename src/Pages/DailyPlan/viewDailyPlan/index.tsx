@@ -12,6 +12,7 @@ import PrintingReport from "./PrintingReport";
 import LaminationReport from "./LaminationReport";
 import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
+import CommenCard from "./commonCard";
 
 const mockData = [
   { label: "Unit Effectivity Number", value: "UEN-20240801" },
@@ -61,14 +62,7 @@ const ViewDailyPlan: React.FC = () => {
           borderRadius: "10px",
         }}
       >
-        <OrderCard
-          data={mockData}
-          onBack={handleBack}
-          button1Click={() => alert("Version history")}
-          button2Click={() => navigate(`/updateMasterData/${123}`)}
-          button1Text="Version History"
-          button2Text="Modify Master Data"
-        />
+        <CommenCard/>
       </Box>
 
       {/* Tabs Section */}

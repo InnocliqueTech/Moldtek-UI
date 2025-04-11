@@ -70,14 +70,7 @@ const ViewMasterData: React.FC = () => {
           mb: 1,
         }}
       >
-        <OrderCard
-          data={mockData}
-          onBack={handleBack}
-          button1Click={() => alert("Version history")}
-          button2Click={() => navigate(`/updateMasterData/${123}`)}
-          button1Text="Version History"
-          button2Text="Modify Master Data"
-        />
+        <OrderCard/>
       </Box>
 
       {/* Scrollable section */}

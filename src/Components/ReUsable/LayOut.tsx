@@ -114,7 +114,7 @@ const Layout = () => {
       button1Text: "View Template",
       button2Text: "Upload Job Data",
       onButton1Click: () => dispatch(setVersionPopup(true)),
-      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      onButton2Click: () => alert("Upload Data"),
       headerButton:true,
       onBack:()=>navigate('/dailyPlan') 
     },
