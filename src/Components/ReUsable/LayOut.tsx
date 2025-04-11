@@ -34,7 +34,8 @@ const Layout = () => {
       onButton2Click?: () => void;
       lastUpdate?: string;
       headerButton?:boolean
-      onBack?:()=>void
+      onBack?:()=>void;
+      filterTitle?:string
     }
   > = {
     "/dashboard": {
@@ -59,6 +60,7 @@ const Layout = () => {
       onButton2Click: () => {
         navigate("/createMasterData"), dispatch(setSelectedTab(0));
       },
+       filterTitle:'Master Data Filter'
     },
     "/createMasterData": {
       title: "Create Master Data",
@@ -103,8 +105,18 @@ const Layout = () => {
       title: "Daily Plan",
       button1Text: "Filter",
       button2Text: "Create Daily Plan",
-      onButton1Click: () => alert("Filter Clicked"),
+      onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: () => navigate(`/createPlan`),
+      filterTitle:'Daily Plan Filter'
+    },
+    "/viewDailyPlan": {
+      title: "View Daily Plan",
+      button1Text: "View Template",
+      button2Text: "Upload Job Data",
+      onButton1Click: () => dispatch(setVersionPopup(true)),
+      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      headerButton:true,
+      onBack:()=>navigate('/dailyPlan') 
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -168,6 +180,7 @@ const Layout = () => {
           lastUpdate={headerData.lastUpdate}
           headerButton={headerData.headerButton}
           onBack={headerData.onBack}
+          filterTitle={headerData.filterTitle}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

@@ -33,6 +33,7 @@ interface HeaderProps {
   lastUpdate?: string;
   headerButton?: boolean;
   onBack?: () => void;
+  filterTitle?:string
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -47,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({
   lastUpdate,
   headerButton,
   onBack,
+  filterTitle,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup } = useSelector((store: RootState) => store.masterData);
@@ -239,8 +241,8 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleClosePopUp}
         subText="Upload Master Data"
       />
-
-      <Filter />
+      
+      <Filter filterTitle={filterTitle?filterTitle:''} />
       <VersinDetails />
     </>
   );

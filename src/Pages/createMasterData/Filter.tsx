@@ -6,8 +6,11 @@ import { setOpenSlider } from "../../store/slices/masterDataSlice";
 import FilterForm from "./GlobalSearch";
 // import SearchComponent from "./GenAiSearch";
 
+interface FilterProps {
+  filterTitle: string;
+}
 
-const Filter: React.FC = () => {
+const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { openSider } = useSelector((state: RootState) => state.masterData);
   // const tabs = [
@@ -23,7 +26,7 @@ const Filter: React.FC = () => {
       <DynamicSlider
         open={openSider}
         onClose={() => dispatch(setOpenSlider(false))}
-        title="Master Data Filter" content={content} />
+        title={filterTitle} content={content} />
     )
   );
 };
