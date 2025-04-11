@@ -42,7 +42,6 @@ const TitledDataTable = <T extends Record<string, any>>({
   showInfoSection = false,
   showTableSection = true,
 }: TitledDataTableProps<T>) => {
-  console.log(infoItems,"inside titleDataTable");
   return (
     <Box
       sx={{

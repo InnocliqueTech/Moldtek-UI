@@ -21,7 +21,6 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
   infoItems,
   // borderColor = "#ECECEC",
 }) => {
-  console.log(infoItems,"inside container");
   return (
     <Box className="px-4"  sx={{
         // borderTop: `1px solid ${borderColor}`,

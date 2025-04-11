@@ -10,6 +10,8 @@ import customerImage from "../../../assets/Images/customerPicture.png";
 import { useNavigate } from "react-router-dom";
 import PrintingReport from "./PrintingReport";
 import LaminationReport from "./LaminationReport";
+import LabelCutting from "./LabelCutting";
+import TravelCard from "./TravelCard";
 
 const mockData = [
   { label: "Unit Effectivity Number", value: "UEN-20240801" },
@@ -77,6 +79,7 @@ const ViewDailyPlan: React.FC = () => {
           borderRadius: "10px",
           overflow: "hidden",
           mt: 1,
+          minHeight:"400px"
         }}
       >
         <TabsComponent
@@ -88,6 +91,8 @@ const ViewDailyPlan: React.FC = () => {
           {selectedTab === 0 && <MakeReady />}
           {selectedTab === 1 && <PrintingReport />}
           {selectedTab === 2 && <LaminationReport />}
+          {selectedTab === 3 && <LabelCutting/>}
+          {selectedTab === 4 && <TravelCard/>}
         </Box>
       </Box>
     </Box>
