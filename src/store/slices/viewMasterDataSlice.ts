@@ -1,25 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 export interface RepeatTableRow {
-  repeat_length: number,
-  ups: number,
-  tracks: number,
-  labels_per_meter: number,
+  repeat_length: number;
+  ups: number;
+  tracks: number;
+  labels_per_meter: number;
 }
 export interface PrintingMachineSettings {
-   machine_settings_id : number,
-   job_master_id : number,
-   mounting_tape : string,
-   cylinder_teeth : number,
-   tension : number,
-   unwinder : number,
-   rewinder : number,
-   infeed : number,
-   outfeed : number,
-   static_charge : number,
-   format_correct : number
-
+  machine_settings_id: number;
+  job_master_id: number;
+  mounting_tape: string;
+  cylinder_teeth: number;
+  tension: number;
+  unwinder: number;
+  rewinder: number;
+  infeed: number;
+  outfeed: number;
+  static_charge: number;
+  format_correct: number;
 }
 
 export interface SubstrateTableRow {
@@ -35,15 +33,20 @@ export interface PrintingInkStationData {
   lpcm: number;
   volume: string;
   uv_led: string;
-  uv_led_intensity:string
+  uv_led_intensity: string;
 }
 export interface LaminationSettings {
-  zone1Temp: number;
-  zone2Temp: number;
-  npPressure: number;
+  zone1_temp: number;
+  zone2_temp: number;
+  nip_pressure_bar: number;
   speed: number;
-  lamiSetTension: string;
-  rewinderTension: string;
+  last_set_tension: string;
+  rewinder_tension: string;
+  printed_film_tension: string;
+  laminate_film_tension: string;
+  viscosity_range: string;
+  adhesive_gsm: string;
+  composite_gsm: string;
 }
 
 export interface LaminationDetail {
@@ -53,30 +56,41 @@ export interface LaminationDetail {
 }
 
 export interface LaminationAdhesiveDetail {
-  field: string;
+  type: string;
   code: string;
   brand: string;
-  ratio: string;
-}
-export interface DyePrintingSettings {
-  dyeCutMachineType: string;
-  machine: string;
-  dyeCode: string;
-  runSpeed: string;
+  ratio: number;
 }
 
-export interface  PrintingSubstrateSettings {
-  print_substrate_id: number,
-  machine_settings_id: number,
-  substrate_type: string,
-  supplier: string,
-  dyne_level: string,
-  width: number,
-  thickness: number,
-  density: number,
-  gsm: number
+export interface DyeCuttingSettings {
+  machine_type: string;
+  machine_name: string;
+  dye_code: string;
+  run_speed: number;
 }
 
+export interface PrintingSubstrateSettings {
+  print_substrate_id: number;
+  machine_settings_id: number;
+  substrate_type: string;
+  supplier: string;
+  dyne_level: string;
+  width: number;
+  thickness: number;
+  density: number;
+  gsm: number;
+}
+export interface LaminatingSubstrateSettings {
+  substrate_id: number;
+  lamination_id: number;
+  substrate_type: string;
+  supplier: string;
+  dyne_level: string;
+  width: number;
+  thickness: number;
+  density: number;
+  gsm: number;
+}
 export interface JobListData {
   uen: string;
   segment: string;
@@ -86,19 +100,19 @@ export interface JobListData {
   comment: number;
 }
 export interface ViewMasterDataDetails {
-job_master_id: number,
-   unit_effectivity_number : string,
-   customer_name : string,
-   customer_logo : string,
-   item_code : string,
-   brand_description : string,
-   jar_cap : string,
-   structure : string,
-   brand_name : string,
-  repeat_length: number,
-  ups: number,
-  tracks: number,
-  labels_per_meter: number,
+  job_master_id: number;
+  unit_effectivity_number: string;
+  customer_name: string;
+  customer_logo: string;
+  item_code: string;
+  brand_description: string;
+  jar_cap: string;
+  structure: string;
+  brand_name: string;
+  repeat_length: number;
+  ups: number;
+  tracks: number;
+  labels_per_meter: number;
 }
 
 interface ViewMasterDataState {
@@ -107,129 +121,139 @@ interface ViewMasterDataState {
   substrateTableData: SubstrateTableRow[];
   printingMachineSettings: PrintingMachineSettings;
   printingInkStatinData: PrintingInkStationData[];
-  laminationSettings: LaminationSettings[];
+  laminationSettings: LaminationSettings;
   laminationDetails: LaminationDetail[];
   laminationAdhesive: LaminationAdhesiveDetail[];
-  dyePrintingSettings: DyePrintingSettings[];
-  viewMasterDataDetails:ViewMasterDataDetails;
-  jobListData:JobListData[];
-  versionPopup:boolean;
+  dyeCuttingSettings: DyeCuttingSettings;
+  viewMasterDataDetails: ViewMasterDataDetails;
+  jobListData: JobListData[];
+  versionPopup: boolean;
   printingSubstrateSettings: PrintingSubstrateSettings;
+  laminatingSubstrateSettings: LaminatingSubstrateSettings;
 }
 
 const initialState: ViewMasterDataState = {
   selectedTab: 0,
-  repeatTableData: 
-    {
-      repeat_length: 0,
-      ups: 0,
-      tracks: 0,
-      labels_per_meter: 0,
-    },
-  substrateTableData: [
-    {
-      field: "",
-      printing: "",
-      lamination: "",
-    },
-  ],
-  printingMachineSettings: 
-    {
-      machine_settings_id : 0,
-      job_master_id : 0,
-      mounting_tape : '',
-      cylinder_teeth : 0,
-      tension : 0,
-      unwinder : 0,
-      rewinder : 0,
-      infeed : 0,
-      outfeed : 0,
-      static_charge : 0,
-      format_correct : 0
-    },
-  printingInkStatinData: [
-    {
-      station_no: 0,
-      color_pantone: "",
-      lf_value: 0,
-      ink_supplier: "",
-      lpcm: 0,
-      volume: "",
-      uv_led: "",
-      uv_led_intensity:""
-
-    },
-  ],
-  laminationAdhesive: [
-    {
-      field: "",
-      code: "",
-      brand: "",
-      ratio: "",
-    },
-  ],
-  laminationDetails: [
-    {
-      field: "",
-      printedFilm: "",
-      laminateFilm: "",
-    },
-  ],
-  laminationSettings: [
-    {
-      zone1Temp: 0,
-      zone2Temp: 0,
-      npPressure: 0,
-      speed: 0,
-      lamiSetTension: "",
-      rewinderTension: "",
-    },
-  ],
-  dyePrintingSettings: [
-    {
-      dyeCutMachineType: "",
-      machine: "",
-      dyeCode: "",
-      runSpeed: "",
-    },
-  ],
-  viewMasterDataDetails:{
-    job_master_id:  0,
-   unit_effectivity_number : "",
-   customer_name : "",
-   customer_logo : "",
-   item_code : "",
-   brand_description : "",
-   jar_cap : "",
-   structure : "",
-   brand_name : "",
+  repeatTableData: {
     repeat_length: 0,
     ups: 0,
     tracks: 0,
     labels_per_meter: 0,
   },
-  jobListData:[
+  substrateTableData: [
     {
-      uen: "",
-      segment: "",
-      status: "",
-      lastUpdated: "",
-      lastExecuted: "",
-      comment: 0,
-    }
+      field: "--",
+      printing: "--",
+      lamination: "--",
+    },
   ],
-  printingSubstrateSettings:{
-    print_substrate_id: 0,
-  machine_settings_id: 0,
-  substrate_type: "",
-  supplier: "",
-  dyne_level: "",
-  width: 0,
-  thickness: 0,
-  density: 0,
-  gsm: 0
+  printingMachineSettings: {
+    machine_settings_id: 0,
+    job_master_id: 0,
+    mounting_tape: "--",
+    cylinder_teeth: 0,
+    tension: 0,
+    unwinder: 0,
+    rewinder: 0,
+    infeed: 0,
+    outfeed: 0,
+    static_charge: 0,
+    format_correct: 0,
   },
-  versionPopup:false
+  printingInkStatinData: [
+    {
+      station_no: 0,
+      color_pantone: "--",
+      lf_value: 0,
+      ink_supplier: "--",
+      lpcm: 0,
+      volume: "--",
+      uv_led: "--",
+      uv_led_intensity: "--",
+    },
+  ],
+  laminationAdhesive: [
+    {
+      type: "--",
+      code: "--",
+      brand: "--",
+      ratio: 0,
+    },
+  ],
+  laminationDetails: [
+    {
+      field: "--",
+      printedFilm: "--",
+      laminateFilm: "--",
+    },
+  ],
+  laminationSettings: {
+    zone1_temp: 0,
+    zone2_temp: 0,
+    nip_pressure_bar: 0,
+    speed: 0,
+    last_set_tension: "--",
+    rewinder_tension: "--",
+    printed_film_tension: "--",
+    laminate_film_tension: "--",
+    viscosity_range: "--",
+    adhesive_gsm: "--",
+    composite_gsm: "--",
+  },
+  dyeCuttingSettings: {
+    machine_type: "--",
+    machine_name: "--",
+    dye_code: "--",
+    run_speed: 0,
+  },
+  viewMasterDataDetails: {
+    job_master_id: 0,
+    unit_effectivity_number: "--",
+    customer_name: "--",
+    customer_logo: "--",
+    item_code: "--",
+    brand_description: "--",
+    jar_cap: "--",
+    structure: "--",
+    brand_name: "--",
+    repeat_length: 0,
+    ups: 0,
+    tracks: 0,
+    labels_per_meter: 0,
+  },
+  jobListData: [
+    {
+      uen: "--",
+      segment: "--",
+      status: "--",
+      lastUpdated: "--",
+      lastExecuted: "--",
+      comment: 0,
+    },
+  ],
+  printingSubstrateSettings: {
+    print_substrate_id: 0,
+    machine_settings_id: 0,
+    substrate_type: "--",
+    supplier: "--",
+    dyne_level: "--",
+    width: 0,
+    thickness: 0,
+    density: 0,
+    gsm: 0,
+  },
+  laminatingSubstrateSettings: {
+    substrate_id: 0,
+    lamination_id: 0,
+    substrate_type: "--",
+    supplier: "--",
+    dyne_level: "--",
+    width: 0,
+    thickness: 0,
+    density: 0,
+    gsm: 0,
+  },
+  versionPopup: false,
 };
 
 const viewMasterDataSlice = createSlice({
@@ -262,7 +286,7 @@ const viewMasterDataSlice = createSlice({
     },
     setLaminationSettings: (
       state,
-      action: PayloadAction<LaminationSettings[]>
+      action: PayloadAction<LaminationSettings>
     ) => {
       state.laminationSettings = action.payload;
     },
@@ -278,16 +302,13 @@ const viewMasterDataSlice = createSlice({
     ) => {
       state.laminationAdhesive = action.payload;
     },
-    setDyePrintingSettings: (
+    setDyeCuttingSettings: (
       state,
-      action: PayloadAction<DyePrintingSettings[]>
+      action: PayloadAction<DyeCuttingSettings>
     ) => {
-      state.dyePrintingSettings = action.payload;
+      state.dyeCuttingSettings = action.payload;
     },
-    setJobsListData: (
-      state,
-      action: PayloadAction<JobListData[]>
-    ) => {
+    setJobsListData: (state, action: PayloadAction<JobListData[]>) => {
       state.jobListData = action.payload;
     },
     setViewMasterDataDetails: (
@@ -296,12 +317,21 @@ const viewMasterDataSlice = createSlice({
     ) => {
       state.viewMasterDataDetails = action.payload;
     },
-    setVersionPopup:(state,action:PayloadAction<boolean>)=>{
-      state.versionPopup = action.payload
+    setVersionPopup: (state, action: PayloadAction<boolean>) => {
+      state.versionPopup = action.payload;
     },
-    setPrintingSubstrate:(state,action:PayloadAction<PrintingSubstrateSettings>)=>{
-      state.printingSubstrateSettings= action.payload
-    }
+    setPrintingSubstrate: (
+      state,
+      action: PayloadAction<PrintingSubstrateSettings>
+    ) => {
+      state.printingSubstrateSettings = action.payload;
+    },
+    setLaminatingSubstrate: (
+      state,
+      action: PayloadAction<LaminatingSubstrateSettings>
+    ) => {
+      state.laminatingSubstrateSettings = action.payload;
+    },
   },
 });
 
@@ -311,13 +341,14 @@ export const {
   setSubstrateTableData,
   setPrintingMachineSettingsData,
   setPrintingInkStationData,
-  setDyePrintingSettings,
+  setDyeCuttingSettings,
   setLaminationAdhesiveDetails,
   setLaminationDetails,
   setLaminationSettings,
   setJobsListData,
   setViewMasterDataDetails,
   setVersionPopup,
-  setPrintingSubstrate
+  setPrintingSubstrate,
+  setLaminatingSubstrate,
 } = viewMasterDataSlice.actions;
 export default viewMasterDataSlice.reducer;

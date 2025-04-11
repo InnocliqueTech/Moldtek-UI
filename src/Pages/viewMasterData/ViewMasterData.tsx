@@ -4,6 +4,10 @@ import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
+  setDyeCuttingSettings,
+  setLaminatingSubstrate,
+  setLaminationAdhesiveDetails,
+  setLaminationSettings,
   setPrintingInkStationData,
   setPrintingMachineSettingsData,
   setPrintingSubstrate,
@@ -12,7 +16,7 @@ import {
 } from "../../store/slices/viewMasterDataSlice";
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
-import ViewDyePrinting from "./ViewDyePrinting";
+import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect } from "react";
 import { mockData } from "./data";
 
@@ -46,7 +50,12 @@ const ViewMasterData: React.FC = () => {
     dispatch(
       setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
     );
+    dispatch(setDyeCuttingSettings(mockData.masterDataDyeCutting));
+    dispatch(setLaminationSettings(mockData.masterDataLamination.laminationConditions));
+    dispatch(setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate));
+    dispatch(setLaminationAdhesiveDetails(mockData.masterDataLamination.bondingMaterials))
   }, []);
+  console.log(mockData.masterDataLamination.bondingMaterials,"LAMINATIOn")
 
   return (
     <Box
@@ -109,7 +118,7 @@ const ViewMasterData: React.FC = () => {
         <Box sx={{ padding: 2 }}>
           {selectedTab === 0 && <ViewPrinting />}
           {selectedTab === 1 && <ViewLamination />}
-          {selectedTab === 2 && <ViewDyePrinting />}
+          {selectedTab === 2 && <ViewDyeCutting />}
         </Box>
       </Box>
     </Box>

@@ -1,52 +1,28 @@
 import { Box, Typography } from "@mui/material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { InfoOutline } from "@mui/icons-material";
-import { AppDispatch, RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import {
-  setLaminationAdhesiveDetails,
-  setLaminationDetails,
-  setLaminationSettings,
-} from "../../store/slices/viewMasterDataSlice";
+import {  RootState } from "../../store";
+import {useSelector } from "react-redux";
+
 
 const zoneTemperatureColumns = [
-  { id: "zone1Temp", label: "Zone-1 Temp (°C)" },
-  { id: "zone2Temp", label: "Zone-2 Temp (°C)" },
-  { id: "npPressure", label: "NIP Pressure (Bar)" },
+  { id: "zone1_temp", label: "Zone-1 Temp (°C)" },
+  { id: "zone2_temp", label: "Zone-2 Temp (°C)" },
+  { id: "nip_pressure_bar", label: "NIP Pressure (Bar)" },
   { id: "speed", label: "Speed (m/min)" },
-  // { id: "lamiSetTension", label: "Lami Set Tension" },
-  // { id: "rewinderTension", label: "Rewinder Tension" },
 ];
 const materialDetailsColumns = [
-  { id: "viscocityRange", label: "Visco City Range" },
-  { id: "adhesiveGsm", label: "Adhesive GSM" },
-  { id: "compositeGsm", label: "Composite GSM" },
+  { id: "viscosity_range", label: "Visco City Range" },
+  { id: "adhesive_gsm", label: "Adhesive GSM" },
+  { id: "composite_gsm", label: "Composite GSM" },
 ];
-const materialDetailsData = [
-  {
-    viscocityRange: 110,
-    adhesiveGsm: 120,
-    gsm: 3.5,
-    compositeGsm: 65,
-  },
-]
 
-const zoneTemperatureData = [
-  {
-    zone1Temp: 110,
-    zone2Temp: 120,
-    npPressure: 3.5,
-    speed: 65,
-    lamiSetTension: "2.5 n/mm",
-    rewinderTension: "--",
-  },
-];
+
 
 const laminatingSubstarteColumns= [
-  { id: "substrateType", label: "Substrate Type" },
+  { id: "substrate_type", label: "Substrate Type" },
   { id: "supplier", label: "Supplier" },
-  { id: "dyneLevel", label: "Dyne Level" },
+  { id: "dyne_level", label: "Dyne Level" },
   { id: "width", label: "Width (mm)" },
   { id: "thickness", label: "Thickness (microns)" },
   { id: "density", label: "Density (g/cm³)" },
@@ -54,81 +30,29 @@ const laminatingSubstarteColumns= [
 ];
 
 
-const laminatingSubstrateData = [
-  {
-    substrateType: "ALU Foil",
-    supplier: "Huhtamaki",
-    dyneLevel: "38 Dynes",
-    width: 1200,
-    thickness: 7,
-    density: 1.37,
-    gsm: 16.4,
-  },
-];
-
-// const unwindingRewindingColumns = [
-//   { id: "field", label: "Field" },
-//   { id: "printedFilm", label: "Printed Film" },
-//   { id: "laminateFilm", label: "Laminate Film" },
-// ];
-
 const tensionColumns = [
-  { id: "lamiSetTension", label: "Lami-set Tension" },
-  { id: "rewinderTension", label: "Rewinder Tension" },
-  { id: "printedFilmTension", label: "Printed Film Tension" },
-  { id: "laminatedFilmTension", label: "Laminated Film Tension" },
-]
-const tensionData = [
-  {
-    lamiSetTension: "2.5 n/mm",
-    rewinderTension: "--",
-    printedFilmTension:"12",
-    laminatedFilmTension:"12"
-  },
+  { id: "last_set_tension", label: "Lami-set Tension" },
+  { id: "rewinder_tension", label: "Rewinder Tension" },
+  { id: "printed_film_tension", label: "Printed Film Tension" },
+  { id: "laminate_film_tension", label: "Laminated Film Tension" },
 ]
 
-const unwindingRewindingData = [
-  { field: "Tension (Primary)", printedFilm: "2.5 N/mm", laminateFilm: "--" },
-  { field: "Width (mm)", printedFilm: "1200", laminateFilm: "1200" },
-  { field: "Thickness (microns)", printedFilm: "12", laminateFilm: "12" },
-  { field: "GSM", printedFilm: "16.4", laminateFilm: "16.8" },
-  { field: "Dyne Level", printedFilm: "42 Dynes", laminateFilm: "42 Dynes" },
-];
+
+
 const bondingMaterialColumns = [
-  { id: "field", label: "Field" },
+  { id: "type", label: "Field" },
   { id: "code", label: "Code" },
   { id: "brand", label: "Brand" },
   { id: "ratio", label: "Ratio" },
 ];
 
-const bondingMaterialData = [
-  { field: "Adhesive", code: "ADH123", brand: "Henkel", ratio: "1.2" },
-  { field: "Hardener", code: "ADH123", brand: "Henkel", ratio: "1.2" },
-  { field: "Ethyl Acetate", code: "ADH123", brand: "Henkel", ratio: "1.2" },
-];
+
 
 const ViewLamination: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { laminationAdhesive, laminationSettings } =
+
+  const { laminationAdhesive, laminationSettings,laminatingSubstrateSettings } =
     useSelector((state: RootState) => state.viewMasterData);
-
-  useEffect(() => {
-    if (bondingMaterialData.length >= 0) {
-      dispatch(setLaminationAdhesiveDetails(bondingMaterialData));
-    }
-    if (unwindingRewindingData.length >= 0) {
-      dispatch(setLaminationDetails(unwindingRewindingData));
-    }
-    if (zoneTemperatureData.length >= 0) {
-      dispatch(setLaminationSettings(zoneTemperatureData));
-    }
-  }, [
-    dispatch,
-    bondingMaterialData,
-    zoneTemperatureData,
-    unwindingRewindingData,
-  ]);
-
+    console.log(laminationAdhesive,"LAMINATION")
   return (
     <Box sx={{ borderRadius: "0px "}}>
       <Box sx={{ display: "flex", gap: 1 }}>
@@ -140,7 +64,7 @@ const ViewLamination: React.FC = () => {
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={zoneTemperatureColumns} data={laminationSettings} />
+      <DataTable columns={zoneTemperatureColumns} data={laminationSettings?[laminationSettings]:[]} />
       <Box sx={{ display: "flex", gap: 1,mt:1.5}}>
               <Typography
                 sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
@@ -152,7 +76,7 @@ const ViewLamination: React.FC = () => {
             </Box>
             <DataTable
               columns={laminatingSubstarteColumns}
-              data={laminatingSubstrateData}
+              data={laminatingSubstrateSettings?[laminatingSubstrateSettings]:[]}
             />
                  <Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
         <Typography
@@ -163,7 +87,7 @@ const ViewLamination: React.FC = () => {
         </Typography>
         <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
       </Box>
-      <DataTable columns={tensionColumns} data={tensionData} />
+      <DataTable columns={tensionColumns} data={laminationSettings?[laminationSettings]:[]} />
       {/* <Box
         sx={{ border: "1px solid #ECECEC", borderRadius: "16px", pY: 1, mt: 1.5 }}
       >
@@ -208,7 +132,7 @@ const ViewLamination: React.FC = () => {
           </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive} tableTitle={true} firstRow={true} />
+        <DataTable columns={bondingMaterialColumns} data={laminationAdhesive?laminationAdhesive:[]} tableTitle={true} firstRow={true} />
       </Box>
          <Box sx={{ display: "flex", gap: 1,mt:1.5 }}>
         <Typography
@@ -219,7 +143,7 @@ const ViewLamination: React.FC = () => {
         </Typography>
           <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
         </Box>
-        <DataTable columns={materialDetailsColumns} data={materialDetailsData} />
+        <DataTable columns={materialDetailsColumns} data={laminationSettings?[laminationSettings]:[]} />
     </Box>
   );
 };
