@@ -13,7 +13,7 @@ const dyePriningColumns = [
 
 
 
-const ViewDyePrinting: React.FC = () => {
+const ViewDyeCutting: React.FC = () => {
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
@@ -36,4 +36,4 @@ const ViewDyePrinting: React.FC = () => {
   );
 };
 
-export default ViewDyePrinting;
+export default ViewDyeCutting;

@@ -23,7 +23,7 @@ import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
 import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
-import { clearDyePrintingFormData, clearLaminatingFormData, clearMasterDetaisData, clearPrintingFormData } from "../../store/slices/masterDataSlice";
+import { clearDyeCuttingFormData, clearLaminatingFormData, clearMasterDetaisData, clearPrintingFormData } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 
@@ -141,7 +141,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const itemClick = ()=>{
     if(!isDyeCuttingDataSave){
-      dispatch(clearDyePrintingFormData())
+      dispatch(clearDyeCuttingFormData())
     }
     if(!isLaminationDataSave){
       dispatch(clearLaminatingFormData())

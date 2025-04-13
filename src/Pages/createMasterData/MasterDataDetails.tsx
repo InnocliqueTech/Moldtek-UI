@@ -24,50 +24,43 @@ const MasterDataDetails: React.FC = () => {
   );
   const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState<MasterFormData>({
-    unitEffectivityNumber: "",
-    typeOfLabel: "",
-    jarCap: "",
-    customer: "",
-    itemCode: "",
-    structure: "",
-    brandDescription: "",
-    repeat: "",
-    ups: "",
-    tracks: "",
-    labelsPerMeter: "",
-    substrateType: "",
-    supplier: "",
-    dyneLevel: "",
-    width: "",
-    thickness: "",
-    density: "",
-    gsm: "",
-    customerPicture: "",
+    unit_effectivity_number: "",
+        customer_name: "",
+        customer_logo: "",
+        jar_cap: "",
+        item_code: "",
+        structure: "",
+        brand_description: "",
+        label_type: "",
+        repeat_length: 0,
+        ups: 0,
+        tracks: 0,
   });
 
   const handleSave = () => {
     dispatch(setSaveFormData(formData));
      dispatch(setIsMasterDetailsDataSave(true));
   };
-
   const handleChange = (
-     field: string,
-     value: string | string[] | SelectChangeEvent<string | string[]>
-   ) => {
+    field: string,
+    value: string | string[] | SelectChangeEvent<string | string[]>
+  ) => {
      const newValue = Array.isArray(value)
-       ? value
-       : typeof value === "string"
-       ? value
-       : value.target.value;
-   
-     const updatedFormData = {
-       ...formData,
-       [field]: newValue,
-     };
-   
-     setFormData(updatedFormData);
-     dispatch(setSaveFormData(updatedFormData)); 
-   };
+      ? value
+      : typeof value === "string"
+      ? value
+      : value.target.value;
+      const numericFields = ['repeat_length', 'ups', 'tracks'];
+
+      const updatedFormData = {
+        ...formData,
+        [field]: numericFields.includes(field) ? Number(newValue) : newValue,
+      };
+  
+    setFormData(updatedFormData);
+    dispatch(setSaveFormData(updatedFormData));
+  };
+  
    
 
   useEffect(() => {
@@ -75,6 +68,8 @@ const MasterDataDetails: React.FC = () => {
       setFormData(saveFormData);
     }
   }, [saveFormData]);
+
+  
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -90,17 +85,17 @@ const MasterDataDetails: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="Unit Effectivity Number"
-              value={formData.unitEffectivityNumber}
+              value={formData.unit_effectivity_number}
               onChange={(e) =>
-                handleChange("unitEffectivityNumber", e.target.value)
+                handleChange("unit_effectivity_number", e.target.value)
               }
             />
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Type of Label"
                 options={["KitKat 50g Wrapper"]}
-                value={formData.typeOfLabel}
-                onChange={(e) => handleChange("typeOfLabel", e)}
+                value={formData.label_type}
+                onChange={(e) => handleChange("label_type", e)}
                 isMultiSelect={false}
                 checkbox={false}
               />
@@ -109,8 +104,8 @@ const MasterDataDetails: React.FC = () => {
               <DropdownComponent
                 label="Jar/Cap"
                 options={["N/A (For flexible packaging)", "JAR", "CAP"]}
-                value={formData.jarCap}
-                onChange={(value: any) => handleChange("jarCap", value)}
+                value={formData.jar_cap}
+                onChange={(value: any) => handleChange("jar_cap", value)}
                 isMultiSelect={false}
                 checkbox={false}
               />
@@ -120,14 +115,14 @@ const MasterDataDetails: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="Customer"
-              value={formData.customer}
-              onChange={(e) => handleChange("customer", e.target.value)}
+              value={formData.customer_name}
+              onChange={(e) => handleChange("customer_name", e.target.value)}
             />
             <Box sx={{ mt: 2 }} />
             <ReusableInput
               label="ITEM Code"
-              value={formData.itemCode}
-              onChange={(e) => handleChange("itemCode", e.target.value)}
+              value={formData.item_code}
+              onChange={(e) => handleChange("item_code", e.target.value)}
             />
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
@@ -151,11 +146,11 @@ const MasterDataDetails: React.FC = () => {
                 Customer Picture
               </Typography>
 
-              {formData.customerPicture ? (
+              {formData.customer_logo ? (
                  <Box position="relative" width={120} height={120} mt={1}>
                  <Box
                   component="img"
-                  src={formData.customerPicture}
+                  src={formData.customer_logo}
                   alt="Customer"
                   sx={{ width:'100%',height:'100%', borderRadius: "8px", mt: 1, objectFit: "cover", }}
                 />
@@ -169,7 +164,7 @@ const MasterDataDetails: React.FC = () => {
                      if (file) {
                        const reader = new FileReader();
                        reader.onloadend = () => {
-                         handleChange("customerPicture", reader.result as string);
+                         handleChange("customer_logo", reader.result as string);
                        };
                        reader.readAsDataURL(file);
                      }
@@ -207,7 +202,7 @@ const MasterDataDetails: React.FC = () => {
                         const reader = new FileReader();
                         reader.onloadend = () => {
                           handleChange(
-                            "customerPicture",
+                            "customer_logo",
                             reader.result as string
                           );
                         };
@@ -238,9 +233,9 @@ const MasterDataDetails: React.FC = () => {
             <Box sx={{ mt: 1 }}>
               <TextArea
                 label="Brand Name & Pack Description"
-                value={formData.brandDescription}
+                value={formData.brand_description}
                 onChange={(e) =>
-                  handleChange("brandDescription", e.target.value)
+                  handleChange("brand_description", e.target.value)
                 }
                 placeholder="Enter your text..."
                 rows={4}
@@ -263,8 +258,8 @@ const MasterDataDetails: React.FC = () => {
           <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="Repeat"
-              value={formData.repeat}
-              onChange={(e) => handleChange("repeat", e.target.value)}
+              value={formData.repeat_length}
+              onChange={(e) => handleChange("repeat_length", e.target.value)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>

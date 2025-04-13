@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { setSelectedTab } from "../../store/slices/masterDataSlice";
 
+
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
 const dispatch = useDispatch<AppDispatch>();

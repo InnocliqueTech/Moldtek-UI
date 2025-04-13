@@ -1,108 +1,175 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface PrintingTableRow {
-  stationNo: number;
-  colorPantone: string;
-  lfValue: number;
-  inkSupplier: string;
+  station_no: number;
+  color_pantone: string;
+  lf_value: number;
+  ink_supplier: string;
   lpcm: number;
   volume: string;
-  uvLed: string;
-  uvledintensity: string;
+  uv_led: string;
+  uv_led_intensity: string;
 }
 export interface LaminatingTableRow {
-    filed:string,
-    code: string,
-    brand: string,
-    ratio: string,
-  }
+  type: string;
+  code: string;
+  brand: string;
+  ratio: number;
+}
+export interface RequestPayload {
+  masterDataDetails: {
+    unit_effectivity_number: string;
+    customer_name: string;
+    customer_logo: string;
+    item_code: string;
+    brand_description: string;
+    jar_cap: string;
+    structure: string;
+    label_type: string;
+    repeat_length: number;
+    ups: number;
+    tracks: number;
+  };
+  masterDataPrinting: {
+    printingDetails: {
+      mounting_tape: string;
+      cylinder_teeth: number;
+      tension: number;
+      unwinder: number;
+      rewinder: number;
+      infeed: number;
+      outfeed: number;
+      static_charge: number;
+      format_correct: number;
+    };
+    printingSubstrateSettings: {
+      substrate_type: string;
+      supplier: string;
+      dyne_level: string;
+      width: number;
+      thickness: number;
+      density: number;
+    };
+    stationWiseMetrics: {
+      station_no: number;
+      color_pantone: string;
+      lf_value: number;
+      ink_supplier: string;
+      lpcm: number;
+      volume: string;
+      uv_led: string;
+      uv_led_intensity: string;
+    }[];
+  };
+  masterDataLamination: {
+    laminationConditions: {
+      zone1_temp: number;
+      zone2_temp: number;
+      nip_pressure_bar: number;
+      speed: number;
+      last_set_tension: string;
+      rewinder_tension: string;
+      printed_film_tension: string;
+      laminate_film_tension: string;
+      viscosity_range: string;
+      adhesive_gsm: string;
+    };
+    laminationSubstrate: {
+      substrate_id: number;
+      lamination_id: number;
+      substrate_type: string;
+      supplier: string;
+      dyne_level: string;
+      width: number;
+      thickness: number;
+      density: number;
+    };
+    bondingMaterials: {
+      type: string;
+      code: string;
+      brand: string;
+      ratio: number;
+    }[];
+  };
+  masterDataDyeCutting: {
+    machine_type: string;
+    machine_name: string;
+    dye_code: string;
+    run_speed: number;
 
+  };
+}
 
 export interface LaminationFormData {
-  zone1Temp: string;
-  zone2Temp: string;
-  nipPressure: string;
-  speed: string;
-  lamiTension: string;
-  rewinderTension: string;
-  printedTension: string;
-  printedWidth: string;
-  printedThickness: string;
-  printedGSM: string;
-  printedDyne: string;
-  laminateTension: string;
-  laminateWidth: string;
-  laminateThickness: string;
-  laminateGSM: string;
-  laminateDyne: string;
-  adhesiveCode: string;
-  adhesiveBrand: string;
-  adhesiveRatio: string;
-  hardenerCode: string;
-  hardenerBrand: string;
-  hardenerRatio: string;
-  ethylCode: string;
-  ethylBrand: string;
-  ethylRatio: string;
-  materialCode: string;
-  materialBrand: string;
-  materialRatio: string;
-  viscocityRange: string;
-  adhesiveGSM: string;
-  substrateType: string;
+  laminationConditions: {
+    zone1_temp: number;
+    zone2_temp: number;
+    nip_pressure_bar: number;
+    speed: number;
+    last_set_tension: string;
+    rewinder_tension: string;
+    printed_film_tension: string;
+    laminate_film_tension: string;
+    viscosity_range: string;
+    adhesive_gsm: string;
+},
+
+laminationSubstrate: {
+  substrate_id: number;
+  lamination_id: number;
+  substrate_type: string;
   supplier: string;
-  dyneLevel: string;
-  width: string;
-  thickness: string;
-  density: string;
-  laminatingTableData: LaminatingTableRow[]
+  dyne_level: string;
+  width: number;
+  thickness: number;
+  density: number;
+},
+
+bondingMaterials: LaminatingTableRow[];
 }
 export interface MasterFormData {
-  unitEffectivityNumber: string;
-  typeOfLabel: string;
-  jarCap: string;
-  customer: string;
-  itemCode: string;
-  structure: string;
-  brandDescription: string;
-  repeat: string;
-  ups: string;
-  tracks: string;
-  labelsPerMeter: string;
-  substrateType: string;
-  supplier: string;
-  dyneLevel: string;
-  width: string;
-  thickness: string;
-  density: string;
-  gsm: string;
-  customerPicture?: string;
+  unit_effectivity_number: string,
+        customer_name: string,
+        customer_logo: string,
+        jar_cap: string,
+        item_code: string,
+        structure: string,
+        brand_description: string,
+        label_type: string,
+        repeat_length: number,
+        ups: number,
+        tracks: number,
 }
 
-export interface DyePrintingFormData {
-  dyeCutMachineType: string;
-  machine: string;
-  dyeCode: string;
-  runSpeed: string;
+export interface DyeCuttingFormData {
+  machine_type: string;
+    machine_name: string;
+    dye_code: string;
+    run_speed: number;
 }
 
 export interface PrintingFormValues {
-  mountingType: string;
-  cylinderTeeth: string;
-  tension: string;
-  unwinder: string;
-  infeed: string;
-  outfeed: string;
-  rewinder: string;
-  staticCharge: string;
-  formatCorrect: string;
-  substrateType: string;
-  supplier: string;
-  dyneLevel: string;
-  width: string;
-  thickness: string;
-  density: string;
-  printingTableData: PrintingTableRow[];
+  printingDetails: {
+    mounting_tape: string,
+    cylinder_teeth: number,
+    tension: number,
+    unwinder: number,
+    infeed: number,
+    outfeed: number,
+    rewinder: number,
+    static_charge: number,
+    format_correct: number,
+    },
+    printingSubstrateSettings: {
+
+  substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: number,
+    thickness: number,
+    density: number,
+  },
+  stationWiseMetrics:PrintingTableRow[];
 }
 
 interface MasterDataState {
@@ -115,11 +182,12 @@ interface MasterDataState {
   saveFormData: MasterFormData;
   printingSaveFormData: PrintingFormValues;
   laminaionFormData: LaminationFormData;
-  DyePrintingFormData: DyePrintingFormData;
+  dyeCuttingFormData: DyeCuttingFormData;
   isDyeCuttingDataSave: boolean;
   isMasterDetaisDataSave: boolean;
   isPrintingDataSave: boolean;
   isLaminationDataSave: boolean;
+  requestPayload: RequestPayload;
 }
 
 const initialState: MasterDataState = {
@@ -130,213 +198,286 @@ const initialState: MasterDataState = {
   submitPopupConfirm: false,
   submitAndPublish: false,
   saveFormData: {
-    unitEffectivityNumber: "",
-    typeOfLabel: "",
-    jarCap: "",
-    customer: "",
-    itemCode: "",
+    unit_effectivity_number: "",
+    customer_name: "",
+    customer_logo: "",
+    jar_cap: "",
+    item_code: "",
     structure: "",
-    brandDescription: "",
-    repeat: "",
-    ups: "",
-    tracks: "",
-    labelsPerMeter: "",
-    substrateType: "",
-    supplier: "",
-    dyneLevel: "",
-    width: "",
-    thickness: "",
-    density: "",
-    gsm: "",
-    customerPicture: "",
+    brand_description: "",
+    label_type: "",
+    repeat_length: 0,
+    ups: 0,
+    tracks: 0,
   },
   printingSaveFormData: {
-    mountingType: "",
-    cylinderTeeth: "",
-    tension: "",
-    unwinder: "",
-    infeed: "",
-    outfeed: "",
-    rewinder: "",
-    staticCharge: "",
-    formatCorrect: "",
-    substrateType: "",
-    supplier: "",
-    dyneLevel: "",
-    width: "",
-    thickness: "",
-    density: "",
-    printingTableData: [
+    printingDetails: {
+      mounting_tape: "",
+      cylinder_teeth: 0,
+      tension: 0,
+      unwinder: 0,
+      infeed: 0,
+      outfeed: 0,
+      rewinder: 0,
+      static_charge: 0,
+      format_correct: 0,
+      },
+      printingSubstrateSettings: {
+  
+  
+    substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0,
+    },
+    stationWiseMetrics:[
       {
-        stationNo: 1,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 1,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 2,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 2,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 3,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 3,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 4,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 4,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 5,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 5,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 6,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 6,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 7,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 7,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 8,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 8,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 9,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 9,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
       },
       {
-        stationNo: 10,
-        colorPantone: "",
-        lfValue: 0,
-        inkSupplier: "",
+        station_no: 10,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
         lpcm: 0,
         volume: "",
-        uvLed: "",
-        uvledintensity: "",
+        uv_led: "",
+        uv_led_intensity: "",
+      },    ],
+  },
+  laminaionFormData: {
+    laminationConditions: {
+      zone1_temp: 0,
+      zone2_temp: 0,
+      nip_pressure_bar: 0,
+      speed: 0,
+      last_set_tension: "",
+      rewinder_tension: "",
+      printed_film_tension: "",
+      laminate_film_tension: "",
+      viscosity_range: "",
+      adhesive_gsm: ""
+    },
+    laminationSubstrate: {
+      substrate_id: 0,
+      lamination_id: 0,
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0
+    },
+    bondingMaterials: [
+      {
+        type: "Adhesive",
+        code: "",
+        brand: "",
+        ratio: 0
+    
+      },
+      {
+        type: "Hardener",
+        code: "",
+        brand: "",
+        ratio: 0
+    
+      },
+      {
+        type: "Ethyl Acetate",
+        code: "",
+        brand: "",
+        ratio: 0
+    
       },
     ],
   },
-  laminaionFormData: {
-    zone1Temp: "",
-    zone2Temp: "",
-    nipPressure: "",
-    speed: "",
-    lamiTension: "",
-    rewinderTension: "",
-    printedTension: "",
-    printedWidth: "",
-    printedThickness: "",
-    printedGSM: "",
-    printedDyne: "",
-    laminateTension: "",
-    laminateWidth: "",
-    laminateThickness: "",
-    laminateGSM: "",
-    laminateDyne: "",
-    adhesiveCode: "",
-    adhesiveBrand: "",
-    adhesiveRatio: "",
-    hardenerCode: "",
-    hardenerBrand: "",
-    hardenerRatio: "",
-    ethylCode: "",
-    ethylBrand: "",
-    ethylRatio: "",
-    materialCode: "",
-    materialBrand: "",
-    materialRatio: "",
-    viscocityRange: "",
-    adhesiveGSM: "",
-    substrateType: "",
-    supplier: "",
-    dyneLevel: "",
-    width: "",
-    thickness: "",
-    density: "",
-    laminatingTableData: [
-      {
-      filed:'Adhesive',
-      code: "",
-      brand: "",
-      ratio: "",
-    },
-    {
-      filed:"Hardener",
-      code: "",
-      brand: "",
-      ratio: "",
-    },
-    {
-      filed:"Ethyl Acetate",
-      code: "",
-      brand: "",
-      ratio: "",
-    }
-  ],
-  },
-  DyePrintingFormData: {
-    dyeCutMachineType: "",
-    machine: "",
-    dyeCode: "",
-    runSpeed: "",
+  dyeCuttingFormData: {
+    machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: 0
+
   },
   isDyeCuttingDataSave: false,
   isMasterDetaisDataSave: false,
   isLaminationDataSave: false,
   isPrintingDataSave: false,
+  requestPayload: {
+    masterDataDetails: {
+      unit_effectivity_number: "",
+      customer_name: "",
+      customer_logo: "",
+      item_code: "",
+      brand_description: "",
+      jar_cap: "",
+      structure: "",
+      label_type: "",
+      repeat_length: 0,
+      ups: 0,
+      tracks: 0,
+    },
+    masterDataPrinting: {
+      printingDetails: {
+        mounting_tape: "",
+        cylinder_teeth: 0,
+        tension: 0,
+        unwinder: 0,
+        rewinder: 0,
+        infeed: 0,
+        outfeed: 0,
+        static_charge: 0,
+        format_correct: 0,
+      },
+      printingSubstrateSettings: {
+        substrate_type: "",
+        supplier: "",
+        dyne_level: "",
+        width: 0,
+        thickness: 0,
+        density: 0,
+      },
+      stationWiseMetrics: [
+        {
+          station_no: 0,
+          color_pantone: "",
+          lf_value: 0,
+          ink_supplier: "",
+          lpcm: 0,
+          volume: "",
+          uv_led: "",
+          uv_led_intensity: "",
+        },
+      ],
+    },
+    masterDataLamination: {
+      laminationConditions: {
+        zone1_temp: 0,
+        zone2_temp: 0,
+        nip_pressure_bar: 0,
+        speed: 0,
+        last_set_tension: "",
+        rewinder_tension: "",
+        printed_film_tension: "",
+        laminate_film_tension: "",
+        viscosity_range: "",
+        adhesive_gsm: "",
+      },
+      laminationSubstrate: {
+        substrate_id: 0,
+        lamination_id: 0,
+        substrate_type: "",
+        supplier: "",
+        dyne_level: "",
+        width: 0,
+        thickness: 0,
+        density: 0,
+      },
+      bondingMaterials: [
+        {
+          type: "",
+          code: "",
+          brand: "",
+          ratio: 0,
+        },
+      ],
+    },
+    masterDataDyeCutting: {
+      machine_type: "",
+      machine_name: "",
+      dye_code: "",
+      run_speed: 0,
+    },
+  },
 };
 
 const masterDataSlice = createSlice({
@@ -382,21 +523,21 @@ const masterDataSlice = createSlice({
         ...action.payload,
       };
     },
-    setDyePrintingFormData: (
+    setDyeCuttingFormData: (
       state,
-      action: PayloadAction<DyePrintingFormData>
+      action: PayloadAction<DyeCuttingFormData>
     ) => {
-      state.DyePrintingFormData = {
-        ...state.DyePrintingFormData,
+      state.dyeCuttingFormData = {
+        ...state.dyeCuttingFormData,
         ...action.payload,
       };
     },
-    clearDyePrintingFormData: (state) => {
-      state.DyePrintingFormData = {
-        dyeCutMachineType: "",
-        machine: "",
-        dyeCode: "",
-        runSpeed: "",
+    clearDyeCuttingFormData: (state) => {
+      state.dyeCuttingFormData = {
+        machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: 0
       };
     },
     setIsDyeCuttingSave: (state, action: PayloadAction<boolean>) => {
@@ -413,207 +554,196 @@ const masterDataSlice = createSlice({
     },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
-        unitEffectivityNumber: "",
-        typeOfLabel: "",
-        jarCap: "",
-        customer: "",
-        itemCode: "",
+        unit_effectivity_number: "",
+        customer_name: "",
+        customer_logo: "",
+        jar_cap: "",
+        item_code: "",
         structure: "",
-        brandDescription: "",
-        repeat: "",
-        ups: "",
-        tracks: "",
-        labelsPerMeter: "",
-        substrateType: "",
-        supplier: "",
-        dyneLevel: "",
-        width: "",
-        thickness: "",
-        density: "",
-        gsm: "",
-        customerPicture: "",
+        brand_description: "",
+        label_type: "",
+        repeat_length: 0,
+        ups: 0,
+        tracks: 0,
       };
     },
     clearPrintingFormData: (state) => {
       state.printingSaveFormData = {
-        mountingType: "",
-        cylinderTeeth: "",
-        tension: "",
-        unwinder: "",
-        infeed: "",
-        outfeed: "",
-        rewinder: "",
-        staticCharge: "",
-        formatCorrect: "",
-        substrateType: "",
-        supplier: "",
-        dyneLevel: "",
-        width: "",
-        thickness: "",
-        density: "",
-        printingTableData: [
+        printingDetails: {
+          mounting_tape: "",
+          cylinder_teeth: 0,
+          tension: 0,
+          unwinder: 0,
+          infeed: 0,
+          outfeed: 0,
+          rewinder: 0,
+          static_charge: 0,
+          format_correct: 0,
+          },
+          printingSubstrateSettings: {
+      
+      
+        substrate_type: "",
+          supplier: "",
+          dyne_level: "",
+          width: 0,
+          thickness: 0,
+          density: 0,
+        },
+        stationWiseMetrics:[
           {
-            stationNo: 1,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 1,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 2,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 2,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 3,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 3,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 4,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 4,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 5,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 5,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 6,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 6,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 7,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 7,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 8,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 8,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 9,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 9,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
           },
           {
-            stationNo: 10,
-            colorPantone: "",
-            lfValue: 0,
-            inkSupplier: "",
+            station_no: 10,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
             lpcm: 0,
             volume: "",
-            uvLed: "",
-            uvledintensity: "",
+            uv_led: "",
+            uv_led_intensity: "",
+          },    ],
+      }
+    },
+    clearLaminatingFormData: (state) => {
+      state.laminaionFormData = {
+        laminationConditions: {
+          zone1_temp: 0,
+          zone2_temp: 0,
+          nip_pressure_bar: 0,
+          speed: 0,
+          last_set_tension: "",
+          rewinder_tension: "",
+          printed_film_tension: "",
+          laminate_film_tension: "",
+          viscosity_range: "",
+          adhesive_gsm: ""
+        },
+        laminationSubstrate: {
+          substrate_id: 0,
+          lamination_id: 0,
+          substrate_type: "",
+          supplier: "",
+          dyne_level: "",
+          width: 0,
+          thickness: 0,
+          density: 0
+        },
+        bondingMaterials: [
+          {
+            type: "Adhesive",
+            code: "",
+            brand: "",
+            ratio: 0
+        
+          },
+          {
+            type: "Hardener",
+            code: "",
+            brand: "",
+            ratio: 0
+        
+          },
+          {
+            type: "Ethyl Acetate",
+            code: "",
+            brand: "",
+            ratio: 0
+        
           },
         ],
       };
     },
-    clearLaminatingFormData: (state) => {
-      state.laminaionFormData = {
-        zone1Temp: "",
-        zone2Temp: "",
-        nipPressure: "",
-        speed: "",
-        lamiTension: "",
-        rewinderTension: "",
-        printedTension: "",
-        printedWidth: "",
-        printedThickness: "",
-        printedGSM: "",
-        printedDyne: "",
-        laminateTension: "",
-        laminateWidth: "",
-        laminateThickness: "",
-        laminateGSM: "",
-        laminateDyne: "",
-        adhesiveCode: "",
-        adhesiveBrand: "",
-        adhesiveRatio: "",
-        hardenerCode: "",
-        hardenerBrand: "",
-        hardenerRatio: "",
-        ethylCode: "",
-        ethylBrand: "",
-        ethylRatio: "",
-        materialCode: "",
-        materialBrand: "",
-        materialRatio: "",
-        viscocityRange: "",
-        adhesiveGSM: "",
-        substrateType: "",
-        supplier: "",
-        dyneLevel: "",
-        width: "",
-        thickness: "",
-        density: "",
-        laminatingTableData: [
-          {
-          filed:'Adhesive',
-          code: "",
-          brand: "",
-          ratio: "",
-        },
-        {
-          filed:"Hardener",
-          code: "",
-          brand: "",
-          ratio: "",
-        },
-        {
-          filed:"Ethyl Acetate",
-          code: "",
-          brand: "",
-          ratio: "",
-        }
-      ],
-      };
+    setRequestPayload: (state, action: PayloadAction<RequestPayload>) => {
+      state.requestPayload = action.payload;
     },
   },
 });
@@ -628,14 +758,15 @@ export const {
   setSaveFormData,
   setSavePrintingFormData,
   setLaminationFormData,
-  setDyePrintingFormData,
-  clearDyePrintingFormData,
+  setDyeCuttingFormData,
+  clearDyeCuttingFormData,
   setIsDyeCuttingSave,
   setIsMasterDetailsDataSave,
   setIsLaminatingDataSave,
   setIsPrintingDataSave,
   clearLaminatingFormData,
   clearMasterDetaisData,
-  clearPrintingFormData
+  clearPrintingFormData,
+  setRequestPayload
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

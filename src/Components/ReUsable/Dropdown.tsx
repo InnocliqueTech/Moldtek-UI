@@ -20,6 +20,7 @@ interface DropdownProps {
   label: string;
   showAllOption?: boolean;
   checkbox?: boolean;
+  
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({

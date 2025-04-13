@@ -6,41 +6,68 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
-  setDyePrintingFormData,
-  setIsDyeCuttingSave, 
+  setDyeCuttingFormData,
+  setIsDyeCuttingSave,
+  setRequestPayload, 
 } from "../../store/slices/masterDataSlice";
 
-const DyePrinting: React.FC = () => {
-  const { selectedTab, DyePrintingFormData } = useSelector(
+const DyeCutting: React.FC = () => {
+  const { selectedTab, dyeCuttingFormData,requestPayload,saveFormData,printingSaveFormData,laminaionFormData } = useSelector(
     (state: RootState) => state.masterData
   );
   const dispatch = useDispatch<AppDispatch>();
 
   const [formData, setFormData] = useState({
-    dyeCutMachineType: "",
-    machine: "",
-    dyeCode: "",
-    runSpeed: "",
+    machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: 0
   });
 
  
 
   const handleChange = (key: string, value: string) => {
-    const updated = { ...formData, [key]: value };
-    setFormData(updated);    
-    dispatch(setDyePrintingFormData(updated)); 
+    const parsedValue = key === "run_speed" ? Number(value) : value;
+    const updated = { ...formData, [key]: parsedValue };
+    setFormData(updated);
+    dispatch(setDyeCuttingFormData(updated));
   };
   
+  
   const handleSave = () => {
-    dispatch(setDyePrintingFormData(formData));
-    dispatch(setIsDyeCuttingSave(true)); // <--- mark as saved
+    dispatch(setDyeCuttingFormData(formData));
+    dispatch(setIsDyeCuttingSave(true)); 
+    const updatedPayload = {
+      ...requestPayload, // if you're getting it from useSelector or props
+      masterDataDetails: {
+        ...requestPayload.masterDataDetails,
+        ...saveFormData,
+      
+      },
+      masterDataPrinting:{
+        ...requestPayload.masterDataPrinting,
+        ...printingSaveFormData
+        },
+        masterDataLamination:{
+          ...requestPayload.masterDataLamination,
+          ...laminaionFormData
+        },
+        masterDataDyeCutting:{
+          ...requestPayload.masterDataDyeCutting,
+          ...dyeCuttingFormData
+        }
+    };
+
+  
+    dispatch(setRequestPayload(updatedPayload));
   };
+  console.log(requestPayload,"REQUESTPAYLOAD")
 
   useEffect(() => {
-    if (DyePrintingFormData) {
-      setFormData(DyePrintingFormData);
+    if (dyeCuttingFormData) {
+      setFormData(dyeCuttingFormData);
     }
-  }, [DyePrintingFormData]); 
+  }, [dyeCuttingFormData]); 
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -59,10 +86,10 @@ const DyePrinting: React.FC = () => {
 
           <Grid container spacing={2} pt={1}>
             {[
-              { label: "Dye Cut Machine Type", key: "dyeCutMachineType" },
-              { label: "Machine", key: "machine" },
-              { label: "Dye Code", key: "dyeCode" },
-              { label: "Run Speed (m/min)", key: "runSpeed" },
+              { label: "Dye Cut Machine Type", key: "machine_type" },
+              { label: "Machine", key: "machine_name" },
+              { label: "Dye Code", key: "dye_code" },
+              { label: "Run Speed (m/min)", key: "run_speed" },
             ].map(({ label, key }) => (
               <Grid size={{ xs: 12, md: 4 }} key={key}>
                 <ReusableInput
@@ -83,4 +110,4 @@ const DyePrinting: React.FC = () => {
   );
 };
 
-export default DyePrinting;
+export default DyeCutting;

@@ -46,6 +46,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(true));
+    if(handleSave)
+      handleSave()
   };
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));

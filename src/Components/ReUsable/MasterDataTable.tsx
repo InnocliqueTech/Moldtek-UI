@@ -16,6 +16,10 @@ import {
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
 import { AutocompleteCell } from "../helpers";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { LaminatingTableRow, PrintingTableRow, setLaminationFormData, setSavePrintingFormData } from "../../store/slices/masterDataSlice";
+
 
 interface Column {
   id: string;
@@ -32,6 +36,7 @@ interface DataTableProps<T> {
   columns: Column[];
   tableTitle?: boolean;
   firstRow?:boolean;
+  id?:string
 }
 
 const DataTable = <T extends Record<string, any>>({
@@ -39,19 +44,52 @@ const DataTable = <T extends Record<string, any>>({
   data,
   setData,
   tableTitle = false,
-  firstRow=false
+  firstRow=false,
+  id
 }: DataTableProps<T>) => {
-  const handleChange = <K extends keyof T>(
+  const dispatch = useDispatch<AppDispatch>();
+  const {printingSaveFormData,laminaionFormData} = useSelector((state:RootState)=>state.masterData)
+  const handleChange = <T, K extends keyof T>(
     rowIndex: number,
     columnId: K,
     value: T[K]
   ) => {
     const updated = [...data];
-    updated[rowIndex] = { ...updated[rowIndex], [columnId]: value };
+  
+    // List of keys that should be numbers
+    const numberKeys = ['lf_value', 'lpcm', 'station_no','ratio'];
+  
+    // Convert value to number if it's one of the keys that need to be a number
+    const updatedValue =
+      numberKeys.includes(columnId as string) ? Number(value) : value;
+  
+    updated[rowIndex] = {
+      ...updated[rowIndex],
+      [columnId]: updatedValue,
+    };
     if (setData) {
       setData(updated);
     }
+  
+    if (id === 'printing') {
+      dispatch(
+        setSavePrintingFormData({
+          ...printingSaveFormData,
+          stationWiseMetrics: updated as unknown as PrintingTableRow[],
+        })
+      );
+    }
+    if(id==='lamination'){
+      dispatch(
+        setLaminationFormData({
+          ...laminaionFormData,
+          bondingMaterials: updated as unknown as LaminatingTableRow[],
+        })
+      );
+    }
   };
+  
+  
 
   return (
     <TableContainer

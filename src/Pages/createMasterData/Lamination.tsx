@@ -18,69 +18,55 @@ const Lamination: React.FC = () => {
   const { selectedTab, laminaionFormData } = useSelector(
     (state: RootState) => state.masterData
   );
-   const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
+  const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const bondingMaterialColumns = [
-    { id: "filed", label: "Field" },
+    { id: "type", label: "Field" },
     { id: "code", label: "Code", edit: true },
     { id: "brand", label: "Brand", edit: true },
     { id: "ratio", label: "Ratio", edit: true },
   ];
   const [formData, setFormData] = useState<LaminationFormData>({
-    zone1Temp: "",
-    zone2Temp: "",
-    nipPressure: "",
-    speed: "",
-    lamiTension: "",
-    rewinderTension: "",
-    printedTension: "",
-    printedWidth: "",
-    printedThickness: "",
-    printedGSM: "",
-    printedDyne: "",
-    laminateTension: "",
-    laminateWidth: "",
-    laminateThickness: "",
-    laminateGSM: "",
-    laminateDyne: "",
-    adhesiveCode: "",
-    adhesiveBrand: "",
-    adhesiveRatio: "",
-    hardenerCode: "",
-    hardenerBrand: "",
-    hardenerRatio: "",
-    ethylCode: "",
-    ethylBrand: "",
-    ethylRatio: "",
-    materialCode: "",
-    materialBrand: "",
-    materialRatio: "",
-    viscocityRange: "",
-    adhesiveGSM: "",
-    substrateType: "",
-    supplier: "",
-    dyneLevel: "",
-    width: "",
-    thickness: "",
-    density: "",
-    laminatingTableData: [
+    laminationConditions: {
+      zone1_temp: 0,
+      zone2_temp: 0,
+      nip_pressure_bar: 0,
+      speed: 0,
+      last_set_tension: "",
+      rewinder_tension: "",
+      printed_film_tension: "",
+      laminate_film_tension: "",
+      viscosity_range: "",
+      adhesive_gsm: "",
+    },
+    laminationSubstrate: {
+      substrate_id: 0,
+      lamination_id: 0,
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0,
+    },
+    bondingMaterials: [
       {
-        filed: "Adhesive",
+        type: "Adhesive",
         code: "",
         brand: "",
-        ratio: "",
+        ratio: 0,
       },
       {
-        filed: "Hardener",
+        type: "Hardener",
         code: "",
         brand: "",
-        ratio: "",
+        ratio: 0,
       },
       {
-        filed: "Ethyl Acetate",
+        type: "Ethyl Acetate",
         code: "",
         brand: "",
-        ratio: "",
+        ratio: 0,
       },
     ],
   });
@@ -91,18 +77,32 @@ const Lamination: React.FC = () => {
       laminaionFormData: tableData,
     };
     dispatch(setLaminationFormData(finalSaveData));
-     dispatch(setIsLaminatingDataSave(true));
+    dispatch(setIsLaminatingDataSave(true));
   };
   useEffect(() => {
     if (laminaionFormData) {
       setFormData(laminaionFormData);
-      if (laminaionFormData.laminatingTableData) {
-        setTableData(laminaionFormData.laminatingTableData);
+      if (laminaionFormData.bondingMaterials) {
+        setTableData(laminaionFormData.bondingMaterials);
       }
     }
   }, [laminaionFormData]);
 
+  const numericFields = new Set([
+    "zone1_temp",
+    "zone2_temp",
+    "nip_pressure_bar",
+    "speed",
+    "substrate_id",
+    "lamination_id",
+    "width",
+    "thickness",
+    "density",
+    "ratio",
+  ]);
+  
   const handleChange = (
+    section: string,
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
@@ -112,13 +112,18 @@ const Lamination: React.FC = () => {
       ? value
       : value.target.value;
   
+    const finalValue = numericFields.has(field) ? Number(newValue) : newValue;
+  
     const updatedFormData = {
       ...formData,
-      [field]: newValue,
+      [section]: {
+        ...(formData as any)[section],
+        [field]: finalValue,
+      },
     };
   
     setFormData(updatedFormData);
-    dispatch(setLaminationFormData(updatedFormData)); 
+    dispatch(setLaminationFormData(updatedFormData));
   };
   
 
@@ -140,62 +145,100 @@ const Lamination: React.FC = () => {
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-1 Temp (°C)"
-                value={formData.zone1Temp}
-                onChange={(e) => handleChange("zone1Temp", e.target.value)}
+                value={formData.laminationConditions.zone1_temp}
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "zone1_temp",
+                    e.target.value as string
+                  )
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-2 Temp (°C)"
-                value={formData.zone2Temp}
-                onChange={(e) => handleChange("zone2Temp", e.target.value)}
+                value={formData.laminationConditions.zone2_temp}
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "zone2_temp",
+                    e.target.value
+                  )
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Nip Pressure (bar)"
-                value={formData.nipPressure}
-                onChange={(e) => handleChange("nipPressure", e.target.value)}
+                value={formData.laminationConditions.nip_pressure_bar}
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "nip_pressure_bar",
+                    e.target.value
+                  )
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Speed (m/min)"
-                value={formData.speed}
-                onChange={(e) => handleChange("speed", e.target.value)}
+                value={formData.laminationConditions.speed}
+                onChange={(e) =>
+                  handleChange("laminationConditions", "speed", e.target.value)
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Lami Set Tension"
-                value={formData.lamiTension}
-                onChange={(e) => handleChange("lamiTension", e.target.value)}
+                value={formData.laminationConditions.last_set_tension}
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "last_set_tension",
+                    e.target.value
+                  )
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Rewinder Tension"
-                value={formData.rewinderTension}
+                value={formData.laminationConditions.rewinder_tension}
                 onChange={(e) =>
-                  handleChange("rewinderTension", e.target.value)
+                  handleChange(
+                    "laminationConditions",
+                    "rewinder_tension",
+                    e.target.value
+                  )
                 }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Printed Film Tension"
-                value={formData.printedTension}
+                value={formData.laminationConditions.printed_film_tension}
                 onChange={(e) =>
-                  handleChange("rewinderTension", e.target.value)
+                  handleChange(
+                    "laminationConditions",
+                    "printed_film_tension",
+                    e.target.value
+                  )
                 }
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Laminated Film Tension"
-                value={formData.laminateTension}
+                value={formData.laminationConditions.laminate_film_tension}
                 onChange={(e) =>
-                  handleChange("rewinderTension", e.target.value)
+                  handleChange(
+                    "laminationConditions",
+                    "laminate_film_tension",
+                    e.target.value
+                  )
                 }
               />
             </Grid>
@@ -223,8 +266,10 @@ const Lamination: React.FC = () => {
                 <DropdownComponent
                   label="Substrate Type"
                   options={["PET"]}
-                  value={formData.substrateType}
-                  onChange={(value) => handleChange("substrateType", value)}
+                  value={formData.laminationSubstrate.substrate_type}
+                  onChange={(value) =>
+                    handleChange("laminationSubstrate", "substrate_type", value)
+                  }
                   isMultiSelect={false}
                   checkbox={false}
                 />
@@ -238,8 +283,10 @@ const Lamination: React.FC = () => {
                     "Huhtamaki",
                     "Gulf Pack Supplier",
                   ]}
-                  value={formData.supplier}
-                  onChange={(value) => handleChange("supplier", value)}
+                  value={formData.laminationSubstrate.supplier}
+                  onChange={(value) =>
+                    handleChange("laminationSubstrate", "supplier", value)
+                  }
                   isMultiSelect={false}
                   checkbox={false}
                 />
@@ -247,29 +294,49 @@ const Lamination: React.FC = () => {
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Dyne Level"
-                  value={formData.dyneLevel}
-                  onChange={(e) => handleChange("dyneLevel", e.target.value)}
+                  value={formData.laminationSubstrate.dyne_level}
+                  onChange={(e) =>
+                    handleChange(
+                      "laminationSubstrate",
+                      "dyne_level",
+                      e.target.value
+                    )
+                  }
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 4}}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Width (mm)"
-                  value={formData.width}
-                  onChange={(e) => handleChange("width", e.target.value)}
+                  value={formData.laminationSubstrate.width}
+                  onChange={(e) =>
+                    handleChange("laminationSubstrate", "width", e.target.value)
+                  }
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Thickness"
-                  value={formData.thickness}
-                  onChange={(e) => handleChange("thickness", e.target.value)}
+                  value={formData.laminationSubstrate.thickness}
+                  onChange={(e) =>
+                    handleChange(
+                      "laminationSubstrate",
+                      "thickness",
+                      e.target.value
+                    )
+                  }
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Density (g/cm)"
-                  value={formData.density}
-                  onChange={(e) => handleChange("density", e.target.value)}
+                  value={formData.laminationSubstrate.density}
+                  onChange={(e) =>
+                    handleChange(
+                      "laminationSubstrate",
+                      "density",
+                      e.target.value
+                    )
+                  }
                 />
               </Grid>
             </Grid>
@@ -306,6 +373,7 @@ const Lamination: React.FC = () => {
           tableTitle={true}
           setData={setTableData}
           firstRow={true}
+          id={"lamination"}
         />
       </Box>
       <Box
@@ -325,14 +393,24 @@ const Lamination: React.FC = () => {
         </Box>
         <Grid container spacing={2} pt={1}>
           {[
-            { label: "Viscocity Range", key: "viscocityRange" },
-            { label: "Adhesive GSM", key: "adhesiveGSM" },
+            { label: "Viscocity Range", key: "viscosity_range" },
+            { label: "Adhesive GSM", key: "adhesive_gsm" },
           ].map(({ label, key }) => (
             <Grid size={{ xs: 12, md: 6 }} key={key}>
               <ReusableInput
                 label={label}
-                value={formData[key as keyof LaminationFormData] as string}
-                onChange={(e) => handleChange(key, e.target.value)}
+                value={
+                  typeof formData.laminationConditions?.[
+                    key as keyof typeof formData.laminationConditions
+                  ] === "string"
+                    ? (formData.laminationConditions[
+                        key as keyof typeof formData.laminationConditions
+                      ] as string)
+                    : ""
+                }
+                onChange={(e) =>
+                  handleChange("laminationConditions", key, e.target.value)
+                }
               />
             </Grid>
           ))}

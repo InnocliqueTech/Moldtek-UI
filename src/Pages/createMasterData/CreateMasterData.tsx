@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/index";
 import { setSelectedTab } from "../../store/slices/masterDataSlice";
 import MasterDataDetails from "./MasterDataDetails";
-import DyePrinting from "./DyePrinting";
+import DyeCutting from "./DyeCutting";
 import Printing from "./Printing";
 import Lamination from "./Lamination";
 
@@ -67,7 +67,7 @@ const CreateMasterData: React.FC = () => {
         {selectedTab === 0 && <MasterDataDetails />}
         {selectedTab === 1 && <Printing />}
         {selectedTab === 2 && <Lamination />}
-        {selectedTab === 3 && <DyePrinting />}
+        {selectedTab === 3 && <DyeCutting />}
       </Box>
     </Box>
   );
