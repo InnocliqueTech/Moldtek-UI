@@ -12,7 +12,7 @@ export const mockData = {
         "repeat_length": 53,
         "ups": 273,
         "tracks": 246,
-        "labels_per_meter": 121
+        "label_type": ""
     },
     "masterDataPrinting": {
         "printingDetails": {

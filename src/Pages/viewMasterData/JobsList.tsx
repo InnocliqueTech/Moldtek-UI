@@ -12,6 +12,7 @@ import {
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
+  const {selectedUEN} = useSelector((state:RootState)=>state.masterData)
   type StatusType = "In-Progress" | "On-Hold" | "Not Yet Started" | "Completed";
 
   const colorMap: Record<StatusType, string> = {
@@ -35,7 +36,7 @@ const JobsList: React.FC = () => {
       align: true,
       disableSorting: false,
       format: (value: string) => (
-        <UENCell value={value} onClick={() => navigate("/viewMasterData")} />
+        <UENCell value={value} onClick={() => navigate(`/viewMasterData/${selectedUEN}`)} />
       ),
     },
     {
@@ -304,7 +305,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.brand_name}
+                {viewMasterDataDetails.label_type}
               </Typography>
             </Box>
 

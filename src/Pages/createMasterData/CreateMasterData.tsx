@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,8 @@ import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCutting";
 import Printing from "./Printing";
 import Lamination from "./Lamination";
+import { mockData } from "./data";
+import { setDyeCuttingSettings, setLaminatingSubstrate, setLaminationAdhesiveDetails, setLaminationSettings, setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
 
 const tabs = [
   "Master Data Details",
@@ -23,6 +25,26 @@ const CreateMasterData: React.FC = () => {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
+    useEffect(() => {
+      dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
+      dispatch(
+        setPrintingMachineSettingsData(
+          mockData.masterDataPrinting.printingDetails
+        )
+      );
+      dispatch(
+        setPrintingSubstrate(
+          mockData.masterDataPrinting.printingSubstrateSettings
+        )
+      );
+      dispatch(
+        setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
+      );
+      dispatch(setDyeCuttingSettings(mockData.masterDataDyeCutting));
+      dispatch(setLaminationSettings(mockData.masterDataLamination.laminationConditions));
+      dispatch(setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate));
+      dispatch(setLaminationAdhesiveDetails(mockData.masterDataLamination.bondingMaterials))
+    }, []);
 
   return (
     <Box

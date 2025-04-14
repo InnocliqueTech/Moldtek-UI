@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
 export interface PrintingTableRow {
   station_no: number;
   color_pantone: string;
@@ -157,10 +158,11 @@ export interface PrintingFormValues {
     format_correct: number,
     },
     printingSubstrateSettings: {
-
-  substrate_type: "",
-    supplier: "",
-    dyne_level: "",
+      print_substrate_id: number,
+      machine_settings_id: number,
+  substrate_type: string,
+    supplier: string,
+    dyne_level: string,
     width: number,
     thickness: number,
     density: number,
@@ -184,6 +186,7 @@ interface MasterDataState {
   isPrintingDataSave: boolean;
   isLaminationDataSave: boolean;
   requestPayload: RequestPayload;
+  selectedUEN:string;
 }
 
 const initialState: MasterDataState = {
@@ -193,6 +196,7 @@ const initialState: MasterDataState = {
   submitPopup: false,
   submitPopupConfirm: false,
   submitAndPublish: false,
+  selectedUEN:'',
   saveFormData: {
     unit_effectivity_number: "",
     customer_name: "",
@@ -220,7 +224,8 @@ const initialState: MasterDataState = {
       },
       printingSubstrateSettings: {
   
-  
+        print_substrate_id: 0,
+        machine_settings_id: 0,
     substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -497,6 +502,9 @@ const masterDataSlice = createSlice({
     setSaveFormData: (state, action: PayloadAction<MasterFormData>) => {
       state.saveFormData = { ...state.saveFormData, ...action.payload };
     },
+    setSelectedUEN:(state,action:PayloadAction<string>)=>{
+     state.selectedUEN = action.payload
+    },
     setSavePrintingFormData: (
       state,
       action: PayloadAction<PrintingFormValues>
@@ -573,7 +581,8 @@ const masterDataSlice = createSlice({
           format_correct: 0,
           },
           printingSubstrateSettings: {
-      
+            print_substrate_id: 0,
+            machine_settings_id: 0,
       
         substrate_type: "",
           supplier: "",
@@ -757,6 +766,7 @@ export const {
   clearLaminatingFormData,
   clearMasterDetaisData,
   clearPrintingFormData,
-  setRequestPayload
+  setRequestPayload,
+  setSelectedUEN,
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

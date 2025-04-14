@@ -14,8 +14,8 @@ import {
   setUploadPopup,
   setSubmitAndPublishPopup
 } from "../../store/slices/masterDataSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 
 const Layout = () => {
@@ -25,6 +25,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
+  const {selectedUEN} = useSelector((state:RootState)=>state.masterData)
   const pageData: Record<
     string,
     {
@@ -83,21 +84,21 @@ const Layout = () => {
       uploadTitle:'Update Master Data',
       uploadSubTitle: 'Upload Master Data'
     },
-    "/viewMasterData": {
-      title: "UEN-20240801",
+    "/viewMasterData/:id": {
+      title: selectedUEN,
       button1Text: "Version History",
       button2Text: "Modify Master Data",
       onButton1Click: () =>  dispatch(setVersionPopup(true)),
-      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      onButton2Click: () => navigate(`/updateMasterData/${selectedUEN}`),
       headerButton:true,
       onBack:()=>navigate('/masterData')
     },
     "/viewJobsList": {
-      title: "UEN-20240801",
+      title: selectedUEN,
       button1Text: "Version History",
       button2Text: "Modify Master Data",
       onButton1Click: () => dispatch(setVersionPopup(true)),
-      onButton2Click: () => navigate(`/updateMasterData/${123}`),
+      onButton2Click: () => navigate(`/updateMasterData/${selectedUEN}`),
       headerButton:true,
       onBack:()=>navigate('/masterData') 
     },

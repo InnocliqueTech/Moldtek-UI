@@ -5,9 +5,11 @@ import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { setSelectedTab } from "../../store/slices/masterDataSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
+import { setSelectedUEN } from "../../store/slices/masterDataSlice";
+
 
 
 const MasterData: React.FC = () => {
@@ -24,7 +26,7 @@ const dispatch = useDispatch<AppDispatch>();
       id: "uen",
       label: "Unit Effectivity Number",
       align: false,
-      format: (value: string) => <UENCell value={value} onClick={() => {dispatch(setSelectedTab(0)),navigate('/viewMasterData')}} />,
+      format: (value: string) => <UENCell value={value} onClick={() => { dispatch(setSelectedUEN(value)),dispatch(setSelectedTab(0)),navigate(`/viewMasterData/${value}`)}} />,
       disableSorting: false,
     },
     {
@@ -336,6 +338,9 @@ const dispatch = useDispatch<AppDispatch>();
       lastExecuted: "07/05/2016",
     },
   ];
+const {selectedUEN} = useSelector((state:RootState)=>state.masterData);
+
+
 
   return (
     <Box sx={{ p: 0 }}>
@@ -373,7 +378,7 @@ const dispatch = useDispatch<AppDispatch>();
             },
             {
               label: "Update",
-              onClick: () => navigate(`/updateMasterData/${123}`),
+              onClick: () => navigate(`/updateMasterData/${selectedUEN}`),
             },
           ]}
         />

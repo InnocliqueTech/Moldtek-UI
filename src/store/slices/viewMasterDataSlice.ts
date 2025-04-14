@@ -103,16 +103,15 @@ export interface ViewMasterDataDetails {
   job_master_id: number;
   unit_effectivity_number: string;
   customer_name: string;
-  customer_logo: string;
-  item_code: string;
+  customer_logo: string | null;
+  item_code: string | null;
   brand_description: string;
   jar_cap: string;
-  structure: string;
-  brand_name: string;
+  structure: string | null;
   repeat_length: number;
   ups: number;
   tracks: number;
-  labels_per_meter: number;
+  label_type: string;
 }
 
 interface ViewMasterDataState {
@@ -215,11 +214,10 @@ const initialState: ViewMasterDataState = {
     brand_description: "--",
     jar_cap: "--",
     structure: "--",
-    brand_name: "--",
     repeat_length: 0,
     ups: 0,
     tracks: 0,
-    labels_per_meter: 0,
+    label_type: "",
   },
   jobListData: [
     {

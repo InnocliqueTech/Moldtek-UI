@@ -6,16 +6,21 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PrintingFormValues,
   PrintingTableRow,
   setIsPrintingDataSave,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
+import { useParams } from "react-router-dom";
 
-const machineFields= [
-  { id: "mounting_tape", label: "Mounting Tape", options: ["Standard", "Actual"] },
+const machineFields = [
+  {
+    id: "mounting_tape",
+    label: "Mounting Tape",
+    options: ["Standard", "Actual"],
+  },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
   { id: "tension", label: "Tension" },
   { id: "unwinder", label: "Unwinder" },
@@ -40,9 +45,13 @@ const substrateFields = [
 ];
 
 const Printing: React.FC = () => {
-  const { selectedTab, printingSaveFormData } = useSelector(
-    (state: RootState) => state.masterData
-  );
+  const { selectedTab, printingSaveFormData } =
+    useSelector((state: RootState) => state.masterData);
+  const {
+    printingInkStatinData,
+    printingMachineSettings,
+    printingSubstrateSettings,
+  } = useSelector((state: RootState) => state.viewMasterData);
   const dispatch = useDispatch<AppDispatch>();
 
   const columns = [
@@ -64,37 +73,77 @@ const Printing: React.FC = () => {
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
   const [formValues, setFormValues] = useState<PrintingFormValues>({
     printingDetails: {
-    mounting_tape: "",
-    cylinder_teeth: 0,
-    tension: 0,
-    unwinder: 0,
-    infeed: 0,
-    outfeed: 0,
-    rewinder: 0,
-    static_charge: 0,
-    format_correct: 0,
+      mounting_tape: "",
+      cylinder_teeth: 0,
+      tension: 0,
+      unwinder: 0,
+      infeed: 0,
+      outfeed: 0,
+      rewinder: 0,
+      static_charge: 0,
+      format_correct: 0,
     },
     printingSubstrateSettings: {
-
-  substrate_type: "",
-    supplier: "",
-    dyne_level: "",
-    width: 0,
-    thickness: 0,
-    density: 0,
-  },
-  stationWiseMetrics:Array.from({ length: 10 }, (_, i) => ({
-    station_no: i + 1,
-    color_pantone: "",
-    lf_value: 0,
-    ink_supplier: "",
+      print_substrate_id: 1,
+      machine_settings_id: 1,
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0,
+    },
+    stationWiseMetrics: Array.from({ length: 10 }, (_, i) => ({
+      station_no: i + 1,
+      color_pantone: "",
+      lf_value: 0,
+      ink_supplier: "",
       lpcm: 0,
       volume: "",
       uv_led: "",
       uv_led_intensity: "",
     })),
+  });
+
+  function sanitizeMasterData(data: any): PrintingFormValues {
+    return {
+      printingDetails: {
+        mounting_tape: data.mounting_tape || "",
+        cylinder_teeth: Number(data.cylinder_teeth) || 0,
+        tension: Number(data.tension) || 0,
+        unwinder: Number(data.unwinder) || 0,
+        infeed: Number(data.infeed) || 0,
+        outfeed: Number(data.outfeed) || 0,
+        rewinder: Number(data.rewinder) || 0,
+        static_charge: Number(data.static_charge) || 0,
+        format_correct: Number(data.format_correct) || 0,
+      },
+      printingSubstrateSettings: {
+        print_substrate_id: data.print_substrate_id || 1,
+        machine_settings_id: data.machine_settings_id || 1,
+        substrate_type: data.substrate_type || "",
+        supplier: data.supplier || "",
+        dyne_level: data.dyne_level || "",
+        width: Number(data.width) || 0,
+        thickness: Number(data.thickness) || 0,
+        density: Number(data.density) || 0,
+      },
+      stationWiseMetrics: Array.isArray(data)
+        ? data
+        : Array.from({ length: 10 }, (_, i) => ({
+            station_no: i + 1,
+            color_pantone: "",
+            lf_value: 0,
+            ink_supplier: "",
+            lpcm: 0,
+            volume: "",
+            uv_led: "",
+            uv_led_intensity: "",
+          })),
+    };
   }
-  );
+
+  const { id } = useParams();
 
   const handleChange = (
     field: string,
@@ -105,14 +154,25 @@ const Printing: React.FC = () => {
       : typeof value === "string"
       ? value
       : value.target.value;
-  
+
     // Check if the field should be a number and convert if necessary
-    const isNumberField = ['tension', 'width', 'thickness', 'density', 'cylinder_teeth','unwinder','infeed','outfeed','static_charge','format_correct'].includes(field);
+    const isNumberField = [
+      "tension",
+      "width",
+      "thickness",
+      "density",
+      "cylinder_teeth",
+      "unwinder",
+      "infeed",
+      "outfeed",
+      "static_charge",
+      "format_correct",
+    ].includes(field);
     const finalValue = isNumberField ? Number(newValue) : newValue;
-  
-    const isMachineField = machineFields.some(f => f.id === field);
-    const isSubstrateField = substrateFields.some(f => f.id === field);
-  
+
+    const isMachineField = machineFields.some((f) => f.id === field);
+    const isSubstrateField = substrateFields.some((f) => f.id === field);
+
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
@@ -122,42 +182,43 @@ const Printing: React.FC = () => {
         ? { ...formValues.printingSubstrateSettings, [field]: finalValue }
         : formValues.printingSubstrateSettings,
     };
-  
+
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
-  
-
 
   const renderField = (field: {
     id: string;
     label: string;
     options?: string[];
   }) => {
-    const isMachineField = machineFields.some(f => f.id === field.id);
-    const isSubstrateField = substrateFields.some(f => f.id === field.id);
-  
+    const isMachineField = machineFields.some((f) => f.id === field.id);
+    const isSubstrateField = substrateFields.some((f) => f.id === field.id);
+
     const value = isMachineField
-      ? formValues.printingDetails[field.id as keyof typeof formValues.printingDetails]
+      ? formValues.printingDetails[
+          field.id as keyof typeof formValues.printingDetails
+        ]
       : isSubstrateField
-      ? formValues.printingSubstrateSettings[field.id as keyof typeof formValues.printingSubstrateSettings]
+      ? formValues.printingSubstrateSettings[
+          field.id as keyof typeof formValues.printingSubstrateSettings
+        ]
       : "";
-  
+
     if (field.options) {
       return (
         <DropdownComponent
-        key={field.id}
-        label={field.label}
-        value={String(value)} // force to string
-        onChange={(val) => handleChange(field.id, val)}
-        options={field.options}
-        isMultiSelect={false}
-        checkbox={false}
-      />
-      
+          key={field.id}
+          label={field.label}
+          value={String(value)} // force to string
+          onChange={(val) => handleChange(field.id, val)}
+          options={field.options}
+          isMultiSelect={false}
+          checkbox={false}
+        />
       );
     }
-  
+
     return (
       <ReusableInput
         key={field.id}
@@ -167,8 +228,6 @@ const Printing: React.FC = () => {
       />
     );
   };
-  
-  
 
   const handleSave = () => {
     const finalSaveData = {
@@ -176,7 +235,7 @@ const Printing: React.FC = () => {
       stationWiseMetrics: tableData,
     };
     dispatch(setSavePrintingFormData(finalSaveData));
-     dispatch(setIsPrintingDataSave(true));
+    dispatch(setIsPrintingDataSave(true));
   };
 
   useEffect(() => {
@@ -187,6 +246,25 @@ const Printing: React.FC = () => {
       }
     }
   }, [printingSaveFormData]);
+
+  useEffect(() => {
+    const machineValues = sanitizeMasterData(printingMachineSettings);
+    const substrateValues = sanitizeMasterData(printingSubstrateSettings);
+    const combinedValues: PrintingFormValues = {
+      ...machineValues,
+      printingSubstrateSettings: substrateValues.printingSubstrateSettings,
+    };
+    setFormValues(combinedValues);
+    const sanitizedInkStationData = sanitizeMasterData(printingInkStatinData);
+    const stationWiseMetrics: PrintingTableRow[] =
+      sanitizedInkStationData.stationWiseMetrics;
+    setTableData(stationWiseMetrics);
+  }, [
+    id,
+    printingInkStatinData,
+    printingMachineSettings,
+    printingSubstrateSettings,
+  ]);
 
   return (
     <Box sx={{ borderRadius: "0px" }}>
@@ -247,13 +325,13 @@ const Printing: React.FC = () => {
             data={tableData}
             setData={setTableData}
             tableTitle={true}
-            id={'printing'}
+            id={"printing"}
           />
         </Box>
       </Box>
 
       <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave}  />
+        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

@@ -12,18 +12,22 @@ import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { mockData } from "./data";
 
 const MasterDataDetails: React.FC = () => {
-  const { id } = useParams();
-  useEffect(() => {
-    if (id) {
-      console.log("EDITEDDATA");
-    }
-  }, []);
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  const {id} = useParams();
+
   const { selectedTab, saveFormData } = useSelector(
     (state: RootState) => state.masterData
   );
-  const dispatch = useDispatch<AppDispatch>();
+  const { viewMasterDataDetails } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
+
+
   const [formData, setFormData] = useState<MasterFormData>({
     unit_effectivity_number: "",
         customer_name: "",
@@ -37,6 +41,30 @@ const MasterDataDetails: React.FC = () => {
         ups: 0,
         tracks: 0,
   });
+
+  // useEffect(() => {
+  //   const masterData = mockData.masterDataDetails;
+  
+  //   if (id && masterData) {
+  //     console.log("Loaded Master Data:", masterData);
+  //     setFormData({
+  //       unit_effectivity_number: masterData.unit_effectivity_number || "",
+  //       customer_name: masterData.customer_name || "",
+  //       customer_logo: masterData.customer_logo || "",
+  //       jar_cap: masterData.jar_cap || "",
+  //       item_code: masterData.item_code || "",
+  //       structure: masterData.structure || "",
+  //       brand_description: masterData.brand_description || "",
+  //       label_type: masterData.label_type || "",
+  //       repeat_length: masterData.repeat_length || 0,
+  //       ups: masterData.ups || 0,
+  //       tracks: masterData.tracks || 0,
+  //     });
+  //     dispatch(setViewMasterDataDetails(masterData));
+  //   }
+  // }, [id]);
+  
+  
 
   const handleSave = () => {
     dispatch(setSaveFormData(formData));
@@ -71,6 +99,27 @@ const MasterDataDetails: React.FC = () => {
     }
   }, [saveFormData]);
 
+  function sanitizeMasterData(data:any): MasterFormData {
+    return {
+      unit_effectivity_number: data.unit_effectivity_number || "",
+      customer_name: data.customer_name || "",
+      customer_logo: data.customer_logo ?? "",
+      jar_cap: data.jar_cap || "",
+      item_code: data.item_code ?? "",
+      structure: data.structure ?? "",
+      brand_description: data.brand_description || "",
+      label_type: data.label_type || "",
+      repeat_length: data.repeat_length || 0,
+      ups: data.ups || 0,
+      tracks: data.tracks || 0,
+    };
+  }
+  
+  useEffect(() => {
+    if (id && viewMasterDataDetails) {
+      setFormData(sanitizeMasterData(viewMasterDataDetails));
+    }
+  }, [id, viewMasterDataDetails]);
   
 
   return (
@@ -91,6 +140,7 @@ const MasterDataDetails: React.FC = () => {
               onChange={(e) =>
                 handleChange("unit_effectivity_number", e.target.value)
               }
+              disabled={id?true:false}
             />
             <Box sx={{ mt: 2 }}>
               <DropdownComponent

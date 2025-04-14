@@ -57,7 +57,6 @@ const ViewMasterData: React.FC = () => {
     dispatch(setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate));
     dispatch(setLaminationAdhesiveDetails(mockData.masterDataLamination.bondingMaterials))
   }, []);
-  console.log(mockData.masterDataLamination.bondingMaterials,"LAMINATIOn")
 
   return (
     <Box

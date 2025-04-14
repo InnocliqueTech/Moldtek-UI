@@ -11,6 +11,7 @@ interface ReusableInputProps {
   error?: boolean;
   helperText?: string;
   icon?: React.ReactNode; // Left-side icon
+  disabled?:boolean
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -22,6 +23,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   error = false,
   helperText = "",
   icon,
+  disabled
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,6 +44,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
         variant="outlined"
         error={error}
         helperText={helperText}
+        disabled={disabled}
         InputProps={{
           startAdornment: icon ? <InputAdornment position="start">{icon}</InputAdornment> : null,
           endAdornment: type === "password" ? (
