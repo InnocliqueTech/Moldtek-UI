@@ -40,8 +40,6 @@ const Lamination: React.FC = () => {
       adhesive_gsm: "",
     },
     laminationSubstrate: {
-      substrate_id: 0,
-      lamination_id: 0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -93,8 +91,6 @@ const Lamination: React.FC = () => {
     "zone2_temp",
     "nip_pressure_bar",
     "speed",
-    "substrate_id",
-    "lamination_id",
     "width",
     "thickness",
     "density",

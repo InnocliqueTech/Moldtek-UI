@@ -108,7 +108,7 @@ const Printing: React.FC = () => {
   
     // Check if the field should be a number and convert if necessary
     const isNumberField = ['tension', 'width', 'thickness', 'density', 'cylinder_teeth','unwinder','infeed','outfeed','static_charge','format_correct'].includes(field);
-    const finalValue = isNumberField ? parseFloat(newValue as string) : newValue;
+    const finalValue = isNumberField ? Number(newValue) : newValue;
   
     const isMachineField = machineFields.some(f => f.id === field);
     const isSubstrateField = substrateFields.some(f => f.id === field);

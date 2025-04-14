@@ -75,8 +75,6 @@ export interface RequestPayload {
       adhesive_gsm: string;
     };
     laminationSubstrate: {
-      substrate_id: number;
-      lamination_id: number;
       substrate_type: string;
       supplier: string;
       dyne_level: string;
@@ -115,8 +113,6 @@ export interface LaminationFormData {
 },
 
 laminationSubstrate: {
-  substrate_id: number;
-  lamination_id: number;
   substrate_type: string;
   supplier: string;
   dyne_level: string;
@@ -348,8 +344,6 @@ const initialState: MasterDataState = {
       adhesive_gsm: ""
     },
     laminationSubstrate: {
-      substrate_id: 0,
-      lamination_id: 0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -453,8 +447,6 @@ const initialState: MasterDataState = {
         adhesive_gsm: "",
       },
       laminationSubstrate: {
-        substrate_id: 0,
-        lamination_id: 0,
         substrate_type: "",
         supplier: "",
         dyne_level: "",
@@ -708,8 +700,6 @@ const masterDataSlice = createSlice({
           adhesive_gsm: ""
         },
         laminationSubstrate: {
-          substrate_id: 0,
-          lamination_id: 0,
           substrate_type: "",
           supplier: "",
           dyne_level: "",
