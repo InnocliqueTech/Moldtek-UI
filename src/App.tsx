@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Loader from "./Loader";
+import './App.css'
 
 
 const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));

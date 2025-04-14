@@ -11,7 +11,6 @@ const LabelCutting: React.FC = () => {
                     title="Machine Configuration Table"
                     columns={machineSpecsColumns}
                     data={machineSpecsRows}
-
                 />
             </Box>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -19,7 +18,6 @@ const LabelCutting: React.FC = () => {
                     title="Label cutting process report"
                     columns={productionColumns}
                     data={productionData}
-
                 />
             </Box>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
