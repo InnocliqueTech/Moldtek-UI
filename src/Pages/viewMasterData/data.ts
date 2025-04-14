@@ -138,3 +138,84 @@ export const  mockData = {
       "run_speed": 120
   }
 }
+export const versionData = 
+    {
+        "statusCode": 200,
+        "statusMessage": "Data Successfully Retrieved",
+        "totalRecords": 12,
+        "data": [
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V12"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V11"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V10"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V9"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V8"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V7"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V6"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V5"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V4"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V3"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V2"
+            },
+            {
+                "customer_name": "Nestle",
+                "created_at": null,
+                "unit_effective_number": 20240801,
+                "version_no": "V1"
+            }
+        ]
+    }
+

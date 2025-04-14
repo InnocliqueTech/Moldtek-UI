@@ -39,7 +39,8 @@ const Layout = () => {
       onBack?:()=>void;
       filterTitle?:string;
       uploadTitle?:string;
-      uploadSubTitle?:string
+      uploadSubTitle?:string;
+      headerButtonColor?:boolean
     }
   > = {
     "/dashboard": {
@@ -73,12 +74,15 @@ const Layout = () => {
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       uploadTitle:'Create Master Data',
-      uploadSubTitle: 'Upload Master Data'
+      uploadSubTitle: 'Upload Master Data',
+      headerButton:true,
+      onBack:()=>navigate('/masterData'),
+      headerButtonColor:true
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",
       button1Text: "Updated on: 15-Mar-2025",
-      button2Text: "Upload Master Data",
+      // button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       uploadTitle:'Update Master Data',
@@ -195,6 +199,7 @@ const Layout = () => {
           filterTitle={headerData.filterTitle}
           uploadTitle={headerData.uploadTitle}
           uploadSubTitle={headerData.uploadSubTitle}
+          headerButtonColor={headerData.headerButtonColor}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

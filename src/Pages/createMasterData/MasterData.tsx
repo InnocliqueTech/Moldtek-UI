@@ -9,12 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import { setSelectedUEN } from "../../store/slices/masterDataSlice";
-import { dataofCards } from "./data";
-
+import { dataofCards, listOfCompanies } from "./data";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
-const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
+  const transformedData = listOfCompanies.data.map((row) => ({
+    ...row,
+    customer_name: {
+      image: row.customer_logo,
+      customer: row.customer_name,
+    },
+  }));
 
   const stats = [
     { title: "Total Jobs", value: dataofCards.data.totalJobs },
@@ -24,37 +30,46 @@ const dispatch = useDispatch<AppDispatch>();
   ];
   const columns = [
     {
-      id: "uen",
+      id: "unit_effectivity_number",
       label: "Unit Effectivity Number",
       align: false,
-      format: (value: string) => <UENCell value={value} onClick={() => { dispatch(setSelectedUEN(value)),dispatch(setSelectedTab(0)),navigate(`/viewMasterData/${value}`)}} />,
+      format: (value: string) => (
+        <UENCell
+          value={value}
+          onClick={() => {
+            dispatch(setSelectedUEN(value)),
+              dispatch(setSelectedTab(0)),
+              navigate(`/viewMasterData/${value}`);
+          }}
+        />
+      ),
       disableSorting: false,
     },
     {
-      id: "customer",
+      id: "customer_name",
       label: "Customer",
       align: false,
       disableSorting: false,
-      format: (value: { image?: string; customer: string }) => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Avatar
-            src={value.image || undefined} // Show image if available
-            alt={value.customer}
-            sx={{
-              width: 32,
-              height: 32,
-              fontSize: 14,
-              bgcolor: value.image ? "transparent" : "#656565", // Background if no image
-            }}
-          >
-            {!value.image && value.customer?.charAt(0).toUpperCase()}{" "}
-            {/* Show initial */}
-          </Avatar>
-          <Typography variant="body2">{value.customer}</Typography>{" "}
-          {/* Display name */}
-        </Box>
-      ),
+      format: (value: { image: string | null; customer: string | null }) =>
+        value && value.customer ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Avatar
+              src={value.image || undefined}
+              alt={value.customer}
+              sx={{
+                width: 32,
+                height: 32,
+                fontSize: 14,
+                bgcolor: "#656565",
+              }}
+            >
+              {!value.image && value.customer?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Typography variant="body2">{value.customer}</Typography>
+          </Box>
+        ) : null,
     },
+
     {
       id: "version",
       label: "Version No",
@@ -62,24 +77,26 @@ const dispatch = useDispatch<AppDispatch>();
       disableSorting: false,
     },
     {
-      id: "segment",
+      id: "label_type",
       label: "Type Of Label",
       align: true,
       disableSorting: false,
-      format: (value: string) => (
-        <Box
-          sx={{
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "4px 8px",
-            display: "inline-block",
-            backgroundColor: "#F8F9FA",
-          }}
-        >
-          {value}
-        </Box>
-      ),
+      format: (value: string) =>
+        value !== null ? (
+          <Box
+            sx={{
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              padding: "4px 8px",
+              display: "inline-block",
+              backgroundColor: "#F8F9FA",
+            }}
+          >
+            {value}
+          </Box>
+        ) : null,
     },
+
     {
       id: "createdOn",
       label: "Created On",
@@ -94,254 +111,7 @@ const dispatch = useDispatch<AppDispatch>();
     },
   ];
 
-  const data = [
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240802",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Hero - Hero Corporation" },
-      version: 8861,
-      segment: "LB",
-      createdOn: "28/10/2012",
-      lastUpdated: "1 hour ago",
-      lastExecuted: "28/10/2012",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Tech - Technologies Co." },
-      version: 9151,
-      segment: "TW",
-      createdOn: "18/09/2016",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "18/09/2016",
-    },
-    {
-      uen: "UEN-20240801",
-      customer: { image: "", customer: "Gen - General Enterprise" },
-      version: 5626,
-      segment: "QP",
-      createdOn: "07/05/2016",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "07/05/2016",
-    },
-  ];
-const {selectedUEN} = useSelector((state:RootState)=>state.masterData);
-
-
+  const { selectedUEN } = useSelector((state: RootState) => state.masterData);
 
   return (
     <Box sx={{ p: 0 }}>
@@ -363,11 +133,11 @@ const {selectedUEN} = useSelector((state:RootState)=>state.masterData);
 
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
-        boxShadow={true}
+          boxShadow={true}
           columns={columns}
-          data={data}
+          data={transformedData}
           selectable={false}
-          label="42 Companies"
+          label={`${listOfCompanies.totalRecords} Companies`}
           title="List of Companies"
           info={true}
           searchVisible={true}

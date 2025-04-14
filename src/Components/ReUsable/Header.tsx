@@ -22,6 +22,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+
 
 interface HeaderProps {
   title: string;
@@ -38,6 +40,7 @@ interface HeaderProps {
   filterTitle?:string;
   uploadTitle?:string;
   uploadSubTitle?:string;
+  headerButtonColor?:boolean
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -54,7 +57,8 @@ const Header: React.FC<HeaderProps> = ({
   onBack,
   filterTitle,
   uploadTitle,
-  uploadSubTitle
+  uploadSubTitle,
+  headerButtonColor=false
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup,submitAndPublish } = useSelector((store: RootState) => store.masterData);
@@ -95,6 +99,26 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopupConfirm(false)
     navigate('/dailyPlan')
   }
+
+  const handleDownloadSampleFileMasterData = () => {
+    const data = [
+      {
+        "Unit Effectivity Number": "UEN-20240801",
+        "Customer / Company Name": "Nestle",
+        "Brand Name & Pack": "KitKat 50g Wrapper",
+        "ITEM Code": "KK-50G-123",
+        "Jar/Cap": "N/A (For flexible packaging)",
+        Structure: "PET",
+      },
+    ];
+  
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sample");
+  
+    XLSX.writeFile(workbook, "sample_file.xlsx");
+  };
+  
 
   return (
     <>
@@ -240,11 +264,11 @@ const Header: React.FC<HeaderProps> = ({
               {button2Text && (
                 <ButtonComponent
                   onClick={onButton2Click}
-                  color={headerButton ? "white" : "#0073B7"}
+                  color={(headerButton&&!headerButtonColor) ? "white" : "#0073B7"}
                   text={button2Text}
-                  textColor={headerButton ? "#0E0E0E" : "#FFFFFF"}
+                  textColor={(headerButton&&!headerButtonColor) ? "#0E0E0E" : "#FFFFFF"}
                   borderRadius="100px"
-                  border={headerButton ? "1px solid #E5E5E5" : "none"}
+                  border={(headerButton&&!headerButtonColor) ? "1px solid #E5E5E5" : "none"}
                   p={"4px"}
                   width={"200px"}
                 />
@@ -275,6 +299,8 @@ const Header: React.FC<HeaderProps> = ({
         title={uploadTitle?uploadTitle:''}
         onClose={handleClosePopUp}
         subText={uploadSubTitle?uploadSubTitle:''}
+        sampleFile={true}
+        handleDownloadSampleFile={handleDownloadSampleFileMasterData}
       />
       <ConfirmPopup
         open={(location.pathname ==='/createPlan' && submitAndPublish) || submitPopup}

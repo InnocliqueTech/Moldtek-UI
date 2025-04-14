@@ -26,6 +26,8 @@ interface ReusablePopupProps {
   textField?: boolean;
   dropdown?: boolean;
   cancel?: boolean;
+  sampleFile?:boolean;
+  handleDownloadSampleFile?:()=> void;
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -41,10 +43,12 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   textField,
   cancel,
   dropdown,
+  sampleFile,
+  handleDownloadSampleFile
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Handle file selection
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
@@ -74,10 +78,27 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
           {subText && (
-            <Typography variant="body2" color="gray">
-              {subText}
-            </Typography>
-          )}
+  <Box display="flex" alignItems="center" gap={'130px'}>
+    <Typography variant="body2" color="gray">
+      {subText}
+    </Typography>
+    {sampleFile && (
+      <Typography
+        variant="body2"
+        sx={{
+          color: "#007bff",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+        onClick={handleDownloadSampleFile}
+      >
+        Download Sample File
+      </Typography>
+    )}
+  </Box>
+)}
+
+
           {upload && (
             <Box
             sx={{

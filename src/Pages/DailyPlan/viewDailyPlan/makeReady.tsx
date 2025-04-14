@@ -1,66 +1,105 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { analoxColumns, tapeColumns,materialColumns } from "../data";
+import { tapeColumns, materialColumns } from "../data";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
   { id: "colorPantone", label: "Color Pantone" },
-  { id: "mixingOnGEC", label: "Mixing on GEC" },
+  { id: "mixingOnGec", label: "Mixing on GEC" },
   { id: "mtplCode", label: "MTPL Code" },
   { id: "lfValue", label: "LF Value" },
   { id: "supplierBatchNo", label: "Supplier Batch No" },
 ];
 
 
+const generateAnaloxColumns = (specs: any[]) => {
+  const maxStation = Math.max(...specs.map((s) => s.stationNo || 0));
+  return [
+    { id: "parameter", label: "Parameter" },
+    ...Array.from({ length: maxStation }, (_, i) => ({
+      id: `station${i + 1}`,
+      label: `Station ${i + 1}`,
+    })),
+  ];
+};
 
-const {inkCoatingSpecifications,materialSpecification,mountingTapeSpecifications,plateMountingSupervisorReport,analoxSpecifications} = useSelector((state:RootState)=>state.viewDailyPlan)
+const transformAnaloxData = (specs: any[]) => {
+  const parameters = ["lpcm", "vol"];
+  return parameters.map((param) => {
+    const row: Record<string, string | number> = { parameter: param };
+    specs.forEach((station) => {
+      row[`station${station.stationNo}`] = station[param];
+    });
+    return row;
+  });
+};
+
 const MakeReady: React.FC = () => {
+  const {
+    inkCoatingSpecifications,
+    materialSpecification,
+    mountingTapeSpecifications,
+    plateMountingSupervisorReport,
+    analoxSpecifications = [],
+  } = useSelector((state: RootState) => state.viewDailyPlan);
+  const plateMountingReport = [
+    { label: "Plates Inspection", value: plateMountingSupervisorReport },
+    { label: "Mounter", value: plateMountingSupervisorReport },
+    { label: "Approver", value: plateMountingSupervisorReport },
+    { label: "Ink Kitchen Supervisor", value:plateMountingSupervisorReport},
+    { label: "Shift Supervisor Report", value: plateMountingSupervisorReport },
+    { label: "Shift QC Incharge", value: plateMountingSupervisorReport }
+  ];
+  const analoxCols = generateAnaloxColumns(analoxSpecifications);
+  const analoxData = transformAnaloxData(analoxSpecifications);
+
   return (
     <>
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Ink & Coating Specifications"
           columns={inkCoatingColumns}
-          data={inkCoatingSpecifications}
+          data={inkCoatingSpecifications || []}
           firstRow={true}
-        />
-      </Box>
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
-        <TitledDataTable
-          title="Analox Specifications"
-          columns={analoxColumns}
-          data={analoxSpecifications}
-          firstRow={true}
-        />
-      </Box>
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
-        <TitledDataTable
-          title="Mounting Tape Specifications"
-          columns={tapeColumns}
-          data={mountingTapeSpecifications}
-          firstRow={true}
-        />
-      </Box>
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
-        <TitledDataTable
-          title="Material Specifications"
-          columns={materialColumns}
-          data={materialSpecification?[materialSpecification]:[]}
         />
       </Box>
 
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
-          title="Plate Mounting Supervisor Report"
-          
-          showInfoSection={true}
-          showTableSection={false}
-          infoItems={plateMountingSupervisorReport}
+          title="Analox Specifications"
+          columns={analoxCols}
+          data={analoxData}
+          firstRow={true}
         />
       </Box>
-      
+
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
+        <TitledDataTable
+          title="Mounting Tape Specifications"
+          columns={tapeColumns}
+          data={mountingTapeSpecifications || []}
+          firstRow={true}
+        />
+      </Box>
+
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
+        <TitledDataTable
+          title="Material Specifications"
+          columns={materialColumns}
+          data={materialSpecification ? [materialSpecification] : []}
+        />
+      </Box>
+
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
+        <TitledDataTable
+          title="Plate Mounting Supervisor Report"
+          showInfoSection={true}
+          showTableSection={false}
+          infoItems={plateMountingReport || []}
+        />
+      </Box>
     </>
   );
 };

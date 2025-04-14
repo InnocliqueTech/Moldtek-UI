@@ -10,7 +10,11 @@ export const dataofCards= {
   }
 
   export const listOfCompanies=
-  [
+  {
+	"statusCode": 200,
+	"statusMessage": "Fetched data successfully",
+	"totalRecords": 4,
+	"data": [
     	{
         	"job_master_id": 1,
         	"unit_effectivity_number": "619797",
@@ -72,6 +76,7 @@ export const dataofCards= {
         	"labels_per_meter": 1267130
     	}
 	]
+}
 
     export const listOfLables = [
         {
