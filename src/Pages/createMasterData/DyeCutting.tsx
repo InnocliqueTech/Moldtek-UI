@@ -37,8 +37,6 @@ const DyeCutting: React.FC = () => {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [touched, setTouched] = useState<{ [key: string]: boolean }>({}); // To track touched fields
-
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
       machine_type: data.machine_type || "",
