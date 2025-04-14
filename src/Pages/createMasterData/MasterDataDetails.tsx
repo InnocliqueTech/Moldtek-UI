@@ -11,6 +11,7 @@ import { SelectChangeEvent } from "@mui/material";
 import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const MasterDataDetails: React.FC = () => {
   const { id } = useParams();
@@ -40,6 +41,7 @@ const MasterDataDetails: React.FC = () => {
   const handleSave = () => {
     dispatch(setSaveFormData(formData));
      dispatch(setIsMasterDetailsDataSave(true));
+     toast.success('User created successfully!');
   };
   const handleChange = (
     field: string,

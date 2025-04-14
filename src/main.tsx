@@ -16,6 +16,8 @@ import "@fontsource/inter/600.css"; // SemiBold
 import "@fontsource/inter/700.css"; // Light
 import "@fontsource/inter/800.css"; // Light
 import "@fontsource/inter/900.css"; // Black
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -23,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>
     <CssBaseline />
     <StoreProvider  store={store}>
+    <ToastContainer />
     <App />
     </StoreProvider>
     </ThemeProvider>

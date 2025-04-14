@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-import ReusablePopup from "../../Components/ReUsable/PopUp";
 import { Box } from "@mui/material";
 import VersionPopup from "./versionPopUp";
 

@@ -1,20 +1,23 @@
-// src/services/api.ts
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define the types for your API responses
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BASE_API_URL } from "../../api.config";
+
+
 interface Item {
   id: number;
   name: string;
 }
 
 export const apiSlice = createApi({
-  reducerPath: "api", // A unique name for the API slice
-  baseQuery: fetchBaseQuery({ baseUrl: "https://your-api-endpoint.com" }), // API URL
-  tagTypes: ["Item"], //  Define a tag for the Item resource
+  reducerPath: "api", 
+  baseQuery: fetchBaseQuery({
+    baseUrl: BASE_API_URL,
+  }),
+  tagTypes: ["Item"], 
   endpoints: (builder) => ({
     getItems: builder.query<Item[], void>({
-      query: () => "/items", // Replace with  actual endpoint
-      providesTags: ["Item"], //  Marks this query with the "Item" tag
+      query: () => "api/master/masterDataMetrics",
+      providesTags: ["Item"], 
     }),
     addItem: builder.mutation<Item, Partial<Item>>({
       query: (newItem) => ({
