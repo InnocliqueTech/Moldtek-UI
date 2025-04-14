@@ -142,11 +142,12 @@ function ReusableTable<T extends Record<string, any>>({
         page * rowsPerPage + rowsPerPage
       );
     setSelected(newSelected);
-      setShowSelectionBar(event.target.checked);
+    setShowSelectionBar(event.target.checked);
     if (onSelectionChange) onSelectionChange(newSelected);
       return;
     }
     setSelected([]);
+    setShowSelectionBar(event.target.checked);
     if (onSelectionChange) onSelectionChange([]);
   };
 

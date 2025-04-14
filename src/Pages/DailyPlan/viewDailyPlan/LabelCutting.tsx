@@ -1,11 +1,34 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { machineSpecsColumns, machineSpecsRows, productionColumns, productionData, approvalColumns, approvalData } from "../data";
+import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 
 const LabelCutting: React.FC = () => {
     return (
         <>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
-                <Typography variant="h2">LabelCutting under Construction</Typography>
+                <TitledDataTable
+                    title="Machine Configuration Table"
+                    columns={machineSpecsColumns}
+                    data={machineSpecsRows}
+
+                />
+            </Box>
+            <Box sx={{ borderRadius: "0px ", p: 1 }}>
+                <TitledDataTable
+                    title="Label Cutting Process(TBD)"
+                    columns={productionColumns}
+                    data={productionData}
+
+                />
+            </Box>
+            <Box sx={{ borderRadius: "0px ", p: 1 }}>
+                <TitledDataTable
+                    title="Approval and Remarks Section"
+                    columns={approvalColumns}
+                    data={approvalData}
+                    firstRow={true}
+                />
             </Box>
         </>
     );

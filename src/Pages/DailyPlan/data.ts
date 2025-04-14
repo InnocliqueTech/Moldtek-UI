@@ -566,4 +566,84 @@ export const labelDispatchRows = [
     }
 ]
 
+export const machineSpecsColumns = [
+    { id: "machineName", label: "Machine Name" },
+    { id: "dieToolCode", label: "Die tool Code" },
+    { id: "machineSpeed", label: "Machine Speed" },
+]
+
+export const machineSpecsRows = [
+    { machineName:"--",
+      dieToolCode:"NCP091",
+      machineSpeed:"290 revolutions/min"
+    },
+]
+
+export const productionColumns = [
+    { id: "startingTime", label: "STARTING TIME" },
+    { id: "completionTime", label: "COMPLETION TIME" },
+    { id: "totalTime", label: "TOTAL TIME" },
+    { id: "inputFilmLaminated", label: "INPUT FILM LAMINATED" },
+    { id: "setUpWastageMtrs", label: "SET UP WASTAGE Mtrs" },
+    { id: "inProcessWastageMtrs", label: "IN-PROCESS WASTAGE Mtrs" },
+    { id: "totalCuttingWastageMtrs", label: "TOTAL CUTTING WASTAGE Mtrs" },
+    { id: "leftOverLaminateLabelsMtrs", label: "LEFT OVER LAMINATE LABELS Mtrs" },
+    { id: "outputLabelsQty", label: "OUTPUT LABELS Qty" },
+    { id: "operator", label: "OPERATOR" }
+  ];
+
+  export const productionData = [
+    {
+      startingTime: "--",
+      completionTime: "--",
+      totalTime: "--",
+      inputFilmLaminated: "--",
+      setUpWastageMtrs: "--",
+      inProcessWastageMtrs: "--",
+      totalCuttingWastageMtrs: "--",
+      leftOverLaminateLabelsMtrs: "--",
+      outputLabelsQty: "--",
+      operator: "--"
+    }
+  ];
+
+  export const approvalColumns = [
+    { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" },
+    { id: "qcApproval", label: "QC APPROVAL" },
+    { id: "inchargeComments", label: "INCHARGE COMMENTS" },
+    { id: "remarks", label: "REMARKS" } // Added new column at the end
+  ];
+  
+  export const approvalData = [
+    {
+      supervisorApproval: "John doe",
+      qcApproval: "0.5",
+      inchargeComments: "0.4",
+      remarks: "" // Empty remarks field
+    },
+    {
+      supervisorApproval: "Kristy",
+      qcApproval: "0.3",
+      inchargeComments: "0.2",
+      remarks: ""
+    },
+    {
+      supervisorApproval: "Micheal",
+      qcApproval: "0.1",
+      inchargeComments: "0.1",
+      remarks: ""
+    },
+    {
+      supervisorApproval: "Mark",
+      qcApproval: "0.1",
+      inchargeComments: "0.1",
+      remarks: ""
+    },
+    {
+      supervisorApproval: "Pranavi",
+      qcApproval: "0.1",
+      inchargeComments: "0.1",
+      remarks: ""
+    }
+  ];
 
