@@ -13,11 +13,17 @@ import {
 } from "../../store/slices/masterDataSlice";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
+import { useParams } from "react-router-dom";
 
 const Lamination: React.FC = () => {
   const { selectedTab, laminaionFormData } = useSelector(
     (state: RootState) => state.masterData
   );
+  const {
+    laminatingSubstrateSettings,
+    laminationAdhesive,
+    laminationSettings,
+  } = useSelector((state: RootState) => state.viewMasterData);
   const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const bondingMaterialColumns = [
@@ -96,7 +102,39 @@ const Lamination: React.FC = () => {
     "density",
     "ratio",
   ]);
-  
+
+  function sanitizeMasterData(data: any): LaminationFormData {
+    return {
+      laminationConditions: {
+        zone1_temp: data.zone1_temp || 0,
+        zone2_temp: data.zone2_temp || 0,
+        nip_pressure_bar: data.nip_pressure_bar || 0,
+        speed: data.speed || 0,
+        last_set_tension: data.last_set_tension || "",
+        rewinder_tension: data.rewinder_tension || "",
+        printed_film_tension: data.printed_film_tension || "",
+        laminate_film_tension: data.laminate_film_tension || "",
+        viscosity_range: data.viscosity_range || "",
+        adhesive_gsm: data.adhesive_gsm || "",
+      },
+      laminationSubstrate: {
+        substrate_type: data.substrate_type || "",
+        supplier: data.supplier || "",
+        dyne_level: data.dyne_level || "",
+        width: data.width || 0,
+        thickness: data.thickness || 0,
+        density: data.density || 0,
+      },
+      bondingMaterials: data || [
+        { type: "Adhesive", code: "", brand: "", ratio: 0 },
+        { type: "Hardener", code: "", brand: "", ratio: 0 },
+        { type: "Ethyl Acetate", code: "", brand: "", ratio: 0 },
+      ],
+    };
+  }
+
+  const { id } = useParams();
+
   const handleChange = (
     section: string,
     field: string,
@@ -107,9 +145,9 @@ const Lamination: React.FC = () => {
       : typeof value === "string"
       ? value
       : value.target.value;
-  
+
     const finalValue = numericFields.has(field) ? Number(newValue) : newValue;
-  
+
     const updatedFormData = {
       ...formData,
       [section]: {
@@ -117,11 +155,28 @@ const Lamination: React.FC = () => {
         [field]: finalValue,
       },
     };
-  
+
     setFormData(updatedFormData);
     dispatch(setLaminationFormData(updatedFormData));
   };
-  
+
+  useEffect(() => {
+    const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
+    const sanitizedSubstrateData = sanitizeMasterData(
+      laminatingSubstrateSettings
+    );
+
+    const combinedValues: LaminationFormData = {
+      ...sanitizedLaminationData,
+      laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
+    };
+
+    setFormData(combinedValues);
+    const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
+    const adhesiveDetails: LaminatingTableRow[] =
+      sanitizedBondingMaterials.bondingMaterials;
+    setTableData(adhesiveDetails);
+  }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

@@ -6,25 +6,44 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
+  DyeCuttingFormData,
   setDyeCuttingFormData,
   setIsDyeCuttingSave,
-  setRequestPayload, 
+  setRequestPayload,
 } from "../../store/slices/masterDataSlice";
+import { useParams } from "react-router-dom";
 
 const DyeCutting: React.FC = () => {
-  const { selectedTab, dyeCuttingFormData,requestPayload,saveFormData,printingSaveFormData,laminaionFormData } = useSelector(
-    (state: RootState) => state.masterData
+  const {
+    selectedTab,
+    dyeCuttingFormData,
+    requestPayload,
+    saveFormData,
+    printingSaveFormData,
+    laminaionFormData,
+  } = useSelector((state: RootState) => state.masterData);
+  const { dyeCuttingSettings } = useSelector(
+    (state: RootState) => state.viewMasterData
   );
   const dispatch = useDispatch<AppDispatch>();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<DyeCuttingFormData>({
     machine_type: "",
     machine_name: "",
     dye_code: "",
-    run_speed: 0
+    run_speed: 0,
   });
 
- 
+  function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
+    return {
+      machine_type: data.machine_type || "",
+      machine_name: data.machine_name || "",
+      dye_code: data.dye_code || "",
+      run_speed: Number(data.run_speed) || 0,
+    };
+  }
+
+  const { id } = useParams();
 
   const handleChange = (key: string, value: string) => {
     const parsedValue = key === "run_speed" ? Number(value) : value;
@@ -32,42 +51,46 @@ const DyeCutting: React.FC = () => {
     setFormData(updated);
     dispatch(setDyeCuttingFormData(updated));
   };
-  
-  
+
   const handleSave = () => {
     dispatch(setDyeCuttingFormData(formData));
-    dispatch(setIsDyeCuttingSave(true)); 
+    dispatch(setIsDyeCuttingSave(true));
     const updatedPayload = {
-      ...requestPayload, // if you're getting it from useSelector or props
+      ...requestPayload, 
       masterDataDetails: {
         ...requestPayload.masterDataDetails,
         ...saveFormData,
-      
       },
-      masterDataPrinting:{
+      masterDataPrinting: {
         ...requestPayload.masterDataPrinting,
-        ...printingSaveFormData
-        },
-        masterDataLamination:{
-          ...requestPayload.masterDataLamination,
-          ...laminaionFormData
-        },
-        masterDataDyeCutting:{
-          ...requestPayload.masterDataDyeCutting,
-          ...dyeCuttingFormData
-        }
+        ...printingSaveFormData,
+      },
+      masterDataLamination: {
+        ...requestPayload.masterDataLamination,
+        ...laminaionFormData,
+      },
+      masterDataDyeCutting: {
+        ...requestPayload.masterDataDyeCutting,
+        ...dyeCuttingFormData,
+      },
     };
 
-  
     dispatch(setRequestPayload(updatedPayload));
   };
-  console.log(requestPayload,"REQUESTPAYLOAD")
+
 
   useEffect(() => {
     if (dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
     }
-  }, [dyeCuttingFormData]); 
+  }, [dyeCuttingFormData]);
+
+  useEffect(() => {
+    if (id && dyeCuttingSettings) {
+      const sanitized = sanitizeDyeCuttingData(dyeCuttingSettings);
+      setFormData(sanitized);
+    }
+  }, [id, dyeCuttingSettings]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

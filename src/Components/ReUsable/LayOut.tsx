@@ -89,7 +89,7 @@ const Layout = () => {
       button1Text: "Version History",
       button2Text: "Modify Master Data",
       onButton1Click: () =>  dispatch(setVersionPopup(true)),
-      onButton2Click: () => navigate(`/updateMasterData/${selectedUEN}`),
+      onButton2Click: () => {navigate(`/updateMasterData/${selectedUEN}`),dispatch(setSelectedTab(0))},
       headerButton:true,
       onBack:()=>navigate('/masterData')
     },
@@ -98,7 +98,7 @@ const Layout = () => {
       button1Text: "Version History",
       button2Text: "Modify Master Data",
       onButton1Click: () => dispatch(setVersionPopup(true)),
-      onButton2Click: () => navigate(`/updateMasterData/${selectedUEN}`),
+      onButton2Click: () => {navigate(`/updateMasterData/${selectedUEN}`),dispatch(setSelectedTab(0))},
       headerButton:true,
       onBack:()=>navigate('/masterData') 
     },
