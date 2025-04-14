@@ -2,9 +2,10 @@ export const dataofCards= {
     "statusCode": 200,
     "message": "Metrics retrieved successfully",
     "data": {
-      "totalRecords": 25,
-      "activeJobs": 18,
-      "completedJobs": 7
+        "totalJobs": 4,
+        "nonLaminationJobs": 1,
+        "laminationJobs": 1,
+        "totalCustomers": 2
     }
   }
   export const mockData = {

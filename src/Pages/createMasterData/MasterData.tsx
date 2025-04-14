@@ -9,17 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import { setSelectedUEN } from "../../store/slices/masterDataSlice";
-
+import { dataofCards } from "./data";
 
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
 const dispatch = useDispatch<AppDispatch>();
+
   const stats = [
-    { title: "Total Jobs", value: 2000 },
-    { title: "Lamination Jobs", value: 1140 },
-    { title: "Non-Lamination Jobs", value: 860 },
-    { title: "Total Customers", value: 674 },
+    { title: "Total Jobs", value: dataofCards.data.totalJobs },
+    { title: "Lamination Jobs", value: dataofCards.data.laminationJobs },
+    { title: "Non-Lamination Jobs", value: dataofCards.data.nonLaminationJobs },
+    { title: "Total Customers", value: dataofCards.data.totalCustomers },
   ];
   const columns = [
     {
