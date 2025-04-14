@@ -136,7 +136,7 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
               sx: {
                 borderRadius: "50px",
                 pl: 1.2,
-                pr: 1,
+                pr: 0.5,
                 py: 0.5,
                 fontSize: "0.875rem",
               },
@@ -145,10 +145,10 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
               width: 180,
               "& .MuiOutlinedInput-root": {
                 borderRadius: "50px",
-                padding: "2px 8px", // tight padding inside the input
+                padding: "2px 6px", // tight padding inside the input
               },
               "& input": {
-                padding: "6px 8px", // control actual input text padding
+                padding: "2px 6px", // control actual input text padding
                 fontSize: "0.875rem", // optional: smaller font size
               },
             }}

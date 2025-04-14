@@ -1,48 +1,48 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-import { Box } from "@mui/material";
+// import { Box } from "@mui/material";
 import VersionPopup from "./versionPopUp";
 
 const VersinDetails: React.FC = () => {
   const tableColumns = [
     { id: "version", label: "Version No.", align: true },
     { id: "updatedAt", label: "Last Update", align: true },
-    {
-      id: "comment",
-      label: "Comment",
-      align: true,
-      disableSorting: true,
-      format: (value: number) => (
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 0.5,
-            backgroundColor: "white",
-            color: "#2F2F2F",
-            px: 1.5,
-            py: 0.5,
-            borderRadius: "6px",
-            fontSize: 12,
-            border: "1px solid #ECECEC",
-            fontWeight: 500,
-          }}
-        >
-          <Box
-            component="span"
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              color: value > 0 ? "#DC6803" : "#027A48",
-              backgroundColor: value > 0 ? "#DC6803" : "#12B76A",
-            }}
-          />
-          {value} Comment
-        </Box>
-      ),
-    },
+    // {
+    //   id: "comment",
+    //   label: "Comment",
+    //   align: true,
+    //   disableSorting: true,
+    //   format: (value: number) => (
+    //     <Box
+    //       sx={{
+    //         display: "inline-flex",
+    //         alignItems: "center",
+    //         gap: 0.5,
+    //         backgroundColor: "white",
+    //         color: "#2F2F2F",
+    //         px: 1.5,
+    //         py: 0.5,
+    //         borderRadius: "6px",
+    //         fontSize: 12,
+    //         border: "1px solid #ECECEC",
+    //         fontWeight: 500,
+    //       }}
+    //     >
+    //       <Box
+    //         component="span"
+    //         sx={{
+    //           width: 8,
+    //           height: 8,
+    //           borderRadius: "50%",
+    //           color: value > 0 ? "#DC6803" : "#027A48",
+    //           backgroundColor: value > 0 ? "#DC6803" : "#12B76A",
+    //         }}
+    //       />
+    //       {value} Comment
+    //     </Box>
+    //   ),
+    // },
   ];
 
   const allData = [
