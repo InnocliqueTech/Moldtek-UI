@@ -161,6 +161,7 @@ const Lamination: React.FC = () => {
   };
 
   useEffect(() => {
+    if(id){
     const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
     const sanitizedSubstrateData = sanitizeMasterData(
       laminatingSubstrateSettings
@@ -176,6 +177,7 @@ const Lamination: React.FC = () => {
     const adhesiveDetails: LaminatingTableRow[] =
       sanitizedBondingMaterials.bondingMaterials;
     setTableData(adhesiveDetails);
+  }
   }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
 
   return (

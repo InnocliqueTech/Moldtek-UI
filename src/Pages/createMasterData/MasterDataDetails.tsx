@@ -12,6 +12,7 @@ import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { listOfLables } from "./data";
 
 const MasterDataDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -119,7 +120,7 @@ const MasterDataDetails: React.FC = () => {
       setFormData(sanitizeMasterData(viewMasterDataDetails));
     }
   }, [id, viewMasterDataDetails]);
-  
+  const dropdownOptions = listOfLables.map(option => option.labelTypeName);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -144,7 +145,7 @@ const MasterDataDetails: React.FC = () => {
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Type of Label"
-                options={["KitKat 50g Wrapper"]}
+                options={dropdownOptions}
                 value={formData.label_type}
                 onChange={(e) => handleChange("label_type", e)}
                 isMultiSelect={false}

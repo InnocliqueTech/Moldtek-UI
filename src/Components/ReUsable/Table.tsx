@@ -41,7 +41,7 @@ interface Column {
   id: string;
   label: string;
   disableSorting?: boolean;
-  format?: (value: any) => JSX.Element | string;
+  format?: (value: any) => string | JSX.Element | null;  
   align: boolean;
 }
 interface TableAction<T> {
@@ -131,10 +131,11 @@ function ReusableTable<T extends Record<string, any>>({
 
   const filteredData = sortedData.filter((row) =>
     Object.values(row).some((value) =>
-      value?.toString().toLowerCase().includes(search.toLowerCase())
+      value?.toString().toLowerCase().includes(search.toLowerCase()) ||
+      (row.customer && row.customer.customer.toLowerCase().includes(search.toLowerCase()))  // Check inside 'customer' object
     )
   );
-
+  
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = filteredData.slice(
@@ -202,7 +203,7 @@ function ReusableTable<T extends Record<string, any>>({
     console.log("Upload selected:", selected);
     // Implement your upload logic here
   };
-
+console.log(filteredData,"FILTEREDDATA")
   return (
     <Paper
       elevation={0}

@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { analoxData, analoxColumns, tapeColumns, tapeRows, materialColumns, materialData,plateMountingReport } from "../data";
+import { analoxColumns, tapeColumns,materialColumns } from "../data";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -11,81 +13,9 @@ const inkCoatingColumns = [
   { id: "supplierBatchNo", label: "Supplier Batch No" },
 ];
 
-const inkCoatingData = [
-  {
-    stationNo: 1,
-    colorPantone: "Pantone Black C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 65,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 2,
-    colorPantone: "Pantone Black C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 65,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 3,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 4,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 5,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 6,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 7,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 8,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-  {
-    stationNo: 9,
-    colorPantone: "Pantone Yellow 012C",
-    mixingOnGEC: "--",
-    mtplCode: "--",
-    lfValue: 60,
-    supplierBatchNo: "--",
-  },
-];
 
+
+const {inkCoatingSpecifications,materialSpecification,mountingTapeSpecifications,plateMountingSupervisorReport,analoxSpecifications} = useSelector((state:RootState)=>state.viewDailyPlan)
 const MakeReady: React.FC = () => {
   return (
     <>
@@ -93,7 +23,7 @@ const MakeReady: React.FC = () => {
         <TitledDataTable
           title="Ink & Coating Specifications"
           columns={inkCoatingColumns}
-          data={inkCoatingData}
+          data={inkCoatingSpecifications}
           firstRow={true}
         />
       </Box>
@@ -101,7 +31,7 @@ const MakeReady: React.FC = () => {
         <TitledDataTable
           title="Analox Specifications"
           columns={analoxColumns}
-          data={analoxData}
+          data={analoxSpecifications}
           firstRow={true}
         />
       </Box>
@@ -109,7 +39,7 @@ const MakeReady: React.FC = () => {
         <TitledDataTable
           title="Mounting Tape Specifications"
           columns={tapeColumns}
-          data={tapeRows}
+          data={mountingTapeSpecifications}
           firstRow={true}
         />
       </Box>
@@ -117,7 +47,7 @@ const MakeReady: React.FC = () => {
         <TitledDataTable
           title="Material Specifications"
           columns={materialColumns}
-          data={materialData}
+          data={materialSpecification?[materialSpecification]:[]}
         />
       </Box>
 
@@ -127,7 +57,7 @@ const MakeReady: React.FC = () => {
           
           showInfoSection={true}
           showTableSection={false}
-          infoItems={plateMountingReport}
+          infoItems={plateMountingSupervisorReport}
         />
       </Box>
       

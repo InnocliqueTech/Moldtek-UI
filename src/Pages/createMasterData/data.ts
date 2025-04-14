@@ -10,20 +10,81 @@ export const dataofCards= {
   }
 
   export const listOfCompanies=
-    [
+  [
+    	{
+        	"job_master_id": 1,
+        	"unit_effectivity_number": "619797",
+        	"customer_name": "Aarafh Foods",
+        	"customer_logo": null,
+        	"item_code": null,
+        	"brand_description": "1250 ML_GP (With WAD), Mix - Veg Pickle, Aarafh Foods , IML Containers.",
+        	"jar_cap": "101",
+        	"structure": null,
+        	"label_type": "Thin Wall",
+        	"repeat_length": 927,
+        	"ups": 1,
+        	"tracks": 1,
+        	"labels_per_meter": 200
+    	},
+    	{
+        	"job_master_id": 2,
+        	"unit_effectivity_number": "665438",
+        	"customer_name": "ASIAN PAINTS",
+        	"customer_logo": null,
+        	"item_code": null,
+        	"brand_description": "20 LTR_AP_NDTS_L.WT <APEX ULTIMA PROTEK >ADVANCED (IML) ASIAN PAINTS",
+        	"jar_cap": "101",
+        	"structure": null,
+        	"label_type": "SURFACE PRINTED & LAMINATED WITH TRANSPARENT FILM",
+        	"repeat_length": 635,
+        	"ups": 3,
+        	"tracks": 4,
+        	"labels_per_meter": 150
+    	},
+    	{
+        	"job_master_id": 7,
+        	"unit_effectivity_number": null,
+        	"customer_name": null,
+        	"customer_logo": null,
+        	"item_code": null,
+        	"brand_description": null,
+        	"jar_cap": null,
+        	"structure": "PET + Foil",
+        	"label_type": null,
+        	"repeat_length": null,
+        	"ups": 200,
+        	"tracks": 100,
+        	"labels_per_meter": null
+    	},
+    	{
+        	"job_master_id": 21,
+        	"unit_effectivity_number": "20240801",
+        	"customer_name": "Nestle",
+        	"customer_logo": "url",
+        	"item_code": "KK-50G-123",
+        	"brand_description": "0_LTR_AP_DTS_LWT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779J] (IML) ASIAN PAINTS",
+        	"jar_cap": "N/A (For flexible packaging)",
+        	"structure": "PET",
+        	"label_type": "Thin Wall",
+        	"repeat_length": 53,
+        	"ups": 273,
+        	"tracks": 246,
+        	"labels_per_meter": 1267130
+    	}
+	]
+
+    export const listOfLables = [
         {
-            "customerId": 1,
-            "firstName": "Aarafh",
-            "lastName": "Foods",
-            "fullName": "Aarafh Foods"
+            "labelTypeId": 1,
+            "labelTypeName": " SURFACE PRINTED & LAMINATED WITH TRANSPARENT FILM"
         },
         {
-            "customerId": 2,
-            "firstName": "Asian",
-            "lastName": "Paints",
-            "fullName": "Asian Paints"
-        }
-    ]
+            "labelTypeId": 2,
+            "labelTypeName": "THINWALL"
+        },
+        {
+            "labelTypeId": 3,
+            "labelTypeName": "WHITE SURFACE PRINTED & LAMINATED WITH TRANSPARENT FILM"}]
     
   
 

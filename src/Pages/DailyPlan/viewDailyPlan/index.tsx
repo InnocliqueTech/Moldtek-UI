@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,8 @@ import LaminationReport from "./LaminationReport";
 import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
 import CommenCard from "./commonCard";
+import { setAnaloxSpecifications, setDailyPlan, setInkCoatingSpecifications, setMaterialSpecification, setMountingTapeSpecifications, setPlateMountingSupervisorReport } from "../../../store/slices/viewDailyPlanSlice";
+import { makeReady } from "./data";
 
 
 
@@ -29,7 +31,14 @@ const ViewDailyPlan: React.FC = () => {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
-
+useEffect(()=>{
+dispatch(setDailyPlan(makeReady.data.dailyPlan));
+dispatch(setMaterialSpecification(makeReady.data.materialSpecification));
+dispatch(setMountingTapeSpecifications(makeReady.data.mountingTapeSpecifications));
+dispatch(setAnaloxSpecifications(makeReady.data.analoxSpecifications));
+dispatch(setInkCoatingSpecifications(makeReady.data.inkCoatingSpecifications));
+dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisorReport));
+},[])
 
   return (
     <Box
