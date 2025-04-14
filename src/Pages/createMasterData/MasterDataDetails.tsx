@@ -12,7 +12,6 @@ import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { mockData } from "./data";
 
 const MasterDataDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -112,6 +112,7 @@ export interface ViewMasterDataDetails {
   ups: number;
   tracks: number;
   label_type: string;
+  labels_per_meter:number;
 }
 
 interface ViewMasterDataState {
@@ -218,6 +219,7 @@ const initialState: ViewMasterDataState = {
     ups: 0,
     tracks: 0,
     label_type: "",
+    labels_per_meter:0
   },
   jobListData: [
     {

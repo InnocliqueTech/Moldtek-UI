@@ -8,6 +8,25 @@ export const dataofCards= {
         "totalCustomers": 2
     }
   }
+
+  export const listOfCompanies=
+    [
+        {
+            "customerId": 1,
+            "firstName": "Aarafh",
+            "lastName": "Foods",
+            "fullName": "Aarafh Foods"
+        },
+        {
+            "customerId": 2,
+            "firstName": "Asian",
+            "lastName": "Paints",
+            "fullName": "Asian Paints"
+        }
+    ]
+    
+  
+
   export const mockData = {
     "masterDataDetails": {
       "job_master_id": 1,

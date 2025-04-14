@@ -128,7 +128,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-               {viewMasterDataDetails.brand_name}
+               {viewMasterDataDetails.label_type}
               </Typography>
             </Box>
           </Grid>
@@ -143,7 +143,7 @@ const OrderCard: React.FC = () => {
               >
                 Customer Picture
               </Typography>
-              <img src={viewMasterDataDetails.customer_logo} alt="customer picture" />
+              <img src={viewMasterDataDetails.customer_logo ? viewMasterDataDetails.customer_logo:''} alt="customer picture" />
             <Box>
               <Typography
                 variant="body2"
