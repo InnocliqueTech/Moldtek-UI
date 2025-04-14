@@ -3,6 +3,8 @@ import React, { useState , useEffect} from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
+import { toast } from 'react-toastify';
+
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -79,7 +81,7 @@ const CreatePlan: React.FC = () => {
     console.log('All plans data saved to localStorage:', allFormData);
     
     // Optional: Show a success message
-    alert('Data saved successfully!');
+       toast.success('Data saved successfully!');
   };
   const handleRemovePlan = (planId: number) => {
     if (plans.length <= 1) return; // Don't remove the last plan
