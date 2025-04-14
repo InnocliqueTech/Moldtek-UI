@@ -12,6 +12,7 @@ import {
   setOpenSlider,
   setSelectedTab,
   setUploadPopup,
+  setSubmitAndPublishPopup
 } from "../../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
@@ -131,7 +132,7 @@ const Layout = () => {
       button1Text: "Upload Data",
       button2Text: "Submit",
       onButton1Click: () => dispatch(setUploadPopup(true)),
-      onButton2Click: () => alert("Submit"),
+      onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
        uploadTitle:'Create Daily Plan',
       uploadSubTitle: 'Upload Daily Plan'
     },

@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({
   uploadSubTitle
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup } = useSelector((store: RootState) => store.masterData);
+  const { updatePopup,submitAndPublish } = useSelector((store: RootState) => store.masterData);
   const [submitPopup,setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm,setSubmitPopupConfirm]=useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -78,16 +78,19 @@ const Header: React.FC<HeaderProps> = ({
     
   };
   const handleSubmitPopupClose =()=>{
+    dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false);
   };
   const handleSubmitPopupConfirmOpen = ()=>{
     setSubmitPopupConfirm(true)
   }
   const handleSubmitPopupConfirmClose = ()=>{
+    dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false)
     setSubmitPopupConfirm(false)
   }
   const handleSubmitPopupConfirmClick = ()=>{
+    dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false)
     setSubmitPopupConfirm(false)
     navigate('/dailyPlan')
@@ -273,8 +276,8 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleClosePopUp}
         subText={uploadSubTitle?uploadSubTitle:''}
       />
-            <ConfirmPopup
-        open={submitPopup}
+      <ConfirmPopup
+        open={(location.pathname ==='/createPlan' && submitAndPublish) || submitPopup}
         title="Are you sure you want submit ? Daily Plan"
         message=""
         buttonText="No"
