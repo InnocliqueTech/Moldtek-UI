@@ -16,7 +16,7 @@ const LabelCutting: React.FC = () => {
             </Box>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
                 <TitledDataTable
-                    title="Label Cutting Process(TBD)"
+                    title="Label cutting process report"
                     columns={productionColumns}
                     data={productionData}
 

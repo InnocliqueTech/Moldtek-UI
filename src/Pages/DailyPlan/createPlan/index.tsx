@@ -1,8 +1,10 @@
 import { Box, Typography, Grid, SelectChangeEvent } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
+
+const LOCAL_STORAGE_KEY = 'savedPlansData';
 
 interface FormField {
   id: string;
@@ -73,9 +75,12 @@ const CreatePlan: React.FC = () => {
       }, {} as Record<string, string | string[]>);
     });
 
-    console.log('All plans data to save:', allFormData);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(allFormData));
+    console.log('All plans data saved to localStorage:', allFormData);
+    
+    // Optional: Show a success message
+    alert('Data saved successfully!');
   };
-
   const handleRemovePlan = (planId: number) => {
     if (plans.length <= 1) return; // Don't remove the last plan
     setPlans(plans.filter(plan => plan.id !== planId));
@@ -86,9 +91,32 @@ const CreatePlan: React.FC = () => {
     setPlans([...plans, { id: newId, formFields: [...initialFormFields] }]);
   };
 
-  // const handleReset = () => {
-  //   setFormFields(initialFormFields);
-  // };
+  useEffect(() => {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (Array.isArray(parsedData) && parsedData.length > 0) {
+          // Reconstruct the plans with the saved data
+          const loadedPlans = parsedData.map((planData, index) => {
+            const formFields = initialFormFields.map(field => {
+              return {
+                ...field,
+                value: planData[field.id] || field.value
+              };
+            });
+            return {
+              id: index + 1,
+              formFields
+            };
+          });
+          setPlans(loadedPlans);
+        }
+      } catch (error) {
+        console.error('Failed to parse saved data:', error);
+      }
+    }
+  }, []);
 
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
