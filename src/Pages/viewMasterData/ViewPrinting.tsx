@@ -6,7 +6,7 @@ import { RootState } from "../../store";
 
 
 const machineSettingColumns = [
-  { id: "mounting_tape", label: "Mounting Type" },
+  { id: "mounting_tape", label: "Mounting Tape" },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
   { id: "tension", label: "Tension" },
   { id: "unwinder", label: "Unwinder" },

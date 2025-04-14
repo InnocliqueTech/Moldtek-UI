@@ -26,9 +26,6 @@ interface ReusablePopupProps {
   textField?: boolean;
   dropdown?: boolean;
   cancel?: boolean;
-  table?: boolean;
-  tableData?: any[];
-  tableColumns?: any[];
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -44,9 +41,6 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   textField,
   cancel,
   dropdown,
-  table,
-  tableData = [],
-  tableColumns = [],
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -61,13 +55,11 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
     <Dialog
     open={open}
     onClose={onClose}
-    maxWidth={false} 
+    maxWidth='xs' 
     fullWidth
     sx={{
       "& .MuiPaper-root": {
         borderRadius: "16px",
-        width: table ? "1000px" : "350px",
-        maxWidth: "100%", 
       },
     }}
   >
@@ -77,7 +69,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
 }
 
       {/* Popup Body */}
-      <DialogContent sx={{        p:table ?"0px":"16px", mt:table?"10px":'0px'}}>
+      <DialogContent sx={{p:"16px", mt:'0px'}}>
         <Box display="flex" flexDirection="column" gap="10px">
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
@@ -193,19 +185,6 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
               label="Structure"
               showAllOption={false}
               checkbox={false}
-            />
-          )}
-            {table && tableColumns.length > 0 && tableData.length > 0 && (
-            <ReusableTable
-              columns={tableColumns}
-              data={tableData}
-              selectable={false}
-              label="24 Versions"
-              title="List of executed jobs"
-              info={true}
-              searchVisible={true}
-              action={false}
-               boxShadow={true}
             />
           )}
         </Box>
