@@ -152,7 +152,7 @@ const OrderCard: React.FC = () => {
                 alt="customer picture"
               />
             ) : (
-              <Typography variant="body1">NA</Typography>
+              <Typography variant="body1">N/A</Typography>
             )}
             <Box sx={{ mt: 2 }}>
               <Typography
