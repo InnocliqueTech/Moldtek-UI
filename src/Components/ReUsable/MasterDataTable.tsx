@@ -24,6 +24,7 @@ import {
   setInvalidFieldsTable,
   setLaminationFormData,
   setSavePrintingFormData,
+  setSubmitAndPublishButtonMasterLamination,
   setSubmitAndPublishButtonPrinting,
 } from "../../store/slices/masterDataSlice";
 
@@ -64,13 +65,17 @@ const DataTable = <T extends Record<string, any>>({
   const validateInput = (columnId: string, value: string): boolean => {
     const numericFields = ["volume", "uv_led_intensity", "lf_value"];
     const lpcmFields = ["lpcm"];
+    const laminationFileds =  ["code","ratio","brand"]
 
     if (value === "") return true;
 
     if (numericFields.includes(columnId)) {
       return /^\d+$/.test(value) && value !== "0";
     }
-    if (lpcmFields.includes(columnId)) {
+    if (id==='printing' && lpcmFields.includes(columnId)) {
+      return /^[a-zA-Z0-9\s]*$/.test(value);
+    }
+    if (id==='lamination' && laminationFileds.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
     return /^[A-Za-z\s]*$/.test(value);
@@ -124,6 +129,7 @@ const DataTable = <T extends Record<string, any>>({
 
   // Check mandatory fields on data change
   useEffect(() => {
+    if(id==='printing'){
     const mandatoryFields = ["color_pantone", "lpcm", "lf_value"];
 
     // Check if any mandatory field is empty
@@ -143,6 +149,28 @@ const DataTable = <T extends Record<string, any>>({
 
     // Set the global error state
     dispatch(setSubmitAndPublishButtonPrinting(hasEmptyMandatory || hasAnyInvalidField));
+  }
+  if(id==='lamination'){
+    const mandatoryFields = ["code","ratio","brand"];
+
+    // Check if any mandatory field is empty
+    const hasEmptyMandatory = data.some((row) =>
+      mandatoryFields.some((field) => {
+        const value = row[field];
+        return (
+          value === "" || value === 0 || value === null || value === undefined
+        );
+      })
+    );
+
+    // Check if any field is marked invalid in your state
+    const hasAnyInvalidField = Object.values(invalidFields).some(
+      (isInvalid) => isInvalid
+    );
+
+    // Set the global error state
+    dispatch(setSubmitAndPublishButtonMasterLamination(hasEmptyMandatory || hasAnyInvalidField));
+  }
   }, [data, invalidFields]);
 
   return (

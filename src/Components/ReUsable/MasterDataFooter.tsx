@@ -3,6 +3,14 @@ import ReusableButton from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
+  clearDyeCuttingFormData,
+  clearDyeCuttingFormErrors,
+  clearLaminatingFormData,
+  clearLaminationFormErrors,
+  clearMasterDataFormErrors,
+  clearMasterDetaisData,
+  clearPrintingFormData,
+  clearPrintingFormErrors,
   setSelectedTab,
   setSubmitAndPublishPopup,
   setSubmitPopup,
@@ -46,8 +54,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(true));
-    if(handleSave)
-      handleSave()
+    if (handleSave) handleSave();
   };
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -58,13 +65,30 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
+    dispatch(clearDyeCuttingFormData());
+    dispatch(clearDyeCuttingFormErrors());
+
+    dispatch(clearLaminatingFormData());
+    dispatch(clearLaminationFormErrors());
+
+    dispatch(clearPrintingFormData());
+    dispatch(clearPrintingFormErrors());
+
+    dispatch(clearMasterDetaisData());
+    dispatch(clearMasterDataFormErrors());
     navigate("/masterData");
   };
 
-  const { submitPopup, submitPopupConfirm, submitAndPublish,submitAndPublishButtonMasterData,submitAndPublishButtonDyeCutting,submitAndPublishButtonLamination,submitAndPublishButtonPrinting } = useSelector(
-    (store: RootState) => store.masterData
-  );
-  const {id} = useParams();
+  const {
+    submitPopup,
+    submitPopupConfirm,
+    submitAndPublish,
+    submitAndPublishButtonMasterData,
+    submitAndPublishButtonDyeCutting,
+    submitAndPublishButtonLamination,
+    submitAndPublishButtonPrinting,
+  } = useSelector((store: RootState) => store.masterData);
+  const { id } = useParams();
 
   return (
     <Box
@@ -78,14 +102,21 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     >
       {selectedTab === 3 ? (
         <ReusableButton
-          text={id ? "Update and Publish":"Submit and Publish"}
+          text={id ? "Update and Publish" : "Submit and Publish"}
           color="#0073B7"
           borderRadius="100px"
           border="1px solid #0073B7"
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={submitAndPublishButtonMasterData||submitAndPublishButtonDyeCutting||submitAndPublishButtonLamination||submitAndPublishButtonPrinting?true:false}
+          disabled={
+            submitAndPublishButtonMasterData ||
+            submitAndPublishButtonDyeCutting ||
+            submitAndPublishButtonLamination ||
+            submitAndPublishButtonPrinting
+              ? true
+              : false
+          }
         />
       ) : (
         <>
@@ -132,7 +163,11 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitPopupConfirm}
-        title={id?"You have successfully updated master data your version is 4253.":"You have successfully created master data your version is 4253."}
+        title={
+          id
+            ? "You have successfully updated master data your version is 4253."
+            : "You have successfully created master data your version is 4253."
+        }
         message="You're all set! Let’s get started."
         buttonText2="Go back to Master Data"
         gifSrc=""
@@ -141,7 +176,11 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitAndPublish}
-        title={id ?"Are you sure you want update and publish? This version is 4243.":"Are you sure you want submit and publish? This version is 4243."}
+        title={
+          id
+            ? "Are you sure you want update and publish? This version is 4243."
+            : "Are you sure you want submit and publish? This version is 4243."
+        }
         message=""
         buttonText="No"
         buttonText2="Yes, Publish it!"
