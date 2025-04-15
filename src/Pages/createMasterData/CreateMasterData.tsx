@@ -35,8 +35,6 @@ import {
   setIsLaminatingDataSave,
   setLaminationFormData,
   DyeCuttingFormData,
-  setDyeCuttingFormData,
-  setIsDyeCuttingSave,
   setRequestPayload,
 } from "./../../store/slices/masterDataSlice";
 import { toast } from "react-toastify";
