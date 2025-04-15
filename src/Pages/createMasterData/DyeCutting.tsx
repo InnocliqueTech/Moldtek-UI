@@ -1,41 +1,38 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
 import {
   DyeCuttingFormData,
   setDyeCuttingFormData,
-  setIsDyeCuttingSave,
-  setRequestPayload,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 
-const DyeCutting: React.FC = () => {
+interface DyeCuttingProps {
+  formData: DyeCuttingFormData,
+  setFormData: React.Dispatch<React.SetStateAction<DyeCuttingFormData>>,
+  errors: { [key: string]: string },
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
+
+}
+
+const DyeCutting: React.FC<DyeCuttingProps> = ({
+  formData,
+  setFormData,
+  errors,
+  setErrors
+}) => {
   const {
-    selectedTab,
     dyeCuttingFormData,
-    requestPayload,
-    saveFormData,
-    printingSaveFormData,
-    laminaionFormData,
   } = useSelector((state: RootState) => state.masterData);
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const dispatch = useDispatch<AppDispatch>();
 
-  const [formData, setFormData] = useState<DyeCuttingFormData>({
-    machine_type: "",
-    machine_name: "",
-    dye_code: "",
-    run_speed: 0,
-  });
-
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
@@ -72,41 +69,6 @@ const DyeCutting: React.FC = () => {
     dispatch(setDyeCuttingFormData(updated));
   };
 
-  const handleSave = () => {
-    const result = dyeCuttingSchema.safeParse(formData);
-
-    if (!result.success) {
-      const newErrors: { [key: string]: string } = {};
-      result.error.errors.forEach((error) => {
-        newErrors[error.path[0]] = error.message; 
-      });
-      setErrors(newErrors); 
-      return; 
-    }
-    dispatch(setDyeCuttingFormData(formData));
-    dispatch(setIsDyeCuttingSave(true));
-    const updatedPayload = {
-      ...requestPayload,
-      masterDataDetails: {
-        ...requestPayload.masterDataDetails,
-        ...saveFormData,
-      },
-      masterDataPrinting: {
-        ...requestPayload.masterDataPrinting,
-        ...printingSaveFormData,
-      },
-      masterDataLamination: {
-        ...requestPayload.masterDataLamination,
-        ...laminaionFormData,
-      },
-      masterDataDyeCutting: {
-        ...requestPayload.masterDataDyeCutting,
-        ...dyeCuttingFormData,
-      },
-    };
-
-    dispatch(setRequestPayload(updatedPayload));
-  };
 
   useEffect(() => {
     if (dyeCuttingFormData) {
@@ -155,10 +117,6 @@ const DyeCutting: React.FC = () => {
             ))}
           </Grid>
         </Grid>
-      </Box>
-
-      <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

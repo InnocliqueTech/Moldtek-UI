@@ -1,16 +1,14 @@
 import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   PrintingFormValues,
   PrintingTableRow,
-  setIsPrintingDataSave,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
@@ -44,8 +42,17 @@ const substrateFields = [
   { id: "density", label: "Density (g/cm³)" },
 ];
 
-const Printing: React.FC = () => {
-  const { selectedTab, printingSaveFormData } =
+interface PrintingProps {
+  tableData: PrintingTableRow[],
+  formValues: PrintingFormValues,
+  setTableData: React.Dispatch<React.SetStateAction<PrintingTableRow[]>>,
+  setFormValues: React.Dispatch<React.SetStateAction<PrintingFormValues>>,
+}
+
+const Printing: React.FC<PrintingProps> = ({
+  tableData,formValues,setTableData,setFormValues
+}) => {
+  const { printingSaveFormData } =
     useSelector((state: RootState) => state.masterData);
   const {
     printingInkStatinData,
@@ -70,40 +77,6 @@ const Printing: React.FC = () => {
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
   ];
 
-  const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
-  const [formValues, setFormValues] = useState<PrintingFormValues>({
-    printingDetails: {
-      mounting_tape: "",
-      cylinder_teeth: 0,
-      tension: 0,
-      unwinder: 0,
-      infeed: 0,
-      outfeed: 0,
-      rewinder: 0,
-      static_charge: 0,
-      format_correct: 0,
-    },
-    printingSubstrateSettings: {
-      print_substrate_id: 1,
-      machine_settings_id: 1,
-      substrate_type: "",
-      supplier: "",
-      dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
-    },
-    stationWiseMetrics: Array.from({ length: 10 }, (_, i) => ({
-      station_no: i + 1,
-      color_pantone: "",
-      lf_value: 0,
-      ink_supplier: "",
-      lpcm: 0,
-      volume: "",
-      uv_led: "",
-      uv_led_intensity: "",
-    })),
-  });
 
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
@@ -229,14 +202,6 @@ const Printing: React.FC = () => {
     );
   };
 
-  const handleSave = () => {
-    const finalSaveData = {
-      ...formValues,
-      stationWiseMetrics: tableData,
-    };
-    dispatch(setSavePrintingFormData(finalSaveData));
-    dispatch(setIsPrintingDataSave(true));
-  };
 
   useEffect(() => {
     if (printingSaveFormData) {
@@ -248,6 +213,7 @@ const Printing: React.FC = () => {
   }, [printingSaveFormData]);
 
   useEffect(() => {
+    if(id){
     const machineValues = sanitizeMasterData(printingMachineSettings);
     const substrateValues = sanitizeMasterData(printingSubstrateSettings);
     const combinedValues: PrintingFormValues = {
@@ -259,6 +225,7 @@ const Printing: React.FC = () => {
     const stationWiseMetrics: PrintingTableRow[] =
       sanitizedInkStationData.stationWiseMetrics;
     setTableData(stationWiseMetrics);
+  }
   }, [
     id,
     printingInkStatinData,
@@ -330,9 +297,6 @@ const Printing: React.FC = () => {
         </Box>
       </Box>
 
-      <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
-      </Box>
     </Box>
   );
 };

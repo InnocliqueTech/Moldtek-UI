@@ -14,33 +14,26 @@ import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { listOfLables } from "./data";
 
-const MasterDataDetails: React.FC = () => {
+interface MasterDataProps {
+  formData: MasterFormData,
+  setFormData: React.Dispatch<React.SetStateAction<MasterFormData>>;
+}
+
+const MasterDataDetails: React.FC<MasterDataProps>= ({
+  formData,setFormData
+}) => {
   const dispatch = useDispatch<AppDispatch>();
 
 
   const {id} = useParams();
 
-  const { selectedTab, saveFormData } = useSelector(
+  const {  saveFormData } = useSelector(
     (state: RootState) => state.masterData
   );
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
-
-  const [formData, setFormData] = useState<MasterFormData>({
-    unit_effectivity_number: "",
-        customer_name: "",
-        customer_logo: "",
-        jar_cap: "",
-        item_code: "",
-        structure: "",
-        brand_description: "",
-        label_type: "",
-        repeat_length: 0,
-        ups: 0,
-        tracks: 0,
-  });
 
   // useEffect(() => {
   //   const masterData = mockData.masterDataDetails;
@@ -66,11 +59,6 @@ const MasterDataDetails: React.FC = () => {
   
   
 
-  const handleSave = () => {
-    dispatch(setSaveFormData(formData));
-     dispatch(setIsMasterDetailsDataSave(true));
-     toast.success('User created successfully!');
-  };
   const handleChange = (
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -329,9 +317,6 @@ const MasterDataDetails: React.FC = () => {
             />
           </Grid>
         </Grid>
-      </Box>
-      <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

@@ -1,10 +1,9 @@
 import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   LaminatingTableRow,
   LaminationFormData,
@@ -15,8 +14,17 @@ import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
 
-const Lamination: React.FC = () => {
-  const { selectedTab, laminaionFormData } = useSelector(
+interface LaminationProps {
+  tableData: LaminatingTableRow[],
+  setTableData: React.Dispatch<React.SetStateAction<LaminatingTableRow[]>>,
+  formData:LaminationFormData,
+  setFormData: React.Dispatch<React.SetStateAction<LaminationFormData>>,
+}
+
+const Lamination: React.FC<LaminationProps> = ({
+  tableData,setTableData,setFormData,formData
+}) => {
+  const { laminaionFormData } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -24,7 +32,6 @@ const Lamination: React.FC = () => {
     laminationAdhesive,
     laminationSettings,
   } = useSelector((state: RootState) => state.viewMasterData);
-  const [tableData, setTableData] = useState<LaminatingTableRow[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const bondingMaterialColumns = [
     { id: "type", label: "Field" },
@@ -32,57 +39,6 @@ const Lamination: React.FC = () => {
     { id: "brand", label: "Brand", edit: true },
     { id: "ratio", label: "Ratio", edit: true },
   ];
-  const [formData, setFormData] = useState<LaminationFormData>({
-    laminationConditions: {
-      zone1_temp: 0,
-      zone2_temp: 0,
-      nip_pressure_bar: 0,
-      speed: 0,
-      last_set_tension: "",
-      rewinder_tension: "",
-      printed_film_tension: "",
-      laminate_film_tension: "",
-      viscosity_range: "",
-      adhesive_gsm: "",
-    },
-    laminationSubstrate: {
-      substrate_type: "",
-      supplier: "",
-      dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
-    },
-    bondingMaterials: [
-      {
-        type: "Adhesive",
-        code: "",
-        brand: "",
-        ratio: 0,
-      },
-      {
-        type: "Hardener",
-        code: "",
-        brand: "",
-        ratio: 0,
-      },
-      {
-        type: "Ethyl Acetate",
-        code: "",
-        brand: "",
-        ratio: 0,
-      },
-    ],
-  });
-
-  const handleSave = () => {
-    const finalSaveData = {
-      ...formData,
-      laminaionFormData: tableData,
-    };
-    dispatch(setLaminationFormData(finalSaveData));
-    dispatch(setIsLaminatingDataSave(true));
-  };
   useEffect(() => {
     if (laminaionFormData) {
       setFormData(laminaionFormData);
@@ -468,9 +424,6 @@ const Lamination: React.FC = () => {
             </Grid>
           ))}
         </Grid>
-      </Box>
-      <Box mt={1} display="flex" justifyContent="flex-end">
-        <MasterDataFooter selectedTab={selectedTab} handleSave={handleSave} />
       </Box>
     </Box>
   );

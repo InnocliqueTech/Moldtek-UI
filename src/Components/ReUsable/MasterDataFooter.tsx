@@ -73,7 +73,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       justifyContent="center"
       alignItems="center"
       gap={2}
-      p={2}
+      // p={2}
       flexWrap="wrap"
     >
       {selectedTab === 3 ? (
