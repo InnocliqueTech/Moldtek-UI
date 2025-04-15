@@ -14,7 +14,7 @@ interface DailyPlanProps {
 const DailyPlan: React.FC<DailyPlanProps> = () => {
   const navigate = useNavigate();
    const columns = [
-    { id: "version", label: "Indent Number", align: false,        format: (value: string) => <UENCell value={value} onClick={()=>{
+    { id: "version", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
       navigate('/viewDailyPlan')
     }} />, },
       {
@@ -108,10 +108,10 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               rowIdentifier="_id" 
               actions={[
                
-                {
-                  label: "Edit",
-                  onClick: () => navigate(`/edit`),
-                },
+                // {
+                //   label: "Edit",
+                //   onClick: () => navigate(`/edit`),
+                // },
                 {
                   label: "Download",
                   onClick: () => navigate(`/download`),

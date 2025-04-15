@@ -45,7 +45,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
                   whiteSpace: "pre-line",
                 }}
               >
-                {item.value}
+                {item.value || "N/A"}
               </Typography>
             </Grid>
           ))}

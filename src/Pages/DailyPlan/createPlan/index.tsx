@@ -36,6 +36,13 @@ const initialFormFields: FormField[] = [
   { id: 'batToPrint', label: 'Bat to Print Indent Qty (Mtrs) planned', value: '' },
   // { id: 'dieCutWastage', label: 'Die-Cut Wastage', value: '' },
   // { id: 'laminationWastage', label: 'Lamination Wastage', value: '' },
+  {
+    id: 'jobType',
+    label: 'Job Type',
+    component: 'dropdown',
+    options: ['New','Repeat'],
+    value: ''
+  },
   { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
 ];
 
