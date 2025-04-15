@@ -30,7 +30,7 @@ const printingSubstarteColumns = [
 
 const inkStationColumns = [
   { id: "station_no", label: "Station No" },
-  { id: "color_pantone", label: "Color Pantone" },
+  { id: "color_pantone", label: "Color Pantone Code" },
   { id: "lf_value", label: "LF Value" },
   { id: "ink_supplier", label: "Ink Supplier" },
   { id: "lpcm", label: "LPCM" },

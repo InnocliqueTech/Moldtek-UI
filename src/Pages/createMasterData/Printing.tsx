@@ -63,7 +63,7 @@ const Printing: React.FC<PrintingProps> = ({
 
   const columns = [
     { id: "station_no", label: "Station No" },
-    { id: "color_pantone", label: "Color Pantone", edit: true },
+    { id: "color_pantone", label: "Color Pantone Code", edit: true },
     { id: "lf_value", label: "LF Value", edit: true },
     {
       id: "ink_supplier",
