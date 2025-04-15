@@ -35,7 +35,6 @@ const VersinDetails: React.FC = () => {
       },
       { id: "created_at", label: "Last Update", align: true },
     
-    { id: "created_at", label: "Last Update", align: true },
     // {
     //   id: "comment",
     //   label: "Comment",
