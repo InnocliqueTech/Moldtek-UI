@@ -13,7 +13,6 @@ import {
   setOpenSlider,
   setSelectedTab,
   setUploadPopup,
-  setSubmitAndPublishPopup
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";

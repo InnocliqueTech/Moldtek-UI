@@ -1,17 +1,42 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
 import { UENCell } from '../../Components/helpers';
 import { useNavigate } from "react-router-dom";
-import { stats, data } from './data';
+import {  data,dailyJobmetricsResponse,dailyJobsListMockResp } from './data';
+import { useGetDailyJobMetricsQuery , useGetDailyJobsListQuery} from '../../store/services/api';
+import { ApiStatsResponse } from '../../store/Interfaces/createDailyPlanTypes';
 
 interface DailyPlanProps {
   title?: string;
 }
 
+interface StatItem {
+  title: string;
+  value: number;
+}
+
+const transformApiDataToStats = (apiData: ApiStatsResponse): StatItem[] => {
+  return [
+    { title: "Total Jobs", value: apiData.totalJobs || 0 },
+    { title: "Lamination Jobs", value: apiData.laminationJobs || 0 },
+    { title: "Non-Lamination Jobs", value: apiData.nonLaminationJobs || 0 },
+    { title: "New Jobs Added", value: apiData.newJobs || 0 },
+  ];
+};
+
 const DailyPlan: React.FC<DailyPlanProps> = () => {
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10
+  })
+  const { data:metricsData ,isLoading, isError, error} = useGetDailyJobMetricsQuery();
+  const { data:dailyJobsList } = useGetDailyJobsListQuery(pagination)
+ 
+  console.log(metricsData,isLoading, isError, error,dailyJobsList, setPagination,dailyJobsListMockResp,"inside api call test");
+  const stats = transformApiDataToStats(dailyJobmetricsResponse.data) 
   const navigate = useNavigate();
    const columns = [
     { id: "version", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{

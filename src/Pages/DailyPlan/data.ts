@@ -5,6 +5,71 @@ export const stats = [
     { title: "New Jobs Added", value: 674 },
 ];
 
+export const dailyJobmetricsResponse = {
+    "statusCode": 200,
+    "message": "Data Successfully Fetched",
+    "payload": null,
+    "data": {
+        "totalJobs": 2,
+        "nonLaminationJobs": 1,
+        "laminationJobs": 1,
+        "totalCustomers": null,
+        "newJobs": 0
+    }
+}
+
+export const dailyJobsListMockResp= {
+    "statusCode": 200,
+    "statusMessage": "Fetched data successfully",
+    "totalRecords": 2,
+    "data": [
+        {
+            "unitEffectivityNumber": "20240801",
+            "jobRunDate": "2025-04-13T05:30:00",
+            "createdAt": "2025-04-13T05:30:00",
+            "updatedAt": "2025-04-15T12:57:06",
+            "masterVersionNo": 1,
+            "jobType": "Repeat",
+            "labelType": "Thin Walls",
+            "status": "Completed",
+            "indentNumber": "1962",
+            "customerName": null,
+            "brandNamePack": null,
+            "ppcIndentQty": null,
+            "targetLabelsQty": 5437,
+            "targetFilmMtrs": null,
+            "filmRequiredForPrinting": null,
+            "jarCap": null,
+            "date": null,
+            "shift": "Morning",
+            "workOrderNumber": null,
+            "jobMasterId": null
+        },
+        {
+            "unitEffectivityNumber": "20240801",
+            "jobRunDate": "2025-04-15T05:30:00",
+            "createdAt": "2025-04-15T08:13:37",
+            "updatedAt": "2025-04-15T12:57:07",
+            "masterVersionNo": 2,
+            "jobType": "Repeat",
+            "labelType": "Lamination",
+            "status": "In progress",
+            "indentNumber": "1962/A",
+            "customerName": null,
+            "brandNamePack": null,
+            "ppcIndentQty": null,
+            "targetLabelsQty": 2738,
+            "targetFilmMtrs": null,
+            "filmRequiredForPrinting": null,
+            "jarCap": null,
+            "date": null,
+            "shift": "Morning",
+            "workOrderNumber": null,
+            "jobMasterId": null
+        }
+    ]
+}
+
 export const data = [
     {
         _id: '65f8a1b2e4b1a3d9a8f3c5d1',
