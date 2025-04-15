@@ -127,7 +127,7 @@ const CreatePlan: React.FC = () => {
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
         <Typography sx={{ fontSize: '1rem', fontWeight: '600' }} className="mb-3">
-          Add Indent Number
+          Add New Job
         </Typography>
 
         <Grid container spacing={2} pt={1}>
