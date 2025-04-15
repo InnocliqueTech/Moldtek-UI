@@ -4,6 +4,10 @@ import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
 import { toast } from 'react-toastify';
+import SubmitPopups from './submitPopups';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from '../../../store';
+import { setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
@@ -47,6 +51,7 @@ const initialFormFields: FormField[] = [
 ];
 
 const CreatePlan: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
 
   const handleInputChange = (
@@ -75,6 +80,7 @@ const CreatePlan: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    dispatch(setSubmitAndPublishPopup(true))
     const formData = formFields.reduce((acc, field) => {
       acc[field.id] = field.value;
       return acc;
@@ -96,7 +102,7 @@ const CreatePlan: React.FC = () => {
       // Clear localStorage and reset form after successful submission
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       setFormFields(initialFormFields);
-      toast.success('Data submitted successfully! Form has been reset.');
+      // toast.success('Data submitted successfully! Form has been reset.');
     } catch (error) {
       console.error('Failed to submit data:', error);
       toast.error('Failed to submit data. Please try again.');
@@ -177,6 +183,7 @@ const CreatePlan: React.FC = () => {
           />
         </Box>
       </Box>
+      <SubmitPopups/>
     </Box>
   );
 };

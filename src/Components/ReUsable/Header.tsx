@@ -134,6 +134,7 @@ const Header: React.FC<HeaderProps> = ({
           top: 0,
           zIndex: 100,
           overflowY: "auto",
+          padding:".25rem 1rem",
         }}
       >
         <Toolbar

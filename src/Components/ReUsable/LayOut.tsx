@@ -140,9 +140,9 @@ const Layout = () => {
     "/createPlan": {
       title: "Create Daily Plan",
       button1Text: "Upload Data",
-      button2Text: "Submit",
+      // button2Text: "Submit",
       onButton1Click: () => dispatch(setUploadPopup(true)),
-      onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
+      // onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
       uploadTitle:'Create Daily Plan',
       uploadSubTitle: 'Upload Daily Plan',
       headerButton:true,
