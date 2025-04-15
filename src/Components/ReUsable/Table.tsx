@@ -81,7 +81,7 @@ function ReusableTable<T extends Record<string, any>>({
   action = false,
   boxShadow = false,
   onSelectionChange,
-  rowIdentifier = "id" as keyof T, // Default to 'id' if not specified
+  rowIdentifier = "id" as keyof T, 
   searchSize = false,
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
@@ -143,7 +143,6 @@ function ReusableTable<T extends Record<string, any>>({
       })
     : sortedData;
 
-  console.log(data, "RPWOFTHEDATA");
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = filteredData.slice(
@@ -204,12 +203,10 @@ function ReusableTable<T extends Record<string, any>>({
 
   const handleDownload = () => {
     console.log("Download selected:", selected);
-    // Implement your download logic here
   };
 
   const handleUpload = () => {
     console.log("Upload selected:", selected);
-    // Implement your upload logic here
   };
   console.log(filteredData, "FILTEREDDATA");
   return (
@@ -321,11 +318,11 @@ function ReusableTable<T extends Record<string, any>>({
                 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "50px",
-                  padding: "2px 8px", // tight padding inside the input
+                  padding: "2px 8px",
                 },
                 "& input": {
-                  padding: searchSize ? "2px 0px" : "6px 8px", // control actual input text padding
-                  fontSize: "0.875rem", // optional: smaller font size
+                  padding: searchSize ? "2px 0px" : "6px 8px", 
+                  fontSize: "0.875rem", 
                 },
               }}
             />
@@ -354,10 +351,10 @@ function ReusableTable<T extends Record<string, any>>({
               top: "-1px",
               zIndex: 2,
               backgroundColor: "#F5F5F5",
-              height: "32px", // Reduce overall height
+              height: "32px", 
               "& .MuiTableCell-root": {
-                padding: "4px 8px", // Reduce padding inside header cells
-                height: "32px", // Reduce row height
+                padding: "4px 8px",
+                height: "32px",
                 backgroundColor: "#F5F5F5",
               },
             }}
@@ -385,7 +382,7 @@ function ReusableTable<T extends Record<string, any>>({
                   key={column.id}
                   sx={{
                     whiteSpace: "nowrap",
-                    lineHeight: "1", // Reduce text line spacing
+                    lineHeight: "1", 
                     color: "#656565",
                     fontSize: "12px",
                     fontWeight: 500,
@@ -394,13 +391,13 @@ function ReusableTable<T extends Record<string, any>>({
                 >
                   {!column.disableSorting ? (
                     <TableSortLabel
-                      active={orderBy === column.id} // Highlights only the clicked column
-                      direction={orderBy === column.id ? order : "desc"} // Default sorting is 'desc'
+                      active={orderBy === column.id} 
+                      direction={orderBy === column.id ? order : "desc"}
                       onClick={() => handleRequestSort(column.id)}
-                      hideSortIcon={false} // Ensures sorting icons never disappear
+                      hideSortIcon={false} 
                       sx={{
                         "& .MuiTableSortLabel-icon": {
-                          opacity: 1, // Force the sorting icon to always be visible
+                          opacity: 1, 
                         },
                       }}
                     >
@@ -415,7 +412,7 @@ function ReusableTable<T extends Record<string, any>>({
                 <TableCell
                   sx={{
                     whiteSpace: "nowrap",
-                    lineHeight: "1", // Reduce text line spacing
+                    lineHeight: "1", 
                     color: "#656565",
                     fontSize: "12px",
                     fontWeight: 500,
@@ -522,7 +519,7 @@ function ReusableTable<T extends Record<string, any>>({
                   key={index}
                   onClick={() => {
                     handleMenuClose();
-                    action.onClick(selectedRow); // Pass current row
+                    action.onClick(selectedRow);
                   }}
                 >
                   {action.icon && <Box mr={1}>{action.icon}</Box>}

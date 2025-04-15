@@ -17,7 +17,7 @@ const columns = [
 ];
 const inkCoatingData = [
   {
-    stationNo: "Color Pantone",
+    stationNo: "Colour Pantone Code",
     1: 23,
     2: 23,
     3: 23,
@@ -28,32 +28,6 @@ const inkCoatingData = [
     8:23,
     9:23,
     10:23
-  },
-  {
-    stationNo: "Mixing on GEC",
-    1: 36,
-    2: 36,
-    3: 36,
-    4: 36,
-    5: 36,
-    6:36,
-    7:36,
-    8:36,
-    9:36,
-    10:36
-  },
-  {
-    stationNo: "MTPL Code",
-    1: "--",
-    2: "--",
-    3: "--",
-    4: "--",
-    5: "--",
-    6:"--",
-    7:"--",
-    8:"--",
-    9:"--",
-    10:"--"
   },
   {
     stationNo: "LF Value",
@@ -69,7 +43,33 @@ const inkCoatingData = [
     10:36
   },
   {
-    stationNo: "Supplier Batch No",
+    stationNo: "UV/LedIntersity",
+    1: "--",
+    2: "--",
+    3: "--",
+    4: "--",
+    5: "--",
+    6:"--",
+    7:"--",
+    8:"--",
+    9:"--",
+    10:"--"
+  },
+  {
+    stationNo: "LPCM",
+    1: 36,
+    2: 36,
+    3: 36,
+    4: 36,
+    5: 36,
+    6:36,
+    7:36,
+    8:36,
+    9:36,
+    10:36
+  },
+  {
+    stationNo: "Vol.",
     1: 36,
     2: 36,
     3: 36,

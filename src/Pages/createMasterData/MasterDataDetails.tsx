@@ -3,15 +3,13 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
 import { Edit} from "@mui/icons-material";
-import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
-import { setIsMasterDetailsDataSave, setSaveFormData } from "../../store/slices/masterDataSlice";
+import {  setSaveFormData } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
-import { toast } from 'react-toastify';
 import { listOfLables } from "./data";
 
 interface MasterDataProps {
@@ -35,27 +33,21 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
   );
 
 
-  // useEffect(() => {
-  //   const masterData = mockData.masterDataDetails;
-  
-  //   if (id && masterData) {
-  //     console.log("Loaded Master Data:", masterData);
-  //     setFormData({
-  //       unit_effectivity_number: masterData.unit_effectivity_number || "",
-  //       customer_name: masterData.customer_name || "",
-  //       customer_logo: masterData.customer_logo || "",
-  //       jar_cap: masterData.jar_cap || "",
-  //       item_code: masterData.item_code || "",
-  //       structure: masterData.structure || "",
-  //       brand_description: masterData.brand_description || "",
-  //       label_type: masterData.label_type || "",
-  //       repeat_length: masterData.repeat_length || 0,
-  //       ups: masterData.ups || 0,
-  //       tracks: masterData.tracks || 0,
-  //     });
-  //     dispatch(setViewMasterDataDetails(masterData));
-  //   }
-  // }, [id]);
+
+  const [errors, setErrors] = useState<any>({
+    repeat_length: "",
+    ups: "",
+    tracks: "",
+    unit_effectivity_number: "",
+    customer_name: "",
+    customer_logo: "",
+    jar_cap: "",
+    item_code: "",
+    structure: "",
+    brand_description: "",
+    label_type: "",
+  });
+
   
   
 
@@ -68,12 +60,46 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
       : typeof value === "string"
       ? value
       : value.target.value;
-      const numericFields = ['repeat_length', 'ups', 'tracks'];
-
-      const updatedFormData = {
-        ...formData,
-        [field]: numericFields.includes(field) ? Number(newValue) : newValue,
-      };
+  
+    const numericFields = ["repeat_length", "ups", "tracks"];
+    const characterFields = ["unit_effectivity_number", "customer_name", "item_code"];
+  
+    let finalValue: string | string[] | number = newValue;
+    let errorMessage = "";
+  
+    if (numericFields.includes(field)) {
+      if (!isNaN(Number(newValue)) && newValue !== "") {
+        finalValue = Number(newValue);
+        errorMessage = "";
+      } else {
+        finalValue = "";
+        errorMessage = "Please enter a valid number.";
+      }
+    } 
+    else if (characterFields.includes(field)) {
+      const trimmed = (newValue as string).trim();
+      const onlyLettersRegex = /^[A-Za-z\s]+$/;
+  
+      if (trimmed === "") {
+        finalValue = "";
+        errorMessage = "This field cannot be empty.";
+      } else if (!onlyLettersRegex.test(trimmed)) {
+        finalValue = "";
+        errorMessage = "Only characters and spaces are allowed.";
+      } else {
+        errorMessage = "";
+      }
+    }
+  
+    setErrors({
+      ...errors,
+      [field]: errorMessage,
+    });
+  
+    const updatedFormData = {
+      ...formData,
+      [field]: finalValue,
+    };
   
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
@@ -125,10 +151,10 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
             <ReusableInput
               label="Unit Effectivity Number"
               value={formData.unit_effectivity_number}
-              onChange={(e) =>
-                handleChange("unit_effectivity_number", e.target.value)
-              }
-              disabled={id?true:false}
+              onChange={(e) => handleChange("unit_effectivity_number", e.target.value)}
+              error={!!errors.unit_effectivity_number}
+              helperText={errors.unit_effectivity_number}
+              disabled={id ? true : false}
             />
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
@@ -157,12 +183,16 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
               label="Customer"
               value={formData.customer_name}
               onChange={(e) => handleChange("customer_name", e.target.value)}
+              error={!!errors.customer_name}
+              helperText={errors.customer_name}
             />
             <Box sx={{ mt: 2 }} />
             <ReusableInput
               label="ITEM Code"
               value={formData.item_code}
               onChange={(e) => handleChange("item_code", e.target.value)}
+              error={!!errors.item_code}
+              helperText={errors.item_code}
             />
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
@@ -299,7 +329,11 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
             <ReusableInput
               label="Repeat"
               value={formData.repeat_length}
-              onChange={(e) => handleChange("repeat_length", e.target.value)}
+              onChange={(e) =>
+                handleChange("repeat_length", e.target.value)
+              }
+              error={!!errors.repeat_length}
+              helperText={errors.repeat_length}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
@@ -307,6 +341,8 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
               label="UPs"
               value={formData.ups}
               onChange={(e) => handleChange("ups", e.target.value)}
+              error={!!errors.ups}
+              helperText={errors.ups}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
@@ -314,6 +350,8 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
               label="Tracks"
               value={formData.tracks}
               onChange={(e) => handleChange("tracks", e.target.value)}
+              error={!!errors.tracks}
+              helperText={errors.tracks}
             />
           </Grid>
         </Grid>

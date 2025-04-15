@@ -6,7 +6,7 @@ import { RootState } from "../../../store";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
-  { id: "colorPantone", label: "Color Pantone" },
+  { id: "colorPantone", label: "Colour Pantone Code" },
   { id: "mixingOnGec", label: "Mixing on GEC" },
   { id: "mtplCode", label: "MTPL Code" },
   { id: "lfValue", label: "LF Value" },
@@ -49,7 +49,7 @@ const MakeReady: React.FC = () => {
     { label: "Mounter", value: plateMountingSupervisorReport },
     { label: "Approver", value: plateMountingSupervisorReport },
     { label: "Ink Kitchen Supervisor", value:plateMountingSupervisorReport},
-    { label: "Shift Supervisor Report", value: plateMountingSupervisorReport },
+    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport },
     { label: "Shift QC Incharge", value: plateMountingSupervisorReport }
   ];
   const analoxCols = generateAnaloxColumns(analoxSpecifications);
@@ -94,7 +94,7 @@ const MakeReady: React.FC = () => {
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
-          title="Plate Mounting Supervisor Report"
+          title="Shift Supervisor Report"
           showInfoSection={true}
           showTableSection={false}
           infoItems={plateMountingReport || []}

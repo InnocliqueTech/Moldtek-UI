@@ -3,17 +3,30 @@ import { Box, Stack } from "@mui/material";
 import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/index";
-import { setSelectedTab, setSaveFormData, setIsMasterDetailsDataSave } from "../../store/slices/masterDataSlice";
+import {
+  setSelectedTab,
+  setSaveFormData,
+  setIsMasterDetailsDataSave,
+} from "../../store/slices/masterDataSlice";
 import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCutting";
 import Printing from "./Printing";
 import Lamination from "./Lamination";
 import { mockData } from "./data";
-import { setDyeCuttingSettings, setLaminatingSubstrate, setLaminationAdhesiveDetails, setLaminationSettings, setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
-import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
+import {
+  setDyeCuttingSettings,
+  setLaminatingSubstrate,
+  setLaminationAdhesiveDetails,
+  setLaminationSettings,
+  setPrintingInkStationData,
+  setPrintingMachineSettingsData,
+  setPrintingSubstrate,
+  setViewMasterDataDetails,
+} from "../../store/slices/viewMasterDataSlice";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import {
-  MasterFormData, PrintingFormValues,
+  MasterFormData,
+  PrintingFormValues,
   PrintingTableRow,
   setIsPrintingDataSave,
   setSavePrintingFormData,
@@ -26,9 +39,7 @@ import {
   setIsDyeCuttingSave,
   setRequestPayload,
 } from "./../../store/slices/masterDataSlice";
-import { toast } from 'react-toastify';
-
-
+import { toast } from "react-toastify";
 
 const tabs = [
   "Master Data Details",
@@ -39,9 +50,14 @@ const tabs = [
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedTab, requestPayload, saveFormData,
+  const {
+    selectedTab,
+    requestPayload,
+    saveFormData,
     printingSaveFormData,
-    laminaionFormData, dyeCuttingFormData } = useSelector((state: RootState) => state.masterData);
+    laminaionFormData,
+    dyeCuttingFormData,
+  } = useSelector((state: RootState) => state.masterData);
   const [formData, setFormData] = useState<MasterFormData>({
     unit_effectivity_number: "",
     customer_name: "",
@@ -91,7 +107,9 @@ const CreateMasterData: React.FC = () => {
     })),
   });
 
-  const [LaminationTableData, setLaminationTableData] = useState<LaminatingTableRow[]>([]);
+  const [LaminationTableData, setLaminationTableData] = useState<
+    LaminatingTableRow[]
+  >([]);
   const [lamiFormData, setLamiFormData] = useState<LaminationFormData>({
     laminationConditions: {
       zone1_temp: 0,
@@ -147,7 +165,7 @@ const CreateMasterData: React.FC = () => {
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
     dispatch(setIsMasterDetailsDataSave(true));
-    toast.success('User created successfully!');
+    toast.success("Data Saved successfully!");
   };
 
   const handleSavePrinting = () => {
@@ -170,16 +188,35 @@ const CreateMasterData: React.FC = () => {
   };
 
   const handleSaveDyeCutting = () => {
-    const result = dyeCuttingSchema.safeParse(dyeFormData);
+    const newErrors: { [key: string]: string } = {};
+    const updated: typeof dyeFormData = { ...dyeFormData };
 
-    if (!result.success) {
-      const newErrors: { [key: string]: string } = {};
-      result.error.errors.forEach((error) => {
-        newErrors[error.path[0]] = error.message;
-      });
+    if (!dyeFormData.machine_type.trim()) {
+      newErrors.machine_type = "Machine type is required";
+    }
+
+    if (!dyeFormData.machine_name.trim()) {
+      newErrors.machine_name = "Machine name is required";
+    }
+
+    if (!dyeFormData.dye_code.trim()) {
+      newErrors.dye_code = "Dye code is required";
+    }
+
+    if (
+      !dyeFormData.run_speed ||
+      isNaN(dyeFormData.run_speed) ||
+      dyeFormData.run_speed <= 0
+    ) {
+      newErrors.run_speed = "Run speed must be a valid number greater than 0";
+      updated.run_speed = 0;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+
     dispatch(setDyeCuttingFormData(dyeFormData));
     dispatch(setIsDyeCuttingSave(true));
     const updatedPayload = {
@@ -224,9 +261,17 @@ const CreateMasterData: React.FC = () => {
       setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
     );
     dispatch(setDyeCuttingSettings(mockData.masterDataDyeCutting));
-    dispatch(setLaminationSettings(mockData.masterDataLamination.laminationConditions));
-    dispatch(setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate));
-    dispatch(setLaminationAdhesiveDetails(mockData.masterDataLamination.bondingMaterials))
+    dispatch(
+      setLaminationSettings(mockData.masterDataLamination.laminationConditions)
+    );
+    dispatch(
+      setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate)
+    );
+    dispatch(
+      setLaminationAdhesiveDetails(
+        mockData.masterDataLamination.bondingMaterials
+      )
+    );
   }, []);
 
   return (

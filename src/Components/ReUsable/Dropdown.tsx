@@ -9,6 +9,7 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  FormHelperText,
 } from '@mui/material';
 import { Done } from '@mui/icons-material';
 
@@ -20,7 +21,8 @@ interface DropdownProps {
   label: string;
   showAllOption?: boolean;
   checkbox?: boolean;
-  
+  error?: boolean;
+  helperText?: string;
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -31,6 +33,8 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   label,
   showAllOption = true,
   checkbox = true,
+  error = false,
+  helperText = '',
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -51,20 +55,18 @@ const DropdownComponent: React.FC<DropdownProps> = ({
 
   return (
     <>
-      {/* Top Heading with Gray Color */}
-      <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
-      {label}
+      <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: '4px' }} color="#656565">
+        {label}
       </Typography>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth error={error}>
         <Select
           multiple={isMultiSelect}
           value={selectedOptions}
           onChange={handleSelectChange}
-          renderValue={(selected) => 
+          renderValue={(selected) =>
             Array.isArray(selected) ? selected.join(', ') : selected
           }
-          
           MenuProps={{
             anchorOrigin: {
               vertical: 'bottom',
@@ -76,18 +78,18 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             },
             PaperProps: {
               style: {
-                maxHeight: 200, // Enables scrolling
+                maxHeight: 200,
                 width: 250,
-                overflowY: 'auto', // Adds scrollbar when content overflows
+                overflowY: 'auto',
               },
             },
           }}
           sx={{
-            borderRadius: '8px', // Changed border-radius
+            borderRadius: '8px',
             backgroundColor: 'white',
             '& .MuiSelect-select': {
-              padding: '6px 12px', // Decrease padding to reduce height
-              color: "black",
+              padding: '6px 12px',
+              color: 'black',
             },
           }}
         >
@@ -95,48 +97,49 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             <MenuItem value="All">
               <Checkbox
                 checked={selectedOptions.length === options.length}
-                indeterminate={selectedOptions.length > 0 && selectedOptions.length < options.length}
+                indeterminate={
+                  selectedOptions.length > 0 && selectedOptions.length < options.length
+                }
               />
               <ListItemText primary="All" />
             </MenuItem>
           )}
 
-{options.map((option) => (
+          {options.map((option) => (
             <MenuItem
               key={option}
               value={option}
               sx={{
-                backgroundColor: selectedOptions.includes(option) ? "blue-100" : "inherit",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
               }}
             >
-              {checkbox ? (
-                <Checkbox checked={selectedOptions.includes(option)} />
-              ) : null}
-
+              {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
               <Tooltip title={option} arrow>
                 <ListItemText
                   primary={option}
                   sx={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "180px",
-                    color:"#2F2F2F"
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '180px',
+                    color: '#2F2F2F',
                   }}
                 />
               </Tooltip>
-
               {!checkbox && selectedOptions.includes(option) && (
-               <IconButton sx={{color:'#0073B7'}}><Done/></IconButton>
+                <IconButton sx={{ color: '#0073B7' }}>
+                  <Done />
+                </IconButton>
               )}
             </MenuItem>
           ))}
         </Select>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
-      </>
+    </>
   );
 };
 

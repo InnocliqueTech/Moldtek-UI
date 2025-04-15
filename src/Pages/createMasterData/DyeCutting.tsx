@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect } from "react";
-import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
+// import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
 import {
   DyeCuttingFormData,
   setDyeCuttingFormData,
@@ -45,27 +45,47 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({
 
   const { id } = useParams();
 
-  const handleChange = (key: string, value: string) => {
-    const updatedValue = key === "run_speed" ? Number(value) : value;
-    const updated = { ...formData, [key]: updatedValue };
-    setFormData(updated);
-    const result = dyeCuttingSchema.safeParse(updated);
-    if (!result.success) {
-      const newErrors: { [key: string]: string } = {};
-      result.error.errors.forEach((error) => {
-        if (error.path[0] === key) {
-          newErrors[error.path[0]] = error.message;
-        }
-      });
-      setErrors(newErrors);
+  const handleChange = (key: string, newValue: string) => {
+    let finalValue: string | number = newValue;
+    let errorMessage = "";
+  
+    const isNumberField = key === "run_speed";
+    const onlyDigitsRegex = /^\d+$/;
+    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
+  
+    if (isNumberField) {
+      if (newValue === "0" || newValue === "") {
+        finalValue = "";
+        errorMessage = "Run speed cannot be 0 or empty";
+      } else if (!isNaN(Number(newValue))) {
+        finalValue = Number(newValue);
+      } else {
+        finalValue = "";
+        errorMessage = "Please enter a valid number";
+      }
     } else {
-      setErrors((prevErrors) => {
-        const updatedErrors = { ...prevErrors };
-        delete updatedErrors[key];
-        return updatedErrors;
-      });
+      // Validate string fields
+      if (!newValue.trim()) {
+        errorMessage = `${key.replace(/_/g, " ")} is required`;
+      } else if (onlyDigitsRegex.test(newValue.trim())) {
+        errorMessage = "Numbers are not allowed";
+      } else if (!alphaNumericRegex.test(newValue.trim())) {
+        errorMessage = "Special characters are not allowed";
+      }
     }
-
+  
+    const updated = {
+      ...formData,
+      [key]: finalValue,
+    };
+  
+    setFormData(updated);
+  
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [key]: errorMessage,
+    }));
+  
     dispatch(setDyeCuttingFormData(updated));
   };
 

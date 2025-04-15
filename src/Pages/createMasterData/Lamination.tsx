@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   LaminatingTableRow,
   LaminationFormData,
-  setIsLaminatingDataSave,
   setLaminationFormData,
 } from "../../store/slices/masterDataSlice";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
@@ -47,17 +46,7 @@ const Lamination: React.FC<LaminationProps> = ({
       }
     }
   }, [laminaionFormData]);
-
-  const numericFields = new Set([
-    "zone1_temp",
-    "zone2_temp",
-    "nip_pressure_bar",
-    "speed",
-    "width",
-    "thickness",
-    "density",
-    "ratio",
-  ]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   function sanitizeMasterData(data: any): LaminationFormData {
     return {
@@ -91,6 +80,32 @@ const Lamination: React.FC<LaminationProps> = ({
 
   const { id } = useParams();
 
+  const numericFields = new Set([
+    "zone1_temp",
+    "zone2_temp",
+    "nip_pressure_bar",
+    "speed",
+    "width",
+    "thickness",
+    "density",
+    "ratio",
+  ]);
+
+  const characterFields = new Set([
+    "last_set_tension",
+    "rewinder_tension",
+    "printed_film_tension",
+    "laminate_film_tension",
+    "viscosity_range",
+    "adhesive_gsm",
+    "substrate_type",
+    "supplier",
+    "dyne_level",
+    "type",
+    "code",
+    "brand",
+  ]);
+
   const handleChange = (
     section: string,
     field: string,
@@ -102,7 +117,38 @@ const Lamination: React.FC<LaminationProps> = ({
       ? value
       : value.target.value;
 
-    const finalValue = numericFields.has(field) ? Number(newValue) : newValue;
+    let finalValue: string | string[] | number = newValue;
+    let errorMessage = "";
+
+    if (numericFields.has(field)) {
+      if (!isNaN(Number(newValue)) && newValue !== "") {
+        finalValue = Number(newValue);
+        errorMessage = "";
+      } else {
+        finalValue = "";
+        errorMessage = "Please enter a valid number.";
+      }
+    } else if (characterFields.has(field)) {
+      const trimmed = (newValue as string).trim();
+
+      // Only allow letters, spaces, and optionally other characters like hyphen or underscore
+      const onlyLettersRegex = /^[A-Za-z\s]+$/;
+
+      if (trimmed === "") {
+        finalValue = "";
+        errorMessage = "This field cannot be empty.";
+      } else if (!onlyLettersRegex.test(trimmed)) {
+        finalValue = "";
+        errorMessage = "Only letters and spaces are allowed.";
+      } else {
+        errorMessage = "";
+      }
+    }
+
+    setErrors({
+      ...errors,
+      [field]: errorMessage,
+    });
 
     const updatedFormData = {
       ...formData,
@@ -159,9 +205,11 @@ const Lamination: React.FC<LaminationProps> = ({
                   handleChange(
                     "laminationConditions",
                     "zone1_temp",
-                    e.target.value as string
+                    e.target.value
                   )
                 }
+                error={!!errors.zone1_temp} 
+                helperText={errors.zone1_temp} 
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -175,6 +223,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.zone2_temp}
+                helperText={errors.zone2_temp} 
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -188,6 +238,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.nip_pressure_bar}
+                helperText={errors.nip_pressure_bar}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -197,6 +249,8 @@ const Lamination: React.FC<LaminationProps> = ({
                 onChange={(e) =>
                   handleChange("laminationConditions", "speed", e.target.value)
                 }
+                error={!!errors.speed}
+                helperText={errors.speed}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -210,6 +264,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.last_set_tension}
+                helperText={errors.last_set_tension}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -223,6 +279,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.rewinder_tension}
+                helperText={errors.rewinder_tension}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -236,6 +294,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.printed_film_tension}
+                helperText={errors.printed_film_tension}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -249,6 +309,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
+                error={!!errors.laminate_film_tension}
+                helperText={errors.laminate_film_tension}
               />
             </Grid>
           </Grid>
@@ -281,6 +343,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
+                  error={!!errors.substrate_type}
+                  helperText={errors.substrate_type}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -298,6 +362,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
+                  error={!!errors.supplier}
+                  helperText={errors.supplier}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -311,6 +377,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
+                  error={!!errors.dyne_level}
+                  helperText={errors.dyne_level}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -320,6 +388,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   onChange={(e) =>
                     handleChange("laminationSubstrate", "width", e.target.value)
                   }
+                  error={!!errors.width}
+                  helperText={errors.width}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -333,6 +403,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
+                  error={!!errors.thickness}
+                  helperText={errors.thickness}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -346,6 +418,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
+                  error={!!errors.density}
+                  helperText={errors.density}
                 />
               </Grid>
             </Grid>
@@ -420,6 +494,8 @@ const Lamination: React.FC<LaminationProps> = ({
                 onChange={(e) =>
                   handleChange("laminationConditions", key, e.target.value)
                 }
+                error={!!errors[key]}
+                helperText={errors[key]}
               />
             </Grid>
           ))}

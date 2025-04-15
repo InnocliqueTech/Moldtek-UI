@@ -5,7 +5,7 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   PrintingFormValues,
   PrintingTableRow,
@@ -77,6 +77,7 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
   ];
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
@@ -141,11 +142,39 @@ const Printing: React.FC<PrintingProps> = ({
       "static_charge",
       "format_correct",
     ].includes(field);
-    const finalValue = isNumberField ? Number(newValue) : newValue;
-
+  
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
-
+  
+    const onlyDigitsRegex = /^\d+$/;
+    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
+  
+    let finalValue: string | string[] | number = newValue;
+    let errorMsg = "";
+  
+    if (isNumberField) {
+      if (newValue === "0" || newValue === "") {
+        finalValue = "";
+      } else if (!isNaN(Number(newValue)) && newValue !== "") {
+        finalValue = Number(newValue);
+      } else {
+        finalValue = "";
+        errorMsg = "Please enter a valid number";
+      }
+    } else if (typeof newValue === "string") {
+      const trimmedValue = newValue.trim();
+  
+      if (trimmedValue === "") {
+        errorMsg = `${field.replace(/_/g, " ")} is required`;
+      } else if (onlyDigitsRegex.test(trimmedValue)) {
+        errorMsg = "Numbers are not allowed";
+      } else if (!alphaNumericRegex.test(trimmedValue)) {
+        errorMsg = "Special characters are not allowed";
+      }
+    }
+  
+    setErrors((prev) => ({ ...prev, [field]: errorMsg }));
+  
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
@@ -178,6 +207,8 @@ const Printing: React.FC<PrintingProps> = ({
         ]
       : "";
 
+    const error = errors[field.id] || "";
+
     if (field.options) {
       return (
         <DropdownComponent
@@ -188,6 +219,8 @@ const Printing: React.FC<PrintingProps> = ({
           options={field.options}
           isMultiSelect={false}
           checkbox={false}
+          error={!!error}
+          helperText={error}
         />
       );
     }
@@ -198,6 +231,8 @@ const Printing: React.FC<PrintingProps> = ({
         label={field.label}
         value={value as string | number}
         onChange={(val) => handleChange(field.id, val)}
+        error={!!error}
+        helperText={error}
       />
     );
   };
