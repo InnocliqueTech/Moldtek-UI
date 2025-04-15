@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
+  MasterDataFormErrors,
   setMasterDataFormErros,
   setSaveFormData,
   setSubmitAndPublishButton,
@@ -36,7 +37,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     (state: RootState) => state.viewMasterData
   );
 
-  const [errors, setErrors] = useState<any>({
+  const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",
     tracks: "",
@@ -59,10 +60,10 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       : typeof value === "string"
       ? value
       : value.target.value;
-
-    let finalValue: string | number = formData[field];
-    let errorMessage = errors[field] || "";
-
+  
+    let finalValue: string | number = newValue as string;  // store user input directly
+    let errorMessage = "";
+  
     const numericFields: (keyof MasterFormData)[] = [
       "repeat_length",
       "ups",
@@ -72,68 +73,51 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     const characterFields: (keyof MasterFormData)[] = ["customer_name"];
     const alphanumericFields: (keyof MasterFormData)[] = ["item_code"];
     const freeTextFields: (keyof MasterFormData)[] = ["brand_description"];
-
+  
     if (numericFields.includes(field)) {
-      if (newValue === "") {
-        finalValue = "";
+      if ((newValue as string).trim() === "") {
         errorMessage = "This field cannot be empty.";
-      } else if (!isNaN(Number(newValue))) {
+      } else if (isNaN(Number(newValue))) {
+        errorMessage = "Please enter a valid number.";
+      } else {
+        // valid numeric input
         finalValue = Number(newValue);
         errorMessage = "";
-      } else {
-        if (!formData[field]) {
-          finalValue = "";
-          errorMessage = "Please enter a valid number.";
-        } else {
-          errorMessage = "";
-        }
       }
+  
     } else if (characterFields.includes(field)) {
       const trimmed = (newValue as string).trim();
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
-
+  
       if (trimmed === "") {
-        finalValue = "";
         errorMessage = "This field cannot be empty.";
       } else if (!onlyLettersRegex.test(trimmed)) {
-        if (!formData[field]) {
-          finalValue = "";
-          errorMessage = "Only characters and spaces are allowed.";
-        } else {
-          errorMessage = "";
-        }
+        errorMessage = "Only characters and spaces are allowed.";
       } else {
-        finalValue = trimmed;
         errorMessage = "";
       }
+  
     } else if (alphanumericFields.includes(field)) {
       const trimmed = (newValue as string).trim();
       const alphanumericRegex = /^[A-Za-z0-9\s]+$/;
-
+  
       if (trimmed === "") {
-        finalValue = "";
         errorMessage = "This field cannot be empty.";
       } else if (!alphanumericRegex.test(trimmed)) {
-        if (!formData[field]) {
-          finalValue = "";
-          errorMessage = "Only letters, numbers, and spaces are allowed.";
-        } else {
-          errorMessage = "";
-        }
+        errorMessage = "Only letters, numbers, and spaces are allowed.";
       } else {
-        finalValue = trimmed;
         errorMessage = "";
       }
+  
     } else if (freeTextFields.includes(field)) {
       const trimmed = (newValue as string).trim();
-
+  
       if (trimmed === "") {
-        finalValue = "";
         errorMessage = "This field cannot be empty.";
       } else {
-        finalValue = trimmed;
         errorMessage = "";
       }
+  
     } else if (
       field === "label_type" ||
       field === "jar_cap" ||
@@ -146,21 +130,22 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       }
       errorMessage = "";
     }
-
+  
     const updatedErrors = {
       ...errors,
       [field]: errorMessage,
     };
-
+  
     const updatedFormData = {
       ...formData,
-      [field]: finalValue,
+      [field]: finalValue,  // always store the current user-typed value
     };
+  
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
     dispatch(setMasterDataFormErros(updatedErrors));
   };
-
+  
   const handleImageUpload = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {

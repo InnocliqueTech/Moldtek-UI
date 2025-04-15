@@ -160,7 +160,7 @@ const CreateMasterData: React.FC = () => {
     run_speed: 0,
   });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
 
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
@@ -209,11 +209,6 @@ const CreateMasterData: React.FC = () => {
     ) {
       newErrors.run_speed = "Run speed must be a valid number greater than 0";
       updated.run_speed = 0;
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
     }
 
     dispatch(setDyeCuttingFormData(dyeFormData));
@@ -336,8 +331,6 @@ const CreateMasterData: React.FC = () => {
           <DyeCutting
             formData={dyeFormData}
             setFormData={setDyeFormData}
-            errors={errors}
-            setErrors={setErrors}
           />
         )}
       </Box>

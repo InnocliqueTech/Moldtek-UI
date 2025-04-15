@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
 export interface PrintingTableRow {
   station_no: number;
   color_pantone: string;
@@ -96,7 +94,6 @@ export interface RequestPayload {
     machine_name: string;
     dye_code: string;
     run_speed: number;
-
   };
 }
 
@@ -112,38 +109,38 @@ export interface LaminationFormData {
     laminate_film_tension: string;
     viscosity_range: string;
     adhesive_gsm: string;
-},
+  };
 
-laminationSubstrate: {
-  substrate_type: string;
-  supplier: string;
-  dyne_level: string;
-  width: number;
-  thickness: number;
-  density: number;
-},
+  laminationSubstrate: {
+    substrate_type: string;
+    supplier: string;
+    dyne_level: string;
+    width: number;
+    thickness: number;
+    density: number;
+  };
 
-bondingMaterials: LaminatingTableRow[];
+  bondingMaterials: LaminatingTableRow[];
 }
 export interface MasterFormData {
-  unit_effectivity_number: string,
-        customer_name: string,
-        customer_logo: string,
-        jar_cap: string,
-        item_code: string,
-        structure: string,
-        brand_description: string,
-        label_type: string,
-        repeat_length: number,
-        ups: number,
-        tracks: number,
+  unit_effectivity_number: string;
+  customer_name: string;
+  customer_logo: string;
+  jar_cap: string;
+  item_code: string;
+  structure: string;
+  brand_description: string;
+  label_type: string;
+  repeat_length: number;
+  ups: number;
+  tracks: number;
 }
 
 export interface DyeCuttingFormData {
   machine_type: string;
-    machine_name: string;
-    dye_code: string;
-    run_speed: number;
+  machine_name: string;
+  dye_code: string;
+  run_speed: number;
 }
 export interface MasterDataFormErrors {
   repeat_length: string;
@@ -158,30 +155,36 @@ export interface MasterDataFormErrors {
   brand_description: string;
   label_type: string;
 }
+export interface DyeCuttingFormErrors {
+  machine_type: string;
+  machine_name: string;
+  dye_code: string;
+  run_speed: string;
+}
 
 export interface PrintingFormValues {
   printingDetails: {
-    mounting_tape: string,
-    cylinder_teeth: number,
-    tension: number,
-    unwinder: number,
-    infeed: number,
-    outfeed: number,
-    rewinder: number,
-    static_charge: number,
-    format_correct: number,
-    },
-    printingSubstrateSettings: {
-      print_substrate_id: number,
-      machine_settings_id: number,
-  substrate_type: string,
-    supplier: string,
-    dyne_level: string,
-    width: number,
-    thickness: number,
-    density: number,
-  },
-  stationWiseMetrics:PrintingTableRow[];
+    mounting_tape: string;
+    cylinder_teeth: number;
+    tension: number;
+    unwinder: number;
+    infeed: number;
+    outfeed: number;
+    rewinder: number;
+    static_charge: number;
+    format_correct: number;
+  };
+  printingSubstrateSettings: {
+    print_substrate_id: number;
+    machine_settings_id: number;
+    substrate_type: string;
+    supplier: string;
+    dyne_level: string;
+    width: number;
+    thickness: number;
+    density: number;
+  };
+  stationWiseMetrics: PrintingTableRow[];
 }
 interface Customer {
   customerId: number;
@@ -194,13 +197,14 @@ export interface LabelType {
   labelTypeName: string;
 }
 interface MasterDataState {
-  customers:Customer[];
+  customers: Customer[];
   labelTypes: LabelType[];
   selectedLabelTypeIds: number[];
   selectedCustomers: Customer[];
   selectedCustomersData: {
     customers: Customer[];
   };
+  dyeCuttingErrors: DyeCuttingFormErrors;
   selectedTab: number;
   openSider: boolean;
   updatePopup: boolean;
@@ -216,15 +220,13 @@ interface MasterDataState {
   isPrintingDataSave: boolean;
   isLaminationDataSave: boolean;
   requestPayload: RequestPayload;
-  selectedUEN:string;
-  submitAndPublishButton:boolean;
-  masterDataFormErrors:MasterDataFormErrors
+  selectedUEN: string;
+  submitAndPublishButton: boolean;
+  masterDataFormErrors: MasterDataFormErrors;
 }
 
-
-
 const initialState: MasterDataState = {
-  masterDataFormErrors:{
+  masterDataFormErrors: {
     repeat_length: "",
     ups: "",
     tracks: "",
@@ -237,8 +239,14 @@ const initialState: MasterDataState = {
     brand_description: "",
     label_type: "",
   },
-  submitAndPublishButton:false,
-  customers:[],
+  dyeCuttingErrors: {
+    machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: "",
+  },
+  submitAndPublishButton: false,
+  customers: [],
   labelTypes: [],
   selectedLabelTypeIds: [],
   selectedTab: 0,
@@ -249,9 +257,9 @@ const initialState: MasterDataState = {
   submitAndPublish: false,
   selectedCustomers: [],
   selectedCustomersData: {
-    customers: []
+    customers: [],
   },
-  selectedUEN:'',
+  selectedUEN: "",
   saveFormData: {
     unit_effectivity_number: "",
     customer_name: "",
@@ -276,19 +284,18 @@ const initialState: MasterDataState = {
       rewinder: 0,
       static_charge: 0,
       format_correct: 0,
-      },
-      printingSubstrateSettings: {
-  
-        print_substrate_id: 0,
-        machine_settings_id: 0,
-    substrate_type: "",
+    },
+    printingSubstrateSettings: {
+      print_substrate_id: 0,
+      machine_settings_id: 0,
+      substrate_type: "",
       supplier: "",
       dyne_level: "",
       width: 0,
       thickness: 0,
       density: 0,
     },
-    stationWiseMetrics:[
+    stationWiseMetrics: [
       {
         station_no: 1,
         color_pantone: "",
@@ -388,7 +395,8 @@ const initialState: MasterDataState = {
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
-      },    ],
+      },
+    ],
   },
   laminaionFormData: {
     laminationConditions: {
@@ -401,7 +409,7 @@ const initialState: MasterDataState = {
       printed_film_tension: "",
       laminate_film_tension: "",
       viscosity_range: "",
-      adhesive_gsm: ""
+      adhesive_gsm: "",
     },
     laminationSubstrate: {
       substrate_type: "",
@@ -409,29 +417,26 @@ const initialState: MasterDataState = {
       dyne_level: "",
       width: 0,
       thickness: 0,
-      density: 0
+      density: 0,
     },
     bondingMaterials: [
       {
         type: "Adhesive",
         code: "",
         brand: "",
-        ratio: 0
-    
+        ratio: 0,
       },
       {
         type: "Hardener",
         code: "",
         brand: "",
-        ratio: 0
-    
+        ratio: 0,
       },
       {
         type: "Ethyl Acetate",
         code: "",
         brand: "",
-        ratio: 0
-    
+        ratio: 0,
       },
     ],
   },
@@ -439,8 +444,7 @@ const initialState: MasterDataState = {
     machine_type: "",
     machine_name: "",
     dye_code: "",
-    run_speed: 0
-
+    run_speed: 0,
   },
   isDyeCuttingDataSave: false,
   isMasterDetaisDataSave: false,
@@ -557,8 +561,8 @@ const masterDataSlice = createSlice({
     setSaveFormData: (state, action: PayloadAction<MasterFormData>) => {
       state.saveFormData = { ...state.saveFormData, ...action.payload };
     },
-    setSelectedUEN:(state,action:PayloadAction<string>)=>{
-     state.selectedUEN = action.payload
+    setSelectedUEN: (state, action: PayloadAction<string>) => {
+      state.selectedUEN = action.payload;
     },
     setSavePrintingFormData: (
       state,
@@ -590,9 +594,9 @@ const masterDataSlice = createSlice({
     clearDyeCuttingFormData: (state) => {
       state.dyeCuttingFormData = {
         machine_type: "",
-    machine_name: "",
-    dye_code: "",
-    run_speed: 0
+        machine_name: "",
+        dye_code: "",
+        run_speed: 0,
       };
     },
     setIsDyeCuttingSave: (state, action: PayloadAction<boolean>) => {
@@ -607,8 +611,17 @@ const masterDataSlice = createSlice({
     setIsPrintingDataSave: (state, action: PayloadAction<boolean>) => {
       state.isPrintingDataSave = action.payload;
     },
-    setMasterDataFormErros:(state,action:PayloadAction<MasterDataFormErrors>)=>{
-    state.masterDataFormErrors = action.payload
+    setMasterDataFormErros: (
+      state,
+      action: PayloadAction<MasterDataFormErrors>
+    ) => {
+      state.masterDataFormErrors = action.payload;
+    },
+    setDyeCuttingFormErros: (
+      state,
+      action: PayloadAction<DyeCuttingFormErrors>
+    ) => {
+      state.dyeCuttingErrors = action.payload;
     },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
@@ -625,20 +638,28 @@ const masterDataSlice = createSlice({
         tracks: 0,
       };
     },
-    clearMasterDataFormErrors:(state)=>{
-     state.masterDataFormErrors={
-      repeat_length: "",
-      ups: "",
-      tracks: "",
-      unit_effectivity_number: "",
-      customer_name: "",
-      customer_logo: "",
-      jar_cap: "",
-      item_code: "",
-      structure: "",
-      brand_description: "",
-      label_type: "",
-    }
+    clearMasterDataFormErrors: (state) => {
+      state.masterDataFormErrors = {
+        repeat_length: "",
+        ups: "",
+        tracks: "",
+        unit_effectivity_number: "",
+        customer_name: "",
+        customer_logo: "",
+        jar_cap: "",
+        item_code: "",
+        structure: "",
+        brand_description: "",
+        label_type: "",
+      };
+    },
+    clearDyeCuttingFormErrors: (state) => {
+      state.dyeCuttingErrors = {
+        machine_type: "",
+        machine_name: "",
+        dye_code: "",
+        run_speed: "",
+      };
     },
     clearPrintingFormData: (state) => {
       state.printingSaveFormData = {
@@ -652,19 +673,19 @@ const masterDataSlice = createSlice({
           rewinder: 0,
           static_charge: 0,
           format_correct: 0,
-          },
-          printingSubstrateSettings: {
-            print_substrate_id: 0,
-            machine_settings_id: 0,
-      
-        substrate_type: "",
+        },
+        printingSubstrateSettings: {
+          print_substrate_id: 0,
+          machine_settings_id: 0,
+
+          substrate_type: "",
           supplier: "",
           dyne_level: "",
           width: 0,
           thickness: 0,
           density: 0,
         },
-        stationWiseMetrics:[
+        stationWiseMetrics: [
           {
             station_no: 1,
             color_pantone: "",
@@ -764,8 +785,9 @@ const masterDataSlice = createSlice({
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
-          },    ],
-      }
+          },
+        ],
+      };
     },
     clearLaminatingFormData: (state) => {
       state.laminaionFormData = {
@@ -779,7 +801,7 @@ const masterDataSlice = createSlice({
           printed_film_tension: "",
           laminate_film_tension: "",
           viscosity_range: "",
-          adhesive_gsm: ""
+          adhesive_gsm: "",
         },
         laminationSubstrate: {
           substrate_type: "",
@@ -787,29 +809,26 @@ const masterDataSlice = createSlice({
           dyne_level: "",
           width: 0,
           thickness: 0,
-          density: 0
+          density: 0,
         },
         bondingMaterials: [
           {
             type: "Adhesive",
             code: "",
             brand: "",
-            ratio: 0
-        
+            ratio: 0,
           },
           {
             type: "Hardener",
             code: "",
             brand: "",
-            ratio: 0
-        
+            ratio: 0,
           },
           {
             type: "Ethyl Acetate",
             code: "",
             brand: "",
-            ratio: 0
-        
+            ratio: 0,
           },
         ],
       };
@@ -822,16 +841,20 @@ const masterDataSlice = createSlice({
     },
     toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
       const { customerId } = action.payload;
-      const exists = state.selectedCustomers.some(customer => customer.customerId === customerId);
+      const exists = state.selectedCustomers.some(
+        (customer) => customer.customerId === customerId
+      );
 
       if (exists) {
-        state.selectedCustomers = state.selectedCustomers.filter(customer => customer.customerId !== customerId);
+        state.selectedCustomers = state.selectedCustomers.filter(
+          (customer) => customer.customerId !== customerId
+        );
       } else {
         state.selectedCustomers.push(action.payload);
       }
     },
-    setCustomers(state,action:PayloadAction<Customer[]>){
-     state.customers = action.payload
+    setCustomers(state, action: PayloadAction<Customer[]>) {
+      state.customers = action.payload;
     },
     setLabelTypes(state, action: PayloadAction<LabelType[]>) {
       state.labelTypes = action.payload;
@@ -843,15 +866,16 @@ const masterDataSlice = createSlice({
       const id = action.payload;
       const exists = state.selectedLabelTypeIds.includes(id);
       if (exists) {
-        state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter((labelId) => labelId !== id);
+        state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
+          (labelId) => labelId !== id
+        );
       } else {
         state.selectedLabelTypeIds.push(id);
       }
     },
-    setSubmitAndPublishButton:(state,action:PayloadAction<boolean>)=>{
-      state.submitAndPublishButton = action.payload
-    }
-    
+    setSubmitAndPublishButton: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublishButton = action.payload;
+    },
   },
 });
 
@@ -884,6 +908,8 @@ export const {
   setCustomers,
   setSubmitAndPublishButton,
   setMasterDataFormErros,
-  clearMasterDataFormErrors
+  clearMasterDataFormErrors,
+  setDyeCuttingFormErros,
+  clearDyeCuttingFormErrors,
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

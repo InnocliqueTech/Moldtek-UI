@@ -3,36 +3,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
 import {
   DyeCuttingFormData,
+  DyeCuttingFormErrors,
   setDyeCuttingFormData,
+  setDyeCuttingFormErros,
+  setSubmitAndPublishButton,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 
 interface DyeCuttingProps {
-  formData: DyeCuttingFormData,
-  setFormData: React.Dispatch<React.SetStateAction<DyeCuttingFormData>>,
-  errors: { [key: string]: string },
-  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
-
+  formData: DyeCuttingFormData;
+  setFormData: React.Dispatch<React.SetStateAction<DyeCuttingFormData>>;
 }
 
-const DyeCutting: React.FC<DyeCuttingProps> = ({
-  formData,
-  setFormData,
-  errors,
-  setErrors
-}) => {
-  const {
-    dyeCuttingFormData,
-  } = useSelector((state: RootState) => state.masterData);
+const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
+  const [errors, setErrors] = useState<DyeCuttingFormErrors>({
+    machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: "",
+  });
+  const { dyeCuttingFormData, dyeCuttingErrors } = useSelector(
+    (state: RootState) => state.masterData
+  );
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const dispatch = useDispatch<AppDispatch>();
-
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
@@ -45,16 +45,16 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({
 
   const { id } = useParams();
 
-  const handleChange = (key: string, newValue: string) => {
+  const handleChange = (key: keyof DyeCuttingFormData, newValue: string) => {
     let finalValue: string | number = newValue;
     let errorMessage = "";
-  
+
     const isNumberField = key === "run_speed";
-    const onlyDigitsRegex = /^\d+$/;
     const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
-  
+
     if (isNumberField) {
-      if (newValue === "0" || newValue === "") {
+      // Numeric validation for run_speed
+      if (newValue === "0" || newValue.trim() === "") {
         finalValue = "";
         errorMessage = "Run speed cannot be 0 or empty";
       } else if (!isNaN(Number(newValue))) {
@@ -64,35 +64,61 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({
         errorMessage = "Please enter a valid number";
       }
     } else {
-      // Validate string fields
-      if (!newValue.trim()) {
+      // Validation for other fields: must be alphanumeric (numbers, letters, spaces allowed)
+      const trimmedValue = newValue.trim();
+
+      if (trimmedValue === "") {
         errorMessage = `${key.replace(/_/g, " ")} is required`;
-      } else if (onlyDigitsRegex.test(newValue.trim())) {
-        errorMessage = "Numbers are not allowed";
-      } else if (!alphaNumericRegex.test(newValue.trim())) {
+      } else if (!alphaNumericRegex.test(trimmedValue)) {
         errorMessage = "Special characters are not allowed";
+      } else {
+        finalValue = trimmedValue;
       }
     }
-  
+
     const updated = {
       ...formData,
       [key]: finalValue,
     };
-  
+
     setFormData(updated);
-  
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [key]: errorMessage,
-    }));
-  
+
+    // Explicitly typing `updatedErrors` as `DyeCuttingFormErrors`
+    const updatedErrors: DyeCuttingFormErrors = {
+      ...errors,
+      [key]: errorMessage, // This is now properly typed as `keyof DyeCuttingFormErrors`
+    };
+
+    setErrors(updatedErrors);
+    dispatch(setDyeCuttingFormErros(updatedErrors));
     dispatch(setDyeCuttingFormData(updated));
   };
 
+  useEffect(() => {
+    const importantFields = [
+      "machine_type",
+      "machine_name",
+      "dye_code",
+      "run_speed",
+    ] as (keyof DyeCuttingFormData)[];
+
+    const hasErrors = importantFields.some(
+      (field) =>
+        errors[field] !== "" ||
+        formData[field] === "" ||
+        formData[field] === null ||
+        formData[field] === undefined
+    );
+
+    dispatch(setSubmitAndPublishButton(hasErrors));
+  }, [formData, errors]);
 
   useEffect(() => {
     if (dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
+    }
+    if (dyeCuttingErrors) {
+      setErrors(dyeCuttingErrors);
     }
   }, [dyeCuttingFormData]);
 
@@ -128,10 +154,15 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({
               <Grid size={{ xs: 12, md: 4 }} key={key}>
                 <ReusableInput
                   label={label}
-                  value={formData[key as keyof typeof formData]}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  error={!!errors[key]} 
-                  helperText={errors[key]} 
+                  value={formData[key as keyof DyeCuttingFormData]}
+                  onChange={(e) =>
+                    handleChange(
+                      key as keyof DyeCuttingFormErrors,
+                      e.target.value
+                    )
+                  }
+                  error={!!errors[key as keyof DyeCuttingFormErrors]}
+                  helperText={errors[key as keyof DyeCuttingFormErrors]}
                 />
               </Grid>
             ))}
