@@ -40,6 +40,8 @@ const VersinDetails: React.FC = () => {
         id: "created_at",
         label: "Last Update",
         align: true,
+        format: (value: string) =>
+          value ? new Date(value).toLocaleDateString("en-CA") : "", 
       },
     
     // {

@@ -3,6 +3,7 @@ import {
   Outlet,
   useNavigate,
   matchPath,
+  useParams,
 } from "react-router-dom";
 import Sidebar from "./SideBar";
 import Header from "./Header";
@@ -25,7 +26,8 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const {selectedUEN} = useSelector((state:RootState)=>state.masterData)
+  const {selectedUEN} = useSelector((state:RootState)=>state.masterData);
+  const {id,version} = useParams();
   const pageData: Record<
     string,
     {
@@ -97,8 +99,8 @@ const Layout = () => {
       headerButton:true,
       onBack:()=>navigate('/masterData')
     },
-    "/versiondetails/:id": {
-      title: "Version Details",
+    "/versiondetails/:id/:version": {
+      title: `${id}-${version}`,
     },
     "/viewJobsList": {
       title: selectedUEN,

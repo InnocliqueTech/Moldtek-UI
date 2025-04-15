@@ -135,6 +135,11 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
     }
   }, [id, viewMasterDataDetails]);
   const dropdownOptions = listOfLables.map(option => option.labelTypeName);
+  // const isFormInvalid =
+  // Object.values(errors).some((error) => error) || // any validation error present
+  // Object.entries(formData).some(
+  //   ([ value]) => value === "" || value === null || value === undefined
+  // );
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Tooltip, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
@@ -83,32 +83,41 @@ const MasterData: React.FC = () => {
       disableSorting: false,
       format: (value: string) =>
         value !== null ? (
-          <Box
-            sx={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "4px 8px",
-              display: "inline-block",
-              backgroundColor: "#F8F9FA",
-            }}
-          >
-            {value}
-          </Box>
+          <Tooltip title={value}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "4px 8px",
+                display: "inline-block",
+                backgroundColor: "#F8F9FA",
+                maxWidth: 150,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {value}
+            </Box>
+          </Tooltip>
         ) : null,
     },
-
     {
       id: "created_at",
       label: "Created On",
       align: false,
       disableSorting: false,
+      format: (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-CA") : "",
     },
     {
       id: "updated_at",
       label: "Last Updated",
       align: false,
       disableSorting: false,
-    },
+      format: (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-CA") : "",
+    }
   ];
 
   const { selectedUEN } = useSelector((state: RootState) => state.masterData);

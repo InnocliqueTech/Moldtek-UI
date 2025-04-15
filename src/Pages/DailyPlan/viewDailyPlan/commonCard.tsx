@@ -10,6 +10,9 @@ const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
 const maxChars = 20
 const isLong = dailyPlan.brandNamePack.length > maxChars;
 const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :dailyPlan.brandNamePack;
+const renderValue = (value: string | undefined | null | number) => {
+  return value ? value : "N/A";
+};
   return (
     <Box>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -18,20 +21,20 @@ const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Effectivity Unit Number
             </Typography>
-            <Typography variant="body1" mt={0.5}>{dailyPlan.unitEffectivityNumber}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.unitEffectivityNumber)}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 PPC Indent Qty
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.ppcIndentQty}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.ppcIndentQty)}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 JAR/CAP
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.jarCap}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.jarCap)}</Typography>
             </Box>
           </Grid>
 
@@ -39,20 +42,20 @@ const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Indent Number
             </Typography>
-            <Typography variant="body1" mt={0.5}>{dailyPlan.indentNumber}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.indentNumber)}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Target Labels Qty
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.targetLabelsQty}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.targetLabelsQty)}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Date
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.date}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.date)}</Typography>
             </Box>
           </Grid>
 
@@ -60,20 +63,20 @@ const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Customer Name
             </Typography>
-            <Typography variant="body1" mt={0.5}>{dailyPlan.customerName}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.customerName)}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Target Film Mtrs
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.targetFilmMtrs}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.targetFilmMtrs)}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Shift
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.shift}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.shift)}</Typography>
             </Box>
           </Grid>
 
@@ -90,7 +93,7 @@ const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :
                                whiteSpace: "pre-line",
                              }}
                            >
-                             {displayText}
+                             {renderValue(displayText)}
                            </Typography>
                          </Tooltip>
 
@@ -98,14 +101,14 @@ const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Film Required For Printing
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.filmRequiredForPrinting}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.filmRequiredForPrinting)}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Work Order Number
               </Typography>
-              <Typography variant="body1" mt={0.5}>{dailyPlan.workOrderNumber}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.workOrderNumber)}</Typography>
             </Box>
           </Grid>
         </Grid>

@@ -4,8 +4,6 @@ import { InfoOutlined } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
-
-
 const OrderCard: React.FC = () => {
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -19,7 +17,12 @@ const OrderCard: React.FC = () => {
 
   const maxChars = 120;
   const isLong = viewMasterDataDetails.brand_description.length > maxChars;
-  const displayText = isLong ?viewMasterDataDetails.brand_description.slice(0, maxChars) + "..." : viewMasterDataDetails.brand_description;
+  const displayText = isLong
+    ? viewMasterDataDetails.brand_description.slice(0, maxChars) + "..."
+    : viewMasterDataDetails.brand_description;
+  const renderValue = (value: string | undefined | null) => {
+    return value ? value : "N/A";
+  };
 
   return (
     <Box>
@@ -37,7 +40,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.unit_effectivity_number}
+              {renderValue(viewMasterDataDetails.unit_effectivity_number)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -55,7 +58,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.item_code}
+                {renderValue(viewMasterDataDetails.item_code)}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -74,7 +77,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.jar_cap}
+                {renderValue(viewMasterDataDetails.jar_cap)}
               </Typography>
             </Box>
           </Grid>
@@ -91,7 +94,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.customer_name}
+              {renderValue(viewMasterDataDetails.customer_name)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -109,10 +112,15 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.structure}
+                {renderValue(viewMasterDataDetails.structure)}
               </Typography>
             </Box>
-            <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              sx={{ mt: 2 }}
+            >
               <Typography
                 variant="body2"
                 sx={{ fontWeight: 500 }}
@@ -128,23 +136,25 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-               {viewMasterDataDetails.label_type}
+                {renderValue(viewMasterDataDetails.label_type)}
               </Typography>
             </Box>
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-
-            <Box  />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Customer Picture
-              </Typography>
-              <img src={viewMasterDataDetails.customer_logo ? viewMasterDataDetails.customer_logo:''} alt="customer picture" />
-            <Box>
+            <Box />
+            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+              Customer Picture
+            </Typography>
+            {viewMasterDataDetails.customer_logo ? (
+              <img
+                src={viewMasterDataDetails.customer_logo}
+                alt="customer picture"
+              />
+            ) : (
+              <Typography variant="body1">NA</Typography>
+            )}
+            <Box sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -152,7 +162,11 @@ const OrderCard: React.FC = () => {
               >
                 Brand Name & Pack Description
               </Typography>
-              <Tooltip title={isLong ? viewMasterDataDetails.brand_description : ""} placement="top" arrow>
+              <Tooltip
+                title={isLong ? viewMasterDataDetails.brand_description : ""}
+                placement="top"
+                arrow
+              >
                 <Typography
                   variant="body1"
                   sx={{
@@ -161,54 +175,63 @@ const OrderCard: React.FC = () => {
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {displayText}
+                  {renderValue(displayText)}
                 </Typography>
               </Tooltip>
             </Box>
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", mt: 1.5, p: 1, pt: 0.2 }}>
-  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-    <Typography sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }} gutterBottom>
-      Repeat & Label Metrics
-    </Typography>
-    <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
-  </Box>
-
-  <Box
-    sx={{
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-between",
-      gap: 2,
-    }}
-  >
-    {Object.entries({
-      repeat: viewMasterDataDetails.repeat_length,
-      ups: viewMasterDataDetails.ups,
-      tracks: viewMasterDataDetails.tracks,
-      labels: viewMasterDataDetails.labels_per_meter,
-    }).map(([key, value]) => (
       <Box
-        key={key}
         sx={{
-          flex: "1 1 200px",
-          maxWidth: "calc(33.33% - 16px)",
+          border: "1px solid #ECECEC",
+          borderRadius: "16px",
+          mt: 1.5,
+          p: 1,
+          pt: 0.2,
         }}
       >
-        <Typography variant="body2" color="textSecondary">
-          {columns.find((col) => col.id === key)?.label || key}
-        </Typography>
-        <Typography variant="body1" sx={{ fontWeight: 500 }}>
-          {value}
-        </Typography>
+        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+          <Typography
+            sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
+            gutterBottom
+          >
+            Repeat & Label Metrics
+          </Typography>
+          <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          {Object.entries({
+            repeat: viewMasterDataDetails.repeat_length,
+            ups: viewMasterDataDetails.ups,
+            tracks: viewMasterDataDetails.tracks,
+            labels: viewMasterDataDetails.labels_per_meter,
+          }).map(([key, value]) => (
+            <Box
+              key={key}
+              sx={{
+                flex: "1 1 200px",
+                maxWidth: "calc(33.33% - 16px)",
+              }}
+            >
+              <Typography variant="body2" color="textSecondary">
+                {columns.find((col) => col.id === key)?.label || key}
+              </Typography>
+              <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                {value}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
       </Box>
-    ))}
-  </Box>
-</Box>
-
-
     </Box>
   );
 };
