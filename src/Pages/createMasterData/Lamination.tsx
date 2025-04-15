@@ -7,23 +7,29 @@ import { useEffect, useState } from "react";
 import {
   LaminatingTableRow,
   LaminationFormData,
+  LaminationFormErrors,
   setLaminationFormData,
+  setLaminationFormErros,
+  setSubmitAndPublishButtonMasterLamination,
 } from "../../store/slices/masterDataSlice";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
 
 interface LaminationProps {
-  tableData: LaminatingTableRow[],
-  setTableData: React.Dispatch<React.SetStateAction<LaminatingTableRow[]>>,
-  formData:LaminationFormData,
-  setFormData: React.Dispatch<React.SetStateAction<LaminationFormData>>,
+  tableData: LaminatingTableRow[];
+  setTableData: React.Dispatch<React.SetStateAction<LaminatingTableRow[]>>;
+  formData: LaminationFormData;
+  setFormData: React.Dispatch<React.SetStateAction<LaminationFormData>>;
 }
 
 const Lamination: React.FC<LaminationProps> = ({
-  tableData,setTableData,setFormData,formData
+  tableData,
+  setTableData,
+  setFormData,
+  formData,
 }) => {
-  const { laminaionFormData } = useSelector(
+  const { laminaionFormData, laminationFormErrors } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -38,16 +44,25 @@ const Lamination: React.FC<LaminationProps> = ({
     { id: "brand", label: "Brand", edit: true },
     { id: "ratio", label: "Ratio", edit: true },
   ];
-  useEffect(() => {
-    if (laminaionFormData) {
-      setFormData(laminaionFormData);
-      if (laminaionFormData.bondingMaterials) {
-        setTableData(laminaionFormData.bondingMaterials);
-      }
-    }
-  }, [laminaionFormData]);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [errors, setErrors] = useState<LaminationFormErrors>({
+    zone1_temp: "",
+    zone2_temp: "",
+    nip_pressure_bar: "",
+    speed: "",
+    last_set_tension: "",
+    rewinder_tension: "",
+    printed_film_tension: "",
+    laminate_film_tension: "",
+    viscosity_range: "",
+    adhesive_gsm: "",
+    substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: "",
+    thickness: "",
+    density: "",
+  });
   function sanitizeMasterData(data: any): LaminationFormData {
     return {
       laminationConditions: {
@@ -86,21 +101,21 @@ const Lamination: React.FC<LaminationProps> = ({
     "nip_pressure_bar",
     "speed",
     "width",
-    "thickness",
     "density",
     "ratio",
+    "printed_film_tension",
+    "laminate_film_tension",
+    "last_set_tension",
+    "rewinder_tension",
+    "dyne_level",
   ]);
 
   const characterFields = new Set([
-    "last_set_tension",
-    "rewinder_tension",
-    "printed_film_tension",
-    "laminate_film_tension",
     "viscosity_range",
     "adhesive_gsm",
     "substrate_type",
     "supplier",
-    "dyne_level",
+
     "type",
     "code",
     "brand",
@@ -120,35 +135,50 @@ const Lamination: React.FC<LaminationProps> = ({
     let finalValue: string | string[] | number = newValue;
     let errorMessage = "";
 
-    if (numericFields.has(field)) {
+    const onlyAlphanumericRegex = /^[A-Za-z0-9\s]+$/;
+
+    if (field === "thickness") {
+      const trimmed = (newValue as string).trim();
+
+      if (trimmed === "") {
+        errorMessage = "Thickness cannot be empty.";
+      } else if (!onlyAlphanumericRegex.test(trimmed)) {
+        errorMessage =
+          "Thickness can only contain letters, numbers, and spaces.";
+      } else {
+        errorMessage = "";
+      }
+
+      // Keep whatever user types, valid or invalid, for the input box.
+      finalValue = newValue;
+    } else if (numericFields.has(field)) {
       if (!isNaN(Number(newValue)) && newValue !== "") {
         finalValue = Number(newValue);
         errorMessage = "";
       } else {
-        finalValue = "";
+        finalValue = newValue;
         errorMessage = "Please enter a valid number.";
       }
     } else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
 
-      // Only allow letters, spaces, and optionally other characters like hyphen or underscore
-      const onlyLettersRegex = /^[A-Za-z\s]+$/;
-
       if (trimmed === "") {
-        finalValue = "";
         errorMessage = "This field cannot be empty.";
-      } else if (!onlyLettersRegex.test(trimmed)) {
-        finalValue = "";
-        errorMessage = "Only letters and spaces are allowed.";
+      } else if (!onlyAlphanumericRegex.test(trimmed)) {
+        errorMessage = "Only letters, numbers, and spaces are allowed.";
       } else {
         errorMessage = "";
       }
+
+      finalValue = newValue;
     }
 
-    setErrors({
+    const updatedErros = {
       ...errors,
       [field]: errorMessage,
-    });
+    };
+    setErrors(updatedErros);
+    dispatch(setLaminationFormErros(updatedErros));
 
     const updatedFormData = {
       ...formData,
@@ -163,23 +193,47 @@ const Lamination: React.FC<LaminationProps> = ({
   };
 
   useEffect(() => {
-    if(id){
-    const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
-    const sanitizedSubstrateData = sanitizeMasterData(
-      laminatingSubstrateSettings
-    );
+    const errorValues = Object.values(errors);
+    const hasAnyError = errorValues.some((err) => err !== "");
 
-    const combinedValues: LaminationFormData = {
-      ...sanitizedLaminationData,
-      laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
-    };
+    const isEmpty = Object.entries(formData).some(([section]) => {
+      return Object.entries(section as any).some(([value]) => {
+        return value === "" || value === null || value === undefined;
+      });
+    });
 
-    setFormData(combinedValues);
-    const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
-    const adhesiveDetails: LaminatingTableRow[] =
-      sanitizedBondingMaterials.bondingMaterials;
-    setTableData(adhesiveDetails);
-  }
+    dispatch(setSubmitAndPublishButtonMasterLamination(hasAnyError || isEmpty));
+  }, [errors, formData]);
+  useEffect(() => {
+    if (laminaionFormData) {
+      setFormData(laminaionFormData);
+      if (laminaionFormData.bondingMaterials) {
+        setTableData(laminaionFormData.bondingMaterials);
+      }
+    }
+    if (laminationFormErrors) {
+      setErrors(laminationFormErrors);
+    }
+  }, [laminaionFormData, laminationFormErrors]);
+
+  useEffect(() => {
+    if (id) {
+      const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
+      const sanitizedSubstrateData = sanitizeMasterData(
+        laminatingSubstrateSettings
+      );
+
+      const combinedValues: LaminationFormData = {
+        ...sanitizedLaminationData,
+        laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
+      };
+
+      setFormData(combinedValues);
+      const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
+      const adhesiveDetails: LaminatingTableRow[] =
+        sanitizedBondingMaterials.bondingMaterials;
+      setTableData(adhesiveDetails);
+    }
   }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
 
   return (
@@ -208,8 +262,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.zone1_temp} 
-                helperText={errors.zone1_temp} 
+                error={!!errors.zone1_temp}
+                helperText={errors.zone1_temp}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -224,7 +278,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   )
                 }
                 error={!!errors.zone2_temp}
-                helperText={errors.zone2_temp} 
+                helperText={errors.zone2_temp}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

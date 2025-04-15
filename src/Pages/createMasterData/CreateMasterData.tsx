@@ -35,8 +35,6 @@ import {
   setIsLaminatingDataSave,
   setLaminationFormData,
   DyeCuttingFormData,
-  setDyeCuttingFormData,
-  setIsDyeCuttingSave,
   setRequestPayload,
 } from "./../../store/slices/masterDataSlice";
 import { toast } from "react-toastify";
@@ -187,32 +185,6 @@ const CreateMasterData: React.FC = () => {
   };
 
   const handleSaveDyeCutting = () => {
-    const newErrors: { [key: string]: string } = {};
-    const updated: typeof dyeFormData = { ...dyeFormData };
-
-    if (!dyeFormData.machine_type.trim()) {
-      newErrors.machine_type = "Machine type is required";
-    }
-
-    if (!dyeFormData.machine_name.trim()) {
-      newErrors.machine_name = "Machine name is required";
-    }
-
-    if (!dyeFormData.dye_code.trim()) {
-      newErrors.dye_code = "Dye code is required";
-    }
-
-    if (
-      !dyeFormData.run_speed ||
-      isNaN(dyeFormData.run_speed) ||
-      dyeFormData.run_speed <= 0
-    ) {
-      newErrors.run_speed = "Run speed must be a valid number greater than 0";
-      updated.run_speed = 0;
-    }
-
-    dispatch(setDyeCuttingFormData(dyeFormData));
-    dispatch(setIsDyeCuttingSave(true));
     const updatedPayload = {
       ...requestPayload,
       masterDataDetails: {

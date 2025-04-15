@@ -182,6 +182,25 @@ export interface PrintingFormErrors {
   density: string;
   [key: string]: string;
 }
+export interface LaminationFormErrors {
+  zone1_temp: string;
+    zone2_temp: string;
+    nip_pressure_bar: string;
+    speed: string;
+    last_set_tension:  string;
+    rewinder_tension:  string;
+    printed_film_tension:  string;
+    laminate_film_tension: string;
+    viscosity_range: string;
+    adhesive_gsm: string;
+    substrate_type: string;
+    supplier: string;
+    dyne_level:  string;
+    width: string;
+    thickness: string;
+    density: string;
+  [key: string]: string;
+}
 
 export interface PrintingFormValues {
   printingDetails: {
@@ -248,10 +267,29 @@ interface MasterDataState {
   submitAndPublishButtonLamination: boolean;
   masterDataFormErrors: MasterDataFormErrors;
   invalidFieldsTable: { [key: string]: boolean };
-  printingFormErrors:PrintingFormErrors
+  printingFormErrors:PrintingFormErrors;
+  laminationFormErrors:LaminationFormErrors
 }
 
 const initialState: MasterDataState = {
+  laminationFormErrors:{
+    zone1_temp: "",
+    zone2_temp: "",
+    nip_pressure_bar: "",
+    speed: "",
+    last_set_tension:  "",
+    rewinder_tension:  "",
+    printed_film_tension:  "",
+    laminate_film_tension: "",
+    viscosity_range: "",
+    adhesive_gsm: "",
+    substrate_type: "",
+    supplier: "",
+    dyne_level:  "",
+    width: "",
+    thickness: "",
+    density: "",
+  },
   printingFormErrors:{
     mounting_tape: "",
     cylinder_teeth: "",
@@ -710,6 +748,32 @@ const masterDataSlice = createSlice({
       density: "",
      }
     },
+    setLaminationFormErros: (
+      state,
+      action: PayloadAction<LaminationFormErrors>
+    ) => {
+      state.laminationFormErrors = action.payload;
+    },
+    clearLaminationFormErrors:(state)=>{
+     state.laminationFormErrors={
+        zone1_temp: "",
+        zone2_temp: "",
+        nip_pressure_bar: "",
+        speed: "",
+        last_set_tension:  "",
+        rewinder_tension:  "",
+        printed_film_tension:  "",
+        laminate_film_tension: "",
+        viscosity_range: "",
+        adhesive_gsm: "",
+        substrate_type: "",
+        supplier: "",
+        dyne_level:  "",
+        width: "",
+        thickness: "",
+        density: "",
+      }
+    },
     clearMasterDataFormErrors: (state) => {
       state.masterDataFormErrors = {
         repeat_length: "",
@@ -1004,6 +1068,8 @@ export const {
   setSubmitAndPublishButtonMasterLamination,
   setSubmitAndPublishButtonPrinting,
   setPrintngFormErros,
-  clearPrintingFormErrors
+  clearPrintingFormErrors,
+  setLaminationFormErros,
+  clearLaminationFormErrors
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
