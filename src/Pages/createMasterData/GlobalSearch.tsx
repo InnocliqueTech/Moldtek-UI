@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  MenuItem,
-  Select,
-  FormControl,
   TextField,
   Typography,
   Grid,
@@ -15,6 +12,8 @@ import {
   FilterFormValues,
 } from "../../Components/ZodSchemas/filterValidation";
 import ButtonComponent from "../../Components/ReUsable/Button";
+import CustomerSelect from "./CustomersData";
+import LabelTypeSelector from "./LabelType";
 
 const FilterForm: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>("");
@@ -23,7 +22,6 @@ const FilterForm: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<FilterFormValues>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
@@ -91,13 +89,11 @@ const FilterForm: React.FC = () => {
           />
         </Grid>
 
-        {/* Master Data Search */}
-        <Grid size={{xs:12}}>
+        {/* <Grid size={{xs:12}}>
           <Typography variant="body2" sx={{ mb: 1 }}>
             Master Data Search
           </Typography>
           <Grid container spacing={1}>
-            {/* Search Type */}
             <Grid size={{xs:12,sm:4}} >
               <FormControl fullWidth>
                 <Controller
@@ -124,8 +120,6 @@ const FilterForm: React.FC = () => {
                 />
               </FormControl>
             </Grid>
-
-            {/* Search Input */}
             <Grid size={{xs:12,sm:8}} >
               <Controller
                 name="searchValue"
@@ -148,7 +142,9 @@ const FilterForm: React.FC = () => {
               />
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
+        <CustomerSelect/>
+        <LabelTypeSelector/>
 
         {/* Search Button */}
         <Grid size={{xs:12}}>

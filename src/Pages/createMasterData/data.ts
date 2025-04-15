@@ -245,3 +245,20 @@ export const dataofCards= {
       "run_speed": 120
   }
 }
+export const labelTypesData =[
+    {
+        "labelTypeId": 1,
+        "labelTypeName": " SURFACE PRINTED & LAMINATED WITH TRANSPARENT FILM"
+    },
+    {
+        "labelTypeId": 2,
+        "labelTypeName": "THINWALL"
+    },
+    {
+        "labelTypeId": 3,
+        "labelTypeName": "WHITE SURFACE PRINTED & LAMINATED WITH TRANSPARENT FILM"}]
+
+        export const customersSelectData =    [
+            { customerId: 1, firstName: 'Aarafh', lastName: 'Foods', fullName: 'Aarafh Foods' },
+            { customerId: 2, firstName: 'Asian', lastName: 'Paints', fullName: 'Asian Paints' }
+          ];

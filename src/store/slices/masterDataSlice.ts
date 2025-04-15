@@ -169,8 +169,24 @@ export interface PrintingFormValues {
   },
   stationWiseMetrics:PrintingTableRow[];
 }
-
+interface Customer {
+  customerId: number;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+export interface LabelType {
+  labelTypeId: number;
+  labelTypeName: string;
+}
 interface MasterDataState {
+  customers:Customer[];
+  labelTypes: LabelType[];
+  selectedLabelTypeIds: number[];
+  selectedCustomers: Customer[];
+  selectedCustomersData: {
+    customers: Customer[];
+  };
   selectedTab: number;
   openSider: boolean;
   updatePopup: boolean;
@@ -189,13 +205,22 @@ interface MasterDataState {
   selectedUEN:string;
 }
 
+
+
 const initialState: MasterDataState = {
+  customers:[],
+  labelTypes: [],
+  selectedLabelTypeIds: [],
   selectedTab: 0,
   openSider: false,
   updatePopup: false,
   submitPopup: false,
   submitPopupConfirm: false,
   submitAndPublish: false,
+  selectedCustomers: [],
+  selectedCustomersData: {
+    customers: []
+  },
   selectedUEN:'',
   saveFormData: {
     unit_effectivity_number: "",
@@ -744,6 +769,38 @@ const masterDataSlice = createSlice({
     setRequestPayload: (state, action: PayloadAction<RequestPayload>) => {
       state.requestPayload = action.payload;
     },
+    setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
+      state.selectedCustomers = action.payload;
+    },
+    toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
+      const { customerId } = action.payload;
+      const exists = state.selectedCustomers.some(customer => customer.customerId === customerId);
+
+      if (exists) {
+        state.selectedCustomers = state.selectedCustomers.filter(customer => customer.customerId !== customerId);
+      } else {
+        state.selectedCustomers.push(action.payload);
+      }
+    },
+    setCustomers(state,action:PayloadAction<Customer[]>){
+     state.customers = action.payload
+    },
+    setLabelTypes(state, action: PayloadAction<LabelType[]>) {
+      state.labelTypes = action.payload;
+    },
+    setSelectedLabelTypeIds(state, action: PayloadAction<number[]>) {
+      state.selectedLabelTypeIds = action.payload;
+    },
+    toggleLabelType: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      const exists = state.selectedLabelTypeIds.includes(id);
+      if (exists) {
+        state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter((labelId) => labelId !== id);
+      } else {
+        state.selectedLabelTypeIds.push(id);
+      }
+    }
+    
   },
 });
 
@@ -768,5 +825,11 @@ export const {
   clearPrintingFormData,
   setRequestPayload,
   setSelectedUEN,
+  setSelectedCustomers,
+  toggleCustomerSelection,
+  setSelectedLabelTypeIds,
+  toggleLabelType,
+  setLabelTypes,
+  setCustomers
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
