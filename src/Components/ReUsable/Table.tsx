@@ -41,7 +41,7 @@ interface Column {
   id: string;
   label: string;
   disableSorting?: boolean;
-  format?: (value: any) => string | JSX.Element | null;  
+  format?: (value: any) => string | JSX.Element | null;
   align: boolean;
 }
 interface TableAction<T> {
@@ -129,22 +129,30 @@ function ReusableTable<T extends Record<string, any>>({
       : -1;
   });
 
-  const filteredData = sortedData.filter((row) =>
-    Object.values(row).some((value) =>
-      value?.toString().toLowerCase().includes(search.toLowerCase()) ||
-      (row.customer && row.customer.customer.toLowerCase().includes(search.toLowerCase()))  // Check inside 'customer' object
-    )
-  );
-  
+  const filteredData = search
+    ? sortedData.filter((row) => {
+        const searchValue = search.toLowerCase();
+        return (
+          row.uen?.toString().toLowerCase().includes(searchValue) ||
+          row.version?.toString().toLowerCase().includes(searchValue) ||
+          row.unit_effectivity_number
+            ?.toString()
+            .toLowerCase()
+            .includes(searchValue)
+        );
+      })
+    : sortedData;
+
+  console.log(data, "RPWOFTHEDATA");
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = filteredData.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       );
-    setSelected(newSelected);
-    setShowSelectionBar(event.target.checked);
-    if (onSelectionChange) onSelectionChange(newSelected);
+      setSelected(newSelected);
+      setShowSelectionBar(event.target.checked);
+      if (onSelectionChange) onSelectionChange(newSelected);
       return;
     }
     setSelected([]);
@@ -203,7 +211,7 @@ function ReusableTable<T extends Record<string, any>>({
     console.log("Upload selected:", selected);
     // Implement your upload logic here
   };
-console.log(filteredData,"FILTEREDDATA")
+  console.log(filteredData, "FILTEREDDATA");
   return (
     <Paper
       elevation={0}
@@ -227,11 +235,20 @@ console.log(filteredData,"FILTEREDDATA")
           justifyContent: "space-between",
           gap: !boxShadow ? 0 : 2,
           px: !boxShadow ? 1 : 1.5,
-          mt:{md:!boxShadow ?'-8px':0,sm:0}
+          mt: { md: !boxShadow ? "-8px" : 0, sm: 0 },
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
-          <Typography  fontSize={searchSize?"1rem":"1.25rem"}>{title}</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <Typography fontSize={searchSize ? "1rem" : "1.25rem"}>
+            {title}
+          </Typography>
           {info && (
             <Tooltip title="Table Info">
               <InfoOutline fontSize="small" sx={{ color: "#777" }} />
@@ -254,8 +271,9 @@ console.log(filteredData,"FILTEREDDATA")
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row" ,
-            alignItems: { xs: "flex-start", sm: "center" },flexWrap: "wrap",
+            flexDirection: "row",
+            alignItems: { xs: "flex-start", sm: "center" },
+            flexWrap: "wrap",
             gap: 1.5,
             width: { xs: "100%", sm: "auto" },
           }}
@@ -290,13 +308,13 @@ console.log(filteredData,"FILTEREDDATA")
                   borderRadius: "50px",
                   pl: 1.2,
                   pr: 1,
-                  py: 0.5, 
+                  py: 0.5,
                   fontSize: "0.875rem",
                 },
               }}
               fullWidth={isXs || isSm}
               sx={{
-                 minWidth: {
+                minWidth: {
                   xs: "100%",
                   sm: "100%",
                   md: "240px",
@@ -315,10 +333,18 @@ console.log(filteredData,"FILTEREDDATA")
         </Box>
       </Toolbar>
 
-      <TableContainer sx={{ maxHeight: 400,          overflowY: "auto",
+      <TableContainer
+        sx={{
+          maxHeight: 400,
+          overflowY: "auto",
           overflowX: "auto",
-          position: "relative", mt:{md:!boxShadow ?'-8px':0,sm:0} }}>
-        <Table stickyHeader  sx={{
+          position: "relative",
+          mt: { md: !boxShadow ? "-8px" : 0, sm: 0 },
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
             minWidth: 1000,
           }}
         >
@@ -414,88 +440,96 @@ console.log(filteredData,"FILTEREDDATA")
               },
             }}
           >
-            {filteredData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
-                const isItemSelected = isSelected(row);
-                return (
-                  <TableRow
-                    key={index}
-                    hover
-                    selected={isItemSelected}
-                    // onClick={(event) => {
-                    //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
-                    //     const fakeEvent = {
-                    //       target: { checked: !isItemSelected },
-                    //     } as React.ChangeEvent<HTMLInputElement>;
-                    //     handleSelect(fakeEvent, row);
-                    //   }
-                    // }}
-                    sx={{
-                      cursor: selectable ? "pointer" : "default",
-                    }}
-                  >
-                  {selectable && (
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                          checked={isItemSelected}
-                        onChange={() => handleSelect(row)}
-                          onClick={(event) => event.stopPropagation()}
-                      />
-                    </TableCell>
-                  )}
-                    {columns.map((column, index) => (
-                      <TableCell
-                        align={column.align ? "center" : "left"}
-                        key={column.id}
-                        sx={{
-                          whiteSpace: "nowrap",
-                          padding: "4px 8px",
-                          height: "32px",
-                          lineHeight: "1",
-                          color: "#2F2F2F",
-                          fontSize: "14px",
-                          fontWeight: 500,
-                          marginLeft: index === 0 ? "8px" : undefined,
-                        }}
-                      >
-                        {column.format
-                          ? column.format(row[column.id])
-                          : row[column.id]}
-                    </TableCell>
-                  ))}
-                  {action && (
-                      <TableCell align="left">
-                      <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                        <MoreVertIcon />
-                      </IconButton>
-                    </TableCell>
-                  )}
-                </TableRow>
-                );
-              })}
+            {filteredData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  No Data Available
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredData
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row);
+                  return (
+                    <TableRow
+                      key={index}
+                      hover
+                      selected={isItemSelected}
+                      // onClick={(event) => {
+                      //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
+                      //     const fakeEvent = {
+                      //       target: { checked: !isItemSelected },
+                      //     } as React.ChangeEvent<HTMLInputElement>;
+                      //     handleSelect(fakeEvent, row);
+                      //   }
+                      // }}
+                      sx={{
+                        cursor: selectable ? "pointer" : "default",
+                      }}
+                    >
+                      {selectable && (
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={() => handleSelect(row)}
+                            onClick={(event) => event.stopPropagation()}
+                          />
+                        </TableCell>
+                      )}
+                      {columns.map((column, index) => (
+                        <TableCell
+                          align={column.align ? "center" : "left"}
+                          key={column.id}
+                          sx={{
+                            whiteSpace: "nowrap",
+                            padding: "4px 8px",
+                            height: "32px",
+                            lineHeight: "1",
+                            color: "#2F2F2F",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            marginLeft: index === 0 ? "8px" : undefined,
+                          }}
+                        >
+                          {column.format
+                            ? column.format(row[column.id])
+                            : row[column.id]}
+                        </TableCell>
+                      ))}
+                      {action && (
+                        <TableCell align="left">
+                          <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })
+            )}
           </TableBody>
-      {selectedRow && (
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
+          {selectedRow && (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-              {actions?.map((action, index) => (
-            <MenuItem
-                  key={index}
-              onClick={() => {
-                handleMenuClose();
-                    action.onClick(selectedRow); // Pass current row
-              }}
             >
+              {actions?.map((action, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={() => {
+                    handleMenuClose();
+                    action.onClick(selectedRow); // Pass current row
+                  }}
+                >
                   {action.icon && <Box mr={1}>{action.icon}</Box>}
-              {action.label}
-            </MenuItem>
-          ))}
-        </Menu>
+                  {action.label}
+                </MenuItem>
+              ))}
+            </Menu>
           )}
         </Table>
       </TableContainer>
