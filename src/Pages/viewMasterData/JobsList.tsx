@@ -8,30 +8,31 @@ import { AppDispatch, RootState } from "../../store";
 import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
+import { jobsList } from "./data";
 
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
   const {selectedUEN} = useSelector((state:RootState)=>state.masterData)
-  type StatusType = "In-Progress" | "On-Hold" | "Not Yet Started" | "Completed";
+  type StatusType = "In progress" | "On hold" | "Not yet started" | "Completed";
 
   const colorMap: Record<StatusType, string> = {
-    "In-Progress": "#FAECD8",
-    "On-Hold": "#F7DDDA",
-    "Not Yet Started": "#DCEAF7",
-    Completed: "#DDEED8",
+    "In progress": "#FAECD8",
+    "On hold": "#F7DDDA",
+    "Not yet started": "#DCEAF7",
+    "Completed": "#DDEED8",
   };
 
   const textColorMap: Record<StatusType, string> = {
-    "In-Progress": "#C08532",
-    "On-Hold": "#B2493A",
-    "Not Yet Started": "#0447A8",
-    Completed: "#478E30",
+    "In progress": "#C08532",
+    "On hold": "#B2493A",
+    "Not yet started": "#0447A8",
+    "Completed": "#478E30",
   };
 
   const columns = [
     {
-      id: "uen",
+      id: "unitEffectivityNumber",
       label: "Indent No.",
       align: true,
       disableSorting: false,
@@ -40,7 +41,7 @@ const JobsList: React.FC = () => {
       ),
     },
     {
-      id: "segment",
+      id: "labelType",
       label: "Type Of Label",
       align: true,
       disableSorting: true,
@@ -84,13 +85,13 @@ const JobsList: React.FC = () => {
       ),
     },
     {
-      id: "lastUpdated",
+      id: "updatedAt",
       label: "Last Update",
       align: true,
       disableSorting: false,
     },
     {
-      id: "lastExecuted",
+      id: "createdAt",
       label: "Last Executed",
       align: true,
       disableSorting: false,
@@ -185,7 +186,7 @@ const JobsList: React.FC = () => {
   ];
 
   const dispatch = useDispatch<AppDispatch>();
-  const { jobListData, viewMasterDataDetails } = useSelector(
+  const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
@@ -366,9 +367,9 @@ const JobsList: React.FC = () => {
           >
             <ReusableTable
               columns={columns}
-              data={jobListData}
+              data={jobsList.data}
               selectable={false}
-              label="24 Versions"
+              label={`${jobsList.totalRecords} Versions`}
               title="List of executed jobs"
               info={true}
               searchVisible={true}

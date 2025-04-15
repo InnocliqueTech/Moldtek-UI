@@ -25,7 +25,7 @@ interface ColumnType {
   label: string;
   align?: boolean;
   disableSorting?: boolean;
-  format?: (value: any) => React.ReactNode;
+  format?: (value: any, row?: any) => React.ReactNode;
 }
 
 interface ReusablePopupProps {
@@ -145,11 +145,11 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
               width: 180,
               "& .MuiOutlinedInput-root": {
                 borderRadius: "50px",
-                padding: "2px 6px", // tight padding inside the input
+                padding: "2px 6px",
               },
               "& input": {
-                padding: "2px 6px", // control actual input text padding
-                fontSize: "0.875rem", // optional: smaller font size
+                padding: "2px 6px",
+                fontSize: "0.875rem",
               },
             }}
           />
@@ -182,7 +182,9 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
                             key={col.id}
                             align={col.align ? "center" : "left"}
                           >
-                            {col.format ? col.format(row[col.id]) : row[col.id]}
+                            {col.format
+                              ? col.format(row[col.id], row)
+                              : row[col.id]}
                           </TableCell>
                         ))}
                       </TableRow>
@@ -222,8 +224,8 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
                   boundaryCount={1}
                   shape="rounded"
                   variant="outlined"
-                  showFirstButton={false} // Hide default first button
-                  showLastButton={false} // Hide default last button
+                  showFirstButton={false}
+                  showLastButton={false}
                   renderItem={(item) => (
                     <PaginationItem
                       {...item}

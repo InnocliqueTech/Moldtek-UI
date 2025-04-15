@@ -10,30 +10,37 @@ const VersinDetails: React.FC = () => {
         id: "unit_effective_number",
         label: "Version No.",
         align: true,
-        format: (value: string | number) => (
-          <a
-            href={`/versiondetails/${value}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              color: "#000",
-              textDecoration: "none",
-            }}
-            onMouseOver={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "underline";
-            }}
-            onMouseOut={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "none";
-            }}
-          >
-            {value}
-          </a>
-          
-        ),
+        format: (_: any, row: any) => {
+          const combinedValue = `${row.unit_effective_number} - ${row.version_no}`;
+
+          return (
+            <a
+              href={`/versiondetails/${row.unit_effective_number}/${row.version_no}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                color: "#000",
+                textDecoration: "none",
+              }}
+              onMouseOver={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.textDecoration = "underline";
+              }}
+              onMouseOut={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.textDecoration = "none";
+              }}
+            >
+              {combinedValue}
+            </a>
+          );
+        },
       },
-      { id: "created_at", label: "Last Update", align: true },
+      {
+        id: "created_at",
+        label: "Last Update",
+        align: true,
+      },
     
     // {
     //   id: "comment",
