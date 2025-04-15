@@ -18,6 +18,7 @@ const LabelCutting: React.FC = () => {
                     title="Label cutting process report"
                     columns={productionColumns}
                     data={productionData}
+                    firstRow={true}
                 />
             </Box>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>

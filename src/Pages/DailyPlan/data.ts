@@ -580,32 +580,25 @@ export const machineSpecsRows = [
 ]
 
 export const productionColumns = [
-    { id: "startingTime", label: "STARTING TIME" },
-    { id: "completionTime", label: "COMPLETION TIME" },
-    { id: "totalTime", label: "TOTAL TIME" },
-    { id: "inputFilmLaminated", label: "INPUT FILM LAMINATED" },
-    { id: "setUpWastageMtrs", label: "SET UP WASTAGE Mtrs" },
-    { id: "inProcessWastageMtrs", label: "IN-PROCESS WASTAGE Mtrs" },
-    { id: "totalCuttingWastageMtrs", label: "TOTAL CUTTING WASTAGE Mtrs" },
-    { id: "leftOverLaminateLabelsMtrs", label: "LEFT OVER LAMINATE LABELS Mtrs" },
-    { id: "outputLabelsQty", label: "OUTPUT LABELS Qty" },
-    { id: "operator", label: "OPERATOR" }
+    { id: 'category', label: '' },
+    { id: 'target', label: 'Target' },
+    { id: 'actual', label: 'Actual' },
   ];
 
+
+
   export const productionData = [
-    {
-      startingTime: "--",
-      completionTime: "--",
-      totalTime: "--",
-      inputFilmLaminated: "--",
-      setUpWastageMtrs: "--",
-      inProcessWastageMtrs: "--",
-      totalCuttingWastageMtrs: "--",
-      leftOverLaminateLabelsMtrs: "--",
-      outputLabelsQty: "--",
-      operator: "--"
-    }
-  ];
+    { category: "STARTING TIME", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "COMPLETION TIME", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "TOTAL TIME", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "INPUT FILM LAMINATED", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "SET UP WASTAGE Mtrs", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "IN-PROCESS WASTAGE Mtrs", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "TOTAL CUTTING WASTAGE Mtrs", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "LEFT OVER LAMINATE LABELS Mtrs", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "OUTPUT LABELS Qty", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) },
+    { category: "OPERATOR", target: Math.floor(Math.random() * 100), actual: Math.floor(Math.random() * 100) }
+];
 
   export const approvalColumns = [
     { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" },
@@ -621,29 +614,5 @@ export const productionColumns = [
       inchargeComments: "0.4",
       remarks: "" // Empty remarks field
     },
-    {
-      supervisorApproval: "Kristy",
-      qcApproval: "0.3",
-      inchargeComments: "0.2",
-      remarks: ""
-    },
-    {
-      supervisorApproval: "Micheal",
-      qcApproval: "0.1",
-      inchargeComments: "0.1",
-      remarks: ""
-    },
-    {
-      supervisorApproval: "Mark",
-      qcApproval: "0.1",
-      inchargeComments: "0.1",
-      remarks: ""
-    },
-    {
-      supervisorApproval: "Pranavi",
-      qcApproval: "0.1",
-      inchargeComments: "0.1",
-      remarks: ""
-    }
   ];
 

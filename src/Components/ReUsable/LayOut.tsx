@@ -138,8 +138,10 @@ const Layout = () => {
       button2Text: "Submit",
       onButton1Click: () => dispatch(setUploadPopup(true)),
       onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
-       uploadTitle:'Create Daily Plan',
-      uploadSubTitle: 'Upload Daily Plan'
+      uploadTitle:'Create Daily Plan',
+      uploadSubTitle: 'Upload Daily Plan',
+      headerButton:true,
+      onBack:()=>navigate('/dailyPlan') ,
     },
     "/": {
       title: "Home",
