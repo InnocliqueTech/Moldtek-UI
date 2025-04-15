@@ -71,7 +71,7 @@ const MasterData: React.FC = () => {
     },
 
     {
-      id: "version",
+      id: "version_no",
       label: "Version No",
       align: true,
       disableSorting: false,
@@ -98,13 +98,13 @@ const MasterData: React.FC = () => {
     },
 
     {
-      id: "createdOn",
+      id: "created_at",
       label: "Created On",
       align: false,
       disableSorting: false,
     },
     {
-      id: "lastUpdated",
+      id: "updated_at",
       label: "Last Updated",
       align: false,
       disableSorting: false,
