@@ -10,7 +10,7 @@ import {
   DyeCuttingFormErrors,
   setDyeCuttingFormData,
   setDyeCuttingFormErros,
-  setSubmitAndPublishButton,
+  setSubmitAndPublishButtonDyeCutting,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 
@@ -110,7 +110,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
         formData[field] === undefined
     );
 
-    dispatch(setSubmitAndPublishButton(hasErrors));
+    dispatch(setSubmitAndPublishButtonDyeCutting(hasErrors));
   }, [formData, errors]);
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     if (dyeCuttingErrors) {
       setErrors(dyeCuttingErrors);
     }
-  }, [dyeCuttingFormData]);
+  }, [dyeCuttingFormData,dyeCuttingErrors]);
 
   useEffect(() => {
     if (id && dyeCuttingSettings) {

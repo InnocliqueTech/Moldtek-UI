@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
+
 export interface PrintingTableRow {
   station_no: number;
   color_pantone: string;
@@ -162,6 +164,25 @@ export interface DyeCuttingFormErrors {
   run_speed: string;
 }
 
+export interface PrintingFormErrors {
+  mounting_tape: string;
+  cylinder_teeth: string;
+  tension: string;
+  unwinder: string;
+  infeed: string;
+  outfeed: string;
+  rewinder: string;
+  static_charge: string;
+  format_correct: string;
+  substrate_type: string;
+  supplier: string;
+  dyne_level: string;
+  width: string;
+  thickness: string;
+  density: string;
+  [key: string]: string;
+}
+
 export interface PrintingFormValues {
   printingDetails: {
     mounting_tape: string;
@@ -221,11 +242,33 @@ interface MasterDataState {
   isLaminationDataSave: boolean;
   requestPayload: RequestPayload;
   selectedUEN: string;
-  submitAndPublishButton: boolean;
+  submitAndPublishButtonMasterData: boolean;
+  submitAndPublishButtonDyeCutting: boolean;
+  submitAndPublishButtonPrinting: boolean;
+  submitAndPublishButtonLamination: boolean;
   masterDataFormErrors: MasterDataFormErrors;
+  invalidFieldsTable: { [key: string]: boolean };
+  printingFormErrors:PrintingFormErrors
 }
 
 const initialState: MasterDataState = {
+  printingFormErrors:{
+    mounting_tape: "",
+    cylinder_teeth: "",
+    tension: "",
+    unwinder: "",
+    infeed: "",
+    outfeed: "",
+    rewinder: "",
+    static_charge: "",
+    format_correct: "",
+    substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: "",
+    thickness: "",
+    density: "",
+  },
   masterDataFormErrors: {
     repeat_length: "",
     ups: "",
@@ -239,13 +282,17 @@ const initialState: MasterDataState = {
     brand_description: "",
     label_type: "",
   },
+  invalidFieldsTable:{},
   dyeCuttingErrors: {
     machine_type: "",
     machine_name: "",
     dye_code: "",
     run_speed: "",
   },
-  submitAndPublishButton: false,
+  submitAndPublishButtonMasterData: false,
+  submitAndPublishButtonDyeCutting: false,
+  submitAndPublishButtonPrinting: false,
+  submitAndPublishButtonLamination: false,
   customers: [],
   labelTypes: [],
   selectedLabelTypeIds: [],
@@ -638,6 +685,31 @@ const masterDataSlice = createSlice({
         tracks: 0,
       };
     },
+    setPrintngFormErros: (
+      state,
+      action: PayloadAction<PrintingFormErrors>
+    ) => {
+      state.printingFormErrors = action.payload;
+    },
+    clearPrintingFormErrors:(state)=>{
+     state.printingFormErrors={
+      mounting_tape: "",
+      cylinder_teeth: "",
+      tension: "",
+      unwinder: "",
+      infeed: "",
+      outfeed: "",
+      rewinder: "",
+      static_charge: "",
+      format_correct: "",
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: "",
+      thickness: "",
+      density: "",
+     }
+    },
     clearMasterDataFormErrors: (state) => {
       state.masterDataFormErrors = {
         repeat_length: "",
@@ -873,9 +945,24 @@ const masterDataSlice = createSlice({
         state.selectedLabelTypeIds.push(id);
       }
     },
-    setSubmitAndPublishButton: (state, action: PayloadAction<boolean>) => {
-      state.submitAndPublishButton = action.payload;
+    setSubmitAndPublishButtonMasterData: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublishButtonMasterData = action.payload;
     },
+    setSubmitAndPublishButtonDyeCutting: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublishButtonDyeCutting = action.payload;
+    },
+    setSubmitAndPublishButtonPrinting: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublishButtonPrinting = action.payload;
+    },
+    setSubmitAndPublishButtonMasterLamination: (state, action: PayloadAction<boolean>) => {
+      state.submitAndPublishButtonLamination = action.payload;
+    },
+    setInvalidFieldsTable: (state, action: PayloadAction<{ [key: string]: boolean }>) => {
+      state.invalidFieldsTable = action.payload;
+    },
+    clearInvalidFieldsTable:(state)=>{
+      state.invalidFieldsTable= {}
+    }
   },
 });
 
@@ -906,10 +993,17 @@ export const {
   toggleLabelType,
   setLabelTypes,
   setCustomers,
-  setSubmitAndPublishButton,
+  setSubmitAndPublishButtonMasterData,
   setMasterDataFormErros,
   clearMasterDataFormErrors,
   setDyeCuttingFormErros,
   clearDyeCuttingFormErrors,
+  setInvalidFieldsTable,
+  clearInvalidFieldsTable,
+  setSubmitAndPublishButtonDyeCutting,
+  setSubmitAndPublishButtonMasterLamination,
+  setSubmitAndPublishButtonPrinting,
+  setPrintngFormErros,
+  clearPrintingFormErrors
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

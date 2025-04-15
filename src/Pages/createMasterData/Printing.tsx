@@ -7,9 +7,12 @@ import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useEffect, useState } from "react";
 import {
+  PrintingFormErrors,
   PrintingFormValues,
   PrintingTableRow,
+  setPrintngFormErros,
   setSavePrintingFormData,
+  setSubmitAndPublishButtonPrinting,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 
@@ -43,17 +46,21 @@ const substrateFields = [
 ];
 
 interface PrintingProps {
-  tableData: PrintingTableRow[],
-  formValues: PrintingFormValues,
-  setTableData: React.Dispatch<React.SetStateAction<PrintingTableRow[]>>,
-  setFormValues: React.Dispatch<React.SetStateAction<PrintingFormValues>>,
+  tableData: PrintingTableRow[];
+  formValues: PrintingFormValues;
+  setTableData: React.Dispatch<React.SetStateAction<PrintingTableRow[]>>;
+  setFormValues: React.Dispatch<React.SetStateAction<PrintingFormValues>>;
 }
 
 const Printing: React.FC<PrintingProps> = ({
-  tableData,formValues,setTableData,setFormValues
+  tableData,
+  formValues,
+  setTableData,
+  setFormValues,
 }) => {
-  const { printingSaveFormData } =
-    useSelector((state: RootState) => state.masterData);
+  const { printingSaveFormData,printingFormErrors } = useSelector(
+    (state: RootState) => state.masterData
+  );
   const {
     printingInkStatinData,
     printingMachineSettings,
@@ -77,7 +84,23 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
   ];
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<PrintingFormErrors>({
+    mounting_tape: "",
+    cylinder_teeth: "",
+    tension: "",
+    unwinder: "",
+    infeed: "",
+    outfeed: "",
+    rewinder: "",
+    static_charge: "",
+    format_correct: "",
+    substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: "",
+    thickness: "",
+    density: "",
+  });
 
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
@@ -129,11 +152,9 @@ const Printing: React.FC<PrintingProps> = ({
       ? value
       : value.target.value;
 
-    // Check if the field should be a number and convert if necessary
     const isNumberField = [
       "tension",
       "width",
-      "thickness",
       "density",
       "cylinder_teeth",
       "unwinder",
@@ -141,47 +162,57 @@ const Printing: React.FC<PrintingProps> = ({
       "outfeed",
       "static_charge",
       "format_correct",
+      "dyne_level",
     ].includes(field);
-  
+
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
-  
-    const onlyDigitsRegex = /^\d+$/;
-    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
-  
-    let finalValue: string | string[] | number = newValue;
+
+    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/; // letters, numbers, spaces
+    const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
+
     let errorMsg = "";
-  
+
     if (isNumberField) {
       if (newValue === "0" || newValue === "") {
-        finalValue = "";
-      } else if (!isNaN(Number(newValue)) && newValue !== "") {
-        finalValue = Number(newValue);
+        errorMsg = "Value cannot be 0 or empty";
+      } else if (!isNaN(Number(newValue))) {
+        errorMsg = ""; // valid number
       } else {
-        finalValue = "";
-        errorMsg = "Please enter a valid number";
+        errorMsg = `Invalid number: "${newValue}"`;
+      }
+    } else if (field === "thickness") {
+      if (typeof newValue === "string") {
+        const trimmed = newValue.trim();
+        if (trimmed === "") {
+          errorMsg = "Thickness is required";
+        } else if (!alphaNumericRegex.test(trimmed)) {
+          errorMsg = "Thickness cannot contain special characters";
+        }
       }
     } else if (typeof newValue === "string") {
-      const trimmedValue = newValue.trim();
-  
-      if (trimmedValue === "") {
+      const trimmed = newValue.trim();
+      if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (onlyDigitsRegex.test(trimmedValue)) {
-        errorMsg = "Numbers are not allowed";
-      } else if (!alphaNumericRegex.test(trimmedValue)) {
-        errorMsg = "Special characters are not allowed";
+      } else if (!onlyLettersRegex.test(trimmed)) {
+        errorMsg =
+          "Only alphabets are allowed — no numbers or special characters";
       }
     }
-  
-    setErrors((prev) => ({ ...prev, [field]: errorMsg }));
-  
+const updatedErros = {
+  ...errors,
+  [field]: errorMsg
+}
+    setErrors(updatedErros);
+    dispatch(setPrintngFormErros(updatedErros))
+
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
-        ? { ...formValues.printingDetails, [field]: finalValue }
+        ? { ...formValues.printingDetails, [field]: newValue }
         : formValues.printingDetails,
       printingSubstrateSettings: isSubstrateField
-        ? { ...formValues.printingSubstrateSettings, [field]: finalValue }
+        ? { ...formValues.printingSubstrateSettings, [field]: newValue }
         : formValues.printingSubstrateSettings,
     };
 
@@ -237,7 +268,6 @@ const Printing: React.FC<PrintingProps> = ({
     );
   };
 
-
   useEffect(() => {
     if (printingSaveFormData) {
       setFormValues(printingSaveFormData);
@@ -245,28 +275,81 @@ const Printing: React.FC<PrintingProps> = ({
         setTableData(printingSaveFormData.stationWiseMetrics);
       }
     }
-  }, [printingSaveFormData]);
+    if(printingFormErrors){
+      setErrors(printingFormErrors)
+    }
+  }, [printingSaveFormData,printingFormErrors]);
 
   useEffect(() => {
-    if(id){
-    const machineValues = sanitizeMasterData(printingMachineSettings);
-    const substrateValues = sanitizeMasterData(printingSubstrateSettings);
-    const combinedValues: PrintingFormValues = {
-      ...machineValues,
-      printingSubstrateSettings: substrateValues.printingSubstrateSettings,
-    };
-    setFormValues(combinedValues);
-    const sanitizedInkStationData = sanitizeMasterData(printingInkStatinData);
-    const stationWiseMetrics: PrintingTableRow[] =
-      sanitizedInkStationData.stationWiseMetrics;
-    setTableData(stationWiseMetrics);
-  }
+    if (id) {
+      const machineValues = sanitizeMasterData(printingMachineSettings);
+      const substrateValues = sanitizeMasterData(printingSubstrateSettings);
+      const combinedValues: PrintingFormValues = {
+        ...machineValues,
+        printingSubstrateSettings: substrateValues.printingSubstrateSettings,
+      };
+      setFormValues(combinedValues);
+      const sanitizedInkStationData = sanitizeMasterData(printingInkStatinData);
+      const stationWiseMetrics: PrintingTableRow[] =
+        sanitizedInkStationData.stationWiseMetrics;
+      setTableData(stationWiseMetrics);
+    }
   }, [
     id,
     printingInkStatinData,
     printingMachineSettings,
     printingSubstrateSettings,
   ]);
+
+  useEffect(() => {
+    const importantFields = [
+      "static_charge",
+      "format_correct",
+      "substrate_type",
+      "supplier",
+    ] as (
+      | keyof PrintingFormValues["printingDetails"]
+      | keyof PrintingFormValues["printingSubstrateSettings"]
+    )[];
+
+    const hasErrors = !importantFields.some((field) => {
+      const isInPrintingDetails = field in formValues.printingDetails;
+      const isInPrintingSubstrateSettings =
+        field in formValues.printingSubstrateSettings;
+
+      if (isInPrintingDetails) {
+        // Access fields in printingDetails
+        const value =
+          formValues.printingDetails[
+            field as keyof PrintingFormValues["printingDetails"]
+          ];
+        return (
+          errors[field] !== "" ||
+          value === "" ||
+          value === null ||
+          value === undefined
+        );
+      }
+
+      if (isInPrintingSubstrateSettings) {
+        // Access fields in printingSubstrateSettings
+        const value =
+          formValues.printingSubstrateSettings[
+            field as keyof PrintingFormValues["printingSubstrateSettings"]
+          ];
+        return (
+          errors[field] !== "" ||
+          value === "" ||
+          value === null ||
+          value === undefined
+        );
+      }
+
+      return false;
+    });
+
+    dispatch(setSubmitAndPublishButtonPrinting(hasErrors));
+  }, [formValues, errors]);
 
   return (
     <Box sx={{ borderRadius: "0px" }}>
@@ -331,7 +414,6 @@ const Printing: React.FC<PrintingProps> = ({
           />
         </Box>
       </Box>
-
     </Box>
   );
 };

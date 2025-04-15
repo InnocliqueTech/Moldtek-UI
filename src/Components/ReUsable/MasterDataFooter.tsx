@@ -61,7 +61,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     navigate("/masterData");
   };
 
-  const { submitPopup, submitPopupConfirm, submitAndPublish,submitAndPublishButton } = useSelector(
+  const { submitPopup, submitPopupConfirm, submitAndPublish,submitAndPublishButtonMasterData,submitAndPublishButtonDyeCutting,submitAndPublishButtonLamination,submitAndPublishButtonPrinting } = useSelector(
     (store: RootState) => store.masterData
   );
   const {id} = useParams();
@@ -85,7 +85,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={submitAndPublishButton?true:false}
+          disabled={submitAndPublishButtonMasterData||submitAndPublishButtonDyeCutting||submitAndPublishButtonLamination||submitAndPublishButtonPrinting?true:false}
         />
       ) : (
         <>

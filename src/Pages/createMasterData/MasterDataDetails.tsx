@@ -11,7 +11,7 @@ import {
   MasterDataFormErrors,
   setMasterDataFormErros,
   setSaveFormData,
-  setSubmitAndPublishButton,
+  setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
@@ -213,7 +213,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
         formData[field] === undefined
     );
 
-    dispatch(setSubmitAndPublishButton(hasErrors));
+    dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
   }, [formData, errors]);
 
   return (
