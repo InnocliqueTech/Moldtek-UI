@@ -208,7 +208,6 @@ function ReusableTable<T extends Record<string, any>>({
   const handleUpload = () => {
     console.log("Upload selected:", selected);
   };
-  console.log(filteredData, "FILTEREDDATA");
   return (
     <Paper
       elevation={0}

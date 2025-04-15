@@ -169,7 +169,6 @@ const CreateMasterData: React.FC = () => {
   };
 
   const handleSavePrinting = () => {
-    console.log("inside handleSave");
     const finalSaveData = {
       ...formValues,
       stationWiseMetrics: tableData,

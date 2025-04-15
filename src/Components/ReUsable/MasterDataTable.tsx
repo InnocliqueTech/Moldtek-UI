@@ -303,32 +303,49 @@ const DataTable = <T extends Record<string, any>>({
                       />
                     ) : column.edit ? (
                       <TextField
-                        variant="standard"
-                        value={row[column.id]}
-                        onChange={(e) =>
-                          handleChange(
-                            rowIndex,
-                            column.id as keyof T,
-                            e.target.value as T[keyof T]
-                          )
+                      variant="standard"
+                      value={row[column.id]}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        const isNumberField = ['lf_value', 'lpcm', 'station_no', 'ratio'].includes(column.id);
+                    
+                        if (isNumberField) {
+                          // Allow only digits and empty string
+                          if (!/^\d*$/.test(inputValue)) return;
+                    
+                          if (inputValue === "") {
+                            // Allow clearing the input
+                          } else if (inputValue === "0") {
+                            return; // Block literal 0
+                          }
+                        } else {
+                          // Allow only letters and space for non-numeric fields
+                          if (!/^[A-Za-z\s]*$/.test(inputValue)) return;
                         }
-                        fullWidth
-                        InputProps={{
-                          disableUnderline: true,
-                          sx: {
-                            fontSize: "14px",
-                            color: "#2F2F2F",
-                            height: "32px",
-                            padding: "0px",
-                            input: {
-                              textAlign: "center",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            },
+                    
+                        handleChange(
+                          rowIndex,
+                          column.id as keyof T,
+                          inputValue as T[keyof T]
+                        );
+                      }}
+                      fullWidth
+                      InputProps={{
+                        disableUnderline: true,
+                        sx: {
+                          fontSize: "14px",
+                          color: "#2F2F2F",
+                          height: "32px",
+                          padding: "0px",
+                          input: {
+                            textAlign: "center",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           },
-                        }}
-                      />
+                        },
+                      }}
+                    />
                     ) : (
                       <Tooltip title={String(row[column.id])} arrow>
                         <Box

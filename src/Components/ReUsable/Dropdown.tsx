@@ -106,35 +106,37 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           )}
 
           {options.map((option) => (
-            <MenuItem
-              key={option}
-              value={option}
-              sx={{
-                backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
-              <Tooltip title={option} arrow>
-                <ListItemText
-                  primary={option}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '180px',
-                    color: '#2F2F2F',
-                  }}
-                />
-              </Tooltip>
-              {!checkbox && selectedOptions.includes(option) && (
-                <IconButton sx={{ color: '#0073B7' }}>
-                  <Done />
-                </IconButton>
-              )}
-            </MenuItem>
+           <MenuItem
+           key={option}
+           value={option}
+           sx={{
+             backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
+             display: 'flex',
+             alignItems: 'center',
+             gap: 1,
+           }}
+         >
+           {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
+           <Tooltip title={option} arrow>
+             <div
+               style={{
+                 whiteSpace: 'nowrap',
+                 overflow: 'hidden',
+                 textOverflow: 'ellipsis',
+                 maxWidth: '300px',
+                 flexGrow: 1,
+                 color: '#2F2F2F',
+               }}
+             >
+               {option}
+             </div>
+           </Tooltip>
+           {!checkbox && selectedOptions.includes(option) && (
+             <IconButton sx={{ color: '#0073B7' }}>
+               <Done />
+             </IconButton>
+           )}
+         </MenuItem>
           ))}
         </Select>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
