@@ -97,6 +97,9 @@ const Layout = () => {
       headerButton:true,
       onBack:()=>navigate('/masterData')
     },
+    "/versiondetails/:id": {
+      title: "Version Details",
+    },
     "/viewJobsList": {
       title: selectedUEN,
       button1Text: "Version History",

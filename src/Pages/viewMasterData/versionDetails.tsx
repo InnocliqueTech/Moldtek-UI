@@ -1,13 +1,40 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-// import { Box } from "@mui/material";
 import VersionPopup from "./versionPopUp";
 import { versionData } from "./data";
 
 const VersinDetails: React.FC = () => {
-  const tableColumns = [
-    { id: "unit_effective_number", label: "Version No.", align: true },
+    const tableColumns = [
+      {
+        id: "unit_effective_number",
+        label: "Version No.",
+        align: true,
+        format: (value: string | number) => (
+          <a
+            href={`/versiondetails/${value}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              color: "#000",
+              textDecoration: "none",
+            }}
+            onMouseOver={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "underline";
+            }}
+            onMouseOut={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.textDecoration = "none";
+            }}
+          >
+            {value}
+          </a>
+          
+        ),
+      },
+      { id: "created_at", label: "Last Update", align: true },
+    
     { id: "created_at", label: "Last Update", align: true },
     // {
     //   id: "comment",
