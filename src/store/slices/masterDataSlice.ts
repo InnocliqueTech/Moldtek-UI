@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
+
 export interface PrintingTableRow {
   station_no: number;
   color_pantone: string;
@@ -144,6 +145,19 @@ export interface DyeCuttingFormData {
     dye_code: string;
     run_speed: number;
 }
+export interface MasterDataFormErrors {
+  repeat_length: string;
+  ups: string;
+  tracks: string;
+  unit_effectivity_number: string;
+  customer_name: string;
+  customer_logo: string;
+  jar_cap: string;
+  item_code: string;
+  structure: string;
+  brand_description: string;
+  label_type: string;
+}
 
 export interface PrintingFormValues {
   printingDetails: {
@@ -203,11 +217,27 @@ interface MasterDataState {
   isLaminationDataSave: boolean;
   requestPayload: RequestPayload;
   selectedUEN:string;
+  submitAndPublishButton:boolean;
+  masterDataFormErrors:MasterDataFormErrors
 }
 
 
 
 const initialState: MasterDataState = {
+  masterDataFormErrors:{
+    repeat_length: "",
+    ups: "",
+    tracks: "",
+    unit_effectivity_number: "",
+    customer_name: "",
+    customer_logo: "",
+    jar_cap: "",
+    item_code: "",
+    structure: "",
+    brand_description: "",
+    label_type: "",
+  },
+  submitAndPublishButton:false,
   customers:[],
   labelTypes: [],
   selectedLabelTypeIds: [],
@@ -577,6 +607,9 @@ const masterDataSlice = createSlice({
     setIsPrintingDataSave: (state, action: PayloadAction<boolean>) => {
       state.isPrintingDataSave = action.payload;
     },
+    setMasterDataFormErros:(state,action:PayloadAction<MasterDataFormErrors>)=>{
+    state.masterDataFormErrors = action.payload
+    },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
         unit_effectivity_number: "",
@@ -591,6 +624,21 @@ const masterDataSlice = createSlice({
         ups: 0,
         tracks: 0,
       };
+    },
+    clearMasterDataFormErrors:(state)=>{
+     state.masterDataFormErrors={
+      repeat_length: "",
+      ups: "",
+      tracks: "",
+      unit_effectivity_number: "",
+      customer_name: "",
+      customer_logo: "",
+      jar_cap: "",
+      item_code: "",
+      structure: "",
+      brand_description: "",
+      label_type: "",
+    }
     },
     clearPrintingFormData: (state) => {
       state.printingSaveFormData = {
@@ -799,6 +847,9 @@ const masterDataSlice = createSlice({
       } else {
         state.selectedLabelTypeIds.push(id);
       }
+    },
+    setSubmitAndPublishButton:(state,action:PayloadAction<boolean>)=>{
+      state.submitAndPublishButton = action.payload
     }
     
   },
@@ -830,6 +881,9 @@ export const {
   setSelectedLabelTypeIds,
   toggleLabelType,
   setLabelTypes,
-  setCustomers
+  setCustomers,
+  setSubmitAndPublishButton,
+  setMasterDataFormErros,
+  clearMasterDataFormErrors
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

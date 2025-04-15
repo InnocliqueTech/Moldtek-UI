@@ -2,37 +2,39 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { Edit} from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
-import {  setSaveFormData } from "../../store/slices/masterDataSlice";
+import {
+  setMasterDataFormErros,
+  setSaveFormData,
+  setSubmitAndPublishButton,
+} from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { listOfLables } from "./data";
 
 interface MasterDataProps {
-  formData: MasterFormData,
+  formData: MasterFormData;
   setFormData: React.Dispatch<React.SetStateAction<MasterFormData>>;
 }
 
-const MasterDataDetails: React.FC<MasterDataProps>= ({
-  formData,setFormData
+const MasterDataDetails: React.FC<MasterDataProps> = ({
+  formData,
+  setFormData,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const { id } = useParams();
 
-  const {id} = useParams();
-
-  const {  saveFormData } = useSelector(
+  const { saveFormData, masterDataFormErrors } = useSelector(
     (state: RootState) => state.masterData
   );
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-
-
 
   const [errors, setErrors] = useState<any>({
     repeat_length: "",
@@ -48,72 +50,144 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
     label_type: "",
   });
 
-  
-  
-
   const handleChange = (
-    field: string,
+    field: keyof MasterFormData,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-     const newValue = Array.isArray(value)
+    let newValue: string | string[] = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
-  
-    const numericFields = ["repeat_length", "ups", "tracks"];
-    const characterFields = ["unit_effectivity_number", "customer_name", "item_code"];
-  
-    let finalValue: string | string[] | number = newValue;
-    let errorMessage = "";
-  
+
+    let finalValue: string | number = formData[field];
+    let errorMessage = errors[field] || "";
+
+    const numericFields: (keyof MasterFormData)[] = [
+      "repeat_length",
+      "ups",
+      "tracks",
+      "unit_effectivity_number",
+    ];
+    const characterFields: (keyof MasterFormData)[] = ["customer_name"];
+    const alphanumericFields: (keyof MasterFormData)[] = ["item_code"];
+    const freeTextFields: (keyof MasterFormData)[] = ["brand_description"];
+
     if (numericFields.includes(field)) {
-      if (!isNaN(Number(newValue)) && newValue !== "") {
+      if (newValue === "") {
+        finalValue = "";
+        errorMessage = "This field cannot be empty.";
+      } else if (!isNaN(Number(newValue))) {
         finalValue = Number(newValue);
         errorMessage = "";
       } else {
-        finalValue = "";
-        errorMessage = "Please enter a valid number.";
+        if (!formData[field]) {
+          finalValue = "";
+          errorMessage = "Please enter a valid number.";
+        } else {
+          errorMessage = "";
+        }
       }
-    } 
-    else if (characterFields.includes(field)) {
+    } else if (characterFields.includes(field)) {
       const trimmed = (newValue as string).trim();
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
-  
+
       if (trimmed === "") {
         finalValue = "";
         errorMessage = "This field cannot be empty.";
       } else if (!onlyLettersRegex.test(trimmed)) {
-        finalValue = "";
-        errorMessage = "Only characters and spaces are allowed.";
+        if (!formData[field]) {
+          finalValue = "";
+          errorMessage = "Only characters and spaces are allowed.";
+        } else {
+          errorMessage = "";
+        }
       } else {
+        finalValue = trimmed;
         errorMessage = "";
       }
+    } else if (alphanumericFields.includes(field)) {
+      const trimmed = (newValue as string).trim();
+      const alphanumericRegex = /^[A-Za-z0-9\s]+$/;
+
+      if (trimmed === "") {
+        finalValue = "";
+        errorMessage = "This field cannot be empty.";
+      } else if (!alphanumericRegex.test(trimmed)) {
+        if (!formData[field]) {
+          finalValue = "";
+          errorMessage = "Only letters, numbers, and spaces are allowed.";
+        } else {
+          errorMessage = "";
+        }
+      } else {
+        finalValue = trimmed;
+        errorMessage = "";
+      }
+    } else if (freeTextFields.includes(field)) {
+      const trimmed = (newValue as string).trim();
+
+      if (trimmed === "") {
+        finalValue = "";
+        errorMessage = "This field cannot be empty.";
+      } else {
+        finalValue = trimmed;
+        errorMessage = "";
+      }
+    } else if (
+      field === "label_type" ||
+      field === "jar_cap" ||
+      field === "structure"
+    ) {
+      if (Array.isArray(newValue)) {
+        finalValue = newValue[0];
+      } else {
+        finalValue = newValue as string;
+      }
+      errorMessage = "";
     }
-  
-    setErrors({
+
+    const updatedErrors = {
       ...errors,
       [field]: errorMessage,
-    });
-  
+    };
+
     const updatedFormData = {
       ...formData,
       [field]: finalValue,
     };
-  
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
+    dispatch(setMasterDataFormErros(updatedErrors));
   };
-  
-   
+
+  const handleImageUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result as string;
+
+      const updatedFormData = {
+        ...formData,
+        customer_logo: base64Image, // <-- Set image
+      };
+
+      setFormData(updatedFormData);
+      dispatch(setSaveFormData(updatedFormData));
+    };
+
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     if (saveFormData) {
       setFormData(saveFormData);
     }
-  }, [saveFormData]);
+    if (masterDataFormErrors) {
+      setErrors(masterDataFormErrors);
+    }
+  }, [saveFormData, masterDataFormErrors]);
 
-  function sanitizeMasterData(data:any): MasterFormData {
+  function sanitizeMasterData(data: any): MasterFormData {
     return {
       unit_effectivity_number: data.unit_effectivity_number || "",
       customer_name: data.customer_name || "",
@@ -128,18 +202,34 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
       tracks: data.tracks || 0,
     };
   }
-  
+
   useEffect(() => {
     if (id && viewMasterDataDetails) {
       setFormData(sanitizeMasterData(viewMasterDataDetails));
     }
   }, [id, viewMasterDataDetails]);
-  const dropdownOptions = listOfLables.map(option => option.labelTypeName);
-  // const isFormInvalid =
-  // Object.values(errors).some((error) => error) || // any validation error present
-  // Object.entries(formData).some(
-  //   ([ value]) => value === "" || value === null || value === undefined
-  // );
+  const dropdownOptions = listOfLables.map((option) => option.labelTypeName);
+  useEffect(() => {
+    const importantFields = [
+      "unit_effectivity_number",
+      "customer_name",
+      "brand_description",
+      "label_type",
+      "jar_cap",
+      "repeat_length",
+      "ups",
+    ] as (keyof MasterFormData)[];
+
+    const hasErrors = importantFields.some(
+      (field) =>
+        errors[field] !== "" ||
+        formData[field] === "" ||
+        formData[field] === null ||
+        formData[field] === undefined
+    );
+
+    dispatch(setSubmitAndPublishButton(hasErrors));
+  }, [formData, errors]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -156,7 +246,9 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
             <ReusableInput
               label="Unit Effectivity Number"
               value={formData.unit_effectivity_number}
-              onChange={(e) => handleChange("unit_effectivity_number", e.target.value)}
+              onChange={(e) =>
+                handleChange("unit_effectivity_number", e.target.value)
+              }
               error={!!errors.unit_effectivity_number}
               helperText={errors.unit_effectivity_number}
               disabled={id ? true : false}
@@ -166,7 +258,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
                 label="Type of Label"
                 options={dropdownOptions}
                 value={formData.label_type}
-                onChange={(e) => handleChange("label_type", e)}
+                onChange={(e) => handleChange("label_type", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
               />
@@ -176,7 +268,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
                 label="Jar/Cap"
                 options={["N/A (For flexible packaging)", "JAR", "CAP"]}
                 value={formData.jar_cap}
-                onChange={(value: any) => handleChange("jar_cap", value)}
+                onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
               />
@@ -204,7 +296,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
                 label="Structure"
                 options={["PET"]}
                 value={formData.structure}
-                onChange={(value) => handleChange("structure", value)}
+                onChange={(e) => handleChange("structure", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
               />
@@ -222,48 +314,50 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
               </Typography>
 
               {formData.customer_logo ? (
-                 <Box position="relative" width={120} height={120} mt={1}>
-                 <Box
-                  component="img"
-                  src={formData.customer_logo}
-                  alt="Customer"
-                  sx={{ width:'100%',height:'100%', borderRadius: "8px", mt: 1, objectFit: "cover", }}
-                />
-                 <input
-                   accept="image/*"
-                   type="file"
-                   id="reupload-customer-pic"
-                   style={{ display: "none" }}
-                   onChange={(e) => {
-                     const file = e.target.files?.[0];
-                     if (file) {
-                       const reader = new FileReader();
-                       reader.onloadend = () => {
-                         handleChange("customer_logo", reader.result as string);
-                       };
-                       reader.readAsDataURL(file);
-                     }
-                   }}
-                 />
-                 <label htmlFor="reupload-customer-pic">
-                   <IconButton
-                     size="small"
-                     sx={{
-                       position: "absolute",
-                       top: 4,
-                       right: 4,
-                       backgroundColor: "rgba(0,0,0,0.6)",
-                       color: "#fff",
-                       "&:hover": {
-                         backgroundColor: "rgba(0,0,0,0.8)",
-                       },
-                     }}
-                     component="span"
-                   >
-                     <Edit fontSize="small" />
-                   </IconButton>
-                 </label>
-               </Box>
+                <Box position="relative" width={120} height={120} mt={1}>
+                  <Box
+                    component="img"
+                    src={formData.customer_logo}
+                    alt="Customer"
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "8px",
+                      mt: 1,
+                      objectFit: "cover",
+                    }}
+                  />
+                  <input
+                    accept="image/*"
+                    type="file"
+                    id="reupload-customer-pic"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        handleImageUpload(file);
+                      }
+                    }}
+                  />
+                  <label htmlFor="reupload-customer-pic">
+                    <IconButton
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        backgroundColor: "rgba(0,0,0,0.6)",
+                        color: "#fff",
+                        "&:hover": {
+                          backgroundColor: "rgba(0,0,0,0.8)",
+                        },
+                      }}
+                      component="span"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </label>
+                </Box>
               ) : (
                 <Box mt={0}>
                   <input
@@ -274,14 +368,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          handleChange(
-                            "customer_logo",
-                            reader.result as string
-                          );
-                        };
-                        reader.readAsDataURL(file); // Convert to base64
+                        handleImageUpload(file);
                       }
                     }}
                   />
@@ -305,7 +392,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
               )}
             </Box>
 
-            <Box sx={{ mt: 1 }}>
+            <Box sx={{ mt: 2 }}>
               <TextArea
                 label="Brand Name & Pack Description"
                 value={formData.brand_description}
@@ -314,6 +401,8 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
                 }
                 placeholder="Enter your text..."
                 rows={4}
+                error={!!errors.brand_description}
+                helperText={errors.brand_description}
               />
             </Box>
           </Grid>
@@ -334,9 +423,7 @@ const MasterDataDetails: React.FC<MasterDataProps>= ({
             <ReusableInput
               label="Repeat"
               value={formData.repeat_length}
-              onChange={(e) =>
-                handleChange("repeat_length", e.target.value)
-              }
+              onChange={(e) => handleChange("repeat_length", e.target.value)}
               error={!!errors.repeat_length}
               helperText={errors.repeat_length}
             />

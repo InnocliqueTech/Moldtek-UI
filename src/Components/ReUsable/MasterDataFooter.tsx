@@ -61,7 +61,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     navigate("/masterData");
   };
 
-  const { submitPopup, submitPopupConfirm, submitAndPublish } = useSelector(
+  const { submitPopup, submitPopupConfirm, submitAndPublish,submitAndPublishButton } = useSelector(
     (store: RootState) => store.masterData
   );
   const {id} = useParams();
@@ -85,6 +85,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
+          disabled={submitAndPublishButton?true:false}
         />
       ) : (
         <>
@@ -119,7 +120,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         </>
       )}
 
-      {/* Popup Rendering - Always include them regardless of tab */}
       <ConfirmPopup
         open={submitPopup}
         title="Are you sure you want submit?This version is 4243. "

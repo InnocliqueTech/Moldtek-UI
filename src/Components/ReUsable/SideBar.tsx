@@ -23,7 +23,7 @@ import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
 import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
-import { clearDyeCuttingFormData, clearLaminatingFormData, clearMasterDetaisData, clearPrintingFormData } from "../../store/slices/masterDataSlice";
+import { clearDyeCuttingFormData, clearLaminatingFormData, clearMasterDataFormErrors, clearMasterDetaisData, clearPrintingFormData } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 
@@ -136,6 +136,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const handleLogOut = () => {
     navigate("/");
     localStorage.setItem("auth", "false");
+    if(!isDyeCuttingDataSave){
+      dispatch(clearDyeCuttingFormData())
+    }
+    if(!isLaminationDataSave){
+      dispatch(clearLaminatingFormData())
+    }
+    if(!isPrintingDataSave){
+      dispatch(clearPrintingFormData())
+    }
+    if(!isMasterDetaisDataSave){
+      dispatch(clearMasterDetaisData());
+      dispatch(clearMasterDataFormErrors())
+    }
   };
   const dispatch = useDispatch<AppDispatch>();
 
@@ -150,7 +163,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       dispatch(clearPrintingFormData())
     }
     if(!isMasterDetaisDataSave){
-      dispatch(clearMasterDetaisData())
+      dispatch(clearMasterDetaisData());
+      dispatch(clearMasterDataFormErrors())
     }
   } 
 

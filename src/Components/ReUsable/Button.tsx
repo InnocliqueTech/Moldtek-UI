@@ -11,7 +11,8 @@ interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   borderRadius?: string; // Custom border radius
   loading?: boolean; // Loading state
   p?: string | number;
-  styles?:{}
+  styles?:{},
+  disabled?:boolean
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -25,6 +26,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   loading,
   p = "2px",
   styles={},
+  disabled=false,
   ...props
 }) => {
 
@@ -32,7 +34,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   return (
     <MUIButton
       {...props}
-      disabled={loading}
+      disabled={disabled}
       sx={{
         backgroundColor: color,
         color: textColor,
