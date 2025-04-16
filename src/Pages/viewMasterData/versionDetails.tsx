@@ -3,6 +3,7 @@ import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 import VersionPopup from "./versionPopUp";
 import { versionData } from "./data";
+import { useVersionHistoryQuery } from "../../store/services/api";
 
 const VersinDetails: React.FC = () => {
     const tableColumns = [
@@ -82,7 +83,11 @@ const VersinDetails: React.FC = () => {
   ];
 
 
-
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN :any;
+  if(UEN){
+    selectedUEN =  UEN;
+ }
   const { versionPopup } = useSelector((store: RootState) => store.viewMasterData);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -90,15 +95,17 @@ const VersinDetails: React.FC = () => {
     dispatch(setVersionPopup(false));
   };
 
+  const {data,isLoading} = useVersionHistoryQuery({unitEffectiveNumber:selectedUEN});
   return (
     <VersionPopup
     open={versionPopup}
     onClose={handleCloseVesionPopup}
     title="List of executed jobs"
-    totalVersions={versionData.totalRecords}
+    totalVersions={data?.totalRecords?data?.totalRecords:'0'}
     table
     tableColumns={tableColumns}
-    tableData={versionData.data}
+    tableData={data?.data? data?.data:[]}
+    isLoading={isLoading}
     />
   );
 };

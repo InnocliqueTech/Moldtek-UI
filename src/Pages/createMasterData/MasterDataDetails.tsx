@@ -37,6 +37,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     (state: RootState) => state.viewMasterData
   );
 
+  
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",

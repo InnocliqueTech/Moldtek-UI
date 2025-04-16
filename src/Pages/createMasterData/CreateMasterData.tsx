@@ -40,7 +40,6 @@ import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 import { useParams } from "react-router-dom";
-import { skipToken } from "@reduxjs/toolkit/query";
 
 const tabs = [
   "Master Data Details",
@@ -215,23 +214,24 @@ const CreateMasterData: React.FC = () => {
     dispatch(setSelectedTab(newValue));
   };
 
-  const { id } = useParams();
-
-  const ueNumber = localStorage.getItem("selectedUEN");
-  const versionNo = localStorage.getItem("selectedVersionNo");
-  
-  const queryParams: { [key: string]: string | number | boolean } | typeof skipToken =
-    id
-      ? {
-          ...(ueNumber ? { ueNumber } : {}),
-          ...(versionNo ? { versionNo } : {})
-        }
-      : skipToken;
-  
-  const { data, isLoading } = useViewMasterDataQuery(queryParams);
-  
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
+  }
+  const version = localStorage.getItem("selectedVersionNo");
+  let versionNo: any;
+  if (version) {
+    versionNo = version;
+  }
 
 
+  const { data, isLoading } = useViewMasterDataQuery({
+    ueNumber: selectedUEN,
+    versionNo: versionNo,
+  });
+  const {id} = useParams();
+console.log(id,"IDOFPARAMS")
   useEffect(() => {
     if(id){
     dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));

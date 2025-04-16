@@ -20,6 +20,7 @@ import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect } from "react";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
+import { useParams } from "react-router-dom";
 
 const tabs = [
   "Master Data - Printing",
@@ -48,21 +49,50 @@ const ViewMasterData: React.FC = () => {
     dispatch(setSelectedTab(newValue));
   };
 
+  const { id, version: VersionData } = useParams();
+  const versionNumber = VersionData
+    ? VersionData.replace(/[^\d]/g, "")
+    : undefined;
+
   const { data, isLoading } = useViewMasterDataQuery({
-    ueNumber: selectedUEN,
-    versionNo: versionNo,
+    ueNumber: id ? id : selectedUEN,
+    versionNo: versionNumber ? versionNumber : versionNo,
   });
 
   useEffect(() => {
     if (data) {
       dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
-      dispatch(setPrintingMachineSettingsData(data?.data.masterDataPrinting.printingDetails));
-      dispatch(setPrintingSubstrate(data?.data.masterDataPrinting.printingSubstrateSettings));
-      dispatch(setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics));
+      dispatch(
+        setPrintingMachineSettingsData(
+          data?.data.masterDataPrinting.printingDetails
+        )
+      );
+      dispatch(
+        setPrintingSubstrate(
+          data?.data.masterDataPrinting.printingSubstrateSettings
+        )
+      );
+      dispatch(
+        setPrintingInkStationData(
+          data?.data.masterDataPrinting.stationWiseMetrics
+        )
+      );
       dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
-      dispatch(setLaminationSettings(data?.data.masterDataLamination.laminationConditions));
-      dispatch(setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate));
-      dispatch(setLaminationAdhesiveDetails(data?.data.masterDataLamination.bondingMaterials));
+      dispatch(
+        setLaminationSettings(
+          data?.data.masterDataLamination.laminationConditions
+        )
+      );
+      dispatch(
+        setLaminatingSubstrate(
+          data?.data.masterDataLamination.laminationSubstrate
+        )
+      );
+      dispatch(
+        setLaminationAdhesiveDetails(
+          data?.data.masterDataLamination.bondingMaterials
+        )
+      );
     }
   }, [data, dispatch]);
 
@@ -84,7 +114,14 @@ const ViewMasterData: React.FC = () => {
       }}
     >
       {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
           <Loader />
         </Box>
       ) : (

@@ -9,6 +9,7 @@ import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
 import { jobsList } from "./data";
+import { useGetJobsListQuery } from "../../store/services/api";
 
 
 const JobsList: React.FC = () => {
@@ -142,71 +143,29 @@ const JobsList: React.FC = () => {
   ];
 
 
-  const data = [
-    {
-      uen: "ORD-1001",
-      segment: "Printing",
-      status: "In-Progress",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "28/10/2012",
-      comment: 1,
-    },
-    {
-      uen: "ORD-1002",
-      segment: "Lamination",
-      status: "Not Yet Started",
-      lastUpdated: "1 hours ago",
-      lastExecuted: "18/09/2016",
-      comment: 0,
-    },
-    {
-      uen: "ORD-1003",
-      segment: "Dye Cutting",
-      status: "On-Hold",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "07/05/2016",
-      comment: 0,
-    },
-    {
-      uen: "ORD-1004",
-      segment: "Printing",
-      status: "In-Progress",
-      lastUpdated: "2 hours ago",
-      lastExecuted: "16/08/2013",
-      comment: 2,
-    },
-    {
-      uen: "ORD-1005",
-      segment: "Lamination",
-      status: "On-Hold",
-      lastUpdated: "1 hours ago",
-      lastExecuted: "16/08/2013",
-      comment: 0,
-    },
-    {
-      uen: "ORD-1006",
-      segment: "Dye Cutting",
-      status: "Completed",
-      lastUpdated: "3 hours ago",
-      lastExecuted: "16/08/2013",
-      comment: 0,
-    },
-  ];
+
 
   const dispatch = useDispatch<AppDispatch>();
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
+  const {data,isLoading} = useGetJobsListQuery({unitEffectiveNumber:selectedUEN})
+
+
   useEffect(() => {
-    dispatch(setJobsListData(data));
+    dispatch(setJobsListData(data?.data));
   }, [dispatch]);
 
   const maxChars = 120;
-  const isLong = viewMasterDataDetails.brand_description.length > maxChars;
+  const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
   const displayText = isLong
-    ? viewMasterDataDetails.brand_description.slice(0, maxChars) + "..."
-    : viewMasterDataDetails.brand_description;
+    ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
+    : viewMasterDataDetails?.brand_description;
+
+    const renderValue = (value: string | undefined | null) => {
+      return value ? value : "N/A";
+    };
 
   return (
     <Box sx={{ p: 0 }}>
@@ -224,7 +183,7 @@ const JobsList: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.unit_effectivity_number}
+              {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -242,7 +201,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.item_code}
+                {renderValue(viewMasterDataDetails?.item_code)}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -261,7 +220,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.jar_cap}
+                {renderValue(viewMasterDataDetails?.jar_cap)}
               </Typography>
             </Box>
           </Grid>
@@ -278,7 +237,7 @@ const JobsList: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {viewMasterDataDetails.customer_name}
+              {renderValue(viewMasterDataDetails?.customer_name)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -296,7 +255,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.structure}
+                {renderValue(viewMasterDataDetails?.structure)}
               </Typography>
               <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }} >
               <Typography
@@ -314,7 +273,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {viewMasterDataDetails.label_type}
+                {renderValue(viewMasterDataDetails?.label_type)}
               </Typography>
             </Box>
 
@@ -330,12 +289,12 @@ const JobsList: React.FC = () => {
               >
                 Customer Picture
               </Typography>
-              {viewMasterDataDetails.customer_logo ? (
+              {viewMasterDataDetails?.customer_logo ? (
                 <img
-                  src={viewMasterDataDetails.customer_logo}
+                  src={viewMasterDataDetails?.customer_logo}
                   alt="customerPicture"
                 />
-              ) : null}
+              ) : "N/A"}
 
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -346,7 +305,7 @@ const JobsList: React.FC = () => {
                 Brand Name & Pack Description
               </Typography>
               <Tooltip
-                title={isLong ? viewMasterDataDetails.brand_description : ""}
+                title={isLong ? viewMasterDataDetails?.brand_description : ""}
                 placement="top"
                 arrow
               >
@@ -358,7 +317,7 @@ const JobsList: React.FC = () => {
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {displayText}
+                  {renderValue(displayText)}
                 </Typography>
               </Tooltip>
             </Box>
@@ -384,6 +343,7 @@ const JobsList: React.FC = () => {
               action={false}
               boxShadow={false}
               searchSize={true}
+              isLoading={isLoading}
             />
           </Box>
         </Box>

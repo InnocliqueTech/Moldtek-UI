@@ -31,6 +31,26 @@ export const apiSlice = createApi({
       }),
       providesTags: ["MasterDataList"],  // This query also provides the same tag for the master data
     }),
+    versionHistory: builder.query<any,  { [key: string]: string | number | boolean }>({
+      query: (newItem) => {
+        const queryString = Object.entries(newItem)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        return{
+        url: `/master/getVersionHistory?${queryString}`,
+        method: "GET",
+        };
+      }, 
+    }),
+    getJobsList: builder.query<any,  { [key: string]: string | number | boolean }>({
+      query: (newItem) => {
+        const queryString = Object.entries(newItem)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        return{
+        url: `/master/getJobsInMasterData?${queryString}`,
+        method: "GET",
+        };
+      }, 
+    }),
     viewMasterData: builder.query<any, { [key: string]: string | number | boolean }>({
       query: (newItem) => {
         const queryString = Object.entries(newItem)
@@ -49,7 +69,6 @@ export const apiSlice = createApi({
         method: "POST",
         body: newItem,
       }),
-      // Invalidate tags after successful mutation to trigger refetching
       invalidatesTags: [
         "MasterDataMetrics",   // Invalidate the metrics query
           "MasterDataList"
@@ -87,4 +106,6 @@ export const {
   useLoginMutation,
   useViewMasterDataQuery,
   useCreateMasterDataMutation,
+  useVersionHistoryQuery,
+  useGetJobsListQuery
 } = apiSlice;

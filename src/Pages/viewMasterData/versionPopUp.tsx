@@ -36,6 +36,7 @@ interface ReusablePopupProps {
   table?: boolean;
   tableColumns?: ColumnType[];
   tableData?: any[];
+  isLoading?:boolean;
 }
 
 const ROWS_PER_PAGE = 4;
@@ -48,6 +49,7 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
   table,
   tableColumns = [],
   tableData = [],
+  isLoading=false
 }) => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,7 +176,32 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {paginatedData.length > 0 ? (
+                    {isLoading ? (
+                      Array.from({ length: 8 }).map((_, rowIndex) => (
+                        <TableRow key={`skeleton-${rowIndex}`}>
+                          {tableColumns.map((column, index) => (
+                            <TableCell key={`${column.id}-skeleton-${index}`}>
+                              <Box
+                                sx={{
+                                  width: "100%",
+                                  height: 16,
+                                  borderRadius: 1,
+                                  backgroundColor: "#e0e0e0",
+                                  animation: "pulse 1.5s infinite ease-in-out",
+                                  "@keyframes pulse": {
+                                    "0%": { opacity: 1 },
+                                    "50%": { opacity: 0.4 },
+                                    "100%": { opacity: 1 },
+                                  },
+                                }}
+                              />
+                            </TableCell>
+                          ))}
+                          { <TableCell><Box sx={{ width: 24, height: 16, backgroundColor: "#e0e0e0", borderRadius: 1 }} /></TableCell>}
+                        </TableRow>
+                      ))
+                    ) : 
+                  paginatedData.length > 0 ? (
                     paginatedData.map((row, i) => (
                       <TableRow key={i}>
                         {tableColumns.map((col) => (
