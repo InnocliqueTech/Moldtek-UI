@@ -1,11 +1,11 @@
 import React,{useState} from 'react';
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Typography,Skeleton } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
 import { UENCell } from '../../Components/helpers';
 import { useNavigate } from "react-router-dom";
-import {  data,dailyJobmetricsResponse,dailyJobsListMockResp } from './data';
+import {  data,dailyJobsListMockResp } from './data';
 import { useGetDailyJobMetricsQuery , useGetDailyJobsListQuery} from '../../store/services/api';
 import { ApiStatsResponse } from '../../store/Interfaces/createDailyPlanTypes';
 
@@ -18,7 +18,17 @@ interface StatItem {
   value: number;
 }
 
-const transformApiDataToStats = (apiData: ApiStatsResponse): StatItem[] => {
+const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatItem[] => {
+  if (!apiData) {
+    // Return empty stats when no data
+    return [
+      { title: "Total Jobs", value: 0 },
+      { title: "Lamination Jobs", value: 0 },
+      { title: "Non-Lamination Jobs", value: 0 },
+      { title: "New Jobs Added", value: 0 },
+    ];
+  }
+
   return [
     { title: "Total Jobs", value: apiData.totalJobs || 0 },
     { title: "Lamination Jobs", value: apiData.laminationJobs || 0 },
@@ -32,11 +42,23 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     page: 0,
     size: 10
   })
-  const { data:metricsData ,isLoading, isError, error} = useGetDailyJobMetricsQuery();
-  const { data:dailyJobsList } = useGetDailyJobsListQuery(pagination)
+  const { 
+    data: metricsData, 
+    isLoading: isMetricsLoading, 
+    // isError: isMetricsError, 
+    // error: metricsError 
+  } = useGetDailyJobMetricsQuery();
+
+  // Jobs list API call
+  const { 
+    data: dailyJobsList, 
+    // isLoading: isJobsLoading,
+    // isError: isJobsError,
+    // error: jobsError
+  } = useGetDailyJobsListQuery(pagination);
  
-  console.log(metricsData,isLoading, isError, error,dailyJobsList, setPagination,dailyJobsListMockResp,"inside api call test");
-  const stats = transformApiDataToStats(dailyJobmetricsResponse.data) 
+  console.log(metricsData,dailyJobsList, setPagination,dailyJobsListMockResp,"inside api call test");
+  const stats = transformApiDataToStats(metricsData?.data) 
   const navigate = useNavigate();
    const columns = [
     { id: "version", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
@@ -101,21 +123,35 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   return (
      <Box sx={{ p: 0 }}>
           <Grid container spacing={1}>
-            {stats.map((stat, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-                <Cards
-                  title={stat.title}
-                  value={stat.value}
-                  icon={
-                    <InfoOutline
-                      sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                    />
-                  }
-                />
-              </Grid>
-            ))}
+            {isMetricsLoading ? (
+              // Show skeletons when loading
+              Array.from({ length: 4 }).map((_, index) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`skeleton-${index}`}>
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={100}
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Grid>
+              ))
+            ) : (
+              // Show actual cards when not loading
+              stats.map((stat, index) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+                  <Cards
+                    title={stat.title}
+                    value={stat.value}
+                    icon={
+                      <InfoOutline
+                        sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                      />
+                    }
+                  />
+                </Grid>
+              ))
+            )}
           </Grid>
-    
           <Box sx={{ paddingTop: 2 }}>
             <ReusableTable
               columns={columns}
@@ -149,7 +185,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               boxShadow={true}
             />
           </Box>
-        </Box>
+     </Box>
   );
 };
 
