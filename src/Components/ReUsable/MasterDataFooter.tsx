@@ -108,6 +108,19 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 
 
   const { id } = useParams();
+  const version = localStorage.getItem("selectedVersionNo");
+  
+  let versionNo = version ? parseInt(version) : 0;
+  let displayVersion = id ? versionNo+1 : versionNo;
+
+const confirmTitle = `Are you sure you want to submit? This version is ${displayVersion}.`;
+const confirmPublishTitle = id
+  ? `Are you sure you want to update and publish? This version is ${displayVersion}.`
+  : `Are you sure you want to submit and publish? This version is ${displayVersion}.`;
+
+const successTitle = id
+  ? `You have successfully updated master data. Your version is ${displayVersion}.`
+  : `You have successfully created master data. Your version is ${displayVersion}.`;
   return (
     <Box
       display="flex"
@@ -171,7 +184,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 
       <ConfirmPopup
         open={submitPopup}
-        title="Are you sure you want submit?This version is 4243. "
+        title={confirmTitle}
         message=""
         buttonText="No"
         buttonText2="Yes,Save it!"
@@ -182,11 +195,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitPopupConfirm}
-        title={
-          id
-            ? "You have successfully updated master data your version is 4253."
-            : "You have successfully created master data your version is 4253."
-        }
+        title={successTitle}
         message="You're all set! Let’s get started."
         buttonText2="Go back to Master Data"
         gifSrc=""
@@ -195,11 +204,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       />
       <ConfirmPopup
         open={submitAndPublish}
-        title={
-          id
-            ? "Are you sure you want update and publish? This version is 4243."
-            : "Are you sure you want submit and publish? This version is 4243."
-        }
+        title={confirmPublishTitle}
         message=""
         buttonText="No"
         buttonText2="Yes, Publish it!"

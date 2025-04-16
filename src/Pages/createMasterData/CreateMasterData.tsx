@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../../store/index";
 import {
   setSelectedTab,
   setSaveFormData,
-  setIsMasterDetailsDataSave,
+  setIsMasterDetailsDataSave
 } from "../../store/slices/masterDataSlice";
 import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCutting";
@@ -39,7 +39,7 @@ import {
 import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const tabs = [
   "Master Data Details",
@@ -57,6 +57,10 @@ const CreateMasterData: React.FC = () => {
     printingSaveFormData,
     laminaionFormData,
     dyeCuttingFormData,
+    laminationDataTouched,
+    printingDataTouched,
+    dyeCuttingDataTouched,
+    masterDataDataTouched
   } = useSelector((state: RootState) => state.masterData);
   const [formData, setFormData] = useState<MasterFormData>({
     unit_effectivity_number: "",
@@ -116,7 +120,7 @@ const CreateMasterData: React.FC = () => {
       zone2_temp: 0,
       nip_pressure_bar: 0,
       speed: 0,
-      last_set_tension: "",
+      lami_set_tension: "",
       rewinder_tension: "",
       printed_film_tension: "",
       laminate_film_tension: "",
@@ -185,35 +189,6 @@ const CreateMasterData: React.FC = () => {
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
   };
-
-  const handleSaveDyeCutting = () => {
-    const updatedPayload = {
-      ...requestPayload,
-      masterDataDetails: {
-        ...requestPayload.masterDataDetails,
-        ...saveFormData,
-      },
-      masterDataPrinting: {
-        ...requestPayload.masterDataPrinting,
-        ...printingSaveFormData,
-      },
-      masterDataLamination: {
-        ...requestPayload.masterDataLamination,
-        ...laminaionFormData,
-      },
-      masterDataDyeCutting: {
-        ...requestPayload.masterDataDyeCutting,
-        ...dyeCuttingFormData,
-      },
-    };
-
-    dispatch(setRequestPayload(updatedPayload));
-  };
-
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    dispatch(setSelectedTab(newValue));
-  };
-
   const UEN = localStorage.getItem("selectedUEN");
   let selectedUEN: any;
   if (UEN) {
@@ -230,8 +205,34 @@ const CreateMasterData: React.FC = () => {
     ueNumber: selectedUEN,
     versionNo: versionNo,
   });
+
+  const handleSaveDyeCutting = () => {
+    const finalMasterDataDetails =data?.data.masterDataDetails ? data?.data.masterDataDetails : saveFormData;
+    const finalPrintingData =  data?.data.masterDataPrinting ?  data?.data.masterDataPrinting: printingSaveFormData
+    const finalLaminationData = data?.data.masterDataLamination? data?.data.masterDataLamination :laminaionFormData
+    const finalDyeCuttingData = data?.data.masterDataDyeCutting ? data?.data.masterDataDyeCutting : dyeCuttingFormData;
+  
+    const updatedPayload = {
+      ...requestPayload,
+      masterDataDetails: finalMasterDataDetails,
+      masterDataPrinting: finalPrintingData,
+      masterDataLamination: finalLaminationData,
+      masterDataDyeCutting: finalDyeCuttingData,
+    };
+  
+    dispatch(setRequestPayload(updatedPayload));
+  };
+  
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    dispatch(setSelectedTab(newValue));
+  };
+
+
   const {id} = useParams();
-console.log(id,"IDOFPARAMS")
+  if(id && data &&(!laminationDataTouched|| !dyeCuttingDataTouched||!printingDataTouched ||!masterDataDataTouched )){
+    dispatch(setRequestPayload(data?.data))
+  }
   useEffect(() => {
     if(id){
     dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
@@ -262,6 +263,8 @@ console.log(id,"IDOFPARAMS")
     );
   }
   }, [id]);
+
+
 
   return (
     <Box

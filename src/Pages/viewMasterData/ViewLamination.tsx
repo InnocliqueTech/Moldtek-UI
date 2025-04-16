@@ -31,7 +31,7 @@ const laminatingSubstarteColumns= [
 
 
 const tensionColumns = [
-  { id: "last_set_tension", label: "Lami-set Tension" },
+  { id: "lami_set_tension", label: "Lami-set Tension" },
   { id: "rewinder_tension", label: "Rewinder Tension" },
   { id: "printed_film_tension", label: "Printed Film Tension" },
   { id: "laminate_film_tension", label: "Laminated Film Tension" },

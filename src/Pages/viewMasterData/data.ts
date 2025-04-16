@@ -83,7 +83,7 @@ export const  mockData = {
           "zone2_temp": 24,
           "nip_pressure_bar": 6.0,
           "speed": 90,
-          "last_set_tension": "7",
+          "lami_set_tension": "7",
           "rewinder_tension": "8",
           "printed_film_tension": "6",
           "laminate_film_tension": "7.5",

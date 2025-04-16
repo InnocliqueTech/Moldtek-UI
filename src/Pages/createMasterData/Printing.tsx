@@ -10,6 +10,7 @@ import {
   PrintingFormErrors,
   PrintingFormValues,
   PrintingTableRow,
+  setPrintingDataTouched,
   setPrintngFormErros,
   setSavePrintingFormData,
   setSubmitAndPublishButtonPrinting,
@@ -58,7 +59,7 @@ const Printing: React.FC<PrintingProps> = ({
   setTableData,
   setFormValues,
 }) => {
-  const { printingSaveFormData,printingFormErrors } = useSelector(
+  const { printingSaveFormData,printingFormErrors,printingDataTouched } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -105,25 +106,25 @@ const Printing: React.FC<PrintingProps> = ({
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
       printingDetails: {
-        mounting_tape: data.mounting_tape || "",
-        cylinder_teeth: Number(data.cylinder_teeth) || 0,
-        tension: Number(data.tension) || 0,
-        unwinder: Number(data.unwinder) || 0,
-        infeed: Number(data.infeed) || 0,
-        outfeed: Number(data.outfeed) || 0,
-        rewinder: Number(data.rewinder) || 0,
-        static_charge: Number(data.static_charge) || 0,
-        format_correct: Number(data.format_correct) || 0,
+        mounting_tape: data?.mounting_tape || "",
+        cylinder_teeth: Number(data?.cylinder_teeth) || 0,
+        tension: Number(data?.tension) || 0,
+        unwinder: Number(data?.unwinder) || 0,
+        infeed: Number(data?.infeed) || 0,
+        outfeed: Number(data?.outfeed) || 0,
+        rewinder: Number(data?.rewinder) || 0,
+        static_charge: Number(data?.static_charge) || 0,
+        format_correct: Number(data?.format_correct) || 0,
       },
       printingSubstrateSettings: {
-        print_substrate_id: data.print_substrate_id || 1,
-        machine_settings_id: data.machine_settings_id || 1,
-        substrate_type: data.substrate_type || "",
-        supplier: data.supplier || "",
-        dyne_level: data.dyne_level || "",
-        width: Number(data.width) || 0,
-        thickness: Number(data.thickness) || 0,
-        density: Number(data.density) || 0,
+        print_substrate_id: data?.print_substrate_id || 1,
+        machine_settings_id: data?.machine_settings_id || 1,
+        substrate_type: data?.substrate_type || "",
+        supplier: data?.supplier || "",
+        dyne_level: data?.dyne_level || "",
+        width: Number(data?.width) || 0,
+        thickness: Number(data?.thickness) || 0,
+        density: Number(data?.density) || 0,
       },
       stationWiseMetrics: Array.isArray(data)
         ? data
@@ -146,6 +147,7 @@ const Printing: React.FC<PrintingProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    dispatch(setPrintingDataTouched(true))
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -280,7 +282,7 @@ const updatedErros = {
   }, [printingSaveFormData,printingFormErrors]);
 
   useEffect(() => {
-    if (id) {
+    if (id&&!printingDataTouched) {
       const machineValues = sanitizeMasterData(printingMachineSettings);
       const substrateValues = sanitizeMasterData(printingSubstrateSettings);
       const combinedValues: PrintingFormValues = {

@@ -133,14 +133,15 @@ const DataTable = <T extends Record<string, any>>({
     const mandatoryFields = ["color_pantone", "lpcm", "lf_value"];
 
     // Check if any mandatory field is empty
-    const hasEmptyMandatory = data?.some((row) =>
+    const hasEmptyMandatory = Array.isArray(data) 
+    ? data?.some((row) =>
       mandatoryFields.some((field) => {
         const value = row[field];
         return (
           value === "" || value === 0 || value === null || value === undefined
         );
       })
-    );
+    ) : false;
 
     // Check if any field is marked invalid in your state
     const hasAnyInvalidField = Object.values(invalidFields).some(
@@ -154,14 +155,17 @@ const DataTable = <T extends Record<string, any>>({
     const mandatoryFields = ["code","ratio","brand"];
 
     // Check if any mandatory field is empty
-    const hasEmptyMandatory = data.some((row) =>
-      mandatoryFields.some((field) => {
-        const value = row[field];
-        return (
-          value === "" || value === 0 || value === null || value === undefined
-        );
-      })
-    );
+    const hasEmptyMandatory = Array.isArray(data) 
+    ? data?.some((row) =>
+        mandatoryFields.some((field) => {
+          const value = row[field];
+          return (
+            value === "" || value === 0 || value === null || value === undefined
+          );
+        })
+      )
+    : false;
+  
 
     // Check if any field is marked invalid in your state
     const hasAnyInvalidField = Object.values(invalidFields).some(
@@ -265,7 +269,7 @@ const DataTable = <T extends Record<string, any>>({
             }}
           >
             {Array.isArray(data) &&
-              data.map((row, rowIndex) => (
+              data?.map((row, rowIndex) => (
                 <TableRow key={rowIndex}>
                   {columns.map((column, index) => (
                     <TableCell

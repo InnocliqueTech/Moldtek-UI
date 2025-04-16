@@ -69,7 +69,7 @@ export interface RequestPayload {
       zone2_temp: number;
       nip_pressure_bar: number;
       speed: number;
-      last_set_tension: string;
+      lami_set_tension: string;
       rewinder_tension: string;
       printed_film_tension: string;
       laminate_film_tension: string;
@@ -105,7 +105,7 @@ export interface LaminationFormData {
     zone2_temp: number;
     nip_pressure_bar: number;
     speed: number;
-    last_set_tension: string;
+    lami_set_tension: string;
     rewinder_tension: string;
     printed_film_tension: string;
     laminate_film_tension: string;
@@ -187,7 +187,7 @@ export interface LaminationFormErrors {
     zone2_temp: string;
     nip_pressure_bar: string;
     speed: string;
-    last_set_tension:  string;
+    lami_set_tension:  string;
     rewinder_tension:  string;
     printed_film_tension:  string;
     laminate_film_tension: string;
@@ -268,7 +268,11 @@ interface MasterDataState {
   masterDataFormErrors: MasterDataFormErrors;
   invalidFieldsTable: { [key: string]: boolean };
   printingFormErrors:PrintingFormErrors;
-  laminationFormErrors:LaminationFormErrors
+  laminationFormErrors:LaminationFormErrors;
+  laminationDataTouched:boolean;
+printingDataTouched:boolean;
+  dyeCuttingDataTouched:boolean;
+  masterDataDataTouched:boolean;
 }
 
 const initialState: MasterDataState = {
@@ -277,7 +281,7 @@ const initialState: MasterDataState = {
     zone2_temp: "",
     nip_pressure_bar: "",
     speed: "",
-    last_set_tension:  "",
+    lami_set_tension:  "",
     rewinder_tension:  "",
     printed_film_tension:  "",
     laminate_film_tension: "",
@@ -290,6 +294,10 @@ const initialState: MasterDataState = {
     thickness: "",
     density: "",
   },
+  laminationDataTouched:false,
+  printingDataTouched:false,
+  dyeCuttingDataTouched:false,
+  masterDataDataTouched:false,
   printingFormErrors:{
     mounting_tape: "",
     cylinder_teeth: "",
@@ -489,7 +497,7 @@ const initialState: MasterDataState = {
       zone2_temp: 0,
       nip_pressure_bar: 0,
       speed: 0,
-      last_set_tension: "",
+      lami_set_tension: "",
       rewinder_tension: "",
       printed_film_tension: "",
       laminate_film_tension: "",
@@ -588,7 +596,7 @@ const initialState: MasterDataState = {
         zone2_temp: 0,
         nip_pressure_bar: 0,
         speed: 0,
-        last_set_tension: "",
+        lami_set_tension: "",
         rewinder_tension: "",
         printed_film_tension: "",
         laminate_film_tension: "",
@@ -658,6 +666,18 @@ const masterDataSlice = createSlice({
         ...action.payload,
       };
     },
+    setLaminationDataTouched:(state,action:PayloadAction<boolean>)=>{
+state.laminationDataTouched = action.payload
+    },
+    setPrintingDataTouched:(state,action:PayloadAction<boolean>)=>{
+      state.printingDataTouched = action.payload
+          },
+          setDyeCuttingDataTouched:(state,action:PayloadAction<boolean>)=>{
+            state.dyeCuttingDataTouched = action.payload
+                },
+                setMasterDataDataTouched:(state,action:PayloadAction<boolean>)=>{
+                  state.masterDataDataTouched = action.payload
+                      },
     setLaminationFormData: (
       state,
       action: PayloadAction<LaminationFormData>
@@ -760,7 +780,7 @@ const masterDataSlice = createSlice({
         zone2_temp: "",
         nip_pressure_bar: "",
         speed: "",
-        last_set_tension:  "",
+        lami_set_tension:  "",
         rewinder_tension:  "",
         printed_film_tension:  "",
         laminate_film_tension: "",
@@ -932,7 +952,7 @@ const masterDataSlice = createSlice({
           zone2_temp: 0,
           nip_pressure_bar: 0,
           speed: 0,
-          last_set_tension: "",
+          lami_set_tension: "",
           rewinder_tension: "",
           printed_film_tension: "",
           laminate_film_tension: "",
@@ -1070,6 +1090,10 @@ export const {
   setPrintngFormErros,
   clearPrintingFormErrors,
   setLaminationFormErros,
-  clearLaminationFormErrors
+  clearLaminationFormErrors,
+  setLaminationDataTouched,
+  setDyeCuttingDataTouched,
+  setMasterDataDataTouched,
+  setPrintingDataTouched
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

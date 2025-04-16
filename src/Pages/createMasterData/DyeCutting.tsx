@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import {
   DyeCuttingFormData,
   DyeCuttingFormErrors,
+  setDyeCuttingDataTouched,
   setDyeCuttingFormData,
   setDyeCuttingFormErros,
   setSubmitAndPublishButtonDyeCutting,
@@ -26,7 +27,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dye_code: "",
     run_speed: "",
   });
-  const { dyeCuttingFormData, dyeCuttingErrors } = useSelector(
+  const { dyeCuttingFormData, dyeCuttingErrors ,dyeCuttingDataTouched} = useSelector(
     (state: RootState) => state.masterData
   );
   const { dyeCuttingSettings } = useSelector(
@@ -36,16 +37,17 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
-      machine_type: data.machine_type || "",
-      machine_name: data.machine_name || "",
-      dye_code: data.dye_code || "",
-      run_speed: Number(data.run_speed) || 0,
+      machine_type: data?.machine_type || "",
+      machine_name: data?.machine_name || "",
+      dye_code: data?.dye_code || "",
+      run_speed: Number(data?.run_speed) || 0,
     };
   }
 
   const { id } = useParams();
 
   const handleChange = (key: keyof DyeCuttingFormData, newValue: string) => {
+    dispatch(setDyeCuttingDataTouched(true))
     let finalValue: string | number = newValue;
     let errorMessage = "";
 
@@ -123,7 +125,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   }, [dyeCuttingFormData,dyeCuttingErrors]);
 
   useEffect(() => {
-    if (id && dyeCuttingSettings) {
+    if (id && dyeCuttingSettings&&!dyeCuttingDataTouched) {
       const sanitized = sanitizeDyeCuttingData(dyeCuttingSettings);
       setFormData(sanitized);
     }

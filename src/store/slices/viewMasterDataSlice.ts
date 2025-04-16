@@ -40,7 +40,7 @@ export interface LaminationSettings {
   zone2_temp: number;
   nip_pressure_bar: number;
   speed: number;
-  last_set_tension: string;
+  lami_set_tension: string;
   rewinder_tension: string;
   printed_film_tension: string;
   laminate_film_tension: string;
@@ -192,7 +192,7 @@ const initialState: ViewMasterDataState = {
     zone2_temp: 0,
     nip_pressure_bar: 0,
     speed: 0,
-    last_set_tension: "--",
+    lami_set_tension: "--",
     rewinder_tension: "--",
     printed_film_tension: "--",
     laminate_film_tension: "--",

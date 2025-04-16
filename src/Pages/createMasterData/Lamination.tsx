@@ -8,6 +8,7 @@ import {
   LaminatingTableRow,
   LaminationFormData,
   LaminationFormErrors,
+  setLaminationDataTouched,
   setLaminationFormData,
   setLaminationFormErros,
   setSubmitAndPublishButtonMasterLamination,
@@ -29,7 +30,7 @@ const Lamination: React.FC<LaminationProps> = ({
   setFormData,
   formData,
 }) => {
-  const { laminaionFormData, laminationFormErrors } = useSelector(
+  const { laminaionFormData, laminationFormErrors,laminationDataTouched } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -50,7 +51,7 @@ const Lamination: React.FC<LaminationProps> = ({
     zone2_temp: "",
     nip_pressure_bar: "",
     speed: "",
-    last_set_tension: "",
+    lami_set_tension: "",
     rewinder_tension: "",
     printed_film_tension: "",
     laminate_film_tension: "",
@@ -66,24 +67,24 @@ const Lamination: React.FC<LaminationProps> = ({
   function sanitizeMasterData(data: any): LaminationFormData {
     return {
       laminationConditions: {
-        zone1_temp: data.zone1_temp || 0,
-        zone2_temp: data.zone2_temp || 0,
-        nip_pressure_bar: data.nip_pressure_bar || 0,
-        speed: data.speed || 0,
-        last_set_tension: data.last_set_tension || "",
-        rewinder_tension: data.rewinder_tension || "",
-        printed_film_tension: data.printed_film_tension || "",
-        laminate_film_tension: data.laminate_film_tension || "",
-        viscosity_range: data.viscosity_range || "",
-        adhesive_gsm: data.adhesive_gsm || "",
+        zone1_temp: data?.zone1_temp || 0,
+        zone2_temp: data?.zone2_temp || 0,
+        nip_pressure_bar: data?.nip_pressure_bar || 0,
+        speed: data?.speed || 0,
+        lami_set_tension: data?.lami_set_tension || "",
+        rewinder_tension: data?.rewinder_tension || "",
+        printed_film_tension: data?.printed_film_tension || "",
+        laminate_film_tension: data?.laminate_film_tension || "",
+        viscosity_range: data?.viscosity_range || "",
+        adhesive_gsm: data?.adhesive_gsm || "",
       },
       laminationSubstrate: {
-        substrate_type: data.substrate_type || "",
-        supplier: data.supplier || "",
-        dyne_level: data.dyne_level || "",
-        width: data.width || 0,
-        thickness: data.thickness || 0,
-        density: data.density || 0,
+        substrate_type: data?.substrate_type || "",
+        supplier: data?.supplier || "",
+        dyne_level: data?.dyne_level || "",
+        width: data?.width || 0,
+        thickness: data?.thickness || 0,
+        density: data?.density || 0,
       },
       bondingMaterials: data || [
         { type: "Adhesive", code: "", brand: "", ratio: 0 },
@@ -105,7 +106,7 @@ const Lamination: React.FC<LaminationProps> = ({
     "ratio",
     "printed_film_tension",
     "laminate_film_tension",
-    "last_set_tension",
+    "lami_set_tension",
     "rewinder_tension",
     "dyne_level",
   ]);
@@ -126,6 +127,8 @@ const Lamination: React.FC<LaminationProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    console.log(field,value,"VALUEOFUPDATE");
+    dispatch(setLaminationDataTouched(true));  // 🧠 Mark as loaded so it doesn't override user changes!
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -172,7 +175,7 @@ const Lamination: React.FC<LaminationProps> = ({
 
       finalValue = newValue;
     }
-
+console.log(finalValue,"VALUEOFUPDATE1")
     const updatedErros = {
       ...errors,
       [field]: errorMessage,
@@ -215,27 +218,30 @@ const Lamination: React.FC<LaminationProps> = ({
       setErrors(laminationFormErrors);
     }
   }, [laminaionFormData, laminationFormErrors]);
+  
+  console.log(formData,"LAMINATIONFORMDATA1")
 
   useEffect(() => {
-    if (id) {
+    if (id && !laminationDataTouched) {
       const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
-      const sanitizedSubstrateData = sanitizeMasterData(
-        laminatingSubstrateSettings
-      );
-
+      const sanitizedSubstrateData = sanitizeMasterData(laminatingSubstrateSettings);
+  
       const combinedValues: LaminationFormData = {
         ...sanitizedLaminationData,
         laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
       };
-
-      setFormData(combinedValues);
+  
+      console.log(combinedValues, "LOADED FROM SANITIZE");
+      setFormData(combinedValues);  // ← Initial data set only once
+      dispatch(setLaminationFormData(combinedValues));
+  
       const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
-      const adhesiveDetails: LaminatingTableRow[] =
-        sanitizedBondingMaterials.bondingMaterials;
+      const adhesiveDetails: LaminatingTableRow[] = sanitizedBondingMaterials.bondingMaterials;
       setTableData(adhesiveDetails);
+  
+
     }
   }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
-
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -310,16 +316,16 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Lami Set Tension"
-                value={formData.laminationConditions.last_set_tension}
+                value={formData.laminationConditions.lami_set_tension}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
-                    "last_set_tension",
+                    "lami_set_tension",
                     e.target.value
                   )
                 }
-                error={!!errors.last_set_tension}
-                helperText={errors.last_set_tension}
+                error={!!errors.lami_set_tension}
+                helperText={errors.lami_set_tension}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

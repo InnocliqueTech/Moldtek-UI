@@ -9,13 +9,15 @@ import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
   MasterDataFormErrors,
+  setMasterDataDataTouched,
   setMasterDataFormErros,
   setSaveFormData,
   setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
-import { useParams } from "react-router-dom";
-import { useGetLabelTypesQuery } from "../../store/services/api";
+import { useLocation, useParams } from "react-router-dom";
+import { useGetLabelTypesQuery, useViewMasterDataQuery } from "../../store/services/api";
+import { setDyeCuttingSettings, setLaminatingSubstrate, setLaminationAdhesiveDetails, setLaminationSettings, setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -29,15 +31,62 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const dispatch = useDispatch<AppDispatch>();
 
   const { id } = useParams();
+  const location = useLocation();
+    const UEN = localStorage.getItem("selectedUEN");
+    let selectedUEN: any;
+    if (UEN) {
+      selectedUEN = UEN;
+    }
+    const version = localStorage.getItem("selectedVersionNo");
+    let versionNo: any;
+    if (version) {
+      versionNo = version;
+    }
+  
+  
+    const { data} = useViewMasterDataQuery({
+      ueNumber: selectedUEN,
+      versionNo: versionNo,
+    });
+    useEffect(()=>{
+      if(id&&location.pathname.includes('/updateMasterData')){
+     dispatch(setViewMasterDataDetails(data?.data?.masterDataDetails));
+         dispatch(
+           setPrintingMachineSettingsData(
+             data?.data.masterDataPrinting.printingDetails
+           )
+         );
+         dispatch(
+           setPrintingSubstrate(
+             data?.data.masterDataPrinting.printingSubstrateSettings
+           )
+         );
+         dispatch(
+           setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics)
+         );
+         dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
+         dispatch(
+           setLaminationSettings(data?.data.masterDataLamination.laminationConditions)
+         );
+         dispatch(
+           setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate)
+         );
+         dispatch(
+           setLaminationAdhesiveDetails(
+             data?.data.masterDataLamination.bondingMaterials
+           )
+         );
+      }
+    },[id])
 
-  const { saveFormData, masterDataFormErrors } = useSelector(
+  const { saveFormData, masterDataFormErrors,masterDataDataTouched } = useSelector(
     (state: RootState) => state.masterData
   );
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
-
+console.log(viewMasterDataDetails,"VIEWMASTRDATADETAILS")
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",
@@ -56,6 +105,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     field: keyof MasterFormData,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    dispatch(setMasterDataDataTouched(true))
     let newValue: string | string[] = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -148,6 +198,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   };
   
   const handleImageUpload = (file: File) => {
+    dispatch(setMasterDataDataTouched(true))
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64Image = reader.result as string;
@@ -175,22 +226,22 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {
-      unit_effectivity_number: data.unit_effectivity_number || "",
-      customer_name: data.customer_name || "",
-      customer_logo: data.customer_logo ?? "",
-      jar_cap: data.jar_cap || "",
-      item_code: data.item_code ?? "",
-      structure: data.structure ?? "",
-      brand_description: data.brand_description || "",
-      label_type: data.label_type || "",
-      repeat_length: data.repeat_length || 0,
-      ups: data.ups || 0,
-      tracks: data.tracks || 0,
+      unit_effectivity_number: data?.unit_effectivity_number || "",
+      customer_name: data?.customer_name || "",
+      customer_logo: data?.customer_logo ?? "",
+      jar_cap: data?.jar_cap || "",
+      item_code: data?.item_code ?? "",
+      structure: data?.structure ?? "",
+      brand_description: data?.brand_description || "",
+      label_type: data?.label_type || "",
+      repeat_length: data?.repeat_length || 0,
+      ups: data?.ups || 0,
+      tracks: data?.tracks || 0,
     };
   }
 
   useEffect(() => {
-    if (id && viewMasterDataDetails) {
+    if (id && viewMasterDataDetails&&!masterDataDataTouched) {
       setFormData(sanitizeMasterData(viewMasterDataDetails));
     }
   }, [id, viewMasterDataDetails]);
