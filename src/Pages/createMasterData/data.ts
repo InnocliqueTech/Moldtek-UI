@@ -9,7 +9,7 @@ export const dataofCards= {
     }
   }
 
-  export const listOfCompanies=
+  export const listOfData=
   {
     "statusCode": 200,
     "statusMessage": "Fetched data successfully",

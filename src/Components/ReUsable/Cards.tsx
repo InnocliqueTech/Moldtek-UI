@@ -1,13 +1,14 @@
 import React from "react";
-import { Typography, Card, CardContent, Box } from "@mui/material";
+import { Typography, Card, CardContent, Box, Skeleton } from "@mui/material";
 
 interface StatsCardProps {
   title: string;
   value?: number;
   icon?: React.ReactNode;
+  isLoading?: boolean;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, isLoading }) => {
   return (
     <Card sx={{ minWidth: 200, borderRadius: "16px", flex: 1 }}>
       <CardContent
@@ -24,18 +25,34 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon }) => {
             alignItems: "center",
           }}
         >
-          <Typography
-            sx={{ fontSize: "14px", color: "#2F2F2F", fontWeight: 600 }}
-          >
-            {title}
-          </Typography>
-          <Box>{icon}</Box>
+          {isLoading ? (
+            <>
+              <Skeleton variant="text" width="60%" height={20} />
+              <Skeleton variant="circular" width={32} height={32} />
+            </>
+          ) : (
+            <>
+              <Typography
+                sx={{ fontSize: "14px", color: "#2F2F2F", fontWeight: 600 }}
+              >
+                {title}
+              </Typography>
+              <Box>{icon}</Box>
+            </>
+          )}
         </Box>
-        <Typography
-          sx={{ fontSize: "20px", color: "#2F2F2F", fontWeight: 600, mt: 1 }}
-        >
-          {value}
-        </Typography>
+
+        <Box sx={{ mt: 1 }}>
+          {isLoading ? (
+            <Skeleton variant="text" width="40%" height={28} />
+          ) : (
+            <Typography
+              sx={{ fontSize: "20px", color: "#2F2F2F", fontWeight: 600 }}
+            >
+              {value}
+            </Typography>
+          )}
+        </Box>
       </CardContent>
     </Card>
   );

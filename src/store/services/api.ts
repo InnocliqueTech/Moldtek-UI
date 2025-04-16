@@ -17,35 +17,49 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: ["Item","DailyJobMetrics",'DailyJobs'], 
+  tagTypes: ["MasterDataMetrics","DailyJobMetrics",'DailyJobs'], 
   endpoints: (builder) => ({
-    getItems: builder.query<Item[], void>({
-      query: () => "api/master/masterDataMetrics",
-      providesTags: ["Item"], 
-    }),
-    addItem: builder.mutation<Item, Partial<Item>>({
+    login: builder.mutation<any,any>({
       query: (newItem) => ({
-        url: "/items",
-        method: "POST",
-        body: newItem,
-      }),
-      invalidatesTags: ["Item"], //  Refetch "getItems" after adding an item
+         url: "/auth/login",
+          method: "POST",
+          body: newItem,
+        })
+  }),
+    getMetrics: builder.query<any, void>({
+      query: () => "/master/masterDataMetrics",
+      providesTags: ["MasterDataMetrics"], 
     }),
-    updateItem: builder.mutation<Item, Partial<Item>>({
-      query: ({ id, ...updatedItem }) => ({
-        url: `/items/${id}`,
-        method: "PUT",
-        body: updatedItem,
+    listOfCompanies: builder.query<any, string>({
+      query: (newItem) => ({
+        url: `/master/masterDataList?${newItem}`,
+        method: "GET",
       }),
-      invalidatesTags: ["Item"], //  Refetch "getItems" after updating an item
     }),
-    deleteItem: builder.mutation<void, number>({
-      query: (id) => ({
-        url: `/items/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Item"], //  Refetch "getItems" after deleting an item
-    }),
+    
+    // addItem: builder.mutation<Item, Partial<Item>>({
+    //   query: (newItem) => ({
+    //     url: "/items",
+    //     method: "POST",
+    //     body: newItem,
+    //   }),
+    //   invalidatesTags: ["Item"], //  Refetch "getItems" after adding an item
+    // }),
+    // updateItem: builder.mutation<Item, Partial<Item>>({
+    //   query: ({ id, ...updatedItem }) => ({
+    //     url: `/items/${id}`,
+    //     method: "PUT",
+    //     body: updatedItem,
+    //   }),
+    //   invalidatesTags: ["Item"], 
+    // }),
+    // deleteItem: builder.mutation<void, number>({
+    //   query: (id) => ({
+    //     url: `/items/${id}`,
+    //     method: "DELETE",
+    //   }),
+    //   invalidatesTags: ["Item"], 
+    // }),
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => '/dailyplan/dailyJobMetrics',
       providesTags: ['DailyJobMetrics']
@@ -71,4 +85,4 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation,useGetDailyJobMetricsQuery,useGetDailyJobsListQuery } = apiSlice;
+export const { useGetMetricsQuery,useGetDailyJobMetricsQuery,useGetDailyJobsListQuery,useListOfCompaniesQuery,useLoginMutation } = apiSlice;

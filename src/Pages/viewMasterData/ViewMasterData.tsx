@@ -19,7 +19,7 @@ import ViewLamination from "./ViewLamination";
 import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect } from "react";
 import { mockData } from "./data";
-// import { useGetItemsQuery } from "../../store/services/api";
+
 
 const tabs = [
   "Master Data - Printing",
@@ -32,7 +32,6 @@ const ViewMasterData: React.FC = () => {
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-//  useGetItemsQuery();
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };

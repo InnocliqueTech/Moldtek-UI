@@ -66,6 +66,9 @@ interface TableProps<T> {
   onSelectionChange?: (selectedItems: T[]) => void;
   rowIdentifier?: keyof T;
   searchSize?: boolean;
+  isLoading?:boolean;
+  rowsPerPage?:number;
+  onPageChange?: (newPage: number) => void;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -83,6 +86,9 @@ function ReusableTable<T extends Record<string, any>>({
   onSelectionChange,
   rowIdentifier = "id" as keyof T, 
   searchSize = false,
+  isLoading=false,
+  rowsPerPage=10,
+  onPageChange
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -109,8 +115,6 @@ function ReusableTable<T extends Record<string, any>>({
     setAnchorEl(null);
     setSelectedRow(null);
   };
-
-  const rowsPerPage = 10;
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
@@ -423,35 +427,64 @@ function ReusableTable<T extends Record<string, any>>({
             </TableRow>
           </TableHead>
           <TableBody
-            sx={{
-              "& .MuiTableCell-root": {
-                padding: "4px 8px",
-                height: "32px",
-              },
-              "& .MuiTableRow-root.Mui-selected": {
-                backgroundColor: "#e3f2fd",
-                "&:hover": {
-                  backgroundColor: "#bbdefb",
+  sx={{
+    "& .MuiTableCell-root": {
+      padding: "4px 8px",
+      height: "32px",
+    },
+    "& .MuiTableRow-root.Mui-selected": {
+      backgroundColor: "#e3f2fd",
+      "&:hover": {
+        backgroundColor: "#bbdefb",
+      },
+    },
+  }}
+>
+  {isLoading ? (
+    Array.from({ length: 8 }).map((_, rowIndex) => (
+      <TableRow key={`skeleton-${rowIndex}`}>
+        {selectable && (
+          <TableCell padding="checkbox">
+            <Checkbox disabled />
+          </TableCell>
+        )}
+        {columns.map((column, index) => (
+          <TableCell key={`${column.id}-skeleton-${index}`}>
+            <Box
+              sx={{
+                width: "100%",
+                height: 16,
+                borderRadius: 1,
+                backgroundColor: "#e0e0e0",
+                animation: "pulse 1.5s infinite ease-in-out",
+                "@keyframes pulse": {
+                  "0%": { opacity: 1 },
+                  "50%": { opacity: 0.4 },
+                  "100%": { opacity: 1 },
                 },
-              },
-            }}
-          >
-            {filteredData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  No Data Available
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row);
-                  return (
-                    <TableRow
-                      key={index}
-                      hover
-                      selected={isItemSelected}
+              }}
+            />
+          </TableCell>
+        ))}
+        {action && <TableCell><Box sx={{ width: 24, height: 16, backgroundColor: "#e0e0e0", borderRadius: 1 }} /></TableCell>}
+      </TableRow>
+    ))
+  ) : filteredData.length === 0 ? (
+    <TableRow>
+      <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (action ? 1 : 0)} align="center">
+        No Data Available
+      </TableCell>
+    </TableRow>
+  ) : (
+    filteredData
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row, index) => {
+        const isItemSelected = isSelected(row);
+        return (
+          <TableRow
+            key={index}
+            hover
+            selected={isItemSelected}
                       // onClick={(event) => {
                       //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
                       //     const fakeEvent = {
@@ -460,51 +493,50 @@ function ReusableTable<T extends Record<string, any>>({
                       //     handleSelect(fakeEvent, row);
                       //   }
                       // }}
-                      sx={{
-                        cursor: selectable ? "pointer" : "default",
-                      }}
-                    >
-                      {selectable && (
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            onChange={() => handleSelect(row)}
-                            onClick={(event) => event.stopPropagation()}
-                          />
-                        </TableCell>
-                      )}
-                      {columns.map((column, index) => (
-                        <TableCell
-                          align={column.align ? "center" : "left"}
-                          key={column.id}
-                          sx={{
-                            whiteSpace: "nowrap",
-                            padding: "4px 8px",
-                            height: "32px",
-                            lineHeight: "1",
-                            color: "#2F2F2F",
-                            fontSize: "14px",
-                            fontWeight: 500,
-                            marginLeft: index === 0 ? "8px" : undefined,
-                          }}
-                        >
-                          {column.format
-                            ? column.format(row[column.id])
-                            : row[column.id]}
-                        </TableCell>
-                      ))}
-                      {action && (
-                        <TableCell align="left">
-                          <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                            <MoreVertIcon />
-                          </IconButton>
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  );
-                })
+            sx={{
+              cursor: selectable ? "pointer" : "default",
+            }}
+          >
+            {selectable && (
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={isItemSelected}
+                  onChange={() => handleSelect(row)}
+                  onClick={(event) => event.stopPropagation()}
+                />
+              </TableCell>
             )}
-          </TableBody>
+            {columns.map((column, index) => (
+              <TableCell
+                align={column.align ? "center" : "left"}
+                key={column.id}
+                sx={{
+                  whiteSpace: "nowrap",
+                  padding: "4px 8px",
+                  height: "32px",
+                  lineHeight: "1",
+                  color: "#2F2F2F",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  marginLeft: index === 0 ? "8px" : undefined,
+                }}
+              >
+                {column.format ? column.format(row[column.id]) : row[column.id]}
+              </TableCell>
+            ))}
+            {action && (
+              <TableCell align="left">
+                <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                  <MoreVertIcon />
+                </IconButton>
+              </TableCell>
+            )}
+          </TableRow>
+        );
+      })
+  )}
+</TableBody>
+
           {selectedRow && (
             <Menu
               anchorEl={anchorEl}
@@ -547,7 +579,7 @@ function ReusableTable<T extends Record<string, any>>({
           <Pagination
             count={Math.ceil(filteredData.length / rowsPerPage)}
             page={page + 1}
-            onChange={(_, newPage) => setPage(newPage - 1)}
+            onChange={onPageChange ? (_, newPage) => onPageChange?.(newPage - 1):(_, newPage) => setPage(newPage - 1)}
             shape="rounded"
             variant="outlined"
             siblingCount={0} // Show only current + next page

@@ -1,5 +1,11 @@
-import React from "react";
-import { Avatar, Box, Grid, Tooltip, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
@@ -9,25 +15,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import { setSelectedUEN } from "../../store/slices/masterDataSlice";
-import { dataofCards, listOfCompanies } from "./data";
+import {
+  useGetMetricsQuery,
+  useListOfCompaniesQuery,
+} from "../../store/services/api";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const transformedData = listOfCompanies.data.map((row) => ({
-    ...row,
-    customer_name: {
-      image: row.customer_logo,
-      customer: row.customer_name,
-    },
-  }));
 
+  const { data, isLoading, isError } = useGetMetricsQuery();
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
   const stats = [
-    { title: "Total Jobs", value: dataofCards.data.totalJobs },
-    { title: "Lamination Jobs", value: dataofCards.data.laminationJobs },
-    { title: "Non-Lamination Jobs", value: dataofCards.data.nonLaminationJobs },
-    { title: "Total Customers", value: dataofCards.data.totalCustomers },
+    { title: "Total Jobs", value: data?.data.totalJobs },
+    { title: "Lamination Jobs", value: data?.data.laminationJobs },
+    { title: "Non-Lamination Jobs", value: data?.data.nonLaminationJobs },
+    { title: "Total Customers", value: data?.data.totalCustomers },
   ];
+
   const columns = [
     {
       id: "unit_effectivity_number",
@@ -117,51 +123,81 @@ const MasterData: React.FC = () => {
       disableSorting: false,
       format: (value: string) =>
         value ? new Date(value).toLocaleDateString("en-CA") : "",
-    }
+    },
   ];
 
+  const {
+    data: listOfCompaniesData,
+    isLoading: listOfCompaniesLoading,
+    isError: companiesError,
+  } = useListOfCompaniesQuery(`page=${page - 1}&size=${rowsPerPage}`);
+
+  const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
+    ...row,
+    customer_name: {
+      image: row.customer_logo,
+      customer: row.customer_name,
+    },
+  }));
   const { selectedUEN } = useSelector((state: RootState) => state.masterData);
 
+  if (isError || companiesError) {
+    return (
+      <Box sx={{ textAlign: "center", color: "error.main" }}>
+        <Typography variant="h6">
+          There was an error fetching the data. Please try again later.
+        </Typography>
+      </Box>
+    );
+  }
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
   return (
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
-        {stats.map((stat, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-            <Cards
-              title={stat.title}
-              value={stat.value}
-              icon={
-                <InfoOutline
-                  sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                />
-              }
-            />
-          </Grid>
-        ))}
+        {stats &&
+          stats?.map((stat, index) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+              <Cards
+                title={stat.title}
+                value={stat.value}
+                icon={
+                  <InfoOutline
+                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                  />
+                }
+                isLoading={isLoading}
+              />
+            </Grid>
+          ))}
       </Grid>
 
       <Box sx={{ paddingTop: 1.5 }}>
-        <ReusableTable
-          boxShadow={true}
-          columns={columns}
-          data={transformedData}
-          selectable={false}
-          label={`${listOfCompanies.totalRecords} Companies`}
-          title="List of Companies"
-          info={true}
-          searchVisible={true}
-          action={true}
-          actions={[
-            {
-              label: "View Job Data",
-              onClick: () => navigate(`/viewJobsList`),
-            },
-            {
-              label: "Update",
-              onClick: () => navigate(`/updateMasterData/${selectedUEN}`),
-            },
-          ]}
-        />
+              <ReusableTable
+            boxShadow={true}
+            columns={columns}
+            data={transformedData?transformedData:[]}
+            selectable={false}
+            label={listOfCompaniesData?.totalRecords?`${listOfCompaniesData?.totalRecords} Companies`:'0 Companies'}
+            title="List of Companies"
+            info={true}
+            searchVisible={true}
+            action={true}
+            actions={[
+              {
+                label: "View Job Data",
+                onClick: () => navigate(`/viewJobsList`),
+              },
+              {
+                label: "Update",
+                onClick: () => navigate(`/updateMasterData/${selectedUEN}`),
+              },
+            ]}
+            isLoading={listOfCompaniesLoading}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handlePageChange}
+          />
       </Box>
     </Box>
   );
