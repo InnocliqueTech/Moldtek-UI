@@ -12,7 +12,6 @@ import MasterDataDetails from "./MasterDataDetails";
 import DyeCutting from "./DyeCutting";
 import Printing from "./Printing";
 import Lamination from "./Lamination";
-import { mockData } from "./data";
 import {
   setDyeCuttingSettings,
   setLaminatingSubstrate,
@@ -38,6 +37,10 @@ import {
   setRequestPayload,
 } from "./../../store/slices/masterDataSlice";
 import { toast } from "react-toastify";
+import { useViewMasterDataQuery } from "../../store/services/api";
+import Loader from "../../Loader";
+import { useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 const tabs = [
   "Master Data Details",
@@ -211,34 +214,54 @@ const CreateMasterData: React.FC = () => {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
+
+  const { id } = useParams();
+
+  const ueNumber = localStorage.getItem("selectedUEN");
+  const versionNo = localStorage.getItem("selectedVersionNo");
+  
+  const queryParams: { [key: string]: string | number | boolean } | typeof skipToken =
+    id
+      ? {
+          ...(ueNumber ? { ueNumber } : {}),
+          ...(versionNo ? { versionNo } : {})
+        }
+      : skipToken;
+  
+  const { data, isLoading } = useViewMasterDataQuery(queryParams);
+  
+
+
   useEffect(() => {
-    dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
+    if(id){
+    dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
     dispatch(
       setPrintingMachineSettingsData(
-        mockData.masterDataPrinting.printingDetails
+        data?.data.masterDataPrinting.printingDetails
       )
     );
     dispatch(
       setPrintingSubstrate(
-        mockData.masterDataPrinting.printingSubstrateSettings
+        data?.data.masterDataPrinting.printingSubstrateSettings
       )
     );
     dispatch(
-      setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
+      setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics)
     );
-    dispatch(setDyeCuttingSettings(mockData.masterDataDyeCutting));
+    dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
     dispatch(
-      setLaminationSettings(mockData.masterDataLamination.laminationConditions)
+      setLaminationSettings(data?.data.masterDataLamination.laminationConditions)
     );
     dispatch(
-      setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate)
+      setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate)
     );
     dispatch(
       setLaminationAdhesiveDetails(
-        mockData.masterDataLamination.bondingMaterials
+        data?.data.masterDataLamination.bondingMaterials
       )
     );
-  }, []);
+  }
+  }, [id]);
 
   return (
     <Box
@@ -249,7 +272,12 @@ const CreateMasterData: React.FC = () => {
         width: "100%",
       }}
     >
-      {/* Fixed Tabs */}
+{id && isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <Loader />
+        </Box>
+      ) : (
+        <>
       <Box
         sx={{
           position: "sticky",
@@ -330,6 +358,7 @@ const CreateMasterData: React.FC = () => {
           />
         </Stack>
       </Box>
+      </>)}
     </Box>
   );
 };

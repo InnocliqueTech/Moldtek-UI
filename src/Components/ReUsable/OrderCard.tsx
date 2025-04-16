@@ -16,10 +16,10 @@ const OrderCard: React.FC = () => {
   ];
 
   const maxChars = 120;
-  const isLong = viewMasterDataDetails.brand_description.length > maxChars;
+  const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
   const displayText = isLong
-    ? viewMasterDataDetails.brand_description.slice(0, maxChars) + "..."
-    : viewMasterDataDetails.brand_description;
+    ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
+    : viewMasterDataDetails?.brand_description;
   const renderValue = (value: string | undefined | null) => {
     return value ? value : "N/A";
   };
@@ -40,7 +40,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {renderValue(viewMasterDataDetails.unit_effectivity_number)}
+              {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -58,7 +58,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails.item_code)}
+                {renderValue(viewMasterDataDetails?.item_code)}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -77,7 +77,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails.jar_cap)}
+                {renderValue(viewMasterDataDetails?.jar_cap)}
               </Typography>
             </Box>
           </Grid>
@@ -94,7 +94,7 @@ const OrderCard: React.FC = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {renderValue(viewMasterDataDetails.customer_name)}
+              {renderValue(viewMasterDataDetails?.customer_name)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -112,7 +112,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails.structure)}
+                {renderValue(viewMasterDataDetails?.structure)}
               </Typography>
             </Box>
             <Box
@@ -136,7 +136,7 @@ const OrderCard: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails.label_type)}
+                {renderValue(viewMasterDataDetails?.label_type)}
               </Typography>
             </Box>
           </Grid>
@@ -146,9 +146,9 @@ const OrderCard: React.FC = () => {
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Customer Picture
             </Typography>
-            {viewMasterDataDetails.customer_logo ? (
+            {viewMasterDataDetails?.customer_logo ? (
               <img
-                src={viewMasterDataDetails.customer_logo}
+                src={viewMasterDataDetails?.customer_logo}
                 alt="customer picture"
               />
             ) : (
@@ -163,7 +163,7 @@ const OrderCard: React.FC = () => {
                 Brand Name & Pack Description
               </Typography>
               <Tooltip
-                title={isLong ? viewMasterDataDetails.brand_description : ""}
+                title={isLong ? viewMasterDataDetails?.brand_description : ""}
                 placement="top"
                 arrow
               >
@@ -210,10 +210,10 @@ const OrderCard: React.FC = () => {
           }}
         >
           {Object.entries({
-            repeat: viewMasterDataDetails.repeat_length,
-            ups: viewMasterDataDetails.ups,
-            tracks: viewMasterDataDetails.tracks,
-            labels: viewMasterDataDetails.labels_per_meter,
+            repeat: viewMasterDataDetails?.repeat_length,
+            ups: viewMasterDataDetails?.ups,
+            tracks: viewMasterDataDetails?.tracks,
+            labels: viewMasterDataDetails?.labels_per_meter,
           }).map(([key, value]) => (
             <Box
               key={key}
