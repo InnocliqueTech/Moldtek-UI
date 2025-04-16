@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Box, InputAdornment, IconButton, Typography } from "@mui/material";
+import { TextField, Box, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
 

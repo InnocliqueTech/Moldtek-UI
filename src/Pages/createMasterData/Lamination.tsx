@@ -397,8 +397,6 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
-                  error={!!errors.substrate_type}
-                  helperText={errors.substrate_type}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -416,8 +414,6 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
-                  error={!!errors.supplier}
-                  helperText={errors.supplier}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>

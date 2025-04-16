@@ -1,5 +1,5 @@
 import React from "react";
-import { Button as MUIButton, ButtonProps } from "@mui/material";
+import { Button as MUIButton, ButtonProps, CircularProgress } from "@mui/material";
 
 interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   text: string;
@@ -12,7 +12,7 @@ interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   loading?: boolean; // Loading state
   p?: string | number;
   styles?:{},
-  disabled?:boolean
+  disabled?:boolean;
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -57,7 +57,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         ...styles
       }}
     >
-      {loading ? "Loading..." : text}
+      {loading ? "Loading....": text}
     </MUIButton>
   );
 };

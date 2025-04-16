@@ -6,6 +6,7 @@ import {
   Box,
 } from "@mui/material";
 import ButtonComponent from "./Button";
+import { load } from './../../../node_modules/ssf/types/index.d';
 
 interface ConfirmPopupProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface ConfirmPopupProps {
   onConfirm?: () => void;
   buttonText2?: string;
   onClick?:()=> void;
+  isLoading?:boolean;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -27,7 +29,8 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   gifSrc,
   onClose,
   buttonText2,
-  onClick
+  onClick,
+  isLoading
 }) => {
   return (
     <Dialog
@@ -70,6 +73,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             textColor="#0A0A0A"
             onClick={onClose}
             p={2}
+            loading={isLoading}
           />
         )}
         {buttonText2 && (
@@ -80,6 +84,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             textColor="white"
             onClick={onClick }
             p={2}
+            loading={isLoading}
           />
         )}
       </DialogActions>

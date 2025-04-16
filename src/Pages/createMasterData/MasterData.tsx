@@ -11,10 +11,9 @@ import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
-import { setSelectedUEN } from "../../store/slices/masterDataSlice";
 import {
   useGetMetricsQuery,
   useListOfCompaniesQuery,

@@ -20,7 +20,7 @@ const SignInPage: React.FC = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/masterData";
 
-  const [login] = useLoginMutation();
+  const [login,{isLoading}] = useLoginMutation();
 
   const handleLogin = async () => {
     setErrors({});
@@ -152,6 +152,7 @@ const SignInPage: React.FC = () => {
   borderRadius="100px"
   color="#0073B7"
   disabled={!isFormValid()}
+  loading={isLoading}
 />
 
           </Box>
