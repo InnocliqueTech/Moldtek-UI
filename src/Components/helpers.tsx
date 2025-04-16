@@ -180,3 +180,28 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
     </Box>
   );
 };
+
+export const generateId = (): string => {
+  const timestamp = Math.floor(new Date().getTime() / 1000).toString(16);
+  const randomPart = Array(16)
+    .fill(0)
+    .map(() => Math.floor(Math.random() * 16).toString(16))
+    .join('');
+  return timestamp + randomPart;
+};
+
+export const formatDate = (dateString: string | null): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return '';
+  }
+};

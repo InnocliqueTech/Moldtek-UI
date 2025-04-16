@@ -5,9 +5,10 @@ import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
 import { UENCell } from '../../Components/helpers';
 import { useNavigate } from "react-router-dom";
-import {  data,dailyJobsListMockResp } from './data';
+import {  dailyJobsListMockResp } from './data';
 import { useGetDailyJobMetricsQuery , useGetDailyJobsListQuery} from '../../store/services/api';
-import { ApiStatsResponse } from '../../store/Interfaces/createDailyPlanTypes';
+import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
+import { generateId,formatDate } from '../../Components/helpers';
 
 interface DailyPlanProps {
   title?: string;
@@ -16,6 +17,20 @@ interface DailyPlanProps {
 interface StatItem {
   title: string;
   value: number;
+}
+
+interface TableDataModel {
+  _id: string;
+  unitEffectivityNumber: string;
+  customer: {
+    image: string;
+    customerName: string;
+  };
+  indentNumber: string;
+  masterVersionNo: Number | string;
+  labelType: string;
+  createdAt: string;
+  jobRunDate: string;
 }
 
 const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatItem[] => {
@@ -35,6 +50,38 @@ const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatIte
     { title: "Non-Lamination Jobs", value: apiData.nonLaminationJobs || 0 },
     { title: "New Jobs Added", value: apiData.newJobs || 0 },
   ];
+};
+
+const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[] => {
+  if(!apiData){
+   return [ {
+      _id: generateId(),
+      unitEffectivityNumber: "N/A",
+      customer: { 
+        image: "", 
+        customerName:  "N/A" 
+      },
+      indentNumber: "N/A",
+      masterVersionNo:  "N/A",
+      labelType: "N/A",
+      createdAt: "N/A",
+      jobRunDate: "N/A",
+    }]
+  }
+
+  return apiData.map((job: DailyJob) => ({
+    _id: generateId(),
+    unitEffectivityNumber: job.unitEffectivityNumber || "N/A",
+    customer: { 
+      image: "", 
+      customerName: job.customerName || "N/A" 
+    },
+    indentNumber: job.indentNumber || "N/A",
+    masterVersionNo: job.masterVersionNo || "N/A",
+    labelType: job.labelType,
+    createdAt: formatDate(job.createdAt),
+    jobRunDate: formatDate(job.jobRunDate),
+  }));
 };
 
 const DailyPlan: React.FC<DailyPlanProps> = () => {
@@ -58,14 +105,15 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   } = useGetDailyJobsListQuery(pagination);
  
   console.log(metricsData,dailyJobsList, setPagination,dailyJobsListMockResp,"inside api call test");
-  const stats = transformApiDataToStats(metricsData?.data) 
+  const stats = transformApiDataToStats(metricsData?.data) ;
+  const data = transformJobDataList(dailyJobsList?.data)
   const navigate = useNavigate();
    const columns = [
-    { id: "version", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
+    { id: "indentNumber", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
       navigate('/viewDailyPlan')
     }} />, },
       {
-        id: "uen",
+        id: "unitEffectivityNumber",
         label: "Effective Unit Number",
         align: false,
       },
@@ -73,11 +121,11 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         id: "customer",
         label: "Customer",
         align: false,
-        format: (value: { image?: string; customer: string }) => (
+        format: (value: { image?: string; customerName: string }) => (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Avatar
               src={value.image || undefined} // Show image if available
-              alt={value.customer}
+              alt={value.customerName}
               sx={{
                 width: 32,
                 height: 32,
@@ -85,16 +133,16 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
                 bgcolor: value.image ? "transparent" : "#656565", // Background if no image
               }}
             >
-              {!value.image && value.customer?.charAt(0).toUpperCase()}{" "}
+              {!value.image && value.customerName?.charAt(0).toUpperCase()}{" "}
               {/* Show initial */}
             </Avatar>
-            <Typography variant="body2">{value.customer}</Typography>{" "}
+            <Typography variant="body2">{value.customerName}</Typography>{" "}
             {/* Display name */}
           </Box>
         ),
       },
       {
-        id: "segment",
+        id: "labelType",
         label: "Type Of Label",
         align: true,
         format: (value: string) => (
@@ -112,13 +160,13 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         ),
       },
       {
-        id: "masterDataVersion",
+        id: "masterVersionNo",
         label: "Master Data Version",
         align: true,
       },
-      { id: "createdOn", label: "Created On", align: false },
+      { id: "createdAt", label: "Created On", align: false },
       // { id: "lastUpdated", label: "Last Updated", align: false },
-      { id: "lastExecuted", label: "Scheduled On", align: false },
+      { id: "jobRunDate", label: "Scheduled On", align: false },
     ];
   return (
      <Box sx={{ p: 0 }}>
@@ -168,11 +216,6 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               }}
               rowIdentifier="_id" 
               actions={[
-               
-                // {
-                //   label: "Edit",
-                //   onClick: () => navigate(`/edit`),
-                // },
                 {
                   label: "Download",
                   onClick: () => navigate(`/download`),
