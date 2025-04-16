@@ -9,11 +9,11 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../../store';
 import { setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
 import { listOfLables } from '../../createMasterData/data';
-
+import { validateFormFields } from './formValidation';
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
-interface FormField {
+export interface FormField {
   id: string;
   label: string;
   value: string | string[];
@@ -58,7 +58,7 @@ const initialFormFields: FormField[] = [
 const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const handleInputChange = (
     fieldId: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -71,6 +71,15 @@ const CreatePlan: React.FC = () => {
         field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
+
+  // Clear error when user starts typing
+    if (errors[fieldId]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldId];
+        return newErrors;
+      });
+    }
   };
 
   const handleSave = () => {
@@ -85,6 +94,15 @@ const CreatePlan: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    const validation = validateFormFields(formFields);
+    if (!validation.isValid) {
+      // Extract errors from validation object
+      const { isValid, errorMessage, ...errorFields } = validation;
+      setErrors(errorFields);
+      toast.error('Please fix the form errors before submitting');
+      return;
+    }
+    setErrors({});
     dispatch(setSubmitAndPublishPopup(true))
     const formData = formFields.reduce((acc, field) => {
       acc[field.id] = field.value;
@@ -140,7 +158,6 @@ const CreatePlan: React.FC = () => {
         <Typography sx={{ fontSize: '1rem', fontWeight: '600' }} className="mb-3">
           Add New Job
         </Typography>
-
         <Grid container spacing={2} pt={1}>
           {formFields.map(field => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
@@ -152,6 +169,8 @@ const CreatePlan: React.FC = () => {
                   onChange={(value) => handleInputChange(field.id, value)}
                   isMultiSelect={false}
                   checkbox={false}
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
                 />
               ) : (
                 <ReusableInput
@@ -161,12 +180,17 @@ const CreatePlan: React.FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleInputChange(field.id, e.target.value)
                   }
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
                 />
               )}
             </Grid>
           ))}
         </Grid>
-        <Box className="flex justify-end mt-4">
+        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 2, }}>
+          * All fields are mandatory
+        </Typography>
+        <Box className="flex justify-end">
           <ButtonComponent
             text="Save"
             textColor="#0073B7"
