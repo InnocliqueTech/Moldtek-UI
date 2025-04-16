@@ -19,7 +19,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { setLabelTypes, setSelectedLabelTypeIds, toggleLabelType } from '../../store/slices/masterDataSlice';
-import { labelTypesData } from './data';
+import { useGetLabelTypesQuery } from '../../store/services/api';
 
 interface LabelType {
   labelTypeId: number;
@@ -30,8 +30,10 @@ interface LabelType {
 const LabelTypeSelector: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
+const {data:LabelTyepsData} = useGetLabelTypesQuery();
+
   useEffect(()=>{
-    dispatch(setLabelTypes(labelTypesData))
+    dispatch(setLabelTypes(LabelTyepsData))
   },[])
 
 

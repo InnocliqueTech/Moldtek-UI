@@ -15,7 +15,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
-import { listOfLables } from "./data";
+import { useGetLabelTypesQuery } from "../../store/services/api";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -37,7 +37,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     (state: RootState) => state.viewMasterData
   );
 
-  
+
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",
@@ -194,7 +194,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       setFormData(sanitizeMasterData(viewMasterDataDetails));
     }
   }, [id, viewMasterDataDetails]);
-  const dropdownOptions = listOfLables.map((option) => option.labelTypeName);
+  const {data:LabelTyepsData} = useGetLabelTypesQuery();
+  const dropdownOptions = LabelTyepsData && LabelTyepsData?.map((option:any) => option.labelTypeName);
   useEffect(() => {
     const importantFields = [
       "unit_effectivity_number",
@@ -242,7 +243,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Type of Label"
-                options={dropdownOptions}
+                options={dropdownOptions?dropdownOptions:[]}
                 value={formData.label_type}
                 onChange={(e) => handleChange("label_type", e.target.value)}
                 isMultiSelect={false}

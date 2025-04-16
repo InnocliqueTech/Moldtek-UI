@@ -74,6 +74,12 @@ export const apiSlice = createApi({
           "MasterDataList"
       ],
     }),
+    getCustomerDtails:builder.query<any, void>({
+      query: () => "/master/getCustomerDetails",
+    }),
+    getLabelTypes:builder.query<any, void>({
+      query: () => "/master/getLabelTypeDetails",
+    }),
 
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => "/dailyplan/dailyJobMetrics",
@@ -107,5 +113,7 @@ export const {
   useViewMasterDataQuery,
   useCreateMasterDataMutation,
   useVersionHistoryQuery,
-  useGetJobsListQuery
+  useGetJobsListQuery,
+  useGetCustomerDtailsQuery,
+  useGetLabelTypesQuery
 } = apiSlice;
