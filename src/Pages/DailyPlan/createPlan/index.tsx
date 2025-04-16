@@ -8,6 +8,7 @@ import SubmitPopups from './submitPopups';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../../store';
 import { setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
+import { listOfLables } from '../../createMasterData/data';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
@@ -21,6 +22,8 @@ interface FormField {
   options?: string[];
 }
 
+const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
+
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
   { id: 'unitEffNumber', label: 'Unit Effective Number:', value: '' },
@@ -28,7 +31,9 @@ const initialFormFields: FormField[] = [
   { id: 'colorsForSettings', label: 'No of Colors for settings', value: '' },
   { id: 'colorsForCirMatch', label: 'No Of Colours for Clr match', value: '' },
   { id: 'webLength', label: '1 Web Length for Colours Match', value: '' },
-  { id: 'colorMatching', label: 'Colour Matching', value: '' },
+  { id: 'typeOfLabel', label: 'Type of Label', value: '',component: 'dropdown',
+    options: typeOfLabelOptions, },
+  // { id: 'colorMatching', label: 'Colour Matching', value: '' },
   { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
   {
     id: 'labelType',
