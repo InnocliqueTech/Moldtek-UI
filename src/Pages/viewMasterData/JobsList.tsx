@@ -93,16 +93,16 @@ const JobsList: React.FC = () => {
       label: "Last Update",
       align: true,
       disableSorting: false,
-      format: (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-CA") : "",
+             format : (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
     },
     {
       id: "jobRunDate",
       label: "Last Executed",
       align: true,
       disableSorting: false,
-      format: (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-CA") : "", 
+             format : (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "", 
     },
     // {
     //   id: "comment",

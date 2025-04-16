@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Typography, Box, InputAdornment, IconButton } from "@mui/material";
+import { TextField, Box, InputAdornment, IconButton, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
 
@@ -12,7 +12,7 @@ interface ReusableInputProps {
   error?: boolean;
   helperText?: string;
   icon?: React.ReactNode; // Left-side icon
-  disabled?:boolean
+  disabled?: boolean;
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -30,25 +30,20 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
 
   return (
     <Box display="flex" flexDirection="column">
-      {/* Grey Heading */}
       <AutoTooltipText
-         content= {label}
-         maxLength={30}
-         variant= "body2" 
-         sx={{ color: "#656565" }}
-         tooltipPlacement="bottom"
-         TooltipProps={{ arrow: false }}
+        content={label}
+        maxLength={30}
+        variant="body2"
+        sx={{ color: "#656565" }}
+        tooltipPlacement="bottom"
+        TooltipProps={{ arrow: false }}
       />
-      {/* <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
-        {label}
-      </Typography> */}
 
-      {/* Input Field */}
       <TextField
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        type={type === "password" && !showPassword ? "password" : type}
+        type={showPassword && type === "password" ? "text" : type} 
         fullWidth
         variant="outlined"
         error={error}
@@ -58,13 +53,16 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
           startAdornment: icon ? <InputAdornment position="start">{icon}</InputAdornment> : null,
           endAdornment: type === "password" ? (
             <InputAdornment position="end">
-              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end"
+              <IconButton
+                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword
+                edge="end"
                 disableRipple
                 disableFocusRipple
                 sx={{
                   pointerEvents: "auto", // Allows clicking without focusing the input
                   "&:focus": { outline: "none" }, // Removes any focus outline
-                }} >
+                }}
+              >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>

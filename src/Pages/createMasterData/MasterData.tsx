@@ -115,16 +115,16 @@ const MasterData: React.FC = () => {
       label: "Created On",
       align: false,
       disableSorting: false,
-      format: (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-CA") : "",
+       format : (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
     },
     {
       id: "updated_at",
       label: "Last Updated",
       align: false,
       disableSorting: false,
-      format: (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-CA") : "",
+             format : (value: string) =>
+        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
     },
   ];
 

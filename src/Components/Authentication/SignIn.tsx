@@ -61,6 +61,10 @@ const SignInPage: React.FC = () => {
       navigate("/");
     }
   };
+  const isFormValid = () => {
+    const result = signInSchema.safeParse({ email, password });
+    return result.success;
+  };
   
 
   return (
@@ -141,7 +145,15 @@ const SignInPage: React.FC = () => {
 
           {/* Sign-In Button */}
           <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
-            <ReusableButton text="Sign In" onClick={handleLogin} width="100%" borderRadius="100px" color="#0073B7" />
+          <ReusableButton 
+  text="Sign In"
+  onClick={handleLogin}
+  width="100%"
+  borderRadius="100px"
+  color="#0073B7"
+  disabled={!isFormValid()}
+/>
+
           </Box>
         </Box>
       </Box>

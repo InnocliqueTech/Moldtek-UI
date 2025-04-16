@@ -48,6 +48,11 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         "&:hover": {
           backgroundColor: color ? `${color}D9` : "transparent",
         },
+        "&.Mui-disabled": {
+          backgroundColor: "#E0E0E0",  
+          color: "#000000", 
+          border:'none'          
+        },
         ...(color === "none" && { color: textColor || "black" }),
         ...styles
       }}
