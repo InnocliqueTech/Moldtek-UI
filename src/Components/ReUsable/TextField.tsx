@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Typography, Box, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import AutoTooltipText from "./AutoTooltipText";
 
 interface ReusableInputProps {
   label: string;
@@ -30,9 +31,17 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   return (
     <Box display="flex" flexDirection="column">
       {/* Grey Heading */}
-      <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
+      <AutoTooltipText
+         content= {label}
+         maxLength={30}
+         variant= "body2" 
+         sx={{ color: "#656565" }}
+         tooltipPlacement="bottom"
+         TooltipProps={{ arrow: false }}
+      />
+      {/* <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
         {label}
-      </Typography>
+      </Typography> */}
 
       {/* Input Field */}
       <TextField
