@@ -192,11 +192,20 @@ const MasterData: React.FC = () => {
             actions={[
               {
                 label: "View Job Data",
-                onClick: () => navigate(`/viewJobsList`),
+                onClick: (row: any) => {
+                  const selectedUEN = row?.unit_effectivity_number;
+                  localStorage.setItem("actionSelectedUEN",selectedUEN);
+                  navigate(`/viewJobsList`);  // If you want this to depend on the row, add params here.
+                },
               },
               {
                 label: "Update",
-                onClick: () => navigate(`/updateMasterData/${selectedUEN}`),
+                onClick: (row: any) => {
+                  const selectedUEN = row?.unit_effectivity_number;
+                  localStorage.setItem("actionSelectedUEN",selectedUEN);
+                  const actionSelectedUpdateUEN= localStorage.getItem("actionSelectedUEN")
+                  navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
+                },
               },
             ]}
             isLoading={listOfCompaniesLoading}

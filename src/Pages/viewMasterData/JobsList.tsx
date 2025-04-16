@@ -14,7 +14,7 @@ import { useGetJobsListQuery } from "../../store/services/api";
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
-  const UEN = localStorage.getItem("selectedUEN");
+  const UEN= localStorage.getItem("actionSelectedUEN")
   let selectedUEN :any;
   if(UEN){
     selectedUEN =  UEN;

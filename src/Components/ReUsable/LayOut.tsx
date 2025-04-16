@@ -30,6 +30,11 @@ const Layout = () => {
    if(UEN){
      selectedUEN =  UEN;
   }
+  const UENAction= localStorage.getItem("actionSelectedUEN")
+  let selectedUENList :any;
+  if(UENAction){
+    selectedUENList =  UENAction;
+ }
   const { id, version } = useParams();
   const today = new Date();
 
@@ -120,12 +125,12 @@ const Layout = () => {
     },
 
     "/viewJobsList": {
-      title: selectedUEN,
+      title: selectedUENList,
       button1Text: "Version History",
       ...(role === "Admin" && {
         button2Text: "Modify Master Data",
         onButton2Click: () => {
-          navigate(`/updateMasterData/${selectedUEN}`);
+          navigate(`/updateMasterData/${selectedUENList}`);
           dispatch(setSelectedTab(0));
         },
       }),
