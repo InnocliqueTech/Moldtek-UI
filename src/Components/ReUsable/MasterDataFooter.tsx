@@ -18,6 +18,8 @@ import {
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCreateMasterDataMutation } from "../../store/services/api";
+import { toast } from "react-toastify";
 
 interface MasterDataFooterProps {
   selectedTab: number;
@@ -35,7 +37,16 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     "Next: Master Data - Lamination",
     "Next: Master Data - Dye Cutting",
   ];
-
+  const {
+    submitPopup,
+    submitPopupConfirm,
+    submitAndPublish,
+    submitAndPublishButtonMasterData,
+    submitAndPublishButtonDyeCutting,
+    submitAndPublishButtonLamination,
+    submitAndPublishButtonPrinting,
+    requestPayload
+  } = useSelector((store: RootState) => store.masterData);
   const handleNextClick = () => {
     if (selectedTab < 3) {
       dispatch(setSelectedTab(selectedTab + 1));
@@ -48,13 +59,40 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const handleSubmitAndPublishPopupOpen = () => {
     if (selectedTab === 3) {
       dispatch(setSubmitAndPublishPopup(true));
+      if (handleSave) handleSave();
     }
   };
 
+  const [createMasterData, { isLoading, isSuccess, isError, error }] = useCreateMasterDataMutation();
+
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitAndPublishPopup(false));
+
+    createMasterData({ requestPayload })
+      .then(() => {
+        if (isSuccess) {
+          // Only open the confirmation popup after successful API call
+          dispatch(setSubmitPopupConfirm(true));
+          dispatch(clearDyeCuttingFormData());
+          dispatch(clearDyeCuttingFormErrors());
+      
+          dispatch(clearLaminatingFormData());
+          dispatch(clearLaminationFormErrors());
+      
+          dispatch(clearPrintingFormData());
+          dispatch(clearPrintingFormErrors());
+      
+          dispatch(clearMasterDetaisData());
+          dispatch(clearMasterDataFormErrors());
+        }
+      })
+      .catch(() => {
+        // Handle error
+        if (isError) {
+        toast.error("Error Fetching Data")
+        }
+      });
     dispatch(setSubmitPopupConfirm(true));
-    if (handleSave) handleSave();
   };
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -65,31 +103,11 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
-    dispatch(clearDyeCuttingFormData());
-    dispatch(clearDyeCuttingFormErrors());
-
-    dispatch(clearLaminatingFormData());
-    dispatch(clearLaminationFormErrors());
-
-    dispatch(clearPrintingFormData());
-    dispatch(clearPrintingFormErrors());
-
-    dispatch(clearMasterDetaisData());
-    dispatch(clearMasterDataFormErrors());
     navigate("/masterData");
   };
 
-  const {
-    submitPopup,
-    submitPopupConfirm,
-    submitAndPublish,
-    submitAndPublishButtonMasterData,
-    submitAndPublishButtonDyeCutting,
-    submitAndPublishButtonLamination,
-    submitAndPublishButtonPrinting,
-  } = useSelector((store: RootState) => store.masterData);
-  const { id } = useParams();
 
+  const { id } = useParams();
   return (
     <Box
       display="flex"
@@ -160,6 +178,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         gifSrc=""
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
+        isLoading={isLoading}
       />
       <ConfirmPopup
         open={submitPopupConfirm}

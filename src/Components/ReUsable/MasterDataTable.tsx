@@ -133,7 +133,7 @@ const DataTable = <T extends Record<string, any>>({
     const mandatoryFields = ["color_pantone", "lpcm", "lf_value"];
 
     // Check if any mandatory field is empty
-    const hasEmptyMandatory = data.some((row) =>
+    const hasEmptyMandatory = data?.some((row) =>
       mandatoryFields.some((field) => {
         const value = row[field];
         return (

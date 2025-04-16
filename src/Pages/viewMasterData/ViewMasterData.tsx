@@ -18,8 +18,8 @@ import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect } from "react";
-import { mockData } from "./data";
-// import { useGetItemsQuery } from "../../store/services/api";
+import { useViewMasterDataQuery } from "../../store/services/api";
+import Loader from "../../Loader";
 
 const tabs = [
   "Master Data - Printing",
@@ -32,31 +32,39 @@ const ViewMasterData: React.FC = () => {
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-//  useGetItemsQuery();
+
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
+  }
+  const version = localStorage.getItem("selectedVersionNo");
+  let versionNo: any;
+  if (version) {
+    versionNo = version;
+  }
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
 
+  const { data, isLoading } = useViewMasterDataQuery({
+    ueNumber: selectedUEN,
+    versionNo: versionNo,
+  });
+
   useEffect(() => {
-    dispatch(setViewMasterDataDetails(mockData.masterDataDetails));
-    dispatch(
-      setPrintingMachineSettingsData(
-        mockData.masterDataPrinting.printingDetails
-      )
-    );
-    dispatch(
-      setPrintingSubstrate(
-        mockData.masterDataPrinting.printingSubstrateSettings
-      )
-    );
-    dispatch(
-      setPrintingInkStationData(mockData.masterDataPrinting.stationWiseMetrics)
-    );
-    dispatch(setDyeCuttingSettings(mockData.masterDataDyeCutting));
-    dispatch(setLaminationSettings(mockData.masterDataLamination.laminationConditions));
-    dispatch(setLaminatingSubstrate(mockData.masterDataLamination.laminationSubstrate));
-    dispatch(setLaminationAdhesiveDetails(mockData.masterDataLamination.bondingMaterials))
-  }, []);
+    if (data) {
+      dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
+      dispatch(setPrintingMachineSettingsData(data?.data.masterDataPrinting.printingDetails));
+      dispatch(setPrintingSubstrate(data?.data.masterDataPrinting.printingSubstrateSettings));
+      dispatch(setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics));
+      dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
+      dispatch(setLaminationSettings(data?.data.masterDataLamination.laminationConditions));
+      dispatch(setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate));
+      dispatch(setLaminationAdhesiveDetails(data?.data.masterDataLamination.bondingMaterials));
+    }
+  }, [data, dispatch]);
 
   return (
     <Box
@@ -75,53 +83,57 @@ const ViewMasterData: React.FC = () => {
         flexDirection: "column",
       }}
     >
-      {/* Static top section (OrderCard) */}
-      <Box
-        sx={{
-          backgroundColor: "white",
-          padding: 2,
-          borderRadius: "10px",
-          mb: 1,
-        }}
-      >
-        <OrderCard />
-      </Box>
-
-      {/* Scrollable section */}
-      <Box
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          backgroundColor: "white",
-          borderRadius: "10px",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {/* Sticky Tabs */}
-        <Box
-          sx={{
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-            backgroundColor: "white",
-            borderBottom: "1px solid #e0e0e0",
-          }}
-        >
-          <TabsComponent
-            tabs={tabs}
-            value={selectedTab}
-            onChange={handleTabChange}
-          />
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <Loader />
         </Box>
+      ) : (
+        <>
+          <Box
+            sx={{
+              backgroundColor: "white",
+              padding: 2,
+              borderRadius: "10px",
+              mb: 1,
+            }}
+          >
+            <OrderCard />
+          </Box>
 
-        {/* Tab Content */}
-        <Box sx={{ padding: 2 }}>
-          {selectedTab === 0 && <ViewPrinting />}
-          {selectedTab === 1 && <ViewLamination />}
-          {selectedTab === 2 && <ViewDyeCutting />}
-        </Box>
-      </Box>
+          <Box
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              backgroundColor: "white",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Box
+              sx={{
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
+                backgroundColor: "white",
+                borderBottom: "1px solid #e0e0e0",
+              }}
+            >
+              <TabsComponent
+                tabs={tabs}
+                value={selectedTab}
+                onChange={handleTabChange}
+              />
+            </Box>
+
+            <Box sx={{ padding: 2 }}>
+              {selectedTab === 0 && <ViewPrinting />}
+              {selectedTab === 1 && <ViewLamination />}
+              {selectedTab === 2 && <ViewDyeCutting />}
+            </Box>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

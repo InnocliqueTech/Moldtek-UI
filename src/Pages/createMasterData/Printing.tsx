@@ -250,8 +250,6 @@ const updatedErros = {
           options={field.options}
           isMultiSelect={false}
           checkbox={false}
-          error={!!error}
-          helperText={error}
         />
       );
     }
@@ -313,17 +311,13 @@ const updatedErros = {
       | keyof PrintingFormValues["printingSubstrateSettings"]
     )[];
 
-    const hasErrors = !importantFields.some((field) => {
+    const hasErrors = importantFields.some((field) => {
       const isInPrintingDetails = field in formValues.printingDetails;
       const isInPrintingSubstrateSettings =
         field in formValues.printingSubstrateSettings;
-
+    
       if (isInPrintingDetails) {
-        // Access fields in printingDetails
-        const value =
-          formValues.printingDetails[
-            field as keyof PrintingFormValues["printingDetails"]
-          ];
+        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
         return (
           errors[field] !== "" ||
           value === "" ||
@@ -331,13 +325,9 @@ const updatedErros = {
           value === undefined
         );
       }
-
+    
       if (isInPrintingSubstrateSettings) {
-        // Access fields in printingSubstrateSettings
-        const value =
-          formValues.printingSubstrateSettings[
-            field as keyof PrintingFormValues["printingSubstrateSettings"]
-          ];
+        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
         return (
           errors[field] !== "" ||
           value === "" ||
@@ -345,11 +335,11 @@ const updatedErros = {
           value === undefined
         );
       }
-
+    
       return false;
     });
-
     dispatch(setSubmitAndPublishButtonPrinting(hasErrors));
+    
   }, [formValues, errors]);
 
   return (

@@ -9,6 +9,8 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import { EmailOutlined, LockOutlined } from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
+import { useLoginMutation } from "../../store/services/api";
+import { toast } from "react-toastify";
 
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,10 +20,12 @@ const SignInPage: React.FC = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/masterData";
 
-  const handleLogin = () => {
+  const [login,{isLoading}] = useLoginMutation();
+
+  const handleLogin = async () => {
     setErrors({});
     const result = signInSchema.safeParse({ email, password });
-
+  
     if (!result.success) {
       const newErrors: { email?: string; password?: string } = {};
       result.error.errors.forEach((err) => {
@@ -34,10 +38,34 @@ const SignInPage: React.FC = () => {
       setErrors(newErrors);
       return;
     }
-
-    localStorage.setItem("auth", "true");
-    navigate(from, { replace: true });
+  
+    try {
+      const response = await login({ username: email, password }).unwrap();
+      if (response?.data?.token) {
+        localStorage.setItem("token", response?.data?.token);
+        localStorage.setItem("auth", "true");
+        localStorage.setItem("role",response?.data?.userTypeName);
+        navigate(from, { replace: true });
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.setItem("auth", "false");
+        toast.error("Login failed: No token received");
+        navigate("/");
+      }
+    } catch (err: any) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.setItem("auth", "false");
+      toast.error(err?.data?.message || "Login failed: No token received");
+      navigate("/");
+    }
   };
+  const isFormValid = () => {
+    const result = signInSchema.safeParse({ email, password });
+    return result.success;
+  };
+  
 
   return (
     <Box
@@ -117,7 +145,16 @@ const SignInPage: React.FC = () => {
 
           {/* Sign-In Button */}
           <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
-            <ReusableButton text="Sign In" onClick={handleLogin} width="100%" borderRadius="100px" color="#0073B7" />
+          <ReusableButton 
+  text="Sign In"
+  onClick={handleLogin}
+  width="100%"
+  borderRadius="100px"
+  color="#0073B7"
+  disabled={!isFormValid()}
+  loading={isLoading}
+/>
+
           </Box>
         </Box>
       </Box>

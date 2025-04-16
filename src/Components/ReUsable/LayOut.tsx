@@ -14,8 +14,8 @@ import {
   setSelectedTab,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+import { useDispatch} from "react-redux";
+import { AppDispatch} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 
 const Layout = () => {
@@ -25,8 +25,23 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const {selectedUEN} = useSelector((state:RootState)=>state.masterData);
-  const {id,version} = useParams();
+  const UEN = localStorage.getItem("selectedUEN");
+   let selectedUEN :any;
+   if(UEN){
+     selectedUEN =  UEN;
+  }
+  const { id, version } = useParams();
+  const today = new Date();
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+  const formattedDate = today
+    .toLocaleDateString("en-GB", options)
+    .replace(/ /g, "-");
+  const role = localStorage.getItem("role");
   const pageData: Record<
     string,
     {
@@ -36,12 +51,12 @@ const Layout = () => {
       onButton1Click?: () => void;
       onButton2Click?: () => void;
       lastUpdate?: string;
-      headerButton?:boolean
-      onBack?:()=>void;
-      filterTitle?:string;
-      uploadTitle?:string;
-      uploadSubTitle?:string;
-      headerButtonColor?:boolean
+      headerButton?: boolean;
+      onBack?: () => void;
+      filterTitle?: string;
+      uploadTitle?: string;
+      uploadSubTitle?: string;
+      headerButtonColor?: boolean;
     }
   > = {
     "/dashboard": {
@@ -66,49 +81,60 @@ const Layout = () => {
       onButton2Click: () => {
         navigate("/createMasterData"), dispatch(setSelectedTab(0));
       },
-       filterTitle:'Master Data Filter'
+      filterTitle: "Master Data Filter",
     },
     "/createMasterData": {
       title: "Create Master Data",
-      button1Text: "Created on: 15-Mar-2025",
+      button1Text: `Created on: ${formattedDate}`,
       button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
-      uploadTitle:'Create Master Data',
-      uploadSubTitle: 'Upload Master Data',
-      headerButton:true,
-      onBack:()=>navigate('/masterData'),
-      headerButtonColor:true
+      uploadTitle: "Create Master Data",
+      uploadSubTitle: "Upload Master Data",
+      headerButton: true,
+      onBack: () => navigate("/masterData"),
+      headerButtonColor: true,
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",
-      button1Text: "Updated on: 15-Mar-2025",
+      button1Text: `Updated on:${formattedDate}`,
       // button2Text: "Upload Master Data",
       onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
-      uploadTitle:'Update Master Data',
-      uploadSubTitle: 'Upload Master Data'
+      uploadTitle: "Update Master Data",
+      uploadSubTitle: "Upload Master Data",
     },
     "/viewMasterData/:id": {
       title: selectedUEN,
       button1Text: "Version History",
-      button2Text: "Modify Master Data",
-      onButton1Click: () =>  dispatch(setVersionPopup(true)),
-      onButton2Click: () => {navigate(`/updateMasterData/${selectedUEN}`),dispatch(setSelectedTab(0))},
-      headerButton:true,
-      onBack:()=>navigate('/masterData')
+      ...(role === "Admin" && {
+        button2Text: "Modify Master Data",
+        onButton2Click: () => {
+          navigate(`/updateMasterData/${selectedUEN}`);
+          dispatch(setSelectedTab(0));
+        },
+      }),
+      onButton1Click: () => dispatch(setVersionPopup(true)),
+      headerButton: true,
+      onBack: () => navigate("/masterData"),
     },
-    "/versiondetails/:id/:version": {
-      title: `${id}-${version}`,
-    },
+
     "/viewJobsList": {
       title: selectedUEN,
       button1Text: "Version History",
-      button2Text: "Modify Master Data",
+      ...(role === "Admin" && {
+        button2Text: "Modify Master Data",
+        onButton2Click: () => {
+          navigate(`/updateMasterData/${selectedUEN}`);
+          dispatch(setSelectedTab(0));
+        },
+      }),
       onButton1Click: () => dispatch(setVersionPopup(true)),
-      onButton2Click: () => {navigate(`/updateMasterData/${selectedUEN}`),dispatch(setSelectedTab(0))},
-      headerButton:true,
-      onBack:()=>navigate('/masterData') 
+      headerButton: true,
+      onBack: () => navigate("/masterData"),
+    },
+    "/versiondetails/:id/:version": {
+      title: `${id}-${version}`,
     },
     "/settings": {
       title: "Settings",
@@ -123,18 +149,18 @@ const Layout = () => {
       button2Text: "Create Daily Plan",
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: () => navigate(`/createPlan`),
-      filterTitle:'Daily Plan Filter'
+      filterTitle: "Daily Plan Filter",
     },
     "/viewDailyPlan": {
       title: "View Daily Plan",
       button1Text: "View Template",
       button2Text: "Upload Job Data",
-      onButton1Click:  () => alert("View Template Clicked"),
+      onButton1Click: () => alert("View Template Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
-      headerButton:true,
-      onBack:()=>navigate('/dailyPlan') ,
-      uploadTitle:'Upload Job Data',
-      uploadSubTitle:''
+      headerButton: true,
+      onBack: () => navigate("/dailyPlan"),
+      uploadTitle: "Upload Job Data",
+      uploadSubTitle: "",
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -142,10 +168,10 @@ const Layout = () => {
       // button2Text: "Submit",
       onButton1Click: () => dispatch(setUploadPopup(true)),
       // onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
-      uploadTitle:'Create Daily Plan',
-      uploadSubTitle: 'Upload Daily Plan',
-      headerButton:true,
-      onBack:()=>navigate('/dailyPlan') ,
+      uploadTitle: "Create Daily Plan",
+      uploadSubTitle: "Upload Daily Plan",
+      headerButton: true,
+      onBack: () => navigate("/dailyPlan"),
     },
     "/": {
       title: "Home",

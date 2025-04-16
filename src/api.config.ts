@@ -6,13 +6,13 @@ const getBaseUrl = () => {
   
     switch (env) {
       case 'development':
-        return 'https://dev-api.example.com';
+        return 'http://localhost:8880/MOLD-TEK/api';
       case 'staging':
         return 'https://staging-api.example.com';
       case 'production':
         return 'https://api.example.com';
       default:
-        return 'http://localhost:3000';
+        return 'http://localhost:8880/MOLD-TEK/api';
     }
   };
   
