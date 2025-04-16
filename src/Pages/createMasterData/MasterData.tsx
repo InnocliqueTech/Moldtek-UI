@@ -39,13 +39,15 @@ const MasterData: React.FC = () => {
       id: "unit_effectivity_number",
       label: "Unit Effectivity Number",
       align: false,
-      format: (value: string) => (
+      format: (value: string, row: any) => (
         <UENCell
           value={value}
           onClick={() => {
-            dispatch(setSelectedUEN(value)),
-              dispatch(setSelectedTab(0)),
-              navigate(`/viewMasterData/${value}`);
+            // Store both UEN and version_no in localStorage
+            localStorage.setItem("selectedUEN", value);
+            localStorage.setItem("selectedVersionNo", row.version_no); // Store version number
+            dispatch(setSelectedTab(0));
+            navigate(`/viewMasterData/${value}`);
           }}
         />
       ),
@@ -139,7 +141,11 @@ const MasterData: React.FC = () => {
       customer: row.customer_name,
     },
   }));
-  const { selectedUEN } = useSelector((state: RootState) => state.masterData);
+  const UEN = localStorage.getItem("selectedUEN");
+   let selectedUEN :any;
+   if(UEN){
+     selectedUEN =  UEN;
+  }
 
   if (isError || companiesError) {
     return (

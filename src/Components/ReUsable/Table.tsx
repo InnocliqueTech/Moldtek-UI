@@ -41,7 +41,7 @@ interface Column {
   id: string;
   label: string;
   disableSorting?: boolean;
-  format?: (value: any) => string | JSX.Element | null;
+  format?: (value: any, row: any) => string | JSX.Element | null;
   align: boolean;
 }
 interface TableAction<T> {
@@ -521,7 +521,9 @@ function ReusableTable<T extends Record<string, any>>({
                   marginLeft: index === 0 ? "8px" : undefined,
                 }}
               >
-                {column.format ? column.format(row[column.id]) : row[column.id]}
+                {column.format
+                  ? column.format(row[column.id], row)  
+                  : row[column.id]}
               </TableCell>
             ))}
             {action && (

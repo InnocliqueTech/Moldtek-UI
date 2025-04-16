@@ -25,7 +25,11 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const { selectedUEN } = useSelector((state: RootState) => state.masterData);
+  const UEN = localStorage.getItem("selectedUEN");
+   let selectedUEN :any;
+   if(UEN){
+     selectedUEN =  UEN;
+  }
   const { id, version } = useParams();
   const today = new Date();
 

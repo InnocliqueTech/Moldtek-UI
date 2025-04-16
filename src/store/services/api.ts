@@ -36,6 +36,19 @@ export const apiSlice = createApi({
         method: "GET",
       }),
     }),
+    viewMasterData: builder.query<any, { [key: string]: string | number | boolean }>({
+      query: (newItem) => {
+        const queryString = Object.entries(newItem)
+          .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+          .join("&");
+    
+        return {
+          url: `/master/getMasterDetails?${queryString}`,
+          method: "GET",
+        };
+      },
+    }),
+    
     
     // addItem: builder.mutation<Item, Partial<Item>>({
     //   query: (newItem) => ({
@@ -85,4 +98,4 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useGetMetricsQuery,useGetDailyJobMetricsQuery,useGetDailyJobsListQuery,useListOfCompaniesQuery,useLoginMutation } = apiSlice;
+export const { useGetMetricsQuery,useGetDailyJobMetricsQuery,useGetDailyJobsListQuery,useListOfCompaniesQuery,useLoginMutation,useViewMasterDataQuery } = apiSlice;

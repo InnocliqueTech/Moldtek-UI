@@ -13,7 +13,11 @@ import { jobsList } from "./data";
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
-  const {selectedUEN} = useSelector((state:RootState)=>state.masterData)
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN :any;
+  if(UEN){
+    selectedUEN =  UEN;
+ }
   type StatusType = "In progress" | "On hold" | "Not yet started" | "Completed";
 
   const colorMap: Record<StatusType, string> = {
