@@ -6,6 +6,7 @@ import {
   Box,
 } from "@mui/material";
 import ButtonComponent from "./Button";
+import { HelpCenter, HelpOutline } from "@mui/icons-material";
 
 interface ConfirmPopupProps {
   open: boolean;
@@ -46,15 +47,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
       }}
     >
       <DialogContent>
-        {gifSrc && (
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-            <img
-              src={gifSrc}
-              alt="Success"
-              style={{ width: "80px", height: "80px" }}
-            />
-          </Box>
-        )}
+      <HelpOutline sx={{color:"#0073B7", width:40,height:40,mb:1}}/>
         <Typography variant="h6" fontWeight="bold">
           {title}
         </Typography>

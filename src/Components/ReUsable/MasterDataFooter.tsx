@@ -20,6 +20,7 @@ import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCreateMasterDataMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
+import SuccessPopup from "./SuccessPopup";
 
 interface MasterDataFooterProps {
   selectedTab: number;
@@ -200,15 +201,14 @@ const successTitle = id
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading}
       />
-      <ConfirmPopup
-        open={submitPopupConfirm}
-        title={successTitle}
-        message="You're all set! Let’s get started."
-        buttonText2="Go back to Master Data"
-        gifSrc=""
-        onClose={handleSubmitPopupConfirmClose}
-        onClick={handleSubmitPopupConfirmClick}
-      />
+   <SuccessPopup
+  open={submitPopupConfirm}
+  message={successTitle}
+  onClose={handleSubmitPopupConfirmClick}
+  subMessage="You’re all set! Let’s get started."
+  buttonText='Go back to Master Data'
+/>
+
       <ConfirmPopup
         open={submitAndPublish}
         title={confirmPublishTitle}
