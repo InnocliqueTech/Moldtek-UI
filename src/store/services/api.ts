@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_API_URL } from "../../api.config";
-import { DailyJobMetricsResponse, DailyJobsListResponse, PaginationParams, DailyJob } from "../Interfaces/createDailyPlanTypes";
+import { DailyJobMetricsResponse, DailyJobsListResponse, PaginationParams, DailyJob, PrintingReportResponse } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
   return `${job.unitEffectivityNumber}-${job.masterVersionNo}-${job.jobRunDate}-${job.indentNumber}`;
@@ -11,7 +11,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: ["MasterDataMetrics", "DailyJobMetrics", "DailyJobs","MasterDataList"],  // Define tags for cache invalidation
+  tagTypes: ["MasterDataMetrics", "DailyJobMetrics", "DailyJobs","MasterDataList" , "PrintingReport"],  // Define tags for cache invalidation
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
       query: (newItem) => ({
@@ -80,7 +80,6 @@ export const apiSlice = createApi({
     getLabelTypes:builder.query<any, void>({
       query: () => "/master/getLabelTypeDetails",
     }),
-
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => "/dailyplan/dailyJobMetrics",
       providesTags: ["DailyJobMetrics"],  // This query provides the "DailyJobMetrics" tag
@@ -101,6 +100,12 @@ export const apiSlice = createApi({
             ]
           : [{ type: "DailyJobs", id: "LIST" }],
     }),
+    getPrintingReportDetails: builder.query<PrintingReportResponse, string>({
+      query: (jobId) => `/dailyplan/getDailyPlanprintingReportDetails/${jobId}`,
+      providesTags: (result, error, jobId) => [
+        { type: 'PrintingReport', id: jobId }
+      ],
+    }),
   }),
 });
 
@@ -115,5 +120,6 @@ export const {
   useVersionHistoryQuery,
   useGetJobsListQuery,
   useGetCustomerDtailsQuery,
-  useGetLabelTypesQuery
+  useGetLabelTypesQuery,
+  useGetPrintingReportDetailsQuery, 
 } = apiSlice;

@@ -59,4 +59,90 @@ export interface Plan {
     id: number;
     formFields: FormField[];
   }
+// types.ts
+export interface InkCoatingSpecification {
+  stationNo: number
+  colorPantone: string
+  mixingOnGec: string | null
+  mtplCode: string | null
+  lfValue: number
+  supplierBatchNo: string | null
+  uvLedIntersity: string
+  lpcm: string
+  vol: string
+}
+
+export interface TensionControl {
+  std: {
+    unwinder: number
+    infeed: number
+    outfeed: number
+    rewinder: number
+  }
+  actuals: {
+    unwinder: number
+    infeed: number
+    outfeed: number
+    rewinder: number
+  }
+}
+
+export interface PrintRepeatLabellingDetails {
+  repeatInMM: number
+  ups: number
+  jarCap: string
+  labelsPerMtrs: number
+}
+
+export interface MaterialSpecifications {
+  widthMm: string
+  thicknessMicrons: string
+  gsm: string
+  dyne: string
+  staticCharge: number
+  formatCorrection: number
+}
+
+export interface FoilRollConsumptionDetails {
+  foilInputRoll: number
+  foilReturnRoll: number
+  consumption: number
+  foilWidth: number
+}
+
+export interface ProcessReportItem {
+  particular: string;
+  target: number | string | null;
+  rollValues: Record<string, string | number>; // allowing numbers too in case the API sends them
+}
+
+
+export interface MaterialUsageShiftDetails {
+  plainFilmWeightPerRepeat: number
+  printedFilmWeightPerRepeat: number
+  inkWeightPerRepeat: number
+  printingMCName: string
+  leftOverRollMeters: number | null
+  leftOverRollKgs: string
+  operator: string
+  shiftQc: string
+  supervisor: string
+  remarks: string
+}
+
+export interface PrintingReportResponse {
+  statusCode: number
+  message: string
+  payload: null
+  data: {
+    inkCoatingSpecifications: InkCoatingSpecification[]
+    tensionControl: TensionControl
+    printRepeatLabellingDetails: PrintRepeatLabellingDetails
+    materialSpecifications: MaterialSpecifications
+    foilRollConsumptionDetails: FoilRollConsumptionDetails
+    printingProcessReport: ProcessReportItem[]
+    printingRunMetrics: ProcessReportItem[]
+    materialUsageShiftDetails: MaterialUsageShiftDetails
+  }
+}
   

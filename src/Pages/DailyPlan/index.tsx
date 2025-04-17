@@ -99,7 +99,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   // Jobs list API call
   const { 
     data: dailyJobsList, 
-    // isLoading: isJobsLoading,
+    isLoading: isJobsLoading,
     // isError: isJobsError,
     // error: jobsError
   } = useGetDailyJobsListQuery(pagination);
@@ -110,7 +110,8 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   const navigate = useNavigate();
    const columns = [
     { id: "indentNumber", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
-      navigate('/viewDailyPlan')
+      const encodedParam = encodeURIComponent(value);
+      navigate(`/viewDailyPlan/${encodedParam}`)
     }} />, },
       {
         id: "unitEffectivityNumber",
@@ -215,6 +216,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
                 console.log('Selected items:', selectedItems);
               }}
               rowIdentifier="_id" 
+              isLoading={isJobsLoading}
               actions={[
                 {
                   label: "Download",

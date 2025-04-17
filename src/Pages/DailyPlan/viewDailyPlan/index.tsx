@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import { Box } from "@mui/material";
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,11 @@ const tabs = [
 ];
 
 const ViewDailyPlan: React.FC = () => {
+  const { indentNo } = useParams();
+  // const decodedIndentNo = indentNo
+
+  const decodedIndentNo = decodeURIComponent(indentNo || "");
+  console.log(indentNo,decodedIndentNo,"pathParam");
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -72,8 +78,8 @@ dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisor
           onChange={handleTabChange}
         />
         <Box sx={{ padding: 1 }}>
-          {selectedTab === 0 && <MakeReady />}
-          {selectedTab === 1 && <PrintingReport />}
+          {selectedTab === 0 && <MakeReady indentNO={decodedIndentNo}/>}
+          {selectedTab === 1 && <PrintingReport indentNO={decodedIndentNo}/>}
           {selectedTab === 2 && <LaminationReport />}
           {selectedTab === 3 && <LabelCutting/>}
           {selectedTab === 4 && <TravelCard/>}

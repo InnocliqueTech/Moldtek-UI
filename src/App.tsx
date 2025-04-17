@@ -34,7 +34,7 @@ const App: React.FC = () => {
               <Route path="/dailyPlan" element={<DailyPlan/>} />
               <Route path="/viewJobsList" element={<JobsList/>}/>
               <Route path="/createPlan" element={<CreatePlan/>}/>
-              <Route path="/viewDailyPlan" element={<ViewDailyPlan/>}/>  
+              <Route path="/viewDailyPlan/:indentNo" element={<ViewDailyPlan/>}/>  
               <Route path ="/versiondetails/:id/:version" element={<ViewMasterData/>}/>       
             </Route>
           </Route>

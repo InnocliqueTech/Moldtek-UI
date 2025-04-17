@@ -36,7 +36,14 @@ const transformAnaloxData = (specs: any[]) => {
   });
 };
 
-const MakeReady: React.FC = () => {
+interface PrintingReportProps {
+  indentNO: string
+}
+
+const MakeReady: React.FC<PrintingReportProps> = ({
+  indentNO
+}) => {
+  console.log(indentNO,"inside makeReady")
   const {
     inkCoatingSpecifications,
     materialSpecification,
