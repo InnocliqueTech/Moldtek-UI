@@ -205,7 +205,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               columns={columns}
               data={data}
               selectable={true}
-              label="42 Jobs"
+              label={`${data.length.toString()} Jobs`}
               title="List of Job Tracker"
               // lastUpdate="2 hours ago"
               info={true}
