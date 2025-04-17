@@ -99,7 +99,7 @@ const CreatePlan: React.FC = () => {
       // Extract errors from validation object
       const { isValid, errorMessage, ...errorFields } = validation;
       setErrors(errorFields);
-      toast.error('Please fix the form errors before submitting');
+      toast.error('Please Enter valid data before submitting');
       return;
     }
     setErrors({});

@@ -156,11 +156,11 @@ const Layout = () => {
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
     },
-    "/viewDailyPlan": {
+    "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
       button1Text: "View Template",
       button2Text: "Upload Job Data",
-      onButton1Click: () => alert("View Template Clicked"),
+      onButton1Click: () => window.open("https://pdfobject.com/pdf/sample.pdf"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
       onBack: () => navigate("/dailyPlan"),

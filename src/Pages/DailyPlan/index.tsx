@@ -9,6 +9,7 @@ import {  dailyJobsListMockResp } from './data';
 import { useGetDailyJobMetricsQuery , useGetDailyJobsListQuery} from '../../store/services/api';
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
+import { toast } from "react-toastify";
 
 interface DailyPlanProps {
   title?: string;
@@ -220,11 +221,32 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               actions={[
                 {
                   label: "Download",
-                  onClick: () => navigate(`/download`),
+                  onClick: async () => {
+                    // this is the sample file download , replace it when we get the real url
+                    try{
+                    const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'sample.pdf';
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+                    }
+                    catch(e){
+                      toast.error("Failed to Downlaod");
+                      
+                    }
+                  },
                 },
                 {
                   label: "InActive",
-                  onClick: () => navigate(`/inactive`),
+                  onClick: () =>     toast.success("Status Updated Successfully")
                 },
               ]}
               boxShadow={true}
