@@ -1,99 +1,142 @@
-import React, { useState } from 'react';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { Box, InputAdornment, IconButton, Grid } from '@mui/material';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from 'date-fns';
-import { useDispatch } from 'react-redux';
-import LabelTypeSelector from './LabelType';
-import ButtonComponent from '../../Components/ReUsable/Button';
-import CustomerSelect from './CustomersData';
-import { toast } from 'react-toastify';
-import { FilterFormValues, filterSchema } from '../../Components/ZodSchemas/filterValidation';
-import { ArrowForward, CalendarToday, Clear } from '@mui/icons-material';
-import {setSearchButton} from "../../store/slices/masterDataSlice"
+import React, { useState, useMemo } from "react";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import {
+  Box,
+  InputAdornment,
+  IconButton,
+  Grid
+} from "@mui/material";
+import { format } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import LabelTypeSelector from "./LabelType";
+import ButtonComponent from "../../Components/ReUsable/Button";
+import CustomerSelect from "./CustomersData";
+import { toast } from "react-toastify";
+import { RootState } from "../../store";
+import { FiltersPayload,  setFiltersPayload, setOpenSlider, setSelectedCustomers, setSelectedLabelTypeIds } from "../../store/slices/masterDataSlice";
+import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
 
-// LocalStorage Helpers
-const getFromDate = (): string => localStorage.getItem('fromDate') || '';
-const getToDate = (): string => localStorage.getItem('toDate') || '';
+interface LocalDatePayload {
+  fromDate: string | null;
+  toDate: string | null;
+}
 
-const saveFromDate = (date: string) => localStorage.setItem('fromDate', date);
-const saveToDate = (date: string) => localStorage.setItem('toDate', date);
-
-// React Component
 const FilterForm: React.FC = () => {
-  const { handleSubmit } = useForm<FilterFormValues>({
-    resolver: zodResolver(filterSchema),
-    defaultValues: {
-      fromDate: "",
-      toDate: "",
-      searchType: "Indent No",
-      searchValue: "",
-    },
-  });
+  const dispatch = useDispatch();
+  const { selectedCustomers, labelTypes, filtersPayload } = useSelector(
+    (state: RootState) => state.masterData
+  );
 
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);
-  const dispatch = useDispatch();
 
-  const handleDateChange = (date: Date | null, field: 'fromDate' | 'toDate') => {
-    const formattedDate = date ? format(date, 'MM-dd-yyyy') : '';
-    if (field === 'fromDate') saveFromDate(formattedDate);
-    else saveToDate(formattedDate);
+  const [localDates, setLocalDates] = useState<LocalDatePayload>({
+    fromDate: "",
+    toDate: "",
+  });
+
+  const handleDateChange = (date: Date | null, field: keyof LocalDatePayload) => {
+    setLocalDates((prev) => ({
+      ...prev,
+      [field]: date ? format(date, "MM-dd-yyyy") : null,
+    }));
   };
 
-  const handleClearDate = (field: 'fromDate' | 'toDate') => {
-    if (field === 'fromDate') saveFromDate('');
-    else saveToDate('');
+  const isSearchEnabled = useMemo(() => {
+    const hasCustomer = selectedCustomers.length > 0;
+    const hasLabelTypes = labelTypes.length > 0;
+    const hasValidDates = localDates.fromDate && localDates.toDate;
+    return hasCustomer || hasValidDates || hasLabelTypes;
+  }, [selectedCustomers, localDates, labelTypes]);
+
+  const onSubmit = () => {
+    if (!isSearchEnabled) {
+      toast.error("Please select a Customer or both From and To dates!");
+      return;
+    }
+
+    const customerName = selectedCustomers.map(
+      (customer: any) => customer.fullName
+    );
+    const labelType = labelTypes.map(
+      (label: any) => label.labelTypeName
+    );
+
+    const finalSearchPayload: FiltersPayload = {
+      customerName,
+      fromDate: localDates.fromDate && localDates.toDate ? localDates.fromDate : '',
+      toDate: localDates.fromDate && localDates.toDate ? localDates.toDate : '',
+      labelType
+    };
+
+    dispatch(setFiltersPayload(finalSearchPayload));
+    dispatch(setOpenSlider(false));
+    toast.success("Search submitted successfully!");
   };
 
-  const onSubmit = (data: FilterFormValues) => {
-dispatch(setSearchButton(true)) ;
+  const handleClear = () => {
+    setLocalDates({
+      fromDate: '',
+      toDate: ''
+    });
+    dispatch(setFiltersPayload({
+      customerName: [],
+      fromDate: '',
+      toDate: '',
+      labelType: []
+    }));
+  dispatch(setSelectedCustomers([]));
+    dispatch(setSelectedLabelTypeIds([]));
+    dispatch(setOpenSlider(false));
+    toast.success("Filters cleared!");
   };
-
-  const fromDate = getFromDate();
-  const toDate = getToDate();
-  const customerNames = localStorage.getItem("selectedCustomerNames");
-  const parsedCustomerNames = customerNames ? JSON.parse(customerNames) : [];
 
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box>
           <Box sx={{ display: 'flex', gap: '2px' }}>
-            {/* From Date */}
+            {/* From Date Picker */}
             <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
               <DatePicker
                 label="From Date"
                 open={openFrom}
                 onOpen={() => setOpenFrom(true)}
                 onClose={() => setOpenFrom(false)}
-                value={fromDate ? new Date(fromDate) : null}
-                onChange={(newValue) => handleDateChange(newValue, 'fromDate')}
+                value={
+                  localDates?.fromDate
+                    ? new Date(localDates.fromDate)
+                    : filtersPayload.fromDate
+                      ? new Date(filtersPayload.fromDate)
+                      : null
+                }
+                onChange={(newValue) => handleDateChange(newValue, "fromDate")}
                 format="MM/dd/yyyy"
                 slotProps={{
                   textField: {
-                    placeholder: 'MM/dd/yyyy',
+                    placeholder: "MM/dd/yyyy",
                     onClick: () => setOpenFrom(true),
                     sx: {
-                      '& .MuiOutlinedInput-root': {
-                        borderWidth: '2px',
-                        border: '#f0f0f0',
-                        '& fieldset': { borderWidth: '2px' },
-                        '&:hover fieldset': { borderWidth: '2px' },
-                        '&.Mui-focused fieldset': { borderWidth: '2px', border: '#f0f0f0' },
-                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderWidth: "2px",
+                        border: "#f0f0f0",
+                        "& fieldset": { borderWidth: "2px" },
+                        "&:hover fieldset": { borderWidth: "2px" },
+                        "&.Mui-focused fieldset": { borderWidth: "2px", border: "#f0f0f0" }
+                      }
                     },
                     InputProps: {
                       endAdornment: (
                         <InputAdornment position="end">
-                          {fromDate ? (
-                            <IconButton onClick={(event) => {
-                              event.stopPropagation();
-                              handleClearDate('fromDate');
-                            }}>
-                              <Clear />
+                          {localDates.fromDate ? (
+                            <IconButton
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setLocalDates(prev => ({ ...prev, fromDate: null }));
+                              }}
+                            >
+                              <ClearIcon />
                             </IconButton>
                           ) : (
                             <IconButton onClick={() => setOpenFrom(true)}>
@@ -101,56 +144,62 @@ dispatch(setSearchButton(true)) ;
                             </IconButton>
                           )}
                         </InputAdornment>
-                      ),
-                    },
-                  },
+                      )
+                    }
+                  }
                 }}
               />
             </Box>
 
-            <ArrowForward sx={{ alignSelf: 'center' }} />
+            <ArrowForward sx={{ alignSelf: "center" }} />
 
-            {/* To Date */}
+            {/* To Date Picker */}
             <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
               <DatePicker
                 label="To Date"
                 open={openTo}
                 onOpen={() => setOpenTo(true)}
                 onClose={() => setOpenTo(false)}
-                value={toDate ? new Date(toDate) : null}
-                onChange={(newValue) => handleDateChange(newValue, 'toDate')}
+                value={
+                  localDates?.toDate
+                    ? new Date(localDates.toDate)
+                    : filtersPayload.toDate
+                      ? new Date(filtersPayload.toDate)
+                      : null
+                }
+                onChange={(newValue) => handleDateChange(newValue, "toDate")}
                 format="MM/dd/yyyy"
                 shouldDisableDate={(date) => {
-                  if (!fromDate) return false;
-                  const from = new Date(fromDate);
-                  from.setHours(0, 0, 0, 0);
+                  if (!localDates?.fromDate) return false;
+                  const from = new Date(localDates.fromDate);
                   const check = new Date(date);
-                  check.setHours(0, 0, 0, 0);
-                  return check < from;
+                  return check.setHours(0, 0, 0, 0) < from.setHours(0, 0, 0, 0);
                 }}
-                minDate={fromDate ? new Date(fromDate) : undefined}
+                minDate={localDates?.fromDate ? new Date(localDates.fromDate) : undefined}
                 slotProps={{
                   textField: {
-                    placeholder: 'MM/dd/yyyy',
+                    placeholder: "MM/dd/yyyy",
                     onClick: () => setOpenTo(true),
                     sx: {
-                      '& .MuiOutlinedInput-root': {
-                        borderWidth: '2px',
-                        border: '#f0f0f0',
-                        '& fieldset': { borderWidth: '2px' },
-                        '&:hover fieldset': { borderWidth: '2px' },
-                        '&.Mui-focused fieldset': { borderWidth: '2px', border: '#f0f0f0' },
-                      },
+                      "& .MuiOutlinedInput-root": {
+                        borderWidth: "2px",
+                        border: "#f0f0f0",
+                        "& fieldset": { borderWidth: "2px" },
+                        "&:hover fieldset": { borderWidth: "2px" },
+                        "&.Mui-focused fieldset": { borderWidth: "2px", border: "#f0f0f0" }
+                      }
                     },
                     InputProps: {
                       endAdornment: (
                         <InputAdornment position="end">
-                          {toDate ? (
-                            <IconButton onClick={(event) => {
-                              event.stopPropagation();
-                              handleClearDate('toDate');
-                            }}>
-                              <Clear />
+                          {localDates.toDate ? (
+                            <IconButton
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setLocalDates(prev => ({ ...prev, toDate: null }));
+                              }}
+                            >
+                              <ClearIcon />
                             </IconButton>
                           ) : (
                             <IconButton onClick={() => setOpenTo(true)}>
@@ -158,9 +207,9 @@ dispatch(setSearchButton(true)) ;
                             </IconButton>
                           )}
                         </InputAdornment>
-                      ),
-                    },
-                  },
+                      )
+                    }
+                  }
                 }}
               />
             </Box>
@@ -168,31 +217,43 @@ dispatch(setSearchButton(true)) ;
         </Box>
       </LocalizationProvider>
 
-      <Box sx={{ mt: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <CustomerSelect />
-          </Grid>
+      {/* Customer Select */}
+      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+        <CustomerSelect />
+      </Grid>
 
-          <Grid item xs={12}>
-            <LabelTypeSelector />
-          </Grid>
+      {/* Label Type Selector */}
+      <Grid size={{ xs: 12 }}>
+        <LabelTypeSelector />
+      </Grid>
 
-          <Grid item xs={12}>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <ButtonComponent
-                text="Search"
-                borderRadius="100px"
-                onClick={handleSubmit(onSubmit)}
-                color="#0073B7"
-                textColor="white"
-                p={2}
-                disabled={fromDate === '' || toDate === '' || parsedCustomerNames.length === 0}
-              />
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
+      {/* Search Button */}
+      <Grid size={{ xs: 12 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <ButtonComponent
+            text="Search"
+            borderRadius="100px"
+            onClick={onSubmit}
+            color="#0073B7"
+            textColor="white"
+            p={2}
+            disabled={!isSearchEnabled}
+          />
+        </Box>
+      </Grid>
+
+      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <ButtonComponent
+            text="Clear"
+            borderRadius="100px"
+            onClick={handleClear}
+            color="#f44336"
+            textColor="white"
+            p={2}
+          />
+        </Box>
+      </Grid>
     </>
   );
 };

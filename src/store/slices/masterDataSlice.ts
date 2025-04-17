@@ -236,6 +236,12 @@ export interface LabelType {
   labelTypeId: number;
   labelTypeName: string;
 }
+export interface FiltersPayload{
+  fromDate: string,
+  toDate: string,
+  customerName: string[],
+  labelType: string[],
+}
 interface MasterDataState {
   customers: Customer[];
   labelTypes: LabelType[];
@@ -274,6 +280,7 @@ printingDataTouched:boolean;
   dyeCuttingDataTouched:boolean;
   masterDataDataTouched:boolean;
   searchButton:boolean;
+  filtersPayload:FiltersPayload
 }
 
 const initialState: MasterDataState = {
@@ -295,6 +302,12 @@ const initialState: MasterDataState = {
     width: "",
     thickness: "",
     density: "",
+  },
+  filtersPayload:{
+    fromDate: "",
+    toDate: "",
+    customerName: [],
+    labelType: [],
   },
   laminationDataTouched:false,
   printingDataTouched:false,
@@ -994,33 +1007,22 @@ state.laminationDataTouched = action.payload
     setRequestPayload: (state, action: PayloadAction<RequestPayload>) => {
       state.requestPayload = action.payload;
     },
-// In your slice:
-setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
-  state.selectedCustomers = action.payload;
-  // Store the customer names in localStorage
-  const customerNames = action.payload.map((customer) => customer.fullName);
-  localStorage.setItem("selectedCustomerNames", JSON.stringify(customerNames));
-  
-},
-
-toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
-  const { customerId } = action.payload;
-  const exists = state.selectedCustomers.some(
-    (customer) => customer.customerId === customerId
-  );
-
-  if (exists) {
-    state.selectedCustomers = state.selectedCustomers.filter(
-      (customer) => customer.customerId !== customerId
-    );
-  } else {
-    state.selectedCustomers.push(action.payload);
-  }
-
-  // Update the customer names
-  const customerNames = state.selectedCustomers.map((customer) => customer.fullName);
-  localStorage.setItem("selectedCustomerNames", JSON.stringify(customerNames));
-},
+    setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
+      state.selectedCustomers = action.payload;
+    },
+    toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
+      const { customerId } = action.payload;
+      const exists = state.selectedCustomers.some(
+        (customer) => customer.customerId === customerId
+      );
+      if (exists) {
+        state.selectedCustomers = state.selectedCustomers.filter(
+          (customer) => customer.customerId !== customerId
+        );
+      } else {
+        state.selectedCustomers.push(action.payload);
+      }
+    },
 
     setCustomers(state, action: PayloadAction<Customer[]>) {
       state.customers = action.payload;
@@ -1062,7 +1064,10 @@ toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
     },
     setSearchButton:(state,action:PayloadAction<boolean>)=>{
       state.searchButton = action.payload
-    }
+    },
+    setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
+    state.filtersPayload = action.payload
+    }  
   },
 });
 
@@ -1111,6 +1116,7 @@ export const {
   setDyeCuttingDataTouched,
   setMasterDataDataTouched,
   setPrintingDataTouched,
-  setSearchButton
+  setSearchButton,
+  setFiltersPayload
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

@@ -201,12 +201,15 @@ const CreateMasterData: React.FC = () => {
     versionNo = version;
   }
 
-
-  const { data, isLoading } = useViewMasterDataQuery({
-    ueNumber: selectedUEN,
-    versionNo: versionNo,
-  });
-
+const {id} = useParams();
+  const { data, isLoading } = useViewMasterDataQuery(
+    {
+      ueNumber: selectedUEN,
+      versionNo: versionNo,
+    },
+    { skip: !id } 
+  );
+  
   const handleSaveDyeCutting = () => {
     const finalMasterDataDetails =(data?.data.masterDataDetails&&!masterDataDataTouched) ? data?.data.masterDataDetails : saveFormData;
     const finalPrintingData =  (data?.data.masterDataPrinting&&!printingDataTouched) ?  data?.data.masterDataPrinting: printingSaveFormData
@@ -221,6 +224,7 @@ const CreateMasterData: React.FC = () => {
     };
   
     dispatch(setRequestPayload(updatedPayload));
+    console.log(requestPayload,data,"REQUESTPAYLOAD")
   };
   
 
@@ -229,7 +233,7 @@ const CreateMasterData: React.FC = () => {
   };
 
 
-  const {id} = useParams();
+
 
 
   useEffect(() => {

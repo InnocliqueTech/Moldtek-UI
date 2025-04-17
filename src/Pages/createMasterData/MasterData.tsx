@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Avatar,
-  Box,
-  Grid,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Grid, Tooltip, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetMetricsQuery,
-  useListOfCompaniesQuery,
   useMasterFiltersMutation,
 } from "../../store/services/api";
 
@@ -115,40 +108,40 @@ const MasterData: React.FC = () => {
       label: "Created On",
       align: false,
       disableSorting: false,
-       format : (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
+      format: (value: string) =>
+        value
+          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
+          : "",
     },
     {
       id: "updated_at",
       label: "Last Updated",
       align: false,
       disableSorting: false,
-             format : (value: string) =>
-        value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
+      format: (value: string) =>
+        value
+          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
+          : "",
     },
   ];
-  const customerNames = localStorage.getItem("selectedCustomerNames");
-  const parsedCustomerNames = customerNames ? JSON.parse(customerNames) : [];
-  const fromDate = localStorage.getItem('fromDate') || '';
-  const toDate = localStorage.getItem('toDate') || '';
-  
-  const [masterFilters,{ data: listOfCompaniesData,
-    isLoading: listOfCompaniesLoading,
-    isError: companiesError,}] = useMasterFiltersMutation();
 
-  useEffect(()=>{
-    localStorage.setItem("filtersPayload", JSON.stringify({
-      fromDate: fromDate?fromDate:'',
-      toDate: toDate?toDate:'',
-      customerName: parsedCustomerNames?parsedCustomerNames:[],
-      labelType: [],
-      page: page - 1,
-      size: rowsPerPage
-    }));
-    const storedPayload = localStorage.getItem("filtersPayload");
-    const parsedPayload = storedPayload ? JSON.parse(storedPayload) : null;  
-    masterFilters(parsedPayload)
-  },[page])
+  const { filtersPayload,openSider } = useSelector(
+    (state: RootState) => state.masterData
+  );
+  const [
+    masterFilters,
+    {
+      data: listOfCompaniesData,
+      isLoading: listOfCompaniesLoading,
+      isError: companiesError,
+    },
+  ] = useMasterFiltersMutation();
+
+  useEffect(() => {
+    if(!openSider){
+    masterFilters({ ...filtersPayload, page: page - 1, size: rowsPerPage });
+    }
+  }, [page,openSider]);
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,
@@ -157,7 +150,6 @@ const MasterData: React.FC = () => {
       customer: row.customer_name,
     },
   }));
-
 
   if (isError || companiesError) {
     return (
@@ -192,39 +184,47 @@ const MasterData: React.FC = () => {
       </Grid>
 
       <Box sx={{ paddingTop: 1.5 }}>
-              <ReusableTable
-            boxShadow={true}
-            columns={columns}
-            data={transformedData?transformedData:[]}
-            selectable={false}
-            label={listOfCompaniesData?.totalRecords?`${listOfCompaniesData?.totalRecords} Companies`:'0 Companies'}
-            title="List of Companies"
-            info={true}
-            searchVisible={true}
-            action={true}
-            actions={[
-              {
-                label: "View Job Data",
-                onClick: (row: any) => {
-                  const selectedUENAction = row?.unit_effectivity_number;
-                  localStorage.setItem("actionSelectedUEN",selectedUENAction);
-                  navigate(`/viewJobsList`);  // If you want this to depend on the row, add params here.
-                },
+        <ReusableTable
+          boxShadow={true}
+          columns={columns}
+          data={transformedData ? transformedData : []}
+          selectable={false}
+          label={
+            listOfCompaniesData?.totalRecords
+              ? `${listOfCompaniesData?.totalRecords} Companies`
+              : "0 Companies"
+          }
+          title="List of Companies"
+          info={true}
+          searchVisible={true}
+          action={true}
+          actions={[
+            {
+              label: "View Job Data",
+              onClick: (row: any) => {
+                const selectedUENAction = row?.unit_effectivity_number;
+                localStorage.setItem("actionSelectedUEN", selectedUENAction);
+                navigate(`/viewJobsList`); // If you want this to depend on the row, add params here.
               },
-              {
-                label: "Update",
-                onClick: (row: any) => {
-                  const selectedUENActionUpdate = row?.unit_effectivity_number;
-                  localStorage.setItem("actionSelectedUEN",selectedUENActionUpdate);
-                  const actionSelectedUpdateUEN= localStorage.getItem("actionSelectedUEN")
-                  navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
-                },
+            },
+            {
+              label: "Update",
+              onClick: (row: any) => {
+                const selectedUENActionUpdate = row?.unit_effectivity_number;
+                localStorage.setItem(
+                  "actionSelectedUEN",
+                  selectedUENActionUpdate
+                );
+                const actionSelectedUpdateUEN =
+                  localStorage.getItem("actionSelectedUEN");
+                navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
               },
-            ]}
-            isLoading={listOfCompaniesLoading}
-            rowsPerPage={rowsPerPage}
-            onPageChange={handlePageChange}
-          />
+            },
+          ]}
+          isLoading={listOfCompaniesLoading}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+        />
       </Box>
     </Box>
   );

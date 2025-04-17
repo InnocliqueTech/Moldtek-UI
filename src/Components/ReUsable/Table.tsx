@@ -575,7 +575,7 @@ function ReusableTable<T extends Record<string, any>>({
         <Typography
           sx={{ color: "#2F2F2F", fontWeight: 500, fontSize: "14px" }}
         >
-          Page {page } of {Math.ceil(filteredData.length / rowsPerPage)}
+          Page {page +1} of {Math.ceil(filteredData.length / rowsPerPage)}
         </Typography>
         <Stack spacing={2}>
           <Pagination
