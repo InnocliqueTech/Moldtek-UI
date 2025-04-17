@@ -3,7 +3,7 @@ import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { tapeColumns, materialColumns } from "../data";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
+import Loader from "../../../Loader";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -38,15 +38,13 @@ const transformAnaloxData = (specs: any[]) => {
 };
 
 interface PrintingReportProps {
-  indentNO: string
+  loading: boolean
 }
 
 const MakeReady: React.FC<PrintingReportProps> = ({
-  indentNO
+  loading = false
 }) => {
-  
-  const { data, isLoading, isError, error } = useGetMakeReadyDetailsQuery(indentNO)
-  console.log(data,indentNO,"inside makeReady")
+   
   const {
     inkCoatingSpecifications,
     materialSpecification,
@@ -55,16 +53,16 @@ const MakeReady: React.FC<PrintingReportProps> = ({
     analoxSpecifications = [],
   } = useSelector((state: RootState) => state.viewDailyPlan);
   const plateMountingReport = [
-    { label: "Plates Inspection", value: plateMountingSupervisorReport },
-    { label: "Mounter", value: plateMountingSupervisorReport },
-    { label: "Approver", value: plateMountingSupervisorReport },
-    { label: "Ink Kitchen Supervisor", value:plateMountingSupervisorReport},
-    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport },
-    { label: "Shift QC Incharge", value: plateMountingSupervisorReport }
+    { label: "Plates Inspection", value: plateMountingSupervisorReport?.platesInspection || "" },
+    { label: "Mounter", value: plateMountingSupervisorReport?.mounter || ""},
+    { label: "Approver", value: plateMountingSupervisorReport?.approver || ""},
+    { label: "Ink Kitchen Supervisor", value:plateMountingSupervisorReport?.inkKitchenSupervisor || ""},
+    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport?.plateMountingSupervisor || ""},
+    { label: "Shift QC Incharge", value: plateMountingSupervisorReport?.shiftQcIncharge || ""}
   ];
   const analoxCols = generateAnaloxColumns(analoxSpecifications);
   const analoxData = transformAnaloxData(analoxSpecifications);
-
+  if(loading) return <Loader/>
   return (
     <>
       <Box sx={{ borderRadius: "0px", p: 1 }}>

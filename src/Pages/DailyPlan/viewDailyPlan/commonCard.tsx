@@ -8,7 +8,7 @@ const CommenCard: React.FC = () => {
 
 const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
 const maxChars = 20
-const isLong = dailyPlan.brandNamePack.length > maxChars;
+const isLong = dailyPlan?.brandNamePack.length > maxChars;
 const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :dailyPlan.brandNamePack;
 const renderValue = (value: string | undefined | null | number) => {
   return value ? value : "N/A";
@@ -21,20 +21,20 @@ const renderValue = (value: string | undefined | null | number) => {
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Effectivity Unit Number
             </Typography>
-            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.unitEffectivityNumber)}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.unitEffectivityNumber || "N/A")}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 PPC Indent Qty
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.ppcIndentQty)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.ppcIndentQty || "N/A")}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 JAR/CAP
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.jarCap)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.jarCap  || "N/A")}</Typography>
             </Box>
           </Grid>
 
@@ -42,20 +42,20 @@ const renderValue = (value: string | undefined | null | number) => {
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Indent Number
             </Typography>
-            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.indentNumber)}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.indentNumber  || "N/A")}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Target Labels Qty
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.targetLabelsQty)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.targetLabelsQty || "N/A")}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Date
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.date)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.date || "N/A")}</Typography>
             </Box>
           </Grid>
 
@@ -63,20 +63,20 @@ const renderValue = (value: string | undefined | null | number) => {
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               Customer Name
             </Typography>
-            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.customerName)}</Typography>
+            <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.customerName || "N/A")}</Typography>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Target Film Mtrs
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.targetFilmMtrs)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.targetFilmMtrs || "N/A")}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Shift
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.shift)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.shift || "N/A")}</Typography>
             </Box>
           </Grid>
 
@@ -93,7 +93,7 @@ const renderValue = (value: string | undefined | null | number) => {
                                whiteSpace: "pre-line",
                              }}
                            >
-                             {renderValue(displayText)}
+                             {renderValue(displayText || "N/A")}
                            </Typography>
                          </Tooltip>
 
@@ -101,14 +101,14 @@ const renderValue = (value: string | undefined | null | number) => {
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Film Required For Printing
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.filmRequiredForPrinting)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.filmRequiredForPrinting || "N/A")}</Typography>
             </Box>
 
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary" fontWeight={500}>
                 Work Order Number
               </Typography>
-              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan.workOrderNumber)}</Typography>
+              <Typography variant="body1" mt={0.5}>{renderValue(dailyPlan?.workOrderNumber || "N/A")}</Typography>
             </Box>
           </Grid>
         </Grid>

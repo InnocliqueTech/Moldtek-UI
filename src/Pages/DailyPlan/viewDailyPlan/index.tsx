@@ -12,7 +12,8 @@ import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
 import CommenCard from "./commonCard";
 import { setAnaloxSpecifications, setDailyPlan, setInkCoatingSpecifications, setMaterialSpecification, setMountingTapeSpecifications, setPlateMountingSupervisorReport } from "../../../store/slices/viewDailyPlanSlice";
-import { makeReady } from "./data";
+import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
+
 
 
 
@@ -29,7 +30,12 @@ const ViewDailyPlan: React.FC = () => {
   // const decodedIndentNo = indentNo
 
   const decodedIndentNo = decodeURIComponent(indentNo || "");
-  console.log(indentNo,decodedIndentNo,"pathParam");
+  const {
+    data: makeReady,
+    isLoading,
+    // isError,
+    // error,
+  } = useGetMakeReadyDetailsQuery(decodedIndentNo);
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -37,14 +43,16 @@ const ViewDailyPlan: React.FC = () => {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
-useEffect(()=>{
-dispatch(setDailyPlan(makeReady.data.dailyPlan));
-dispatch(setMaterialSpecification(makeReady.data.materialSpecification));
-dispatch(setMountingTapeSpecifications(makeReady.data.mountingTapeSpecifications));
-dispatch(setAnaloxSpecifications(makeReady.data.analoxSpecifications));
-dispatch(setInkCoatingSpecifications(makeReady.data.inkCoatingSpecifications));
-dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisorReport));
-},[])
+  useEffect(() => {
+    if (makeReady) {
+      dispatch(setDailyPlan(makeReady.data.dailyPlan));
+      dispatch(setMaterialSpecification(makeReady.data.materialSpecification));
+      dispatch(setMountingTapeSpecifications(makeReady.data.mountingTapeSpecifications));
+      dispatch(setAnaloxSpecifications(makeReady.data.analoxSpecifications));
+      dispatch(setInkCoatingSpecifications(makeReady.data.inkCoatingSpecifications));
+      dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisorReport));
+    }
+  }, [makeReady])
 
   return (
     <Box
@@ -78,7 +86,7 @@ dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisor
           onChange={handleTabChange}
         />
         <Box sx={{ padding: 1 }}>
-          {selectedTab === 0 && <MakeReady indentNO={decodedIndentNo}/>}
+          {selectedTab === 0 && <MakeReady loading={isLoading}/>}
           {selectedTab === 1 && <PrintingReport indentNO={decodedIndentNo}/>}
           {selectedTab === 2 && <LaminationReport />}
           {selectedTab === 3 && <LabelCutting/>}

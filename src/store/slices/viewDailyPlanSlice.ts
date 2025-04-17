@@ -38,13 +38,22 @@ interface MaterialSpecification {
   dyne: string;
 }
 
+interface PlateMountingSupervisorReport {
+  platesInspection: string | null
+  mounter: string
+  approver: string
+  inkKitchenSupervisor: string
+  plateMountingSupervisor: string
+  shiftQcIncharge: string
+}
+
 export interface viewDailyPlan {
   dailyPlan: DailyPlan;
   inkCoatingSpecifications: InkCoatingSpecification[];
   analoxSpecifications: AnaloxSpecification[];
   mountingTapeSpecifications: any[];
   materialSpecification: MaterialSpecification;
-  plateMountingSupervisorReport: any | null; 
+  plateMountingSupervisorReport: PlateMountingSupervisorReport; 
 }
 
 const initialState: viewDailyPlan = {
