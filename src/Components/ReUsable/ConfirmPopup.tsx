@@ -6,7 +6,6 @@ import {
   Box,
 } from "@mui/material";
 import ButtonComponent from "./Button";
-import { load } from './../../../node_modules/ssf/types/index.d';
 
 interface ConfirmPopupProps {
   open: boolean;

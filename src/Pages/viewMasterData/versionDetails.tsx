@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 import VersionPopup from "./versionPopUp";
-import { versionData } from "./data";
 import { useVersionHistoryQuery } from "../../store/services/api";
 
 const VersinDetails: React.FC = () => {

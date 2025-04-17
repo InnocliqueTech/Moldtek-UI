@@ -141,7 +141,7 @@ const MasterData: React.FC = () => {
     },
   }));
   const UEN = localStorage.getItem("selectedUEN");
-   let selectedUEN :any;
+   let selectedUEN:any;
    if(UEN){
      selectedUEN =  UEN;
   }
@@ -193,16 +193,16 @@ const MasterData: React.FC = () => {
               {
                 label: "View Job Data",
                 onClick: (row: any) => {
-                  const selectedUEN = row?.unit_effectivity_number;
-                  localStorage.setItem("actionSelectedUEN",selectedUEN);
+                  const selectedUENAction = row?.unit_effectivity_number;
+                  localStorage.setItem("actionSelectedUEN",selectedUENAction);
                   navigate(`/viewJobsList`);  // If you want this to depend on the row, add params here.
                 },
               },
               {
                 label: "Update",
                 onClick: (row: any) => {
-                  const selectedUEN = row?.unit_effectivity_number;
-                  localStorage.setItem("actionSelectedUEN",selectedUEN);
+                  const selectedUENActionUpdate = row?.unit_effectivity_number;
+                  localStorage.setItem("actionSelectedUEN",selectedUENActionUpdate);
                   const actionSelectedUpdateUEN= localStorage.getItem("actionSelectedUEN")
                   navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
                 },

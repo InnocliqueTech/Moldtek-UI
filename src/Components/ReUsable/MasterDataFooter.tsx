@@ -63,7 +63,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     }
   };
 
-  const [createMasterData, { isLoading, isSuccess, isError, error }] = useCreateMasterDataMutation();
+  const [createMasterData, { isLoading, isSuccess, isError }] = useCreateMasterDataMutation();
 
   const handleSubmitPopupConfirmOpen = () => {
     dispatch(setSubmitAndPublishPopup(false));

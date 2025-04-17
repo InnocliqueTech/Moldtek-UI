@@ -1,5 +1,5 @@
 import React from "react";
-import { Button as MUIButton, ButtonProps, CircularProgress } from "@mui/material";
+import { Button as MUIButton, ButtonProps } from "@mui/material";
 
 interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   text: string;

@@ -39,7 +39,7 @@ import {
 import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
-import { useLocation, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 
 const tabs = [
   "Master Data Details",
