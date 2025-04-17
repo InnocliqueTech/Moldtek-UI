@@ -140,11 +140,7 @@ const MasterData: React.FC = () => {
       customer: row.customer_name,
     },
   }));
-  const UEN = localStorage.getItem("selectedUEN");
-   let selectedUEN:any;
-   if(UEN){
-     selectedUEN =  UEN;
-  }
+
 
   if (isError || companiesError) {
     return (

@@ -5,7 +5,7 @@ import {  useSelector } from "react-redux";
 import {  RootState } from "../../store";
 
 const dyePriningColumns = [
-  { id: "machine_type", label: "Dye Cut Machine Type" },
+  { id: "machine_type", label: "Dye Cutting Machine Type" },
   { id: "machine_name", label: "Machine" },
   { id: "dye_code", label: "Dye Code" },
   { id: "run_speed", label: "Run Speed" },

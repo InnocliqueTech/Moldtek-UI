@@ -3,10 +3,9 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-  Box,
 } from "@mui/material";
 import ButtonComponent from "./Button";
-import { HelpCenter, HelpOutline } from "@mui/icons-material";
+import { HelpOutline } from "@mui/icons-material";
 
 interface ConfirmPopupProps {
   open: boolean;
@@ -26,7 +25,6 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   title,
   message,
   buttonText,
-  gifSrc,
   onClose,
   buttonText2,
   onClick,

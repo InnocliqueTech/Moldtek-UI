@@ -52,7 +52,6 @@ const ViewLamination: React.FC = () => {
 
   const { laminationAdhesive, laminationSettings,laminatingSubstrateSettings } =
     useSelector((state: RootState) => state.viewMasterData);
-    console.log(laminationAdhesive,"LAMINATION")
   return (
     <Box sx={{ borderRadius: "0px "}}>
       <Box sx={{ display: "flex", gap: 1 }}>

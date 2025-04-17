@@ -62,7 +62,8 @@ const CreateMasterData: React.FC = () => {
     dyeCuttingDataTouched,
     masterDataDataTouched
   } = useSelector((state: RootState) => state.masterData);
-  const [formData, setFormData] = useState<MasterFormData>({
+  const [formData, setFormData] = useState<MasterFormData>(
+    {
     unit_effectivity_number: "",
     customer_name: "",
     customer_logo: "",
@@ -71,23 +72,23 @@ const CreateMasterData: React.FC = () => {
     structure: "",
     brand_description: "",
     label_type: "",
-    repeat_length: 0,
-    ups: 0,
-    tracks: 0,
+    repeat_length: "",
+    ups: "",
+    tracks: "",
   });
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
   const [formValues, setFormValues] = useState<PrintingFormValues>({
     printingDetails: {
       printing_machine_name: "",
-      cylinder_teeth: 0,
-      tension: 0,
-      unwinder: 0,
-      infeed: 0,
-      outfeed: 0,
-      rewinder: 0,
-      static_charge: 0,
-      format_correct: 0,
+      cylinder_teeth: "",
+      tension: "",
+      unwinder: "",
+      infeed: "",
+      outfeed: "",
+      rewinder: "",
+      static_charge: "",
+      format_correct: "",
     },
     printingSubstrateSettings: {
       print_substrate_id: 1,
@@ -95,16 +96,16 @@ const CreateMasterData: React.FC = () => {
       substrate_type: "",
       supplier: "",
       dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
+      width: "",
+      thickness: "",
+      density: "",
     },
     stationWiseMetrics: Array.from({ length: 10 }, (_, i) => ({
       station_no: i + 1,
       color_pantone: "",
-      lf_value: 0,
+      lf_value: "",
       ink_supplier: "",
-      lpcm: 0,
+      lpcm: "",
       volume: "",
       uv_led: "",
       uv_led_intensity: "",
@@ -116,10 +117,10 @@ const CreateMasterData: React.FC = () => {
   >([]);
   const [lamiFormData, setLamiFormData] = useState<LaminationFormData>({
     laminationConditions: {
-      zone1_temp: 0,
-      zone2_temp: 0,
-      nip_pressure_bar: 0,
-      speed: 0,
+      zone1_temp: "",
+      zone2_temp: "",
+      nip_pressure_bar: "",
+      speed: "",
       lami_set_tension: "",
       rewinder_tension: "",
       printed_film_tension: "",
@@ -131,28 +132,28 @@ const CreateMasterData: React.FC = () => {
       substrate_type: "",
       supplier: "",
       dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
+      width: "",
+      thickness: "",
+      density: "",
     },
     bondingMaterials: [
       {
         type: "Adhesive",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
       {
         type: "Hardener",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
       {
         type: "Ethyl Acetate",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
     ],
   });
@@ -161,7 +162,7 @@ const CreateMasterData: React.FC = () => {
     machine_type: "",
     machine_name: "",
     dye_code: "",
-    run_speed: 0,
+    run_speed: "",
   });
 
 

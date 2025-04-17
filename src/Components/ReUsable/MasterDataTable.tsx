@@ -290,7 +290,47 @@ const DataTable = <T extends Record<string, any>>({
                           : "1px solid #ccc",
                       }}
                     >
-                      {column.isDropdown ? (
+             {
+              row.type === 'Ethyl Acetate' && ["code", "brand", "ratio"].includes(column.id) ? 
+              <TextField
+              variant="standard"
+              value={row[column.id]}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                const isValid = validateInput(
+                  column.id,
+                  inputValue
+                );
+                const key = `${rowIndex}_${column.id}`;
+                const updatedInvalidFileds = {
+                  ...invalidFields,
+                  [key]: !isValid,
+                };
+                setInvalidFields(updatedInvalidFileds);
+                dispatch(setInvalidFieldsTable(updatedInvalidFileds))
+                handleChange(
+                  rowIndex,
+                  column.id as keyof T,
+                  inputValue as T[keyof T]
+                );
+              }}
+              fullWidth
+              InputProps={{
+                disableUnderline: true,
+                sx: {
+                  fontSize: "14px",
+                  color: "#2F2F2F",
+                  height: "32px",
+                  padding: "0px",
+                  input: {
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  },
+                },
+              }}
+            /> :column.isDropdown ? (
                         <Select
                           value={row[column.id] || ""}
                           onChange={(e) =>

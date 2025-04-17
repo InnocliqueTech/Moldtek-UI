@@ -22,7 +22,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate } from "react-router-dom";
-import * as XLSX from "xlsx";
+import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
 
 
 interface HeaderProps {
@@ -72,7 +72,6 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const handleSubmitAndPublishPopupOpen = () => {
     dispatch(setUploadPopup(false));
-    console.log(location.pathname,"PATHNAME")
     if(location.pathname ==='/viewDailyPlan'||location.pathname ==='/createPlan'){
       setSubmitPopup(true)
     }
@@ -100,24 +99,29 @@ const Header: React.FC<HeaderProps> = ({
     navigate('/dailyPlan')
   }
 
-  const handleDownloadSampleFileMasterData = () => {
-    const data = [
-      {
-        "Unit Effectivity Number": "UEN-20240801",
-        "Customer / Company Name": "Nestle",
-        "Brand Name & Pack": "KitKat 50g Wrapper",
-        "ITEM Code": "KK-50G-123",
-        "Jar/Cap": "N/A (For flexible packaging)",
-        Structure: "PET",
-      },
-    ];
-  
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sample");
-  
-    XLSX.writeFile(workbook, "sample_file.xlsx");
+  const handleDownloadSampleFileMasterData = (filePath: string) => {
+    // Fetch the file from the provided path
+    fetch(filePath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch the file");
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        // Create a link to trigger the download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filePath.split("/").pop() || "download"; 
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.error("Error downloading the file:", error);
+      });
   };
+  
   
 
   return (
@@ -285,7 +289,7 @@ const Header: React.FC<HeaderProps> = ({
         onClose={onClosePopup}
         title="Create a new masterdata"
         confirmText="Continue"
-        onConfirm={() => console.log("Masterdata Created!")}
+        onConfirm={() => {}}
         text="Upload Picture"
         dropdownOptions={structureOptions} // Dynamic dropdown options
         upload={true}
@@ -301,7 +305,7 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleClosePopUp}
         subText={uploadSubTitle?uploadSubTitle:''}
         sampleFile={true}
-        handleDownloadSampleFile={handleDownloadSampleFileMasterData}
+        handleDownloadSampleFile={() => handleDownloadSampleFileMasterData(excelFile)}
       />
       <ConfirmPopup
         open={(location.pathname ==='/createPlan' && submitAndPublish) || submitPopup}

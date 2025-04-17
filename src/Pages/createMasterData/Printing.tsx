@@ -83,6 +83,9 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "volume", label: "Volume", edit: true },
     { id: "uv_led", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
+    { id: "mixing_on_Gec", label: "Mixing On GEC", edit: true },
+    { id: "mptl_code", label: "MPTL Code", edit: true },
+    { id: "mounting_tape", label: "Mounting Tape", isDropdown: true, options: ["Soft", "Medium","Hard"] },
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({
@@ -107,33 +110,33 @@ const Printing: React.FC<PrintingProps> = ({
     return {
       printingDetails: {
         printing_machine_name: data?.printing_machine_name || "",
-        cylinder_teeth: Number(data?.cylinder_teeth) || 0,
-        tension: Number(data?.tension) || 0,
-        unwinder: Number(data?.unwinder) || 0,
-        infeed: Number(data?.infeed) || 0,
-        outfeed: Number(data?.outfeed) || 0,
-        rewinder: Number(data?.rewinder) || 0,
-        static_charge: Number(data?.static_charge) || 0,
-        format_correct: Number(data?.format_correct) || 0,
-      },
+        cylinder_teeth: data?.cylinder_teeth !== undefined ? String(data.cylinder_teeth) : "",
+        tension: data?.tension !== undefined ? String(data.tension) : "",
+        unwinder: data?.unwinder !== undefined ? String(data.unwinder) : "",
+        infeed: data?.infeed !== undefined ? String(data.infeed) : "",
+        outfeed: data?.outfeed !== undefined ? String(data.outfeed) : "",
+        rewinder: data?.rewinder !== undefined ? String(data.rewinder) : "",
+        static_charge: data?.static_charge !== undefined ? String(data.static_charge) : "",
+        format_correct: data?.format_correct !== undefined ? String(data.format_correct) : "",
+      },      
       printingSubstrateSettings: {
         print_substrate_id: data?.print_substrate_id || 1,
         machine_settings_id: data?.machine_settings_id || 1,
         substrate_type: data?.substrate_type || "",
         supplier: data?.supplier || "",
         dyne_level: data?.dyne_level || "",
-        width: Number(data?.width) || 0,
-        thickness: Number(data?.thickness) || 0,
-        density: Number(data?.density) || 0,
+        width:data?.width !==undefined ? String(data.width) : "",
+        thickness: data?.thickness!==undefined ? String(data.thickness) : "",
+        density: data?.density!==undefined ? String(data.density) : "",
       },
       stationWiseMetrics: Array.isArray(data)
         ? data
         : Array.from({ length: 10 }, (_, i) => ({
             station_no: i + 1,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -165,6 +168,7 @@ const Printing: React.FC<PrintingProps> = ({
       "static_charge",
       "format_correct",
       "dyne_level",
+      "rewinder"
     ].includes(field);
 
     const isMachineField = machineFields.some((f) => f.id === field);
@@ -181,7 +185,7 @@ const Printing: React.FC<PrintingProps> = ({
       } else if (!isNaN(Number(newValue))) {
         errorMsg = ""; // valid number
       } else {
-        errorMsg = `Invalid number: "${newValue}"`;
+        errorMsg = `Invalid number`;
       }
     } else if (field === "thickness") {
       if (typeof newValue === "string") {
@@ -221,7 +225,6 @@ const updatedErros = {
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
-
   const renderField = (field: {
     id: string;
     label: string;

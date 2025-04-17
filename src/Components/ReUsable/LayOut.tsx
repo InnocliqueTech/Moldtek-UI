@@ -11,6 +11,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import {
   setOpenSlider,
+  setRequestPayload,
   setSelectedTab,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
@@ -36,16 +37,93 @@ const Layout = () => {
     selectedUENList =  UENAction;
  }
   const { id, version } = useParams();
-  const today = new Date();
+const clearRequestPayoad ={    masterDataDetails: {
+  unit_effectivity_number: "",
+  customer_name: "",
+  customer_logo: "",
+  item_code: "",
+  brand_description: "",
+  jar_cap: "",
+  structure: "",
+  label_type: "",
+  repeat_length: 0,
+  ups: 0,
+  tracks: 0,
+},
+masterDataPrinting: {
+  printingDetails: {
+    printing_machine_name: "",
+    cylinder_teeth: 0,
+    tension: 0,
+    unwinder: 0,
+    rewinder: 0,
+    infeed: 0,
+    outfeed: 0,
+    static_charge: 0,
+    format_correct: 0,
+  },
+  printingSubstrateSettings: {
+    substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: 0,
+    thickness: 0,
+    density: 0,
+  },
+  stationWiseMetrics: [
+    {
+      station_no: 0,
+      color_pantone: "",
+      lf_value: 0,
+      ink_supplier: "",
+      lpcm: 0,
+      volume: "",
+      uv_led: "",
+      uv_led_intensity: "",
+    },
+  ],
+},
+masterDataLamination: {
+  laminationConditions: {
+    zone1_temp: 0,
+    zone2_temp: 0,
+    nip_pressure_bar: 0,
+    speed: 0,
+    lami_set_tension: "",
+    rewinder_tension: "",
+    printed_film_tension: "",
+    laminate_film_tension: "",
+    viscosity_range: "",
+    adhesive_gsm: "",
+  },
+  laminationSubstrate: {
+    substrate_type: "",
+    supplier: "",
+    dyne_level: "",
+    width: 0,
+    thickness: 0,
+    density: 0,
+  },
+  bondingMaterials: [
+    {
+      type: "",
+      code: "",
+      brand: "",
+      ratio: 0,
+    },
+  ],
+},
+masterDataDyeCutting: {
+  machine_type: "",
+  machine_name: "",
+  dye_code: "",
+  run_speed: 0,
+},}
+const today = new Date();
+const formattedDate = today
+  .toLocaleDateString("en-GB")  
+  .replace(/\//g, "-");         
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  };
-  const formattedDate = today
-    .toLocaleDateString("en-GB", options)
-    .replace(/ /g, "-");
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -66,10 +144,10 @@ const Layout = () => {
   > = {
     "/dashboard": {
       title: "Dashboard",
-      button1Text: "Uploaded Data",
-      button2Text: "Create Master Data",
-      onButton1Click: () => alert("Add Item Clicked"),
-      onButton2Click: () => setMasterDataCreatePopup(true),
+      // button1Text: "Uploaded Data",
+      // button2Text: "Create Master Data",
+      // onButton1Click: () => alert("Add Item Clicked"),
+      // onButton2Click: () => setMasterDataCreatePopup(true),
     },
     "/profile": {
       title: "Profile",
@@ -84,7 +162,7 @@ const Layout = () => {
       button2Text: "Create Master Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: () => {
-        navigate("/createMasterData"), dispatch(setSelectedTab(0));
+        navigate("/createMasterData"), dispatch(setSelectedTab(0),dispatch(setRequestPayload(clearRequestPayoad)))
       },
       filterTitle: "Master Data Filter",
     },

@@ -40,7 +40,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
       machine_type: data?.machine_type || "",
       machine_name: data?.machine_name || "",
       dye_code: data?.dye_code || "",
-      run_speed: Number(data?.run_speed) || 0,
+      run_speed: data?.run_speed!==undefined ? String(data.run_speed) : "",
     };
   }
 
@@ -148,7 +148,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
           <Grid container spacing={2} pt={1}>
             {[
-              { label: "Dye Cut Machine Type", key: "machine_type" },
+              { label: "Dye Cutting Machine Type", key: "machine_type" },
               { label: "Machine", key: "machine_name" },
               { label: "Dye Code", key: "dye_code" },
               { label: "Run Speed (m/min)", key: "run_speed" },

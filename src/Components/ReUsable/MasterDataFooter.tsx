@@ -47,7 +47,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     submitAndPublishButtonLamination,
     submitAndPublishButtonPrinting,
     requestPayload,
-    saveFormData
+    
   } = useSelector((store: RootState) => store.masterData);
   const handleNextClick = () => {
     if (selectedTab < 3) {
@@ -65,36 +65,37 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     }
   };
 
-  const [createMasterData, { isLoading, isSuccess, isError }] = useCreateMasterDataMutation();
+  const [createMasterData, { isLoading, isSuccess, isError }] =
+    useCreateMasterDataMutation();
 
   const handleSubmitPopupConfirmOpen = () => {
-    dispatch(setSubmitAndPublishPopup(false));
-
     createMasterData({ requestPayload })
       .then(() => {
-        if (isSuccess) {
-          // Only open the confirmation popup after successful API call
+        if (isSuccess && !isError) {
+          dispatch(setSubmitAndPublishPopup(false));
           dispatch(setSubmitPopupConfirm(true));
           dispatch(clearDyeCuttingFormData());
           dispatch(clearDyeCuttingFormErrors());
-      
+
           dispatch(clearLaminatingFormData());
           dispatch(clearLaminationFormErrors());
-      
+
           dispatch(clearPrintingFormData());
           dispatch(clearPrintingFormErrors());
-      
+
           dispatch(clearMasterDetaisData());
           dispatch(clearMasterDataFormErrors());
+        } else {
+          toast.error("Error Fetching Data");
         }
       })
       .catch(() => {
         // Handle error
         if (isError) {
-        toast.error("Error Fetching Data")
+          toast.error("Error Fetching Data");
         }
       });
-    dispatch(setSubmitPopupConfirm(true));
+    // dispatch(setSubmitPopupConfirm(true));
   };
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -108,27 +109,25 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     navigate("/masterData");
   };
 
-
   const { id } = useParams();
-  console.log(requestPayload,"REQUESTPAYLOAd")
   const UEN = localStorage.getItem("selectedUEN");
-  let selectedUEN :any;
-  if(UEN){
-    selectedUEN =  UEN;
- }
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
+  }
   const version = localStorage.getItem("selectedVersionNo");
-  
+
   let versionNo = version ? parseInt(version) : 0;
-  let displayVersion = id ? versionNo+1 : versionNo;
+  let displayVersion = id ? versionNo + 1 : versionNo;
 
-const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
-const confirmPublishTitle = id
-  ? `Are you sure you want to update and publish? This version is ${selectedUEN} V${displayVersion}.`
-  : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+  const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+  const confirmPublishTitle = id
+    ? `Are you sure you want to update and publish? This version is ${selectedUEN} V${displayVersion}.`
+    : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
-const successTitle = id
-  ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`
-  : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
+  const successTitle = id
+    ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`
+    : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
   return (
     <Box
       display="flex"
@@ -201,13 +200,14 @@ const successTitle = id
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading}
       />
-   <SuccessPopup
-  open={submitPopupConfirm}
-  message={successTitle}
-  onClose={handleSubmitPopupConfirmClick}
-  subMessage="You’re all set! Let’s get started."
-  buttonText='Go back to Master Data'
-/>
+      <SuccessPopup
+        open={submitPopupConfirm}
+        message={successTitle}
+        onClose={handleSubmitPopupConfirmClose}
+        onClick={handleSubmitPopupConfirmClick}
+        subMessage="You’re all set! Let’s get started."
+        buttonText="Go back to Master Data"
+      />
 
       <ConfirmPopup
         open={submitAndPublish}

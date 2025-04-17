@@ -104,8 +104,6 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     // isError: isJobsError,
     // error: jobsError
   } = useGetDailyJobsListQuery(pagination);
- 
-  console.log(metricsData,dailyJobsList, setPagination,dailyJobsListMockResp,"inside api call test");
   const stats = transformApiDataToStats(metricsData?.data) ;
   const data = transformJobDataList(dailyJobsList?.data)
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogActions, Typography, Box } from "@mui/material";
+import { Dialog, DialogContent, DialogActions, Typography } from "@mui/material";
 import ButtonComponent from "./Button";
 import { TaskAlt } from "@mui/icons-material";
 
@@ -10,6 +10,7 @@ interface SuccessPopupProps {
   buttonText?: string;
   isLoading?: boolean;
   subMessage?:string;
+  onClick?: ()=> void;
 }
 
 const SuccessPopup: React.FC<SuccessPopupProps> = ({
@@ -19,7 +20,8 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   onClose,
   buttonText = "Continue",
   subMessage,
-  isLoading
+  isLoading,
+  onClick
 }) => {
   return (
     <Dialog
@@ -50,7 +52,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
           borderRadius="100px"
           color="#0073B7"
           textColor="white"
-          onClick={onClose}
+          onClick={onClick}
           p={2}
           loading={isLoading}
         />

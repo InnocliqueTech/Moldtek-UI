@@ -5,9 +5,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface PrintingTableRow {
   station_no: number;
   color_pantone: string;
-  lf_value: number;
+  lf_value: string;
   ink_supplier: string;
-  lpcm: number;
+  lpcm: string;
   volume: string;
   uv_led: string;
   uv_led_intensity: string;
@@ -16,7 +16,7 @@ export interface LaminatingTableRow {
   type: string;
   code: string;
   brand: string;
-  ratio: number;
+  ratio: string;
 }
 export interface RequestPayload {
   masterDataDetails: {
@@ -101,10 +101,10 @@ export interface RequestPayload {
 
 export interface LaminationFormData {
   laminationConditions: {
-    zone1_temp: number;
-    zone2_temp: number;
-    nip_pressure_bar: number;
-    speed: number;
+    zone1_temp: string;
+    zone2_temp: string;
+    nip_pressure_bar: string;
+    speed: string;
     lami_set_tension: string;
     rewinder_tension: string;
     printed_film_tension: string;
@@ -117,9 +117,9 @@ export interface LaminationFormData {
     substrate_type: string;
     supplier: string;
     dyne_level: string;
-    width: number;
-    thickness: number;
-    density: number;
+    width: string;
+    thickness: string;
+    density: string;
   };
 
   bondingMaterials: LaminatingTableRow[];
@@ -133,16 +133,16 @@ export interface MasterFormData {
   structure: string;
   brand_description: string;
   label_type: string;
-  repeat_length: number;
-  ups: number;
-  tracks: number;
+  repeat_length: string;
+  ups: string;
+  tracks: string;
 }
 
 export interface DyeCuttingFormData {
   machine_type: string;
   machine_name: string;
   dye_code: string;
-  run_speed: number;
+  run_speed: string;
 }
 export interface MasterDataFormErrors {
   repeat_length: string;
@@ -205,14 +205,14 @@ export interface LaminationFormErrors {
 export interface PrintingFormValues {
   printingDetails: {
     printing_machine_name: string;
-    cylinder_teeth: number;
-    tension: number;
-    unwinder: number;
-    infeed: number;
-    outfeed: number;
-    rewinder: number;
-    static_charge: number;
-    format_correct: number;
+    cylinder_teeth: string;
+    tension: string;
+    unwinder: string;
+    infeed: string;
+    outfeed: string;
+    rewinder: string;
+    static_charge: string;
+    format_correct: string;
   };
   printingSubstrateSettings: {
     print_substrate_id: number;
@@ -220,9 +220,9 @@ export interface PrintingFormValues {
     substrate_type: string;
     supplier: string;
     dyne_level: string;
-    width: number;
-    thickness: number;
-    density: number;
+    width: string;
+    thickness: string;
+    density: string;
   };
   stationWiseMetrics: PrintingTableRow[];
 }
@@ -362,21 +362,21 @@ const initialState: MasterDataState = {
     structure: "",
     brand_description: "",
     label_type: "",
-    repeat_length: 0,
-    ups: 0,
-    tracks: 0,
+    repeat_length: "",
+    ups: "",
+    tracks: "",
   },
   printingSaveFormData: {
     printingDetails: {
       printing_machine_name: "",
-      cylinder_teeth: 0,
-      tension: 0,
-      unwinder: 0,
-      infeed: 0,
-      outfeed: 0,
-      rewinder: 0,
-      static_charge: 0,
-      format_correct: 0,
+      cylinder_teeth: "",
+      tension: "",
+      unwinder: "",
+      infeed: "",
+      outfeed: "",
+      rewinder: "",
+      static_charge: "",
+      format_correct: "",
     },
     printingSubstrateSettings: {
       print_substrate_id: 0,
@@ -384,17 +384,17 @@ const initialState: MasterDataState = {
       substrate_type: "",
       supplier: "",
       dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
+      width: "",
+      thickness: "",
+      density: "",
     },
     stationWiseMetrics: [
       {
         station_no: 1,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -402,9 +402,9 @@ const initialState: MasterDataState = {
       {
         station_no: 2,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -412,9 +412,9 @@ const initialState: MasterDataState = {
       {
         station_no: 3,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -422,9 +422,9 @@ const initialState: MasterDataState = {
       {
         station_no: 4,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -432,9 +432,9 @@ const initialState: MasterDataState = {
       {
         station_no: 5,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -442,9 +442,9 @@ const initialState: MasterDataState = {
       {
         station_no: 6,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -452,9 +452,9 @@ const initialState: MasterDataState = {
       {
         station_no: 7,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -462,9 +462,9 @@ const initialState: MasterDataState = {
       {
         station_no: 8,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -472,9 +472,9 @@ const initialState: MasterDataState = {
       {
         station_no: 9,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -482,9 +482,9 @@ const initialState: MasterDataState = {
       {
         station_no: 10,
         color_pantone: "",
-        lf_value: 0,
+        lf_value: "",
         ink_supplier: "",
-        lpcm: 0,
+        lpcm: "",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
@@ -493,10 +493,10 @@ const initialState: MasterDataState = {
   },
   laminaionFormData: {
     laminationConditions: {
-      zone1_temp: 0,
-      zone2_temp: 0,
-      nip_pressure_bar: 0,
-      speed: 0,
+      zone1_temp: "",
+      zone2_temp: "",
+      nip_pressure_bar: "",
+      speed: "",
       lami_set_tension: "",
       rewinder_tension: "",
       printed_film_tension: "",
@@ -508,28 +508,28 @@ const initialState: MasterDataState = {
       substrate_type: "",
       supplier: "",
       dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
+      width: "",
+      thickness: "",
+      density: "",
     },
     bondingMaterials: [
       {
         type: "Adhesive",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
       {
         type: "Hardener",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
       {
         type: "Ethyl Acetate",
         code: "",
         brand: "",
-        ratio: 0,
+        ratio: "",
       },
     ],
   },
@@ -537,7 +537,7 @@ const initialState: MasterDataState = {
     machine_type: "",
     machine_name: "",
     dye_code: "",
-    run_speed: 0,
+    run_speed: "",
   },
   isDyeCuttingDataSave: false,
   isMasterDetaisDataSave: false,
@@ -701,7 +701,7 @@ state.laminationDataTouched = action.payload
         machine_type: "",
         machine_name: "",
         dye_code: "",
-        run_speed: 0,
+        run_speed: "",
       };
     },
     setIsDyeCuttingSave: (state, action: PayloadAction<boolean>) => {
@@ -738,9 +738,9 @@ state.laminationDataTouched = action.payload
         structure: "",
         brand_description: "",
         label_type: "",
-        repeat_length: 0,
-        ups: 0,
-        tracks: 0,
+        repeat_length: "",
+        ups: "",
+        tracks: "",
       };
     },
     setPrintngFormErros: (
@@ -821,14 +821,14 @@ state.laminationDataTouched = action.payload
       state.printingSaveFormData = {
         printingDetails: {
           printing_machine_name: "",
-          cylinder_teeth: 0,
-          tension: 0,
-          unwinder: 0,
-          infeed: 0,
-          outfeed: 0,
-          rewinder: 0,
-          static_charge: 0,
-          format_correct: 0,
+          cylinder_teeth: "",
+          tension: "",
+          unwinder: "",
+          infeed: "",
+          outfeed: "",
+          rewinder: "",
+          static_charge: "",
+          format_correct: "",
         },
         printingSubstrateSettings: {
           print_substrate_id: 0,
@@ -837,17 +837,17 @@ state.laminationDataTouched = action.payload
           substrate_type: "",
           supplier: "",
           dyne_level: "",
-          width: 0,
-          thickness: 0,
-          density: 0,
+          width: "",
+          thickness: "",
+          density: "",
         },
         stationWiseMetrics: [
           {
             station_no: 1,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -855,9 +855,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 2,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -865,9 +865,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 3,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -875,9 +875,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 4,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -885,9 +885,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 5,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -895,9 +895,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 6,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -905,9 +905,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 7,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -915,9 +915,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 8,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -925,9 +925,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 9,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -935,9 +935,9 @@ state.laminationDataTouched = action.payload
           {
             station_no: 10,
             color_pantone: "",
-            lf_value: 0,
+            lf_value: "",
             ink_supplier: "",
-            lpcm: 0,
+            lpcm: "",
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
@@ -948,10 +948,10 @@ state.laminationDataTouched = action.payload
     clearLaminatingFormData: (state) => {
       state.laminaionFormData = {
         laminationConditions: {
-          zone1_temp: 0,
-          zone2_temp: 0,
-          nip_pressure_bar: 0,
-          speed: 0,
+          zone1_temp: "",
+          zone2_temp: "",
+          nip_pressure_bar: "",
+          speed: "",
           lami_set_tension: "",
           rewinder_tension: "",
           printed_film_tension: "",
@@ -963,28 +963,28 @@ state.laminationDataTouched = action.payload
           substrate_type: "",
           supplier: "",
           dyne_level: "",
-          width: 0,
-          thickness: 0,
-          density: 0,
+          width: "",
+          thickness: "",
+          density: "",
         },
         bondingMaterials: [
           {
             type: "Adhesive",
             code: "",
             brand: "",
-            ratio: 0,
+            ratio: "",
           },
           {
             type: "Hardener",
             code: "",
             brand: "",
-            ratio: 0,
+            ratio: "",
           },
           {
             type: "Ethyl Acetate",
             code: "",
             brand: "",
-            ratio: 0,
+            ratio: "",
           },
         ],
       };

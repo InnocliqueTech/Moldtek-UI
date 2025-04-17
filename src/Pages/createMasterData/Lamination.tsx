@@ -41,9 +41,27 @@ const Lamination: React.FC<LaminationProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const bondingMaterialColumns = [
     { id: "type", label: "Field" },
-    { id: "code", label: "Code", edit: true },
-    { id: "brand", label: "Brand", edit: true },
-    { id: "ratio", label: "Ratio", edit: true },
+    {
+      id: "code", 
+      label: "Code", 
+      editable: true, // Enable editing
+      isDropdown: true,
+      options: ["Soft", "Medium", "Hard"]
+    },
+    {
+      id: "brand", 
+      label: "Brand", 
+      editable: true, // Enable editing
+      isDropdown: true,
+      options: ["Soft", "Medium", "Hard"]
+    },
+    {
+      id: "ratio", 
+      label: "Ratio", 
+      editable: true, // Enable editing
+      isDropdown: true,
+      options: ["Soft", "Medium", "Hard"]
+    },
   ];
 
   const [errors, setErrors] = useState<LaminationFormErrors>({
@@ -127,8 +145,7 @@ const Lamination: React.FC<LaminationProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    console.log(field,value,"VALUEOFUPDATE");
-    dispatch(setLaminationDataTouched(true));  // 🧠 Mark as loaded so it doesn't override user changes!
+    dispatch(setLaminationDataTouched(true));  
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -175,7 +192,6 @@ const Lamination: React.FC<LaminationProps> = ({
 
       finalValue = newValue;
     }
-console.log(finalValue,"VALUEOFUPDATE1")
     const updatedErros = {
       ...errors,
       [field]: errorMessage,
@@ -219,7 +235,6 @@ console.log(finalValue,"VALUEOFUPDATE1")
     }
   }, [laminaionFormData, laminationFormErrors]);
   
-  console.log(formData,"LAMINATIONFORMDATA1")
 
   useEffect(() => {
     if (id && !laminationDataTouched) {
@@ -230,9 +245,7 @@ console.log(finalValue,"VALUEOFUPDATE1")
         ...sanitizedLaminationData,
         laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
       };
-  
-      console.log(combinedValues, "LOADED FROM SANITIZE");
-      setFormData(combinedValues);  // ← Initial data set only once
+      setFormData(combinedValues);  
       dispatch(setLaminationFormData(combinedValues));
   
       const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);

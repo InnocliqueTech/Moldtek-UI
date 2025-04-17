@@ -85,8 +85,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-
-console.log(viewMasterDataDetails,"VIEWMASTRDATADETAILS")
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",

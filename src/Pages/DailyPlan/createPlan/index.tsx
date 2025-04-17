@@ -89,8 +89,7 @@ const CreatePlan: React.FC = () => {
     }, {} as Record<string, string | string[]>);
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-    console.log('Form data saved to localStorage:', formData);
-    toast.success('Data saved successfully!');
+    // toast.success('Data saved successfully!');
   };
 
   const handleSubmit = async () => {
@@ -119,7 +118,6 @@ const CreatePlan: React.FC = () => {
       // });
       
       // Simulating API call
-      console.log('Submitting data to server:', formData);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
       
       // Clear localStorage and reset form after successful submission
