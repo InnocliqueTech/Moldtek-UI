@@ -148,14 +148,14 @@ const successTitle = id
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          // disabled={
-          //   submitAndPublishButtonMasterData ||
-          //   submitAndPublishButtonDyeCutting ||
-          //   submitAndPublishButtonLamination ||
-          //   submitAndPublishButtonPrinting
-          //     ? true
-          //     : false
-          // }
+          disabled={
+            submitAndPublishButtonMasterData ||
+            submitAndPublishButtonDyeCutting ||
+            submitAndPublishButtonLamination ||
+            submitAndPublishButtonPrinting
+              ? true
+              : false
+          }
         />
       ) : (
         <>
