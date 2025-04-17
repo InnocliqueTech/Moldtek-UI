@@ -411,7 +411,6 @@ console.log(finalValue,"VALUEOFUPDATE1")
                   options={[
                     "U-Flex Ltd.",
                     "Huhtamaki",
-                    "Huhtamaki",
                     "Gulf Pack Supplier",
                   ]}
                   value={formData.laminationSubstrate.supplier}

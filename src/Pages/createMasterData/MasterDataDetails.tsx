@@ -2,7 +2,7 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { Edit } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
@@ -268,6 +268,13 @@ console.log(viewMasterDataDetails,"VIEWMASTRDATADETAILS")
 
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
   }, [formData, errors]);
+  const handleRemoveImage = () => {
+    // clear the uploaded image from formData
+    setFormData(prev => ({
+      ...prev,
+      customer_logo: ''
+    }));
+  };
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -342,97 +349,122 @@ console.log(viewMasterDataDetails,"VIEWMASTRDATADETAILS")
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500 }}
-                color="#656565"
-              >
-                Customer Picture
-              </Typography>
+          <Box display="flex" flexDirection="column" alignItems="flex-start">
+  <Typography variant="body2" sx={{ fontWeight: 500 }} color="#656565">
+    Customer Picture
+  </Typography>
 
-              {formData.customer_logo ? (
-                <Box position="relative" width={120} height={120} mt={1}>
-                  <Box
-                    component="img"
-                    src={formData.customer_logo}
-                    alt="Customer"
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: "8px",
-                      mt: 1,
-                      objectFit: "cover",
-                    }}
-                  />
-                  <input
-                    accept="image/*"
-                    type="file"
-                    id="reupload-customer-pic"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        handleImageUpload(file);
-                      }
-                    }}
-                  />
-                  <label htmlFor="reupload-customer-pic">
-                    <IconButton
-                      size="small"
-                      sx={{
-                        position: "absolute",
-                        top: 4,
-                        right: 4,
-                        backgroundColor: "rgba(0,0,0,0.6)",
-                        color: "#fff",
-                        "&:hover": {
-                          backgroundColor: "rgba(0,0,0,0.8)",
-                        },
-                      }}
-                      component="span"
-                    >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </label>
-                </Box>
-              ) : (
-                <Box mt={0}>
-                  <input
-                    accept="image/*"
-                    type="file"
-                    id="upload-customer-pic"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        handleImageUpload(file);
-                      }
-                    }}
-                  />
-                  <label htmlFor="upload-customer-pic">
-                    <Box
-                      component="span"
-                      sx={{
-                        background: "#1976d2",
-                        color: "#fff",
-                        px: 2,
-                        py: 0.7,
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        display: "inline-block",
-                      }}
-                    >
-                      Upload Image
-                    </Box>
-                  </label>
-                </Box>
-              )}
-            </Box>
+  <Box position="relative" width={150} height={35} mt={0.5}>
+    {formData.customer_logo ? (
+      <>
+        <Box
+          component="img"
+          src={formData.customer_logo}
+          alt="Customer"
+          sx={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "8px",
+            objectFit: "cover",
+          }}
+        />
+        
+        {/* Re-upload input */}
+        <input
+          accept="image/*"
+          type="file"
+          id="reupload-customer-pic"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleImageUpload(file);
+            }
+          }}
+        />
+        
+        {/* Edit Icon */}
+        <label htmlFor="reupload-customer-pic">
+          <IconButton
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 4,
+              right: 4,
+              backgroundColor: "rgba(0,0,0,0.6)",
+              color: "#fff",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
+            }}
+            component="span"
+          >
+            <Edit fontSize="small" />
+          </IconButton>
+        </label>
+
+        {/* Remove Icon */}
+        <IconButton
+          size="small"
+          sx={{
+            position: "absolute",
+            top: 4,
+            left: 4,
+            backgroundColor: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
+          }}
+          onClick={() => {
+            handleRemoveImage(); // <- implement this to clear your image state
+          }}
+        >
+          <Delete fontSize="small" />
+        </IconButton>
+      </>
+    ) : (
+      <>
+        <input
+          accept="image/*"
+          type="file"
+          id="upload-customer-pic"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleImageUpload(file);
+            }
+          }}
+        />
+        <label htmlFor="upload-customer-pic">
+        <Box
+            component="span"
+            sx={{
+              background: "#1976d2",
+              color: "#fff",
+              px: 2,
+              py: 0.7,
+              borderRadius: "6px",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+              textAlign: "center",
+              whiteSpace:'nowrap'
+            }}
+          >
+            Upload Image
+          </Box>
+        </label>
+      </>
+    )}
+  </Box>
+</Box>
+
+
 
             <Box sx={{ mt: 2 }}>
               <TextArea
-                label="Brand Name & Pack Description"
+                label="Brand Name & Pack-Description"
                 value={formData.brand_description}
                 onChange={(e) =>
                   handleChange("brand_description", e.target.value)

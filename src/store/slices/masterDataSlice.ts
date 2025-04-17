@@ -34,7 +34,7 @@ export interface RequestPayload {
   };
   masterDataPrinting: {
     printingDetails: {
-      mounting_tape: string;
+      printing_machine_name: string;
       cylinder_teeth: number;
       tension: number;
       unwinder: number;
@@ -165,7 +165,7 @@ export interface DyeCuttingFormErrors {
 }
 
 export interface PrintingFormErrors {
-  mounting_tape: string;
+  printing_machine_name: string;
   cylinder_teeth: string;
   tension: string;
   unwinder: string;
@@ -204,7 +204,7 @@ export interface LaminationFormErrors {
 
 export interface PrintingFormValues {
   printingDetails: {
-    mounting_tape: string;
+    printing_machine_name: string;
     cylinder_teeth: number;
     tension: number;
     unwinder: number;
@@ -299,7 +299,7 @@ const initialState: MasterDataState = {
   dyeCuttingDataTouched:false,
   masterDataDataTouched:false,
   printingFormErrors:{
-    mounting_tape: "",
+    printing_machine_name: "",
     cylinder_teeth: "",
     tension: "",
     unwinder: "",
@@ -368,7 +368,7 @@ const initialState: MasterDataState = {
   },
   printingSaveFormData: {
     printingDetails: {
-      mounting_tape: "",
+      printing_machine_name: "",
       cylinder_teeth: 0,
       tension: 0,
       unwinder: 0,
@@ -559,7 +559,7 @@ const initialState: MasterDataState = {
     },
     masterDataPrinting: {
       printingDetails: {
-        mounting_tape: "",
+        printing_machine_name: "",
         cylinder_teeth: 0,
         tension: 0,
         unwinder: 0,
@@ -751,7 +751,7 @@ state.laminationDataTouched = action.payload
     },
     clearPrintingFormErrors:(state)=>{
      state.printingFormErrors={
-      mounting_tape: "",
+      printing_machine_name: "",
       cylinder_teeth: "",
       tension: "",
       unwinder: "",
@@ -820,7 +820,7 @@ state.laminationDataTouched = action.payload
     clearPrintingFormData: (state) => {
       state.printingSaveFormData = {
         printingDetails: {
-          mounting_tape: "",
+          printing_machine_name: "",
           cylinder_teeth: 0,
           tension: 0,
           unwinder: 0,

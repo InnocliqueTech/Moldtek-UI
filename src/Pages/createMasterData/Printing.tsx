@@ -19,8 +19,8 @@ import { useParams } from "react-router-dom";
 
 const machineFields = [
   {
-    id: "mounting_tape",
-    label: "Mounting Tape",
+    id: "printing_machine_name",
+    label: "Printinting Machine name",
     options: ["Standard", "Actual"],
   },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
@@ -86,7 +86,7 @@ const Printing: React.FC<PrintingProps> = ({
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({
-    mounting_tape: "",
+    printing_machine_name: "",
     cylinder_teeth: "",
     tension: "",
     unwinder: "",
@@ -106,7 +106,7 @@ const Printing: React.FC<PrintingProps> = ({
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
       printingDetails: {
-        mounting_tape: data?.mounting_tape || "",
+        printing_machine_name: data?.printing_machine_name || "",
         cylinder_teeth: Number(data?.cylinder_teeth) || 0,
         tension: Number(data?.tension) || 0,
         unwinder: Number(data?.unwinder) || 0,

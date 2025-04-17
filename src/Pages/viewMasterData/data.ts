@@ -18,7 +18,7 @@ export const  mockData = {
       "printingDetails": {
           "machine_settings_id": 1,
           "job_master_id": 1,
-          "mounting_tape": "Medium 0.38MM",
+          "printing_machine_name": "Medium 0.38MM",
           "cylinder_teeth": 292,
           "tension": 23,
           "unwinder": 15,

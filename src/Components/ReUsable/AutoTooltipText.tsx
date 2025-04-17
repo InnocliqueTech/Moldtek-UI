@@ -63,6 +63,7 @@ const AutoTooltipText: React.FC<AutoTooltipTextProps> = ({
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           verticalAlign: 'middle',
+          mb:0.5,
           ...sx,
         }}
       >

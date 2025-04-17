@@ -79,7 +79,7 @@ const CreateMasterData: React.FC = () => {
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
   const [formValues, setFormValues] = useState<PrintingFormValues>({
     printingDetails: {
-      mounting_tape: "",
+      printing_machine_name: "",
       cylinder_teeth: 0,
       tension: 0,
       unwinder: 0,

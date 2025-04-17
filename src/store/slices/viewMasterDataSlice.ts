@@ -9,7 +9,7 @@ export interface RepeatTableRow {
 export interface PrintingMachineSettings {
   machine_settings_id: number;
   job_master_id: number;
-  mounting_tape: string;
+  printing_machine_name: string;
   cylinder_teeth: number;
   tension: number;
   unwinder: number;
@@ -150,7 +150,7 @@ const initialState: ViewMasterDataState = {
   printingMachineSettings: {
     machine_settings_id: 0,
     job_master_id: 0,
-    mounting_tape: "--",
+    printing_machine_name: "--",
     cylinder_teeth: 0,
     tension: 0,
     unwinder: 0,
