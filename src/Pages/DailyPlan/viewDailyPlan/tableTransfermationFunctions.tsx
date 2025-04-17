@@ -145,7 +145,7 @@ type TensionApiResponse = {
     remarks: "Remarks"
   };
 
-  export const transformPrintingMCData = (apiData) => {
+  export const transformPrintingMCData = (apiData:any) => {
     return Object.entries(printingMCMapping).map(([key, label]) => ({
       label,
       value: apiData[key] ?? "--" // fallback if value is null or undefined
