@@ -122,13 +122,11 @@ type TensionApiResponse = {
         particular: item.particular,
         target: item.target ?? "--"
       };
-  
-      Object.entries(item.rollValues).forEach(([rollKey, value]) => {
+      Object.entries(item.rollValues ?? {}).forEach(([rollKey, value]) => {
         // Convert keys like "Roll-1" to "roll1"
         const formattedKey = rollKey.toLowerCase().replace(/-/g, '');
         row[formattedKey] = value;
       });
-  
       return row;
     });
   };
