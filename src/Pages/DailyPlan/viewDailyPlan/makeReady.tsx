@@ -3,6 +3,7 @@ import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { tapeColumns, materialColumns } from "../data";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -43,7 +44,9 @@ interface PrintingReportProps {
 const MakeReady: React.FC<PrintingReportProps> = ({
   indentNO
 }) => {
-  console.log(indentNO,"inside makeReady")
+  
+  const { data, isLoading, isError, error } = useGetMakeReadyDetailsQuery(indentNO)
+  console.log(data,indentNO,"inside makeReady")
   const {
     inkCoatingSpecifications,
     materialSpecification,

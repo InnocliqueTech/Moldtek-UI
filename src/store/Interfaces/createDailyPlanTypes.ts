@@ -145,4 +145,85 @@ export interface PrintingReportResponse {
     materialUsageShiftDetails: MaterialUsageShiftDetails
   }
 }
-  
+
+
+//--------------------- make ready API data MOdel------------------------------------------//
+
+// types.ts
+export interface DailyPlan {
+  unitEffectivityNumber: string
+  jobRunDate: string
+  createdAt: string
+  updatedAt: string
+  masterVersionNo: number
+  jobType: string
+  labelType: string
+  status: string
+  indentNumber: string
+  customerName: string
+  brandNamePack: string
+  ppcIndentQty: number
+  targetLabelsQty: number
+  targetFilmMtrs: number
+  filmRequiredForPrinting: number | null
+  jarCap: string
+  date: string
+  shift: string
+  workOrderNumber: string
+  jobMasterId: number
+}
+
+export interface GetReadyInkCoatingSpecification {
+  stationNo: number
+  colorPantone: string
+  mixingOnGec: string | null
+  mtplCode: string | null
+  lfValue: number
+  supplierBatchNo: string | null
+  uvLedIntersity: string | null
+  lpcm: string | null
+  vol: string | null
+}
+
+export interface AnaloxSpecification {
+  stationNo: number
+  lpcm: string
+  vol: string
+}
+
+export interface MountingTapeSpecification {
+  stationNo: number
+  stationSpec: string
+}
+
+export interface MaterialSpecification {
+  widthMm: string
+  thicknessMicrons: string
+  gsm: string
+  dyne: string
+  staticCharge: number | null
+  formatCorrection: number | null
+}
+
+export interface PlateMountingSupervisorReport {
+  platesInspection: string | null
+  mounter: string
+  approver: string
+  inkKitchenSupervisor: string
+  plateMountingSupervisor: string
+  shiftQcIncharge: string
+}
+
+export interface MakeReadyDetailsResponse {
+  statusCode: number
+  message: string
+  payload: null
+  data: {
+    dailyPlan: DailyPlan
+    inkCoatingSpecifications: GetReadyInkCoatingSpecification[]
+    analoxSpecifications: AnaloxSpecification[]
+    mountingTapeSpecifications: MountingTapeSpecification[]
+    materialSpecification: MaterialSpecification
+    plateMountingSupervisorReport: PlateMountingSupervisorReport
+  }
+}

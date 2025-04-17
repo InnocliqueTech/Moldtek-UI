@@ -424,7 +424,7 @@ const DataTable = <T extends Record<string, any>>({
                               justifyContent: "center",
                             }}
                           >
-                            {row[column.id]}
+                            {row[column.id] || "N/A"}
                           </Box>
                         </Tooltip>
                       )}
