@@ -45,7 +45,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     submitAndPublishButtonDyeCutting,
     submitAndPublishButtonLamination,
     submitAndPublishButtonPrinting,
-    requestPayload
+    requestPayload,
+    saveFormData
   } = useSelector((store: RootState) => store.masterData);
   const handleNextClick = () => {
     if (selectedTab < 3) {
@@ -108,19 +109,25 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 
 
   const { id } = useParams();
+  console.log(requestPayload,"REQUESTPAYLOAd")
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN :any;
+  if(UEN){
+    selectedUEN =  UEN;
+ }
   const version = localStorage.getItem("selectedVersionNo");
   
   let versionNo = version ? parseInt(version) : 0;
   let displayVersion = id ? versionNo+1 : versionNo;
 
-const confirmTitle = `Are you sure you want to submit? This version is ${displayVersion}.`;
+const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 const confirmPublishTitle = id
-  ? `Are you sure you want to update and publish? This version is ${displayVersion}.`
-  : `Are you sure you want to submit and publish? This version is ${displayVersion}.`;
+  ? `Are you sure you want to update and publish? This version is ${selectedUEN} V${displayVersion}.`
+  : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
 const successTitle = id
-  ? `You have successfully updated master data. Your version is ${displayVersion}.`
-  : `You have successfully created master data. Your version is ${displayVersion}.`;
+  ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`
+  : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
   return (
     <Box
       display="flex"
@@ -140,14 +147,14 @@ const successTitle = id
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={
-            submitAndPublishButtonMasterData ||
-            submitAndPublishButtonDyeCutting ||
-            submitAndPublishButtonLamination ||
-            submitAndPublishButtonPrinting
-              ? true
-              : false
-          }
+          // disabled={
+          //   submitAndPublishButtonMasterData ||
+          //   submitAndPublishButtonDyeCutting ||
+          //   submitAndPublishButtonLamination ||
+          //   submitAndPublishButtonPrinting
+          //     ? true
+          //     : false
+          // }
         />
       ) : (
         <>
