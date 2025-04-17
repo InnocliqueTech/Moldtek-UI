@@ -1,28 +1,29 @@
-import React, { useState } from "react";
-import {
-  Box,
-  TextField,
-  Typography,
-  Grid,
-} from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import React, { useState } from 'react';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { Box, InputAdornment, IconButton, Grid } from '@mui/material';
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  filterSchema,
-  FilterFormValues,
-} from "../../Components/ZodSchemas/filterValidation";
-import ButtonComponent from "../../Components/ReUsable/Button";
-import CustomerSelect from "./CustomersData";
-import LabelTypeSelector from "./LabelType";
+import { format } from 'date-fns';
+import { useDispatch } from 'react-redux';
+import LabelTypeSelector from './LabelType';
+import ButtonComponent from '../../Components/ReUsable/Button';
+import CustomerSelect from './CustomersData';
+import { toast } from 'react-toastify';
+import { FilterFormValues, filterSchema } from '../../Components/ZodSchemas/filterValidation';
+import { ArrowForward, CalendarToday, Clear } from '@mui/icons-material';
+import {setSearchButton} from "../../store/slices/masterDataSlice"
 
+// LocalStorage Helpers
+const getFromDate = (): string => localStorage.getItem('fromDate') || '';
+const getToDate = (): string => localStorage.getItem('toDate') || '';
+
+const saveFromDate = (date: string) => localStorage.setItem('fromDate', date);
+const saveToDate = (date: string) => localStorage.setItem('toDate', date);
+
+// React Component
 const FilterForm: React.FC = () => {
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
-
-  const {
-    control,
-    handleSubmit,
-  } = useForm<FilterFormValues>({
+  const { handleSubmit } = useForm<FilterFormValues>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
       fromDate: "",
@@ -32,135 +33,167 @@ const FilterForm: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: FilterFormValues) => {
-    console.log("Submitted Data:", data);
+  const [openFrom, setOpenFrom] = useState(false);
+  const [openTo, setOpenTo] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleDateChange = (date: Date | null, field: 'fromDate' | 'toDate') => {
+    const formattedDate = date ? format(date, 'MM-dd-yyyy') : '';
+    if (field === 'fromDate') saveFromDate(formattedDate);
+    else saveToDate(formattedDate);
   };
 
+  const handleClearDate = (field: 'fromDate' | 'toDate') => {
+    if (field === 'fromDate') saveFromDate('');
+    else saveToDate('');
+  };
+
+  const onSubmit = (data: FilterFormValues) => {
+dispatch(setSearchButton(true)) ;
+  };
+
+  const fromDate = getFromDate();
+  const toDate = getToDate();
+  const customerNames = localStorage.getItem("selectedCustomerNames");
+  const parsedCustomerNames = customerNames ? JSON.parse(customerNames) : [];
+
   return (
-    <Box sx={{ p: { xs: 2, sm: 3 } }}>
-      <Grid container spacing={2}>
-        {/* From Date */}
-        <Grid size={{xs:12,sm:6}}>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            From Date
-          </Typography>
-          <Controller
-            name="fromDate"
-            control={control}
-            render={() => (
-              <TextField
-                fullWidth
-                type="date"
-                variant="outlined"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                sx={{
-                  "& .MuiInputBase-root": { borderRadius: "8px" },
-                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ccc" },
-                  "& .MuiInputBase-input": { padding: "10px" },
-                }}
-              />
-            )}
-          />
-        </Grid>
-
-        {/* To Date */}
-        <Grid size={{xs:12,sm:6}} >
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            To Date
-          </Typography>
-          <Controller
-            name="toDate"
-            control={control}
-            render={() => (
-              <TextField
-                fullWidth
-                type="date"
-                variant="outlined"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                sx={{
-                  "& .MuiInputBase-root": { borderRadius: "8px" },
-                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ccc" },
-                  "& .MuiInputBase-input": { padding: "10px" },
-                }}
-              />
-            )}
-          />
-        </Grid>
-
-        {/* <Grid size={{xs:12}}>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            Master Data Search
-          </Typography>
-          <Grid container spacing={1}>
-            <Grid size={{xs:12,sm:4}} >
-              <FormControl fullWidth>
-                <Controller
-                  name="searchType"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      fullWidth
-                      error={!!errors.searchType}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                    borderRight: "none",
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                        },
-                        "& .MuiInputBase-input": { padding: "10px" },
-                      }}
-                    >
-                      <MenuItem value="Indent No">Indent No</MenuItem>
-                      <MenuItem value="Order ID">Order ID</MenuItem>
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid size={{xs:12,sm:8}} >
-              <Controller
-                name="searchValue"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    variant="outlined"
-                    error={!!errors.searchValue}
-                    helperText={errors.searchValue?.message}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        borderRadius: "8px",
+    <>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Box>
+          <Box sx={{ display: 'flex', gap: '2px' }}>
+            {/* From Date */}
+            <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
+              <DatePicker
+                label="From Date"
+                open={openFrom}
+                onOpen={() => setOpenFrom(true)}
+                onClose={() => setOpenFrom(false)}
+                value={fromDate ? new Date(fromDate) : null}
+                onChange={(newValue) => handleDateChange(newValue, 'fromDate')}
+                format="MM/dd/yyyy"
+                slotProps={{
+                  textField: {
+                    placeholder: 'MM/dd/yyyy',
+                    onClick: () => setOpenFrom(true),
+                    sx: {
+                      '& .MuiOutlinedInput-root': {
+                        borderWidth: '2px',
+                        border: '#f0f0f0',
+                        '& fieldset': { borderWidth: '2px' },
+                        '&:hover fieldset': { borderWidth: '2px' },
+                        '&.Mui-focused fieldset': { borderWidth: '2px', border: '#f0f0f0' },
                       },
-                      "& .MuiInputBase-input": { padding: "10px" },
-                    }}
-                  />
-                )}
+                    },
+                    InputProps: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {fromDate ? (
+                            <IconButton onClick={(event) => {
+                              event.stopPropagation();
+                              handleClearDate('fromDate');
+                            }}>
+                              <Clear />
+                            </IconButton>
+                          ) : (
+                            <IconButton onClick={() => setOpenFrom(true)}>
+                              <CalendarToday />
+                            </IconButton>
+                          )}
+                        </InputAdornment>
+                      ),
+                    },
+                  },
+                }}
               />
-            </Grid>
-          </Grid>
-        </Grid> */}
-        <CustomerSelect/>
-        <LabelTypeSelector/>
+            </Box>
 
-        {/* Search Button */}
-        <Grid size={{xs:12}}>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <ButtonComponent
-              text="Search"
-              borderRadius="100px"
-              onClick={handleSubmit(onSubmit)}
-              color="#0073B7"
-              textColor="white"
-              p={2}
-            />
+            <ArrowForward sx={{ alignSelf: 'center' }} />
+
+            {/* To Date */}
+            <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
+              <DatePicker
+                label="To Date"
+                open={openTo}
+                onOpen={() => setOpenTo(true)}
+                onClose={() => setOpenTo(false)}
+                value={toDate ? new Date(toDate) : null}
+                onChange={(newValue) => handleDateChange(newValue, 'toDate')}
+                format="MM/dd/yyyy"
+                shouldDisableDate={(date) => {
+                  if (!fromDate) return false;
+                  const from = new Date(fromDate);
+                  from.setHours(0, 0, 0, 0);
+                  const check = new Date(date);
+                  check.setHours(0, 0, 0, 0);
+                  return check < from;
+                }}
+                minDate={fromDate ? new Date(fromDate) : undefined}
+                slotProps={{
+                  textField: {
+                    placeholder: 'MM/dd/yyyy',
+                    onClick: () => setOpenTo(true),
+                    sx: {
+                      '& .MuiOutlinedInput-root': {
+                        borderWidth: '2px',
+                        border: '#f0f0f0',
+                        '& fieldset': { borderWidth: '2px' },
+                        '&:hover fieldset': { borderWidth: '2px' },
+                        '&.Mui-focused fieldset': { borderWidth: '2px', border: '#f0f0f0' },
+                      },
+                    },
+                    InputProps: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {toDate ? (
+                            <IconButton onClick={(event) => {
+                              event.stopPropagation();
+                              handleClearDate('toDate');
+                            }}>
+                              <Clear />
+                            </IconButton>
+                          ) : (
+                            <IconButton onClick={() => setOpenTo(true)}>
+                              <CalendarToday />
+                            </IconButton>
+                          )}
+                        </InputAdornment>
+                      ),
+                    },
+                  },
+                }}
+              />
+            </Box>
           </Box>
+        </Box>
+      </LocalizationProvider>
+
+      <Box sx={{ mt: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <CustomerSelect />
+          </Grid>
+
+          <Grid item xs={12}>
+            <LabelTypeSelector />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <ButtonComponent
+                text="Search"
+                borderRadius="100px"
+                onClick={handleSubmit(onSubmit)}
+                color="#0073B7"
+                textColor="white"
+                p={2}
+                disabled={fromDate === '' || toDate === '' || parsedCustomerNames.length === 0}
+              />
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 };
 

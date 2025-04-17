@@ -135,7 +135,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const handleLogOut = () => {
     navigate("/");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     localStorage.setItem("auth", "false");
+    localStorage.setItem("filterPayload",{fromDate: "", toDate: "", customerName: [], labelType: [], page: 0, size: 10});
+    localStorage.setItem("selectedCustomerNames",[]);
+
     if(!isDyeCuttingDataSave){
       dispatch(clearDyeCuttingFormData());
       dispatch(clearDyeCuttingFormErrors())

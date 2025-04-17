@@ -92,6 +92,13 @@ export const apiSlice = createApi({
           "MasterDataList"
       ],
     }),
+    masterFilters:builder.mutation<any,any>({
+query:(newItem)=>({
+  url:'/master/masterDataFilter',
+  method: "POST",
+  body: newItem,
+})
+    }),
     getCustomerDtails:builder.query<any, void>({
       query: () => "/master/getCustomerDetails",
     }),
@@ -147,5 +154,6 @@ export const {
   useGetCustomerDtailsQuery,
   useGetLabelTypesQuery,
   useGetPrintingReportDetailsQuery, 
-  useGetMakeReadyDetailsQuery
+  useGetMakeReadyDetailsQuery,
+  useMasterFiltersMutation
 } = apiSlice;

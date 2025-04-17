@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -17,6 +17,7 @@ import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetMetricsQuery,
   useListOfCompaniesQuery,
+  useMasterFiltersMutation,
 } from "../../store/services/api";
 
 const MasterData: React.FC = () => {
@@ -126,12 +127,28 @@ const MasterData: React.FC = () => {
         value ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-") : "",
     },
   ];
-
-  const {
-    data: listOfCompaniesData,
+  const customerNames = localStorage.getItem("selectedCustomerNames");
+  const parsedCustomerNames = customerNames ? JSON.parse(customerNames) : [];
+  const fromDate = localStorage.getItem('fromDate') || '';
+  const toDate = localStorage.getItem('toDate') || '';
+  
+  const [masterFilters,{ data: listOfCompaniesData,
     isLoading: listOfCompaniesLoading,
-    isError: companiesError,
-  } = useListOfCompaniesQuery(`page=${page - 1}&size=${rowsPerPage}`);
+    isError: companiesError,}] = useMasterFiltersMutation();
+
+  useEffect(()=>{
+    localStorage.setItem("filtersPayload", JSON.stringify({
+      fromDate: fromDate?fromDate:'',
+      toDate: toDate?toDate:'',
+      customerName: parsedCustomerNames?parsedCustomerNames:[],
+      labelType: [],
+      page: page - 1,
+      size: rowsPerPage
+    }));
+    const storedPayload = localStorage.getItem("filtersPayload");
+    const parsedPayload = storedPayload ? JSON.parse(storedPayload) : null;  
+    masterFilters(parsedPayload)
+  },[page])
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,

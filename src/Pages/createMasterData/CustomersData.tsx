@@ -1,31 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Box,
-  InputAdornment,
-  TextField,
-  Popover,
-  IconButton,
-  Tooltip,
-  List,
-  ListItem,
-  ListItemText,
-  Avatar,
-  ListItemAvatar,
-  Skeleton,
-} from "@mui/material";
+import { Box, Avatar, IconButton, Tooltip, Popover, TextField, List, ListItem, ListItemText, ListItemAvatar, Skeleton, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import {
-  setCustomers,
-  setSelectedCustomers,
-  toggleCustomerSelection,
-} from "../../store/slices/masterDataSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCustomers, setSelectedCustomers, toggleCustomerSelection } from "../../store/slices/masterDataSlice";
 import { useGetCustomerDtailsQuery } from "../../store/services/api";
+import { AppDispatch, RootState } from "../../store";
 
 const CustomerSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -37,28 +18,24 @@ const CustomerSelect = () => {
     if (CustomerDetailsData) {
       dispatch(setCustomers(CustomerDetailsData));
     }
-  }, [CustomerDetailsData]);
+    // Load selected customer names from localStorage
+    const storedCustomerNames = JSON.parse(localStorage.getItem("selectedCustomerNames") || "[]");
+    if (storedCustomerNames.length > 0) {
+      dispatch(setSelectedCustomers(storedCustomerNames.map(name => ({ fullName: name }))));
+    }
+  }, [CustomerDetailsData, dispatch]);
 
-  const { customers, selectedCustomers } = useSelector(
-    (state: RootState) => state.masterData
-  );
+  const { customers, selectedCustomers } = useSelector((state: RootState) => state.masterData);
 
   const customersData = customers || [];
   const visibleCustomers = customersData?.slice(0, 7);
   const hiddenCustomers = customersData?.slice(7);
 
   const colorPalette = [
-    "#FF8A80",
-    "#81C784",
-    "#64B5F6",
-    "#FF80AB",
-    "#B39DDB",
-    "#FFB74D",
-    "#FFD54F",
+    "#FF8A80", "#81C784", "#64B5F6", "#FF80AB", "#B39DDB", "#FFB74D", "#FFD54F"
   ];
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) =>
-    setAnchorEl(event.currentTarget);
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => {
     setAnchorEl(null);
     setSearch("");
@@ -66,9 +43,7 @@ const CustomerSelect = () => {
   const open = Boolean(anchorEl);
 
   const filteredUsers = search
-    ? customersData?.filter((customer) =>
-        customer?.fullName?.toLowerCase()?.includes(search?.toLowerCase())
-      )
+    ? customersData?.filter((customer) => customer?.fullName?.toLowerCase()?.includes(search?.toLowerCase()))
     : hiddenCustomers;
 
   const handleCustomerClick = (customer: (typeof customers)[0]) => {
@@ -77,6 +52,8 @@ const CustomerSelect = () => {
 
   const handleClearSelection = () => {
     dispatch(setSelectedCustomers([]));
+    // Also clear from localStorage
+    localStorage.removeItem("selectedCustomerNames");
   };
 
   return (
@@ -86,11 +63,7 @@ const CustomerSelect = () => {
           Customer ({selectedCustomers?.length})
         </Typography>
         <Tooltip title="Clear">
-          <IconButton
-            size="small"
-            sx={{ mt: "-4px" }}
-            onClick={handleClearSelection}
-          >
+          <IconButton size="small" sx={{ mt: "-4px" }} onClick={handleClearSelection}>
             <ClearIcon fontSize="small" />
           </IconButton>
         </Tooltip>
@@ -99,25 +72,16 @@ const CustomerSelect = () => {
       <Box display="flex" gap={1}>
         {isLoading
           ? Array.from(new Array(5)).map((_, i) => (
-              <Skeleton
-                key={i}
-                variant="circular"
-                width={36}
-                height={36}
-                animation="wave"
-              />
+              <Skeleton key={i} variant="circular" width={36} height={36} animation="wave" />
             ))
           : visibleCustomers.map((customer) => {
-              const isSelected = selectedCustomers?.some(
-                (selected) => selected?.customerId === customer?.customerId
-              );
+              const isSelected = selectedCustomers?.some((selected) => selected?.customerId === customer?.customerId);
               return (
                 <Tooltip key={customer?.customerId} title={customer?.fullName}>
                   <Avatar
                     onClick={() => handleCustomerClick(customer)}
                     sx={{
-                      bgcolor:
-                        colorPalette[customer?.customerId % colorPalette?.length],
+                      bgcolor: colorPalette[customer?.customerId % colorPalette?.length],
                       color: "white",
                       width: 36,
                       height: 36,
@@ -126,11 +90,7 @@ const CustomerSelect = () => {
                       border: isSelected ? "2px solid #1677FF" : "none",
                     }}
                   >
-                    {customer?.fullName
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
+                    {customer?.fullName.split(" ").map((n) => n[0]).join("").toUpperCase()}
                   </Avatar>
                 </Tooltip>
               );
@@ -138,9 +98,7 @@ const CustomerSelect = () => {
 
         {!isLoading && customersData?.length > 6 && (
           <IconButton onClick={handleOpen}>
-            <Avatar
-              sx={{ bgcolor: "gray", width: 36, height: 36, fontSize: 14 }}
-            >
+            <Avatar sx={{ bgcolor: "gray", width: 36, height: 36, fontSize: 14 }}>
               <MoreHorizIcon />
             </Avatar>
           </IconButton>
@@ -168,29 +126,7 @@ const CustomerSelect = () => {
             variant="outlined"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "#fff",
-                "& fieldset": { borderColor: "#D0D3D4", borderWidth: "2px" },
-                "&:hover fieldset": {
-                  borderColor: "#D0D3D4",
-                  borderWidth: "2px",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#D0D3D4",
-                  borderWidth: "2px",
-                },
-              },
-            }}
           />
-
           <List sx={{ maxHeight: 195, overflowY: "auto" }}>
             {isLoading ? (
               Array.from(new Array(5)).map((_, i) => (
@@ -198,9 +134,7 @@ const CustomerSelect = () => {
                   <ListItemAvatar>
                     <Skeleton variant="circular" width={30} height={30} />
                   </ListItemAvatar>
-                  <ListItemText
-                    primary={<Skeleton variant="text" width={100} />}
-                  />
+                  <ListItemText primary={<Skeleton variant="text" width={100} />} />
                 </ListItem>
               ))
             ) : filteredUsers?.length > 0 ? (
@@ -209,31 +143,19 @@ const CustomerSelect = () => {
                   (selected) => selected?.customerId === customer?.customerId
                 );
                 return (
-                  <ListItem
-                    key={customer?.customerId}
-                    onClick={() => handleCustomerClick(customer)}
-                    sx={{ borderRadius: "5px", cursor: "pointer" }}
-                  >
-                    <ListItemAvatar sx={{ minWidth: "36px" }}>
+                  <ListItem key={customer?.customerId} onClick={() => handleCustomerClick(customer)}>
+                    <ListItemAvatar>
                       <Avatar
                         sx={{
-                          bgcolor:
-                            colorPalette[
-                              customer?.customerId % colorPalette?.length
-                            ],
+                          bgcolor: colorPalette[customer?.customerId % colorPalette?.length],
                           color: "white",
                           width: 30,
                           height: 30,
                           fontSize: 14,
-                          cursor: "pointer",
                           border: isSelected ? "2px solid #1677FF" : "none",
                         }}
                       >
-                        {customer?.fullName
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
+                        {customer?.fullName.split(" ").map((n) => n[0]).join("").toUpperCase()}
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={customer?.fullName} />

@@ -273,9 +273,11 @@ interface MasterDataState {
 printingDataTouched:boolean;
   dyeCuttingDataTouched:boolean;
   masterDataDataTouched:boolean;
+  searchButton:boolean;
 }
 
 const initialState: MasterDataState = {
+  searchButton:false,
   laminationFormErrors:{
     zone1_temp: "",
     zone2_temp: "",
@@ -992,23 +994,34 @@ state.laminationDataTouched = action.payload
     setRequestPayload: (state, action: PayloadAction<RequestPayload>) => {
       state.requestPayload = action.payload;
     },
-    setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
-      state.selectedCustomers = action.payload;
-    },
-    toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
-      const { customerId } = action.payload;
-      const exists = state.selectedCustomers.some(
-        (customer) => customer.customerId === customerId
-      );
+// In your slice:
+setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
+  state.selectedCustomers = action.payload;
+  // Store the customer names in localStorage
+  const customerNames = action.payload.map((customer) => customer.fullName);
+  localStorage.setItem("selectedCustomerNames", JSON.stringify(customerNames));
+  
+},
 
-      if (exists) {
-        state.selectedCustomers = state.selectedCustomers.filter(
-          (customer) => customer.customerId !== customerId
-        );
-      } else {
-        state.selectedCustomers.push(action.payload);
-      }
-    },
+toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
+  const { customerId } = action.payload;
+  const exists = state.selectedCustomers.some(
+    (customer) => customer.customerId === customerId
+  );
+
+  if (exists) {
+    state.selectedCustomers = state.selectedCustomers.filter(
+      (customer) => customer.customerId !== customerId
+    );
+  } else {
+    state.selectedCustomers.push(action.payload);
+  }
+
+  // Update the customer names
+  const customerNames = state.selectedCustomers.map((customer) => customer.fullName);
+  localStorage.setItem("selectedCustomerNames", JSON.stringify(customerNames));
+},
+
     setCustomers(state, action: PayloadAction<Customer[]>) {
       state.customers = action.payload;
     },
@@ -1046,6 +1059,9 @@ state.laminationDataTouched = action.payload
     },
     clearInvalidFieldsTable:(state)=>{
       state.invalidFieldsTable= {}
+    },
+    setSearchButton:(state,action:PayloadAction<boolean>)=>{
+      state.searchButton = action.payload
     }
   },
 });
@@ -1094,6 +1110,7 @@ export const {
   setLaminationDataTouched,
   setDyeCuttingDataTouched,
   setMasterDataDataTouched,
-  setPrintingDataTouched
+  setPrintingDataTouched,
+  setSearchButton
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
