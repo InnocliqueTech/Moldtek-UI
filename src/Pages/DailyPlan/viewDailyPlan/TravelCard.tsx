@@ -1,9 +1,44 @@
 import React from "react";
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { printingColumns, printingData, jobDetails ,laminationColumns,laminationData,labelCuttingColumns,labelCuttingData,labelDispatchColums,labelDispatchRows} from "../data";
+import { printingColumns ,laminationColumns,labelCuttingColumns,labelDispatchColums} from "../data";
+import { useGetTravelCardDetailsQuery } from "../../../store/services/api";
+import Loader from "../../../Loader";
+import { transformJobDetails } from "./tableTransfermationFunctions";
 
-const TravelCard: React.FC = () => {
+
+interface TravelCardDetailsProps {
+    indentNumber: string
+  }
+
+const TravelCard: React.FC<TravelCardDetailsProps> = ({ indentNumber }) => {
+    const {
+      data: travelCardData,
+      isLoading,
+      isError,
+      error,
+    } = useGetTravelCardDetailsQuery(indentNumber);
+    const printingData = travelCardData?.data?.printingMachine?.categories;
+    const printintJobDetails = transformJobDetails(
+      travelCardData?.data?.printingMachine
+    );
+    const laminationData = travelCardData?.data?.laminationMachine?.categories;
+    const laminationJobDetails = transformJobDetails(
+      travelCardData?.data?.laminationMachine
+    );
+    const labelCuttingData =
+      travelCardData?.data?.labelCuttingMachine?.categories;
+    const labelCuttingJobDetails = transformJobDetails(
+      travelCardData?.data?.labelCuttingMachine
+    );
+    const labelDispatchRows = [
+      { ...travelCardData?.data?.labelDispatchSummary },
+    ];
+    
+    if (isLoading) return <Loader />;
+    if (isError)
+      return <div>Error loading details: {JSON.stringify(error)}</div>;
+    if (!travelCardData) return <div>No data found</div>;
     return (
         <>
             <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -12,7 +47,7 @@ const TravelCard: React.FC = () => {
                     columns={printingColumns}
                     data={printingData}
                     firstRow={true}
-                    infoItems={jobDetails}
+                    infoItems={printintJobDetails}
                     showInfoSection={true}
                 />
             </Box>
@@ -23,7 +58,7 @@ const TravelCard: React.FC = () => {
                     columns={laminationColumns}
                     data={laminationData}
                     firstRow={true}
-                    infoItems={jobDetails}
+                    infoItems={laminationJobDetails}
                     showInfoSection={true}
                 />
             </Box>
@@ -34,7 +69,7 @@ const TravelCard: React.FC = () => {
                     columns={labelCuttingColumns}
                     data={labelCuttingData}
                     firstRow={true}
-                    infoItems={jobDetails}
+                    infoItems={labelCuttingJobDetails}
                     showInfoSection={true}
                 />
             </Box>

@@ -1,3 +1,4 @@
+import { formatDate } from "../../../Components/helpers";
 type StationData = {
     stationNo: number;
     colorPantone: string | null;
@@ -151,6 +152,51 @@ type TensionApiResponse = {
       label,
       value: apiData[key] ?? "--" // fallback if value is null or undefined
     }));
+  };
+
+
+  //--------------------TravelCard------------//
+
+  type JobDetailsApiResponse = {
+    jobStartingTime: string;
+    completionTime: string;
+    totalPrintingTime: string;
+    operator: string;
+    supervisor: string;
+    hod: string;
+  };
+  
+  export const transformJobDetails = (data: JobDetailsApiResponse | undefined) => {
+    if(!data){
+      return [];
+    }
+
+    return [
+      {
+        label: "Job Starting Time",
+        value: formatDate(data.jobStartingTime),
+      },
+      {
+        label: "Completion Time",
+        value: formatDate(data.completionTime),
+      },
+      {
+        label: "Total Printing Time",
+        value: data.totalPrintingTime || "--",
+      },
+      {
+        label: "Operator",
+        value: data.operator || "--",
+      },
+      {
+        label: "Supervisor",
+        value: data.supervisor || "--",
+      },
+      {
+        label: "HOD",
+        value: data.hod || "--",
+      },
+    ];
   };
   
   

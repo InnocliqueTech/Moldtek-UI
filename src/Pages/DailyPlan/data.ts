@@ -618,10 +618,10 @@ export const jobMetadata = [
 ];
 
 export const labelDispatchColums = [
-    { id: "required", label: "REQUIRED LABELS FOR DISPATCH" },
-    { id: "dispatched", label: "DISPATCHED LABELS" },
-    { id: "balance", label: "BALANCE LABELS" },
-    { id: "HODcomments", label:"HOD Comments"}
+    { id: "requiredLabelsForDispatch", label: "REQUIRED LABELS FOR DISPATCH" },
+    { id: "dispatchedLabels", label: "DISPATCHED LABELS" },
+    { id: "balanceLabels", label: "BALANCE LABELS" },
+    { id: "hodComments", label:"HOD Comments"}
 ]
 
 export const labelDispatchRows = [

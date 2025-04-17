@@ -7,7 +7,8 @@ import {
   DailyJob,
   PrintingReportResponse,
   MakeReadyDetailsResponse,
-  LabelCuttingDetailsResponse
+  LabelCuttingDetailsResponse,
+  TravelCardDetailsResponse
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -26,7 +27,8 @@ export const apiSlice = createApi({
     "MasterDataList",
     "PrintingReport",
     "MakeReadyDetails",
-    "LabelCuttingDetails"
+    "LabelCuttingDetails",
+    "TravelCardDetails"
   ], // Define tags for cache invalidation
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
@@ -149,6 +151,15 @@ query:(newItem)=>({
         { type: 'LabelCuttingDetails', id: indentNumber }
       ],
     }),
+    getTravelCardDetails: builder.query<TravelCardDetailsResponse, string>({
+      query: (indentNumber) => ({
+        url: '/dailyplan/getDailyPlanTravelCardDetails',
+        params: { indentNumber }
+      }),
+      providesTags: (result, error, indentNumber) => [
+        { type: 'TravelCardDetails', id: indentNumber }
+      ],
+    }),
   }),
 });
 
@@ -167,5 +178,6 @@ export const {
   useGetPrintingReportDetailsQuery, 
   useGetMakeReadyDetailsQuery,
   useMasterFiltersMutation,
-  useGetLabelCuttingDetailsQuery
+  useGetLabelCuttingDetailsQuery,
+  useGetTravelCardDetailsQuery
 } = apiSlice;

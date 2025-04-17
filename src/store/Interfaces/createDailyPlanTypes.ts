@@ -262,3 +262,41 @@ export interface LabelCuttingDetailsResponse {
     approvalRemarks: ApprovalRemarks
   }
 }
+
+//-------------------TravelCardApIResponse-----------------------------//
+
+// types.ts
+export interface MachineCategory {
+  category: string
+  target: string
+  actuals: string | null
+}
+
+export interface MachineDetails {
+  categories: MachineCategory[]
+  jobStartingTime: string
+  completionTime: string
+  totalPrintingTime: string
+  operator: string
+  supervisor: string
+  hod: string
+}
+
+export interface LabelDispatchSummary {
+  requiredLabelsForDispatch: string
+  dispatchedLabels: string
+  balanceLabels: string
+  hodComments: string
+}
+
+export interface TravelCardDetailsResponse {
+  statusCode: number
+  message: string
+  payload: null
+  data: {
+    printingMachine: MachineDetails
+    laminationMachine: MachineDetails
+    labelCuttingMachine: MachineDetails
+    labelDispatchSummary: LabelDispatchSummary
+  }
+}

@@ -90,7 +90,7 @@ const ViewDailyPlan: React.FC = () => {
           {selectedTab === 1 && <PrintingReport indentNO={decodedIndentNo}/>}
           {selectedTab === 2 && <LaminationReport />}
           {selectedTab === 3 && <LabelCutting indentNumber={decodedIndentNo}/>}
-          {selectedTab === 4 && <TravelCard/>}
+          {selectedTab === 4 && <TravelCard indentNumber={decodedIndentNo}/>}
         </Box>
       </Box>
     </Box>
