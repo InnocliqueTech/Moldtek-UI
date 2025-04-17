@@ -99,7 +99,7 @@ const VersinDetails: React.FC = () => {
     <VersionPopup
     open={versionPopup}
     onClose={handleCloseVesionPopup}
-    title="List of executed jobs"
+    title="List of Versions"
     totalVersions={data?.totalRecords?data?.totalRecords:'0'}
     table
     tableColumns={tableColumns}
