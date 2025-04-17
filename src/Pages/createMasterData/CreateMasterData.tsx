@@ -207,11 +207,10 @@ const CreateMasterData: React.FC = () => {
   });
 
   const handleSaveDyeCutting = () => {
-    const finalMasterDataDetails =data?.data.masterDataDetails ? data?.data.masterDataDetails : saveFormData;
-    const finalPrintingData =  data?.data.masterDataPrinting ?  data?.data.masterDataPrinting: printingSaveFormData
-    const finalLaminationData = data?.data.masterDataLamination? data?.data.masterDataLamination :laminaionFormData
-    const finalDyeCuttingData = data?.data.masterDataDyeCutting ? data?.data.masterDataDyeCutting : dyeCuttingFormData;
-  
+    const finalMasterDataDetails =(data?.data.masterDataDetails&&!masterDataDataTouched) ? data?.data.masterDataDetails : saveFormData;
+    const finalPrintingData =  (data?.data.masterDataPrinting&&!printingDataTouched) ?  data?.data.masterDataPrinting: printingSaveFormData
+    const finalLaminationData = (data?.data.masterDataLamination&&!laminationDataTouched)? data?.data.masterDataLamination :laminaionFormData
+    const finalDyeCuttingData = (data?.data.masterDataDyeCutting&&!dyeCuttingDataTouched) ? data?.data.masterDataDyeCutting : dyeCuttingFormData;
     const updatedPayload = {
       ...requestPayload,
       masterDataDetails: finalMasterDataDetails,
@@ -230,9 +229,20 @@ const CreateMasterData: React.FC = () => {
 
 
   const {id} = useParams();
-  if(id && data &&(!laminationDataTouched|| !dyeCuttingDataTouched||!printingDataTouched ||!masterDataDataTouched )){
-    dispatch(setRequestPayload(data?.data))
-  }
+
+
+  useEffect(() => {
+    if (id && data) {
+      dispatch(setRequestPayload({
+        ...requestPayload,
+        masterDataLamination: !laminationDataTouched ? data?.data.masterDataLamination :laminaionFormData,
+        masterDataDyeCutting: !dyeCuttingDataTouched ? data?.data.masterDataDyeCutting : dyeCuttingFormData,
+        masterDataDetails: !masterDataDataTouched ? data?.data.masterDataDetails : saveFormData,
+        masterDataPrinting: !printingDataTouched ? data?.data.masterDataPrinting: printingSaveFormData,
+      }));
+    }
+  }, [id, data, laminationDataTouched, dyeCuttingDataTouched, masterDataDataTouched, printingDataTouched]);
+  
   useEffect(() => {
     if(id){
     dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
