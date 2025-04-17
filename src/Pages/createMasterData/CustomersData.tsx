@@ -12,6 +12,7 @@ import {
   ListItemText,
   Avatar,
   ListItemAvatar,
+  Skeleton,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SearchIcon from "@mui/icons-material/Search";
@@ -30,18 +31,21 @@ const CustomerSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const { data: CustomerDetailsData } = useGetCustomerDtailsQuery();
+  const { data: CustomerDetailsData, isLoading } = useGetCustomerDtailsQuery();
+
   useEffect(() => {
-    dispatch(setCustomers(CustomerDetailsData));
-  }, []);
+    if (CustomerDetailsData) {
+      dispatch(setCustomers(CustomerDetailsData));
+    }
+  }, [CustomerDetailsData]);
 
   const { customers, selectedCustomers } = useSelector(
     (state: RootState) => state.masterData
   );
 
   const customersData = customers || [];
-  const visibleCustomers = customersData.slice(0, 7);
-  const hiddenCustomers = customersData.slice(7);
+  const visibleCustomers = customersData?.slice(0, 7);
+  const hiddenCustomers = customersData?.slice(7);
 
   const colorPalette = [
     "#FF8A80",
@@ -62,8 +66,8 @@ const CustomerSelect = () => {
   const open = Boolean(anchorEl);
 
   const filteredUsers = search
-    ? customersData.filter((customer) =>
-        customer.fullName.toLowerCase().includes(search.toLowerCase())
+    ? customersData?.filter((customer) =>
+        customer?.fullName?.toLowerCase()?.includes(search?.toLowerCase())
       )
     : hiddenCustomers;
 
@@ -76,15 +80,10 @@ const CustomerSelect = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={1}
-      sx={{ mb: 2, ml: "2px" }}
-    >
+    <Box display="flex" flexDirection="column" gap={1} sx={{ mb: 2, ml: "2px" }}>
       <Box display="flex" alignItems="center" gap={1}>
         <Typography variant="subtitle1">
-          Customer ({selectedCustomers.length})
+          Customer ({selectedCustomers?.length})
         </Typography>
         <Tooltip title="Clear">
           <IconButton
@@ -98,36 +97,46 @@ const CustomerSelect = () => {
       </Box>
 
       <Box display="flex" gap={1}>
-        {visibleCustomers.map((customer) => {
-          const isSelected = selectedCustomers.some(
-            (selected) => selected.customerId === customer.customerId
-          );
-          return (
-            <Tooltip key={customer.customerId} title={customer.fullName}>
-              <Avatar
-                onClick={() => handleCustomerClick(customer)}
-                sx={{
-                  bgcolor:
-                    colorPalette[customer.customerId % colorPalette.length],
-                  color: "white",
-                  width: 36,
-                  height: 36,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  border: isSelected ? "2px solid #1677FF" : "none",
-                }}
-              >
-                {customer.fullName
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()}
-              </Avatar>
-            </Tooltip>
-          );
-        })}
+        {isLoading
+          ? Array.from(new Array(5)).map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="circular"
+                width={36}
+                height={36}
+                animation="wave"
+              />
+            ))
+          : visibleCustomers.map((customer) => {
+              const isSelected = selectedCustomers?.some(
+                (selected) => selected?.customerId === customer?.customerId
+              );
+              return (
+                <Tooltip key={customer?.customerId} title={customer?.fullName}>
+                  <Avatar
+                    onClick={() => handleCustomerClick(customer)}
+                    sx={{
+                      bgcolor:
+                        colorPalette[customer?.customerId % colorPalette?.length],
+                      color: "white",
+                      width: 36,
+                      height: 36,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      border: isSelected ? "2px solid #1677FF" : "none",
+                    }}
+                  >
+                    {customer?.fullName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
+                  </Avatar>
+                </Tooltip>
+              );
+            })}
 
-        {customersData.length > 6 && (
+        {!isLoading && customersData?.length > 6 && (
           <IconButton onClick={handleOpen}>
             <Avatar
               sx={{ bgcolor: "gray", width: 36, height: 36, fontSize: 14 }}
@@ -183,14 +192,25 @@ const CustomerSelect = () => {
           />
 
           <List sx={{ maxHeight: 195, overflowY: "auto" }}>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((customer) => {
-                const isSelected = selectedCustomers.some(
-                  (selected) => selected.customerId === customer.customerId
+            {isLoading ? (
+              Array.from(new Array(5)).map((_, i) => (
+                <ListItem key={i}>
+                  <ListItemAvatar>
+                    <Skeleton variant="circular" width={30} height={30} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={<Skeleton variant="text" width={100} />}
+                  />
+                </ListItem>
+              ))
+            ) : filteredUsers?.length > 0 ? (
+              filteredUsers?.map((customer) => {
+                const isSelected = selectedCustomers?.some(
+                  (selected) => selected?.customerId === customer?.customerId
                 );
                 return (
                   <ListItem
-                    key={customer.customerId}
+                    key={customer?.customerId}
                     onClick={() => handleCustomerClick(customer)}
                     sx={{ borderRadius: "5px", cursor: "pointer" }}
                   >
@@ -199,7 +219,7 @@ const CustomerSelect = () => {
                         sx={{
                           bgcolor:
                             colorPalette[
-                              customer.customerId % colorPalette.length
+                              customer?.customerId % colorPalette?.length
                             ],
                           color: "white",
                           width: 30,
@@ -209,14 +229,14 @@ const CustomerSelect = () => {
                           border: isSelected ? "2px solid #1677FF" : "none",
                         }}
                       >
-                        {customer.fullName
+                        {customer?.fullName
                           .split(" ")
                           .map((n) => n[0])
                           .join("")
                           .toUpperCase()}
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={customer.fullName} />
+                    <ListItemText primary={customer?.fullName} />
                     {isSelected && <CheckIcon sx={{ color: "#1677FF" }} />}
                   </ListItem>
                 );
