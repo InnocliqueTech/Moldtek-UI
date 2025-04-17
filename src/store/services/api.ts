@@ -7,6 +7,7 @@ import {
   DailyJob,
   PrintingReportResponse,
   MakeReadyDetailsResponse,
+  LabelCuttingDetailsResponse
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -25,6 +26,7 @@ export const apiSlice = createApi({
     "MasterDataList",
     "PrintingReport",
     "MakeReadyDetails",
+    "LabelCuttingDetails"
   ], // Define tags for cache invalidation
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
@@ -138,6 +140,15 @@ query:(newItem)=>({
         { type: 'MakeReadyDetails', id: jobId }
       ],
     }),
+    getLabelCuttingDetails: builder.query<LabelCuttingDetailsResponse, string>({
+      query: (indentNumber) => ({
+        url: '/dailyplan/getDailyPlanLabelCuttingDetails',
+        params: { indentNumber }
+      }),
+      providesTags: (result, error, indentNumber) => [
+        { type: 'LabelCuttingDetails', id: indentNumber }
+      ],
+    }),
   }),
 });
 
@@ -155,5 +166,6 @@ export const {
   useGetLabelTypesQuery,
   useGetPrintingReportDetailsQuery, 
   useGetMakeReadyDetailsQuery,
-  useMasterFiltersMutation
+  useMasterFiltersMutation,
+  useGetLabelCuttingDetailsQuery
 } = apiSlice;

@@ -227,3 +227,38 @@ export interface MakeReadyDetailsResponse {
     plateMountingSupervisorReport: PlateMountingSupervisorReport
   }
 }
+
+
+//------------------------------Label cutting api respobse ----------------------//
+
+
+// types.ts
+export interface MachineConfiguration {
+  machineName: string
+  dieToolCode: string
+  machineSpeed: string
+}
+
+export interface LabelCuttingProcessItem {
+  particular: string
+  target: string
+  actual: string
+}
+
+export interface ApprovalRemarks {
+  supervisorApproval: string
+  qcApproval: string
+  inchargeComments: string
+  remarks: string
+}
+
+export interface LabelCuttingDetailsResponse {
+  statusCode: number
+  message: string
+  payload: null
+  data: {
+    machineConfiguration: MachineConfiguration
+    labelCuttingProcessReport: LabelCuttingProcessItem[]
+    approvalRemarks: ApprovalRemarks
+  }
+}

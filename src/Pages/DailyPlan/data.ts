@@ -647,7 +647,7 @@ export const machineSpecsRows = [
 ]
 
 export const productionColumns = [
-    { id: 'category', label: '' },
+    { id: 'particular', label: 'Particular' },
     { id: 'target', label: 'Target' },
     { id: 'actual', label: 'Actual' },
   ];
