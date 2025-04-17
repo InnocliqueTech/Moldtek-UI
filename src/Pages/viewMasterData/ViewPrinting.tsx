@@ -6,7 +6,7 @@ import { RootState } from "../../store";
 
 
 const machineSettingColumns = [
-  { id: "printing_machine_name", label: "Printinting Machine name" },
+  { id: "printing_machine_name", label: "Printinting Machine Name" },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
   { id: "tension", label: "Tension" },
   { id: "unwinder", label: "Unwinder" },

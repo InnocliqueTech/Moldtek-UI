@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 const machineFields = [
   {
     id: "printing_machine_name",
-    label: "Printinting Machine name",
+    label: "Printinting Machine Name",
     options: ["Standard", "Actual"],
   },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
