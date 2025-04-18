@@ -30,7 +30,7 @@ export const apiSlice = createApi({
     "MakeReadyDetails",
     "LabelCuttingDetails",
     "TravelCardDetails"
-  ], // Define tags for cache invalidation
+  ], 
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
       query: (newItem) => ({
@@ -41,14 +41,14 @@ export const apiSlice = createApi({
     }),
     getMetrics: builder.query<any, void>({
       query: () => "/master/masterDataMetrics",
-      providesTags: ["MasterDataMetrics"],  // This query provides the "MasterDataMetrics" tag
+      providesTags: ["MasterDataMetrics"],
     }),
     listOfCompanies: builder.query<any, string>({
       query: (newItem) => ({
         url: `/master/masterDataList?${newItem}`,
         method: "GET",
       }),
-      providesTags: ["MasterDataList"],  // This query also provides the same tag for the master data
+      providesTags: ["MasterDataList"],  
     }),
     versionHistory: builder.query<any,  { [key: string]: string | number | boolean }>({
       query: (newItem) => {
@@ -93,7 +93,7 @@ export const apiSlice = createApi({
         body: newItem,
       }),
       invalidatesTags: [
-        "MasterDataMetrics",   // Invalidate the metrics query
+        "MasterDataMetrics",  
           "MasterDataList"
       ],
     }),
@@ -120,7 +120,7 @@ query:(newItem)=>({
     }),
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => "/dailyplan/dailyJobMetrics",
-      providesTags: ["DailyJobMetrics"],  // This query provides the "DailyJobMetrics" tag
+      providesTags: ["DailyJobMetrics"],  
     }),
     getDailyJobsList: builder.query<DailyJobsListResponse, PaginationParams>({
       query: ({ page, size }) => ({

@@ -101,7 +101,7 @@ const MasterData: React.FC = () => {
               {value}
             </Box>
           </Tooltip>
-        ) : null,
+        ) : 'N/A',
     },
     {
       id: "created_at",

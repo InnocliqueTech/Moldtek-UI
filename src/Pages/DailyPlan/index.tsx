@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import { Avatar, Box, Grid, Typography,Skeleton } from "@mui/material";
+import { Avatar, Box, Grid, Typography,Skeleton, Tooltip } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
@@ -9,12 +9,10 @@ import { useNavigate } from "react-router-dom";
 import {
   useDailyPlanFiltersMutation,
   useGetDailyJobMetricsQuery,
-  useMasterFiltersMutation,
 } from "../../store/services/api";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
 import { toast } from "react-toastify";
-import { viewDailyPlan } from './../../store/slices/viewDailyPlanSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
@@ -86,7 +84,7 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
     },
     indentNumber: job.indentNumber || "N/A",
     masterVersionNo: job.masterVersionNo || "N/A",
-    labelType: job.labelType,
+    labelType: job.labelType || "N/A",
     createdAt: formatDate(job.createdAt),
     jobRunDate: formatDate(job.jobRunDate),
   }));
@@ -172,20 +170,27 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         id: "labelType",
         label: "Type Of Label",
         align: true,
-        format: (value: string) => (
-          <Box
-            sx={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "4px 8px",
-              display: "inline-block",
-              backgroundColor: "#F8F9FA",
-            }}
-          >
-            {value}
-          </Box>
-        ),
-      },
+      format: (value: string) =>
+             value !== null ? (
+               <Tooltip title={value}>
+                 <Box
+                   sx={{
+                     border: "1px solid #ccc",
+                     borderRadius: "8px",
+                     padding: "4px 8px",
+                     display: "inline-block",
+                     backgroundColor: "#F8F9FA",
+                     maxWidth: 150,
+                     whiteSpace: "nowrap",
+                     overflow: "hidden",
+                     textOverflow: "ellipsis",
+                   }}
+                 >
+                   {value}
+                 </Box>
+               </Tooltip>
+             ) : null,
+         },
       {
         id: "masterVersionNo",
         label: "Master Data Version",
