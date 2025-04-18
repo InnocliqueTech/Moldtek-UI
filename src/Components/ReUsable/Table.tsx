@@ -69,6 +69,7 @@ interface TableProps<T> {
   isLoading?:boolean;
   rowsPerPage?:number;
   onPageChange?: (newPage: number) => void;
+  id?:string
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -88,7 +89,8 @@ function ReusableTable<T extends Record<string, any>>({
   searchSize = false,
   isLoading=false,
   rowsPerPage=10,
-  onPageChange
+  onPageChange,
+  id
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -151,18 +153,38 @@ function ReusableTable<T extends Record<string, any>>({
   
 
   const filteredData = search
-    ? sortedData.filter((row) => {
-        const searchValue = search.toLowerCase();
+  ? sortedData.filter((row) => {
+      const searchValue = search.toLowerCase();
+
+      if (id === "jobsList") {
+        return Object.entries(row).some(([key, value]) => {
+          if (!value) return false;
+
+          let stringValue = "";
+
+          // Check if the field is a date field — format it as dd-mm-yyyy
+          if (key.toLowerCase().includes("date")) {
+            const date = new Date(value);
+            if (!isNaN(date.getTime())) {
+              stringValue = date.toLocaleDateString("en-GB").replace(/\//g, "-");
+            }
+          } else {
+            stringValue = value.toString();
+          }
+
+          return stringValue.toLowerCase().includes(searchValue);
+        });
+      } else {
         return (
-          row.uen?.toString().toLowerCase().includes(searchValue) ||
-          row.version?.toString().toLowerCase().includes(searchValue) ||
-          row.unit_effectivity_number
-            ?.toString()
-            .toLowerCase()
-            .includes(searchValue)
+          row.unitEffectivityNumber?.toString().toLowerCase().includes(searchValue) ||
+          row.indentNumber?.toString().toLowerCase().includes(searchValue) ||
+          row.unit_effectivity_number?.toString().toLowerCase().includes(searchValue)
         );
-      })
-    : sortedData;
+      }
+    })
+  : sortedData;
+
+
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -313,7 +335,7 @@ function ReusableTable<T extends Record<string, any>>({
             <TextField
               size="small"
               variant="outlined"
-              placeholder="Search"
+              placeholder={id==='masterData'?"Search for UEN":id==='dailyPlan'?"Search for Indent No or UEN":"Search"}
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
                 startAdornment: (

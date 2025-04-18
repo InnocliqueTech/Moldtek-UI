@@ -203,7 +203,9 @@ const MasterData: React.FC = () => {
               label: "View Job Data",
               onClick: (row: any) => {
                 const selectedUENAction = row?.unit_effectivity_number;
+                const versionNoAction = row?.version_no;
                 localStorage.setItem("actionSelectedUEN", selectedUENAction);
+                localStorage.setItem("actionVersionNo",versionNoAction);
                 navigate(`/viewJobsList`); // If you want this to depend on the row, add params here.
               },
             },
@@ -215,6 +217,8 @@ const MasterData: React.FC = () => {
                   "actionSelectedUEN",
                   selectedUENActionUpdate
                 );
+                const versionNoAction = row?.version_no;
+                localStorage.setItem("actionVersionNo",versionNoAction);
                 const actionSelectedUpdateUEN =
                   localStorage.getItem("actionSelectedUEN");
                 navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
@@ -224,6 +228,7 @@ const MasterData: React.FC = () => {
           isLoading={listOfCompaniesLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
+          id={"masterData"}
         />
       </Box>
     </Box>

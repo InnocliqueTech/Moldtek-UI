@@ -9,7 +9,7 @@ import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
 import { jobsList } from "./data";
-import { useGetJobsListQuery } from "../../store/services/api";
+import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
 
 
 const JobsList: React.FC = () => {
@@ -146,19 +146,27 @@ const JobsList: React.FC = () => {
 
 
   const dispatch = useDispatch<AppDispatch>();
-  const { viewMasterDataDetails } = useSelector(
-    (state: RootState) => state.viewMasterData
-  );
 
+  const versionNumber = localStorage.getItem("actionVersionNo");
+  const id =
+    localStorage.getItem("actionSelectedUEN");
   const {data,isLoading} = useGetJobsListQuery({unitEffectiveNumber:selectedUEN})
-
+  const { data: viewMasterDataDetailsData, isLoading: viewMasterDataDetailsLoading } = useViewMasterDataQuery(
+    {
+      ueNumber: id ? id : selectedUEN,
+      versionNo: versionNumber ? versionNumber : '',
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+  
 
   useEffect(() => {
     dispatch(setJobsListData(data?.data));
   }, [dispatch]);
+  const viewMasterDataDetails = viewMasterDataDetailsData?.data?.masterDataDetails
 
   const maxChars = 120;
-  const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
+  const isLong = viewMasterDataDetails?.brand_description?.length > maxChars;
   const displayText = isLong
     ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
     : viewMasterDataDetails?.brand_description;
@@ -344,6 +352,7 @@ const JobsList: React.FC = () => {
               boxShadow={false}
               searchSize={true}
               isLoading={isLoading}
+              id={"jobsList"}
             />
           </Box>
         </Box>

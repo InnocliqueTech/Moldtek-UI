@@ -1,8 +1,8 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Modal, Tooltip, Typography } from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { Delete, Edit } from "@mui/icons-material";
+import { Close, Delete, Edit, Visibility } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
@@ -86,6 +86,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     repeat_length: "",
     ups: "",
@@ -196,23 +197,26 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     dispatch(setMasterDataFormErros(updatedErrors));
   };
   
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setMasterDataDataTouched(true))
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Image = reader.result as string;
-
-      const updatedFormData = {
-        ...formData,
-        customer_logo: base64Image, // <-- Set image
+    const file = e.target.files?.[0];  // Get the file from the event
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Image = reader.result as string;
+        const updatedFormData = {
+          ...formData,
+          customer_logo: base64Image, // <-- Set image
+        };
+  
+        setFormData(updatedFormData);
+        dispatch(setSaveFormData(updatedFormData));
       };
-
-      setFormData(updatedFormData);
-      dispatch(setSaveFormData(updatedFormData));
-    };
-
-    reader.readAsDataURL(file);
+  
+      reader.readAsDataURL(file); // Read the file as DataURL
+    }
   };
+
 
   useEffect(() => {
     if (saveFormData) {
@@ -388,87 +392,116 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     Customer Picture
   </Typography>
 
-  <Box position="relative" width={150} height={35} mt={0.5}>
-    {formData.customer_logo ? (
-      <>
-        <Box
-          component="img"
-          src={formData.customer_logo}
-          alt="Customer"
-          sx={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "8px",
-            objectFit: "cover",
-          }}
-        />
-        
-        {/* Re-upload input */}
-        <input
-          accept="image/*"
-          type="file"
-          id="reupload-customer-pic"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              handleImageUpload(file);
-            }
-          }}
-        />
-        
-        {/* Edit Icon */}
-        <label htmlFor="reupload-customer-pic">
-          <IconButton
-            size="small"
+  <Box display="flex" alignItems="center" gap={2} mt={1}>
+      {formData.customer_logo ? (
+        <>
+          {/* Uploaded Image Preview */}
+          <Box
+            component="img"
+            src={formData.customer_logo}
+            alt="Uploaded"
             sx={{
-              position: "absolute",
-              top: 4,
-              right: 4,
-              backgroundColor: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
+              width: 150,
+              height: 35,
+              borderRadius: "8px",
+              objectFit: "cover",
+              flexShrink: 0,
             }}
-            component="span"
-          >
-            <Edit fontSize="small" />
-          </IconButton>
-        </label>
+          />
 
-        {/* Remove Icon */}
-        <IconButton
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 4,
-            left: 4,
-            backgroundColor: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
-          }}
-          onClick={() => {
-            handleRemoveImage(); // <- implement this to clear your image state
-          }}
-        >
-          <Delete fontSize="small" />
-        </IconButton>
-      </>
-    ) : (
-      <>
-        <input
-          accept="image/*"
-          type="file"
-          id="upload-customer-pic"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              handleImageUpload(file);
-            }
-          }}
-        />
-        <label htmlFor="upload-customer-pic">
-        <Box
+          {/* Action Icons */}
+          <Box display="flex" gap={1} alignItems="center">
+            {/* Eye Icon */}
+            <Tooltip title="View">
+              <IconButton onClick={() => setIsPreviewOpen(true)} color="primary">
+                <Visibility />
+              </IconButton>
+            </Tooltip>
+
+            {/* Edit Icon (re-upload) */}
+            <label htmlFor="reupload-image">
+              <input
+                accept="image/*"
+                type="file"
+                id="reupload-image"
+                style={{ display: "none" }}
+                onChange={handleImageUpload}
+              />
+              <Tooltip title="Edit">
+                <IconButton component="span" color="warning">
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            </label>
+
+            {/* Delete Icon */}
+            <Tooltip title="Delete">
+              <IconButton onClick={handleRemoveImage} color="error">
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          {/* Image Preview Modal */}
+          <Modal
+  open={isPreviewOpen}
+  onClose={() => setIsPreviewOpen(false)}
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <Box
+    sx={{
+      bgcolor: "background.paper",
+      borderRadius: 2,
+      boxShadow: 24,
+      p: 2,
+      outline: "none",
+      maxWidth: "90%",
+      maxHeight: "90%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    }}
+  >
+    {/* Modal Header */}
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      width="100%"
+      mb={2}
+    >
+      <Typography variant="h6" component="h2">
+        Preview of Image
+      </Typography>
+      <IconButton onClick={() => setIsPreviewOpen(false)}>
+        <Close />
+      </IconButton>
+    </Box>
+
+    {/* Image Preview */}
+    <Box
+      component="img"
+      src={formData.customer_logo}
+      alt="Full Image"
+      sx={{
+        maxWidth: "100%",
+        maxHeight: "75vh",
+        borderRadius: "8px",
+        objectFit: "contain",
+      }}
+    />
+  </Box>
+</Modal>
+
+        </>
+      ) : (
+        // Upload button when no image
+        <label htmlFor="upload-image">
+          <Box
             component="span"
             sx={{
               background: "#1976d2",
@@ -480,18 +513,24 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "100%",
-              height: "100%",
+              width: 150,
+              height: 35,
               textAlign: "center",
-              whiteSpace:'nowrap'
+              whiteSpace: "nowrap",
             }}
           >
             Upload Image
           </Box>
+          <input
+            accept="image/*"
+            type="file"
+            id="upload-image"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
         </label>
-      </>
-    )}
-  </Box>
+      )}
+    </Box>
 </Box>
 
 

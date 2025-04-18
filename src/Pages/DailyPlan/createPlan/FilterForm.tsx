@@ -249,32 +249,27 @@ const FilterForm: React.FC = () => {
         <LabelTypeSelector />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <ButtonComponent
-            text="Search"
-            borderRadius="100px"
-            onClick={onSubmit}
-            color="#0073B7"
-            textColor="white"
-            p={2}
-            disabled={!isSearchEnabled}
-          />
-        </Box>
-      </Grid>
-
-      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <ButtonComponent
-            text="Clear"
-            borderRadius="100px"
-            onClick={handleClear}
-            color="#f44336"
-            textColor="white"
-            p={2}
-          />
-        </Box>
-      </Grid>
+      <Grid size={{xs:12}}>
+  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+  <ButtonComponent
+      text="Clear"
+      borderRadius="100px"
+      onClick={handleClear}
+      color="#f44336"
+      textColor="white"
+      p={2}
+    />
+    <ButtonComponent
+      text="Search"
+      borderRadius="100px"
+      onClick={onSubmit}
+      color="#0073B7"
+      textColor="white"
+      p={2}
+      disabled={!isSearchEnabled}
+    />
+  </Box>
+</Grid>
     </>
   );
 };

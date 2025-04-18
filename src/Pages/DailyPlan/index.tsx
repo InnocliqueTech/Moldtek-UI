@@ -255,6 +255,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               onSelectionChange={(selectedItems) => {
                 console.log('Selected items:', selectedItems);
               }}
+              id={"dailyPlan"}
               rowIdentifier="_id" 
               isLoading={listOfCompaniesLoading}
               rowsPerPage={rowsPerPage}
