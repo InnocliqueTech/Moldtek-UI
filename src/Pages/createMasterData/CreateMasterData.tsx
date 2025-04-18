@@ -91,8 +91,8 @@ const CreateMasterData: React.FC = () => {
       format_correct: "",
     },
     printingSubstrateSettings: {
-      print_substrate_id: 1,
-      machine_settings_id: 1,
+      print_substrate_id: "",
+      machine_settings_id: "",
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -170,7 +170,7 @@ const CreateMasterData: React.FC = () => {
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
     dispatch(setIsMasterDetailsDataSave(true));
-    toast.success("Data Saved successfully!");
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
 
   const handleSavePrinting = () => {
@@ -180,6 +180,7 @@ const CreateMasterData: React.FC = () => {
     };
     dispatch(setSavePrintingFormData(finalSaveData));
     dispatch(setIsPrintingDataSave(true));
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
 
   const handleSaveLamination = () => {
@@ -189,6 +190,7 @@ const CreateMasterData: React.FC = () => {
     };
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
   const UEN = localStorage.getItem("selectedUEN");
   let selectedUEN: any;

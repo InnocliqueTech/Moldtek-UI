@@ -10,6 +10,7 @@ import { SelectChangeEvent } from "@mui/material";
 import {
   MasterDataFormErrors,
   setMasterDataDataTouched,
+  setMasterDataDetailsSave,
   setMasterDataFormErros,
   setSaveFormData,
   setSubmitAndPublishButtonMasterData,
@@ -266,6 +267,41 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
   }, [formData, errors]);
+
+
+  useEffect(() => {
+    const importantFields: (keyof MasterFormData)[] = [
+      "unit_effectivity_number",
+      "customer_name",
+      "customer_logo",
+      "brand_description",
+      "label_type",
+      "jar_cap",
+      "repeat_length",
+      "ups",
+      "item_code",
+      "structure",
+      "tracks"
+    ];
+  
+    const anyValuePresent = importantFields.some(
+      (field) =>
+        formData[field] !== "" &&
+        formData[field] !== null &&
+        formData[field] !== undefined
+    );
+  
+    const anyErrors = importantFields.some((field) => errors[field] !== "");
+  
+    // Enable only if any value is present and there are no errors
+    const canSubmit = anyValuePresent && !anyErrors;
+  
+    dispatch(setMasterDataDetailsSave(!canSubmit)); 
+    // I assume your slice uses: true = disable, false = enable
+  }, [formData, errors, dispatch]);
+  
+
+
   const handleRemoveImage = () => {
     // clear the uploaded image from formData
     setFormData(prev => ({

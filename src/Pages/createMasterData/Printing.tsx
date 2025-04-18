@@ -11,6 +11,7 @@ import {
   PrintingFormValues,
   PrintingTableRow,
   setPrintingDataTouched,
+  setPrintingSave,
   setPrintngFormErros,
   setSavePrintingFormData,
   setSubmitAndPublishButtonPrinting,
@@ -120,8 +121,8 @@ const Printing: React.FC<PrintingProps> = ({
         format_correct: data?.format_correct !== undefined ? String(data.format_correct) : "",
       },      
       printingSubstrateSettings: {
-        print_substrate_id: data?.print_substrate_id || 1,
-        machine_settings_id: data?.machine_settings_id || 1,
+        print_substrate_id: data?.print_substrate_id || "",
+        machine_settings_id: data?.machine_settings_id || "",
         substrate_type: data?.substrate_type || "",
         supplier: data?.supplier || "",
         dyne_level: data?.dyne_level || "",
@@ -140,6 +141,9 @@ const Printing: React.FC<PrintingProps> = ({
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mixing_on_Gec:"",
+            mptl_code:"",
+            mounting_tape:""
           })),
     };
   }
@@ -346,6 +350,53 @@ const updatedErros = {
     dispatch(setSubmitAndPublishButtonPrinting(hasErrors));
     
   }, [formValues, errors]);
+
+  useEffect(() => {
+    const importantFields = [
+      "static_charge",
+      "format_correct",
+      "substrate_type",
+      "supplier",
+      "printing_machine_name",
+      "cylinder_teeth",
+      "tension",
+      "unwinder",
+      "infeed",
+      "outfeed",
+      "rewinder",
+      "dyne_level",
+      "width",
+      "thickness",
+      "density"
+    ] as (
+      | keyof PrintingFormValues["printingDetails"]
+      | keyof PrintingFormValues["printingSubstrateSettings"]
+    )[];
+  
+    const isAnyFieldFilled = importantFields.some((field) => {
+      const isInDetails = field in formValues.printingDetails;
+      const isInSubstrate = field in formValues.printingSubstrateSettings;
+  
+      if (isInDetails) {
+        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
+        return value !== "" && value !== null && value !== undefined;
+      }
+  
+      if (isInSubstrate) {
+        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
+        return value !== "" && value !== null && value !== undefined;
+      }
+  
+      return false;
+    });
+  
+    const hasValidData = !isAnyFieldFilled;
+    dispatch(setPrintingSave(hasValidData));
+  }, [formValues, errors, dispatch]);
+  
+  
+  
+  
 
   return (
     <Box sx={{ borderRadius: "0px" }}>

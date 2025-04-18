@@ -11,6 +11,7 @@ import {
   setLaminationDataTouched,
   setLaminationFormData,
   setLaminationFormErros,
+  setLaminationSave,
   setSubmitAndPublishButtonMasterLamination,
 } from "../../store/slices/masterDataSlice";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
@@ -212,15 +213,42 @@ const Lamination: React.FC<LaminationProps> = ({
   useEffect(() => {
     const errorValues = Object.values(errors);
     const hasAnyError = errorValues.some((err) => err !== "");
-
-    const isEmpty = Object.entries(formData).some(([section]) => {
-      return Object.entries(section as any).some(([value]) => {
-        return value === "" || value === null || value === undefined;
-      });
-    });
-
-    dispatch(setSubmitAndPublishButtonMasterLamination(hasAnyError || isEmpty));
+  
+    let isAnyFieldFilled = false;
+  
+    for (const sectionKey in formData) {
+      const section = (formData as any)[sectionKey];
+      if (section && typeof section === "object") {
+        for (const fieldKey in section) {
+          if (section[fieldKey].type) continue;
+  
+          const value = section[fieldKey];
+          if (
+            value !== "" &&
+            value !== null &&
+            value !== undefined &&
+            !(Array.isArray(value) && value.length === 0)
+          ) {
+            isAnyFieldFilled = true;
+            break;
+          }
+        }
+      }
+  
+      if (isAnyFieldFilled) break;
+    }
+  
+    const shouldEnableSave = isAnyFieldFilled && !hasAnyError;
+    dispatch(setSubmitAndPublishButtonMasterLamination(!shouldEnableSave));
+    dispatch(setLaminationSave(!shouldEnableSave));
+  
+    console.log(
+      "Validation Check — hasAnyError:", hasAnyError,
+      "isAnyFieldFilled:", isAnyFieldFilled,
+      "SaveEnabled:", shouldEnableSave
+    );
   }, [errors, formData]);
+  
   useEffect(() => {
     if (laminaionFormData) {
       setFormData(laminaionFormData);

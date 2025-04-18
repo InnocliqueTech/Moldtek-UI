@@ -205,15 +205,15 @@ const formattedDate = today
 
     "/viewJobsList": {
       title: selectedUENList,
-      button1Text: "Version History",
-      ...(role === "Admin" && {
-        button2Text: "Modify Master Data",
-        onButton2Click: () => {
-          navigate(`/updateMasterData/${selectedUENList}`);
-          dispatch(setSelectedTab(0));
-        },
-      }),
-      onButton1Click: () => dispatch(setVersionPopup(true)),
+      // button1Text: "Version History",
+      // ...(role === "Admin" && {
+      //   button2Text: "Modify Master Data",
+      //   onButton2Click: () => {
+      //     navigate(`/updateMasterData/${selectedUENList}`);
+      //     dispatch(setSelectedTab(0));
+      //   },
+      // }),
+      // onButton1Click: () => dispatch(setVersionPopup(true)),
       headerButton: true,
       onBack: () => navigate("/masterData"),
     },

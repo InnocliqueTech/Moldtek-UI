@@ -47,6 +47,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     submitAndPublishButtonLamination,
     submitAndPublishButtonPrinting,
     requestPayload,
+    masterDataDetailsSave,
+    printingDataSave,
+    laminationDataSave
     
   } = useSelector((store: RootState) => store.masterData);
   const handleNextClick = () => {
@@ -128,6 +131,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const successTitle = id
     ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`
     : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
+
+
+    console.log(laminationDataSave,"LAMINATIONDATSAVE")
   return (
     <Box
       display="flex"
@@ -158,7 +164,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         />
       ) : (
         <>
-          <ReusableButton
+        {selectedTab == 0?
+          (<ReusableButton
             text="Save"
             color=""
             borderRadius="100px"
@@ -166,7 +173,28 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             textColor="#0073B7"
             p={2}
             onClick={handleSave}
-          />
+            disabled={(selectedTab===0&&masterDataDetailsSave)}
+          />):(selectedTab == 1?
+            (<ReusableButton
+              text="Save"
+              color=""
+              borderRadius="100px"
+              border="1px solid #0073B7"
+              textColor="#0073B7"
+              p={2}
+              onClick={handleSave}
+              disabled={(selectedTab===1&&printingDataSave)}
+            />):selectedTab == 2 &&
+            <ReusableButton
+              text="Save"
+              color=""
+              borderRadius="100px"
+              border="1px solid #0073B7"
+              textColor="#0073B7"
+              p={2}
+              onClick={handleSave}
+              disabled={(selectedTab===2&&laminationDataSave)}
+            />)}
           <ReusableButton
             text={buttonText[selectedTab] || "Next: Master Data - Printing"}
             color=""

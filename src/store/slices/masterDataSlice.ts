@@ -13,6 +13,7 @@ export interface PrintingTableRow {
   uv_led_intensity: string;
 }
 export interface LaminatingTableRow {
+  
   type: string;
   code: string;
   brand: string;
@@ -215,8 +216,8 @@ export interface PrintingFormValues {
     format_correct: string;
   };
   printingSubstrateSettings: {
-    print_substrate_id: number;
-    machine_settings_id: number;
+    print_substrate_id: string;
+    machine_settings_id: string;
     substrate_type: string;
     supplier: string;
     dyne_level: string;
@@ -268,6 +269,7 @@ interface MasterDataState {
   requestPayload: RequestPayload;
   selectedUEN: string;
   submitAndPublishButtonMasterData: boolean;
+  masterDataDetailsSave:boolean;
   submitAndPublishButtonDyeCutting: boolean;
   submitAndPublishButtonPrinting: boolean;
   submitAndPublishButtonLamination: boolean;
@@ -280,11 +282,16 @@ printingDataTouched:boolean;
   dyeCuttingDataTouched:boolean;
   masterDataDataTouched:boolean;
   searchButton:boolean;
-  filtersPayload:FiltersPayload
+  filtersPayload:FiltersPayload;
+  printingDataSave:boolean;
+  laminationDataSave:boolean
 }
 
 const initialState: MasterDataState = {
   searchButton:false,
+  masterDataDetailsSave:false,
+  printingDataSave:false,
+  laminationDataSave:false,
   laminationFormErrors:{
     zone1_temp: "",
     zone2_temp: "",
@@ -394,8 +401,8 @@ const initialState: MasterDataState = {
       format_correct: "",
     },
     printingSubstrateSettings: {
-      print_substrate_id: 0,
-      machine_settings_id: 0,
+      print_substrate_id: "",
+      machine_settings_id: "",
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -846,8 +853,8 @@ state.laminationDataTouched = action.payload
           format_correct: "",
         },
         printingSubstrateSettings: {
-          print_substrate_id: 0,
-          machine_settings_id: 0,
+          print_substrate_id: "",
+          machine_settings_id: "",
 
           substrate_type: "",
           supplier: "",
@@ -1047,6 +1054,15 @@ state.laminationDataTouched = action.payload
     setSubmitAndPublishButtonMasterData: (state, action: PayloadAction<boolean>) => {
       state.submitAndPublishButtonMasterData = action.payload;
     },
+    setMasterDataDetailsSave: (state, action: PayloadAction<boolean>) => {
+      state.masterDataDetailsSave = action.payload;
+    },
+    setPrintingSave: (state, action: PayloadAction<boolean>) => {
+      state.printingDataSave = action.payload;
+    },
+    setLaminationSave: (state, action: PayloadAction<boolean>) => {
+      state.laminationDataSave = action.payload;
+    },
     setSubmitAndPublishButtonDyeCutting: (state, action: PayloadAction<boolean>) => {
       state.submitAndPublishButtonDyeCutting = action.payload;
     },
@@ -1117,6 +1133,9 @@ export const {
   setMasterDataDataTouched,
   setPrintingDataTouched,
   setSearchButton,
-  setFiltersPayload
+  setFiltersPayload,
+  setMasterDataDetailsSave,
+  setPrintingSave,
+  setLaminationSave
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

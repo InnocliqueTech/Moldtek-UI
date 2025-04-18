@@ -23,6 +23,8 @@ import {
   PrintingTableRow,
   setInvalidFieldsTable,
   setLaminationFormData,
+  setLaminationSave,
+  setPrintingSave,
   setSavePrintingFormData,
   setSubmitAndPublishButtonMasterLamination,
   setSubmitAndPublishButtonPrinting,
@@ -176,6 +178,62 @@ const DataTable = <T extends Record<string, any>>({
     dispatch(setSubmitAndPublishButtonMasterLamination(hasEmptyMandatory || hasAnyInvalidField));
   }
   }, [data, invalidFields]);
+
+
+  useEffect(() => {
+    if (id === 'printing') {
+      const mandatoryFields = ["color_pantone", "lpcm", "lf_value","ink_supplier","volume","uv_led","uv_led_intensity","mixing_on_Gec","mptl_code","mounting_tape"];
+    
+      // Check if any mandatory field has a valid valuecolor_pantone: "",
+      const hasValidMandatory = Array.isArray(data) 
+        ? data.some((row) =>
+            mandatoryFields.some((field) => {
+              const value = row[field];
+              return (
+                value !== "" && value !== 0 && value !== null && value !== undefined
+              );
+            })
+          )
+        : false;
+    
+      // Check if any field is marked invalid
+      const hasAnyInvalidField = Object.values(invalidFields).some(
+        (isInvalid) => isInvalid
+      );
+    
+      // Final decision: at least one valid + no invalid = true
+      const isReady = hasValidMandatory && !hasAnyInvalidField;
+    
+      dispatch(setPrintingSave(isReady));
+    }
+    
+    if (id === 'lamination') {// only run if lamination!
+
+    const mandatoryFields = ["code", "ratio", "brand"];
+  
+    const hasValidMandatory = Array.isArray(data)
+      ? data.some((row) =>
+          mandatoryFields.some((field) => {
+            const value = row[field];
+            return (
+              value !== "" && value !== 0 && value !== null && value !== undefined
+            );
+          })
+        )
+      : false;
+  
+    const hasAnyInvalidField = Object.values(invalidFields).some(
+      (isInvalid) => isInvalid
+    );
+  
+    const isReady = hasValidMandatory && !hasAnyInvalidField;
+  
+    dispatch(setLaminationSave(!isReady)); // this one only for lamination
+    console.log(!isReady, "ISREADY");
+  }
+    
+  }, [data, invalidFields,id]);
+
   const hardenerCodeOptions = ["H:KN75"];
 
 
