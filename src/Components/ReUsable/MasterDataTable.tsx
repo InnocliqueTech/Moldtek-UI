@@ -176,6 +176,8 @@ const DataTable = <T extends Record<string, any>>({
     dispatch(setSubmitAndPublishButtonMasterLamination(hasEmptyMandatory || hasAnyInvalidField));
   }
   }, [data, invalidFields]);
+  const hardenerCodeOptions = ["H:KN75"];
+
 
   return (
     <>
@@ -291,7 +293,7 @@ const DataTable = <T extends Record<string, any>>({
                       }}
                     >
              {
-              row.type === 'Ethyl Acetate' && ["code", "brand", "ratio"].includes(column.id) ? 
+              (row.type === 'Ethyl Acetate' && ["code", "brand","ratio"].includes(column.id))||row.type === 'Adhesive' && ["ratio"].includes(column.id)||row.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
               <TextField
               variant="standard"
               value={row[column.id]}
@@ -330,7 +332,73 @@ const DataTable = <T extends Record<string, any>>({
                   },
                 },
               }}
-            /> :column.isDropdown ? (
+            /> :
+            column.isDropdown  && row.type === 'Hardener' && column.id === 'code' ? (
+              <Select
+                value={row[column.id] || ""}
+                onChange={(e) =>
+                  handleChange(
+                    rowIndex,
+                    column.id as keyof T,
+                    e.target.value as T[keyof T]
+                  )
+                }
+                variant="standard"
+                fullWidth
+                renderValue={(selected) => (
+                  <Tooltip title={selected} arrow>
+                    <Box
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {selected}
+                    </Box>
+                  </Tooltip>
+                )}
+                sx={{
+                  height: "32px",
+                  fontSize: "14px",
+                  borderBottom: "none",
+                  "&:before": { borderBottom: "none" },
+                  "&:after": { borderBottom: "none" },
+                  "&:hover:not(.Mui-disabled):before": {
+                    borderBottom: "none !important",
+                  },
+                  "& .MuiSelect-select": {
+                    display: "flex",
+                    alignItems: "center",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  },
+                }}
+              >
+                {hardenerCodeOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    <Tooltip title={option} arrow>
+                      <ListItemText
+                        primary={option}
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          maxWidth: "180px",
+                          color: "#2F2F2F",
+                        }}
+                      />
+                    </Tooltip>
+                    {row[column.id] === option && (
+                      <IconButton sx={{ color: "#0073B7" }}>
+                        <Done />
+                      </IconButton>
+                    )}
+                  </MenuItem>
+                ))}
+              </Select>
+            ):column.isDropdown ? (
                         <Select
                           value={row[column.id] || ""}
                           onChange={(e) =>

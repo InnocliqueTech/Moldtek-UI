@@ -121,17 +121,34 @@ function ReusableTable<T extends Record<string, any>>({
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
+  
 
+  const getValue = (row: any, key: string) => {
+    if (key === "customer_name") return row.customer_name?.customer?.toLowerCase() || "";
+    return row[key];
+  };
+  
   const sortedData = [...data].sort((a, b) => {
     if (!orderBy) return 0;
+    const aValue = getValue(a, orderBy);
+    const bValue = getValue(b, orderBy);
+  
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return order === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+  
+    if (aValue === null || aValue === undefined) return 1;
+    if (bValue === null || bValue === undefined) return -1;
+  
     return order === "asc"
-      ? a[orderBy] > b[orderBy]
-        ? 1
-        : -1
-      : a[orderBy] < b[orderBy]
-      ? 1
-      : -1;
+      ? aValue > bValue ? 1 : -1
+      : aValue < bValue ? 1 : -1;
   });
+  
+  
+  
 
   const filteredData = search
     ? sortedData.filter((row) => {
@@ -393,19 +410,20 @@ function ReusableTable<T extends Record<string, any>>({
                   }}
                 >
                   {!column.disableSorting ? (
-                    <TableSortLabel
-                      active={orderBy === column.id} 
+                   <TableSortLabel
+                   active={orderBy === column.id}
                       direction={orderBy === column.id ? order : "desc"}
-                      onClick={() => handleRequestSort(column.id)}
-                      hideSortIcon={false} 
-                      sx={{
-                        "& .MuiTableSortLabel-icon": {
-                          opacity: 1, 
-                        },
-                      }}
-                    >
-                      {column.label}
-                    </TableSortLabel>
+                   onClick={() => handleRequestSort(column.id)}
+                   hideSortIcon={false}
+                   sx={{
+                     "& .MuiTableSortLabel-icon": {
+                       opacity: 1,
+                     },
+                   }}
+                 >
+                   {column.label}
+                 </TableSortLabel>
+                 
                   ) : (
                     column.label
                   )}

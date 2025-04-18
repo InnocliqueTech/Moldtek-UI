@@ -39,7 +39,7 @@ const initialFormFields: FormField[] = [
     id: 'labelType',
     label: 'No of Rolls',
     component: 'dropdown',
-    options: ['KitKat 50g Wrapper'],
+    options: ['1','2','3','4','5','6'],
     value: ''
   },
   { id: 'batToPrint', label: 'Bat to Print Indent Qty (Mtrs) planned', value: '' },

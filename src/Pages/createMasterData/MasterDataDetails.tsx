@@ -309,7 +309,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Jar/Cap"
-                options={["N/A (For flexible packaging)", "JAR", "CAP"]}
+                options={[ "JAR", "CAP"]}
                 value={formData.jar_cap}
                 onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}

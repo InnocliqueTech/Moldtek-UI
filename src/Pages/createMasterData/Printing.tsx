@@ -21,7 +21,7 @@ const machineFields = [
   {
     id: "printing_machine_name",
     label: "Printinting Machine Name",
-    options: ["Standard", "Actual"],
+    options: ["UVG-1","UVG-2","UVG-3","OMET","430","530"],
   },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
   { id: "tension", label: "Tension" },
