@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
@@ -178,159 +178,90 @@ const JobsList: React.FC = () => {
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
-        <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Unit Effectivity Number
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                mt: 0.5,
-                wordBreak: "break-word",
-                whiteSpace: "pre-line",
-              }}
-            >
-              {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                ITEM Code
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {renderValue(viewMasterDataDetails?.item_code)}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Jar/Cap
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {renderValue(viewMasterDataDetails?.jar_cap)}
-              </Typography>
-            </Box>
-          </Grid>
+      {viewMasterDataDetailsLoading ? (
+  <Grid container spacing={2} pt={1}>
+    {[...Array(3)].map((_, index) => (
+      <Grid size={{xs:12,md:4}} key={index}>
+        <Skeleton variant="text" width="60%" height={30} />
+        <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+        <Skeleton variant="text" width="40%" height={30} sx={{ mt: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+        <Skeleton variant="text" width="50%" height={30} sx={{ mt: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+      </Grid>
+    ))}
+  </Grid>
+) : (
+  <Grid container spacing={2} pt={1}>
+    <Grid size={{xs:12,md:4}}>
+      <Typography variant="body2" color="text.secondary" fontWeight={500}>
+        Unit Effectivity Number
+      </Typography>
+      <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+        {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
+      </Typography>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Customer Name
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                mt: 0.5,
-                wordBreak: "break-word",
-                whiteSpace: "pre-line",
-              }}
-            >
-              {renderValue(viewMasterDataDetails?.customer_name)}
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Structure
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {renderValue(viewMasterDataDetails?.structure)}
-              </Typography>
-              <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }} >
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500 }}
-                color="#656565"
-              >
-                Type Of Label
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {renderValue(viewMasterDataDetails?.label_type)}
-              </Typography>
-            </Box>
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={500}>ITEM Code</Typography>
+        <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+          {renderValue(viewMasterDataDetails?.item_code)}
+        </Typography>
+      </Box>
 
-            </Box>
-          </Grid>
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={500}>Jar/Cap</Typography>
+        <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+          {renderValue(viewMasterDataDetails?.jar_cap)}
+        </Typography>
+      </Box>
+    </Grid>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-          <Box />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Customer Picture
-              </Typography>
-              {viewMasterDataDetails?.customer_logo ? (
-                <img
-                  src={viewMasterDataDetails?.customer_logo}
-                  alt="customerPicture"
-                />
-              ) : "N/A"}
+    <Grid size={{xs:12,md:4}}>
+      <Typography variant="body2" color="text.secondary" fontWeight={500}>Customer Name</Typography>
+      <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+        {renderValue(viewMasterDataDetails?.customer_name)}
+      </Typography>
 
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Brand Name & Pack Description
-              </Typography>
-              <Tooltip
-                title={isLong ? viewMasterDataDetails?.brand_description : ""}
-                placement="top"
-                arrow
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    mt: 0.5,
-                    wordBreak: "break-word",
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  {renderValue(displayText)}
-                </Typography>
-              </Tooltip>
-            </Box>
-          </Grid>
-        </Grid>
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={500}>Structure</Typography>
+        <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+          {renderValue(viewMasterDataDetails?.structure)}
+        </Typography>
+
+        <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
+          <Typography variant="body2" sx={{ fontWeight: 500 }} color="#656565">Type Of Label</Typography>
+          <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+            {renderValue(viewMasterDataDetails?.label_type)}
+          </Typography>
+        </Box>
+      </Box>
+    </Grid>
+
+    <Grid size={{xs:12,md:4}}>
+      <Box />
+      <Typography variant="body2" color="text.secondary" fontWeight={500}>Customer Picture</Typography>
+      {viewMasterDataDetails?.customer_logo ? (
+        <img src={viewMasterDataDetails?.customer_logo} alt="customerPicture" />
+      ) : "N/A"}
+
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={500}>
+          Brand Name & Pack-Description
+        </Typography>
+        <Tooltip
+          title={isLong ? viewMasterDataDetails?.brand_description : ""}
+          placement="top"
+          arrow
+        >
+          <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
+            {renderValue(displayText)}
+          </Typography>
+        </Tooltip>
+      </Box>
+    </Grid>
+  </Grid>
+)}
+
         <Box sx={{ paddingTop: 1.5 }}>
           <Box
             sx={{

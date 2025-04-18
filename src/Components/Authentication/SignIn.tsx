@@ -24,27 +24,32 @@ const SignInPage: React.FC = () => {
 
   const handleLogin = async () => {
     setErrors({});
-    const result = signInSchema.safeParse({ email, password });
   
-    if (!result.success) {
-      const newErrors: { email?: string; password?: string } = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0] === "email") {
-          newErrors.email = err.message;
-        } else if (err.path[0] === "password") {
-          newErrors.password = err.message;
-        }
-      });
+    // Validate only email with Zod
+    const emailResult = signInSchema.shape.email.safeParse(email);
+    const trimmedPassword = password.trim();
+  
+    const newErrors: { email?: string; password?: string } = {};
+  
+    if (!emailResult.success) {
+      newErrors.email = emailResult.error.issues[0]?.message || "Invalid email";
+    }
+    
+    if (!trimmedPassword) {
+      newErrors.password = "Password is required";
+    }
+  
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
   
     try {
-      const response = await login({ username: email, password }).unwrap();
+      const response = await login({ username: email, password: trimmedPassword }).unwrap();
       if (response?.data?.token) {
         localStorage.setItem("token", response?.data?.token);
         localStorage.setItem("auth", "true");
-        localStorage.setItem("role",response?.data?.userTypeName);
+        localStorage.setItem("role", response?.data?.userTypeName);
         navigate(from, { replace: true });
       } else {
         localStorage.removeItem("token");
@@ -61,10 +66,14 @@ const SignInPage: React.FC = () => {
       navigate("/");
     }
   };
+  
   const isFormValid = () => {
-    const result = signInSchema.safeParse({ email, password });
-    return result.success;
+    const trimmedPassword = password.trim();
+    const emailResult = signInSchema.shape.email.safeParse(email);
+  
+    return emailResult.success && trimmedPassword.length > 0;
   };
+  
   
 
   return (

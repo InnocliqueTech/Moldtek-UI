@@ -28,7 +28,13 @@ const tabs = [
 const ViewDailyPlan: React.FC = () => {
   const { indentNo } = useParams();
   // const decodedIndentNo = indentNo
+  let unitEffectiveNumberDaily: number | undefined = undefined;
 
+  const uen = localStorage.getItem('unitEffectiveNumberDaily');
+  if (uen !== null) {
+    unitEffectiveNumberDaily = Number(uen);
+  }
+  
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const {
     data: makeReady,
@@ -36,6 +42,8 @@ const ViewDailyPlan: React.FC = () => {
     // isError,
     // error,
   } = useGetMakeReadyDetailsQuery(decodedIndentNo);
+
+
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -58,6 +66,7 @@ const ViewDailyPlan: React.FC = () => {
     <Box
       sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}
     >
+      {/* <button onClick={downloadFile}>Download Job Template</button> */}
       <Box
         sx={{
           width: "100%",

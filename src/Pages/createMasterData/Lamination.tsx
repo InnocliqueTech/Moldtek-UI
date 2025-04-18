@@ -418,9 +418,6 @@ const Lamination: React.FC<LaminationProps> = ({
 
       <Box
         sx={{
-          display: "flex",
-          gap: 2,
-          flexDirection: { md: "row", xs: "column" },
           mt: 1.5,
         }}
       >

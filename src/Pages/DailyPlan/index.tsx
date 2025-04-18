@@ -133,7 +133,9 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   const data = transformJobDataList(listOfCompaniesData?.data)
   const navigate = useNavigate();
   const columns = [
-    { id: "indentNumber", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
+    { id: "indentNumber", label: "Indent Number", align: false, format: (value: string,row:any) => <UENCell value={value} onClick={()=>{
+      const uniteffectiveNumber = row.unitEffectivityNumber
+      localStorage.setItem("unitEffectiveNumberDaily",uniteffectiveNumber);
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
     }} />, },

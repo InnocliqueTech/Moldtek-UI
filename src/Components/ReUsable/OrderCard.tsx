@@ -160,7 +160,7 @@ const OrderCard: React.FC = () => {
                 color="text.secondary"
                 fontWeight={500}
               >
-                Brand Name & Pack Description
+                Brand Name & Pack-Description
               </Typography>
               <Tooltip
                 title={isLong ? viewMasterDataDetails?.brand_description : ""}

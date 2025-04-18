@@ -19,6 +19,8 @@ import { useDispatch} from "react-redux";
 import { AppDispatch} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 import { setOpenSliderDaily } from "../../store/slices/viewDailyPlanSlice";
+import { toast } from "react-toastify";
+import { BASE_API_URL } from './../../api.config';
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -120,6 +122,48 @@ masterDataDyeCutting: {
   dye_code: "",
   run_speed: 0,
 },}
+  const { indentNo } = useParams();
+  // const decodedIndentNo = indentNo
+  let unitEffectiveNumberDaily: number | undefined = undefined;
+
+  const uen = localStorage.getItem('unitEffectiveNumberDaily');
+  if (uen !== null) {
+    unitEffectiveNumberDaily = Number(uen);
+  }
+  
+  const decodedIndentNo = decodeURIComponent(indentNo || "");
+
+  const downloadFile = async () => {
+    const unitNumber = unitEffectiveNumberDaily;
+    const indentNumber = decodedIndentNo;
+    const url = `${BASE_API_URL}master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+  
+    try {
+      const response = await fetch(url, { method: 'GET' });
+  
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        const errorMessage = errorData?.message || 'Error downloading the file. Please try again later.';
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+  
+      const blob = await response.blob();
+      
+      const downloadLink = document.createElement('a');
+      const fileUrl = URL.createObjectURL(blob);
+      downloadLink.href = fileUrl;
+      downloadLink.download = 'daily_job_template.xlsx'; 
+      downloadLink.click();
+
+      URL.revokeObjectURL(fileUrl);
+  
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
+
+
 const today = new Date();
 const formattedDate = today
   .toLocaleDateString("en-GB")  
@@ -239,7 +283,9 @@ const formattedDate = today
       title: "View Daily Plan",
       button1Text: "View Template",
       button2Text: "Upload Job Data",
-      onButton1Click: () => window.open("https://pdfobject.com/pdf/sample.pdf"),
+ onButton1Click: () => {
+        downloadFile(); // Ensure downloadFile is executed
+      },
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
       onBack: () => navigate("/dailyPlan"),
