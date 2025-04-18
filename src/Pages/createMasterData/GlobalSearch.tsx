@@ -60,8 +60,8 @@ const FilterForm: React.FC = () => {
 
     const finalSearchPayload: FiltersPayload = {
       customerName,
-      fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "dd-MM-yyyy") : '',
-      toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "dd-MM-yyyy") : '',
+      fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "yyyy-MM-dd") : '',
+      toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
       labelType
     };
 
