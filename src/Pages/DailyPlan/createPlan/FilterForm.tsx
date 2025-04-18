@@ -122,7 +122,7 @@ const FilterForm: React.FC = () => {
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box>
-          <Box sx={{ display: 'flex', gap: '2px' }}>
+          <Box sx={{ display: 'flex', gap: '2px',flexDirection:{md:'row',sm:'column'} }}>
             <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
               <DatePicker
                 label="From Date"
