@@ -34,6 +34,9 @@ export interface PrintingInkStationData {
   volume: string;
   uv_led: string;
   uv_led_intensity: string;
+  mixing_on_gec:string;
+  mptl_code:string;
+  mounting_tape:string;
 }
 export interface LaminationSettings {
   zone1_temp: number;
@@ -170,6 +173,9 @@ const initialState: ViewMasterDataState = {
       volume: "--",
       uv_led: "--",
       uv_led_intensity: "--",
+      mounting_tape:"--",
+      mptl_code:"--",
+      mixing_on_gec:'--'
     },
   ],
   laminationAdhesive: [

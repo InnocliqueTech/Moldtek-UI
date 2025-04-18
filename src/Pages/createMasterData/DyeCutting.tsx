@@ -1,10 +1,9 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-// import { dyeCuttingSchema } from "../../Components/ZodSchemas/masterData";
 import {
   DyeCuttingFormData,
   DyeCuttingFormErrors,
@@ -14,6 +13,7 @@ import {
   setSubmitAndPublishButtonDyeCutting,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
+import DropdownComponent from "../../Components/ReUsable/Dropdown";
 
 interface DyeCuttingProps {
   formData: DyeCuttingFormData;
@@ -46,55 +46,77 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
   const { id } = useParams();
 
-  const handleChange = (key: keyof DyeCuttingFormData, newValue: string) => {
-    dispatch(setDyeCuttingDataTouched(true))
-    let finalValue: string | number = newValue;
+  function extractValue(
+    value: string | string[] | SelectChangeEvent<string | string[]>
+  ): string | string[] {
+    if (typeof value === "object" && "target" in value) {
+      return value.target.value;
+    }
+    return value;
+  }
+  
+  const handleChange = (
+    key: keyof DyeCuttingFormData,
+    rawValue: string | string[] | SelectChangeEvent<string | string[]>
+  ) => {
+    dispatch(setDyeCuttingDataTouched(true));
+  
+    const newValue = extractValue(rawValue);
+    let finalValue: string | string[] | number = "";
     let errorMessage = "";
-
+  
     const isNumberField = key === "run_speed";
     const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
-
+  
     if (isNumberField) {
-      // Numeric validation for run_speed
-      if (newValue === "0" || newValue.trim() === "") {
-        finalValue = "";
-        errorMessage = "Run speed cannot be 0 or empty";
-      } else if (!isNaN(Number(newValue))) {
-        finalValue = Number(newValue);
-      } else {
-        finalValue = "";
-        errorMessage = "Please enter a valid number";
+      // Allow string for input display but validate it
+      if (typeof newValue === "string") {
+        finalValue = newValue;  // Store exactly what user typed
+  
+        if (newValue.trim() === "" || newValue === "0") {
+          errorMessage = "Run speed cannot be 0 or empty";
+        } else if (!/^\d+(\.\d+)?$/.test(newValue.trim())) {
+          errorMessage = "Please enter a valid number";
+        }
       }
     } else {
-      // Validation for other fields: must be alphanumeric (numbers, letters, spaces allowed)
-      const trimmedValue = newValue.trim();
-
-      if (trimmedValue === "") {
-        errorMessage = `${key.replace(/_/g, " ")} is required`;
-      } else if (!alphaNumericRegex.test(trimmedValue)) {
-        errorMessage = "Special characters are not allowed";
+      if (typeof newValue === "string") {
+        const trimmedValue = newValue.trim();
+  
+        if (trimmedValue === "") {
+          errorMessage = `${key.replace(/_/g, " ")} is required`;
+        } else if (!alphaNumericRegex.test(trimmedValue)) {
+          errorMessage = "Special characters are not allowed";
+        } else {
+          finalValue = trimmedValue;
+        }
+      } else if (Array.isArray(newValue)) {
+        finalValue = newValue;
       } else {
-        finalValue = trimmedValue;
+        finalValue = "";
+        errorMessage = "Invalid input";
       }
     }
-
+  
+    // Save to state — always what user typed
     const updated = {
       ...formData,
       [key]: finalValue,
     };
-
+  
     setFormData(updated);
-
-    // Explicitly typing `updatedErrors` as `DyeCuttingFormErrors`
+  
     const updatedErrors: DyeCuttingFormErrors = {
       ...errors,
-      [key]: errorMessage, // This is now properly typed as `keyof DyeCuttingFormErrors`
+      [key]: errorMessage,
     };
-
+  
     setErrors(updatedErrors);
     dispatch(setDyeCuttingFormErros(updatedErrors));
     dispatch(setDyeCuttingFormData(updated));
   };
+  
+  
 
   useEffect(() => {
     const importantFields = [
@@ -147,8 +169,19 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
           </Box>
 
           <Grid container spacing={2} pt={1}>
+             <Grid size={{ xs: 12, md: 4 }}>
+               <DropdownComponent
+                              label="Dye Cutting Machine Type"
+                              options={["PET"]}
+                              value={formData.machine_type}
+                              onChange={(value) =>
+                                handleChange("machine_type", value)
+                              }
+                              isMultiSelect={false}
+                              checkbox={false}
+                            />
+                            </Grid>
             {[
-              { label: "Dye Cutting Machine Type", key: "machine_type" },
               { label: "Machine", key: "machine_name" },
               { label: "Dye Code", key: "dye_code" },
               { label: "Run Speed (m/min)", key: "run_speed" },

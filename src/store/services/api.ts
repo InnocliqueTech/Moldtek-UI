@@ -104,6 +104,14 @@ query:(newItem)=>({
   body: newItem,
 })
     }),
+    dailyPlanFilters:builder.mutation<any,any>({
+      query:(newItem)=>({
+        url:'/dailyplan/getDailyJobsDataFilters',
+        method: "POST",
+        body: newItem,
+      })
+          }),
+
     getCustomerDtails:builder.query<any, void>({
       query: () => "/master/getCustomerDetails",
     }),
@@ -161,23 +169,6 @@ query:(newItem)=>({
         { type: 'TravelCardDetails', id: indentNumber }
       ],
     }),
-    getFilteredDailyJobs: builder.query<DailyJobsListResponse, DailyJobsFilterParams>({
-      query: (filterParams) => ({
-        url: '/dailyplan/getDailyJobsDataFilters',
-        method: 'POST',
-        body: filterParams
-      }),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.data.map((job) => ({
-                type: "DailyJobs" as const,
-                id: getJobUniqueId(job),
-              })),
-              { type: "DailyJobs", id: "LIST" },
-            ]
-          : [{ type: "DailyJobs", id: "LIST" }],
-    }),
   }),
 });
 
@@ -198,5 +189,5 @@ export const {
   useMasterFiltersMutation,
   useGetLabelCuttingDetailsQuery,
   useGetTravelCardDetailsQuery,
-  useGetFilteredDailyJobsQuery,
+  useDailyPlanFiltersMutation,
 } = apiSlice;

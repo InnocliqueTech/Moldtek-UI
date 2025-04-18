@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { Avatar, Box, Grid, Typography,Skeleton } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
@@ -7,13 +7,16 @@ import { UENCell } from '../../Components/helpers';
 import { useNavigate } from "react-router-dom";
 // import {  dailyJobsListMockResp } from './data';
 import {
+  useDailyPlanFiltersMutation,
   useGetDailyJobMetricsQuery,
-  // useGetDailyJobsListQuery,
-  useGetFilteredDailyJobsQuery,
+  useMasterFiltersMutation,
 } from "../../store/services/api";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
 import { toast } from "react-toastify";
+import { viewDailyPlan } from './../../store/slices/viewDailyPlanSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 interface DailyPlanProps {
   title?: string;
@@ -90,10 +93,8 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
 };
 
 const DailyPlan: React.FC<DailyPlanProps> = () => {
-  const [pagination, setPagination] = useState({
-    page: 0,
-    size: 10
-  })
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
   const { 
     data: metricsData, 
     isLoading: isMetricsLoading, 
@@ -110,23 +111,28 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   //   // error: jobsError
   // } = useGetDailyJobsListQuery(pagination);
 
-  const filters = {
-    fromDate: '2025-04-01',
-    toDate: '2025-04-16',
-    customerName: [],
-    labelType: [],
-    page: pagination.page,
-    size: pagination.size
-  }
+    const { filtersPayload,openSliderDaily } = useSelector(
+      (state: RootState) => state.viewDailyPlan
+    );
+  const [
+    dailyPlanFilters,
+    {
+      data: listOfCompaniesData,
+      isLoading: listOfCompaniesLoading,
+      isError: companiesError,
+    },
+  ] = useDailyPlanFiltersMutation();
+  useEffect(() => {
+    if(!openSliderDaily){
+      dailyPlanFilters({ ...filtersPayload, page: page - 1, size: rowsPerPage });
+    }
+  }, [page,openSliderDaily]);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
-  const {
-    data: dailyJobsList,
-    isLoading:isJobsLoading,
-    // isError,
-    // error,
-  } = useGetFilteredDailyJobsQuery(filters);
   const stats = transformApiDataToStats(metricsData?.data) ;
-  const data = transformJobDataList(dailyJobsList?.data)
+  const data = transformJobDataList(listOfCompaniesData?.data)
   const navigate = useNavigate();
   const columns = [
     { id: "indentNumber", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
@@ -189,6 +195,15 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
       // { id: "lastUpdated", label: "Last Updated", align: false },
       { id: "jobRunDate", label: "Scheduled On", align: false },
     ];
+      if ( companiesError) {
+        return (
+          <Box sx={{ textAlign: "center", color: "error.main" }}>
+            <Typography variant="h6">
+              There was an error fetching the data. Please try again later.
+            </Typography>
+          </Box>
+        );
+      }
   return (
      <Box sx={{ p: 0 }}>
           <Grid container spacing={1}>
@@ -236,7 +251,9 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
                 console.log('Selected items:', selectedItems);
               }}
               rowIdentifier="_id" 
-              isLoading={isJobsLoading}
+              isLoading={listOfCompaniesLoading}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
               actions={[
                 {
                   label: "Download",

@@ -9,19 +9,14 @@ import {
 } from "@mui/material";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import LabelTypeSelector from "./LabelType";
-import ButtonComponent from "../../Components/ReUsable/Button";
-import CustomerSelect from "./CustomersData";
 import { toast } from "react-toastify";
-import { RootState } from "../../store";
-import {
-  FiltersPayload,
-  setFiltersPayload,
-  setOpenSlider,
-  setSelectedCustomers,
-  setSelectedLabelTypeIds
-} from "../../store/slices/masterDataSlice";
+
 import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
+import { RootState } from "../../../store";
+import { FiltersPayload, setFiltersPayload, setOpenSliderDaily, setSelectedCustomers, setSelectedLabelTypeIds } from "../../../store/slices/viewDailyPlanSlice";
+import LabelTypeSelector from "./LabelTypes";
+import CustomerSelect from "./CustomersData";
+import ButtonComponent from "../../../Components/ReUsable/Button";
 
 interface LocalDatePayload {
   fromDate: string | null;
@@ -30,8 +25,8 @@ interface LocalDatePayload {
 
 const FilterForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSider } = useSelector(
-    (state: RootState) => state.masterData
+  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSliderDaily } = useSelector(
+    (state: RootState) => state.viewDailyPlan
   );
 
   const [openFrom, setOpenFrom] = useState(false);
@@ -77,7 +72,7 @@ const FilterForm: React.FC = () => {
 
     dispatch(setFiltersPayload(finalSearchPayload));
     setIsSearchTriggered(true);  // Mark search was triggered
-    dispatch(setOpenSlider(false));
+    dispatch(setOpenSliderDaily(false));
     toast.success("Search submitted successfully!");
   };
 
@@ -96,7 +91,7 @@ const FilterForm: React.FC = () => {
 
     dispatch(setSelectedCustomers([]));
     dispatch(setSelectedLabelTypeIds([]));
-    dispatch(setOpenSlider(false));
+    dispatch(setOpenSliderDaily(false));
 
     setIsSearchTriggered(false);  // Reset trigger
     toast.success("Filters cleared!");
@@ -104,7 +99,7 @@ const FilterForm: React.FC = () => {
 
   // Clear selections if sidebar is closed without triggering search
   useEffect(() => {
-    if (openSider) {
+    if (openSliderDaily) {
       if (!isSearchTriggered) {
         dispatch(setFiltersPayload({
           customerName: [],
@@ -121,7 +116,7 @@ const FilterForm: React.FC = () => {
       }
       setIsSearchTriggered(false); // Reset for next interaction
     }
-  }, [openSider, dispatch, isSearchTriggered]);
+  }, [openSliderDaily, dispatch, isSearchTriggered]);
 
   return (
     <>

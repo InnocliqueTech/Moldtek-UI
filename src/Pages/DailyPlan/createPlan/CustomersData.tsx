@@ -19,10 +19,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import CheckIcon from '@mui/icons-material/Check';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../../store';
-import { setCustomers, setSelectedCustomers, toggleCustomerSelection } from '../../store/slices/masterDataSlice';
-import { useGetCustomerDtailsQuery } from '../../store/services/api';
-
+import { AppDispatch, RootState } from '../../../store';
+import { setCustomers, setSelectedCustomers, toggleCustomerSelection } from '../../../store/slices/viewDailyPlanSlice';
+import { useGetCustomerDtailsQuery } from '../../../store/services/api';
 
 const CustomerSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -36,7 +35,7 @@ const CustomerSelect = () => {
       }
     }, [CustomerDetailsData]);
 
-  const {customers,selectedCustomers} = useSelector((state: RootState) => state.masterData);
+  const {customers,selectedCustomers} = useSelector((state: RootState) => state.viewDailyPlan);
 
 
 

@@ -4,7 +4,6 @@ import { InfoOutline } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
-
 const machineSettingColumns = [
   { id: "printing_machine_name", label: "Printinting Machine Name" },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
@@ -26,8 +25,6 @@ const printingSubstarteColumns = [
   { id: "gsm", label: "GSM" },
 ];
 
-
-
 const inkStationColumns = [
   { id: "station_no", label: "Station No" },
   { id: "color_pantone", label: "Color Pantone Code" },
@@ -37,13 +34,17 @@ const inkStationColumns = [
   { id: "volume", label: "Volume" },
   { id: "uv_led", label: "UV/LED" },
   { id: "uv_led_intensity", label: "UV/LED Intensity" },
+  { id: "mixing_on_gec", label: "Mixing On GEC" },
+  { id: "mptl_code", label: "MPTL Code" },
+  { id: "mounting_tape", label: "Mounting Tape" },
 ];
 
-
 const ViewPrinting: React.FC = () => {
-  const { printingInkStatinData, printingMachineSettings,printingSubstrateSettings } = useSelector(
-    (state: RootState) => state.viewMasterData
-  );
+  const {
+    printingInkStatinData,
+    printingMachineSettings,
+    printingSubstrateSettings,
+  } = useSelector((state: RootState) => state.viewMasterData);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -72,7 +73,7 @@ const ViewPrinting: React.FC = () => {
       </Box>
       <DataTable
         columns={printingSubstarteColumns}
-        data={printingSubstrateSettings?[printingSubstrateSettings]:[]}
+        data={printingSubstrateSettings ? [printingSubstrateSettings] : []}
       />
 
       <Box

@@ -18,6 +18,7 @@ import {
 import { useDispatch} from "react-redux";
 import { AppDispatch} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
+import { setOpenSliderDaily } from "../../store/slices/viewDailyPlanSlice";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -230,7 +231,7 @@ const formattedDate = today
       title: "Daily Plan",
       button1Text: "Filter",
       button2Text: "Create Daily Plan",
-      onButton1Click: () => dispatch(setOpenSlider(true)),
+      onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
     },

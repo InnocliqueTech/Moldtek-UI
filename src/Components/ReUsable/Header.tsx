@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
 import Filter from "../../Pages/createMasterData/Filter";
+import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
@@ -327,6 +328,7 @@ const Header: React.FC<HeaderProps> = ({
         onClick={handleSubmitPopupConfirmClick}
       />
       <Filter filterTitle={filterTitle?filterTitle:''} />
+      <FilterDailyPlan filterTitle="Daily Plan Filter"/>
       <VersinDetails />
     </>
   );

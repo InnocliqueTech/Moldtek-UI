@@ -46,17 +46,54 @@ interface PlateMountingSupervisorReport {
   plateMountingSupervisor: string
   shiftQcIncharge: string
 }
-
+interface Customer {
+  customerId: number;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+export interface LabelType {
+  labelTypeId: number;
+  labelTypeName: string;
+}
+export interface FiltersPayload{
+  fromDate: string,
+  toDate: string,
+  customerName: string[],
+  labelType: string[],
+}
 export interface viewDailyPlan {
+    customers: Customer[];
+    labelTypes: LabelType[];
+    selectedLabelTypeIds: number[];
+    selectedCustomers: Customer[];
+    selectedCustomersData: {
+      customers: Customer[];
+    };
   dailyPlan: DailyPlan;
   inkCoatingSpecifications: InkCoatingSpecification[];
   analoxSpecifications: AnaloxSpecification[];
   mountingTapeSpecifications: any[];
   materialSpecification: MaterialSpecification;
   plateMountingSupervisorReport: PlateMountingSupervisorReport; 
+  openSliderDaily:boolean;
+    filtersPayload:FiltersPayload
 }
 
 const initialState: viewDailyPlan = {
+  filtersPayload:{
+    fromDate: "",
+    toDate: "",
+    customerName: [],
+    labelType: [],
+  },
+  customers: [],
+  labelTypes: [],
+  selectedLabelTypeIds: [],
+  selectedCustomers: [],
+  selectedCustomersData: {
+    customers: [],
+  },
   dailyPlan: {
     unitEffectivityNumber: "",
     indentNumber: "",
@@ -88,7 +125,8 @@ const initialState: viewDailyPlan = {
     inkKitchenSupervisor: "",
     plateMountingSupervisor: "",
     shiftQcIncharge: ""
-  }
+  },
+  openSliderDaily:false,
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -113,8 +151,51 @@ const ViewDailyPanSlice = createSlice({
     setPlateMountingSupervisorReport:(state,action:PayloadAction<any>)=>{
       state.plateMountingSupervisorReport=action.payload
     },
+    setOpenSliderDaily: (state, action: PayloadAction<boolean>) => {
+      state.openSliderDaily = action.payload;
+    },
+        setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
+          state.selectedCustomers = action.payload;
+        },
+        toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
+          const { customerId } = action.payload;
+          const exists = state.selectedCustomers.some(
+            (customer) => customer.customerId === customerId
+          );
+          if (exists) {
+            state.selectedCustomers = state.selectedCustomers.filter(
+              (customer) => customer.customerId !== customerId
+            );
+          } else {
+            state.selectedCustomers.push(action.payload);
+          }
+        },
+    
+        setCustomers(state, action: PayloadAction<Customer[]>) {
+          state.customers = action.payload;
+        },
+        setLabelTypes(state, action: PayloadAction<LabelType[]>) {
+          state.labelTypes = action.payload;
+        },
+        setSelectedLabelTypeIds(state, action: PayloadAction<number[]>) {
+          state.selectedLabelTypeIds = action.payload;
+        },
+        toggleLabelType: (state, action: PayloadAction<number>) => {
+          const id = action.payload;
+          const exists = state.selectedLabelTypeIds.includes(id);
+          if (exists) {
+            state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
+              (labelId) => labelId !== id
+            );
+          } else {
+            state.selectedLabelTypeIds.push(id);
+          }
+        },
+            setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
+            state.filtersPayload = action.payload
+            } 
   },
 });
 
-export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport } = ViewDailyPanSlice.actions;
+export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;
