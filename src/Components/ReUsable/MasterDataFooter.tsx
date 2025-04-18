@@ -68,13 +68,14 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     }
   };
 
-  const [createMasterData, { isLoading, isSuccess, isError }] =
+  const [createMasterData, { isLoading,isError,data }] =
     useCreateMasterDataMutation();
 
   const handleSubmitPopupConfirmOpen = () => {
     createMasterData({ requestPayload })
       .then(() => {
-        if (isSuccess && !isError) {
+        if (data?.
+          statusCode===200)  {
           dispatch(setSubmitAndPublishPopup(false));
           dispatch(setSubmitPopupConfirm(true));
           dispatch(clearDyeCuttingFormData());

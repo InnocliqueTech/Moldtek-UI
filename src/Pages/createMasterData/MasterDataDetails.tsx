@@ -392,7 +392,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     Customer Picture
   </Typography>
 
-  <Box display="flex" alignItems="center" gap={2} mt={1}>
+  <Box display="flex" alignItems="center" gap={2} mt={0}>
       {formData.customer_logo ? (
         <>
           {/* Uploaded Image Preview */}
