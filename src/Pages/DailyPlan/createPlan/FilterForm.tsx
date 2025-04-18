@@ -13,46 +13,40 @@ import { toast } from "react-toastify";
 
 import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
 import { RootState } from "../../../store";
-import { FiltersPayload, setFiltersPayload, setOpenSliderDaily, setSelectedCustomers, setSelectedLabelTypeIds } from "../../../store/slices/viewDailyPlanSlice";
+import { FiltersPayload, setFiltersPayload, setIsSearchTriggered, setOpenSliderDaily, setSelectedCustomers, setSelectedLabelTypeIds } from "../../../store/slices/viewDailyPlanSlice";
 import LabelTypeSelector from "./LabelTypes";
 import CustomerSelect from "./CustomersData";
 import ButtonComponent from "../../../Components/ReUsable/Button";
 
 interface LocalDatePayload {
-  fromDate: string | null;
-  toDate: string | null;
+  fromDate: Date | null;
+  toDate: Date | null;
 }
 
 const FilterForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSliderDaily } = useSelector(
+  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSliderDaily,isSearchTriggered } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
 
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
-
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
-    fromDate: "",
-    toDate: "",
+    fromDate: filtersPayload.fromDate ? new Date(filtersPayload.fromDate.split("-").reverse().join("-")) : null,
+    toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate.split("-").reverse().join("-")) : null,
   });
+  
 
   const handleDateChange = (date: Date | null, field: keyof LocalDatePayload) => {
-    setLocalDates((prev) => ({
-      ...prev,
-      [field]: date ? format(date, "MM-dd-yyyy") : null,
-    }));
+    setLocalDates((prev) => ({ ...prev, [field]: date }));
   };
 
   const isSearchEnabled = useMemo(() => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
-    const hasValidDates = localDates.fromDate && localDates.toDate;
+    const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
     return hasCustomer || hasValidDates || hasLabelTypes;
   }, [selectedCustomers, localDates, selectedLabelTypeIds]);
-
-  console.log(selectedCustomers.length > 0,selectedLabelTypeIds,localDates.fromDate && localDates.toDate,"DATESOFTHEFILTER")
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -65,22 +59,19 @@ const FilterForm: React.FC = () => {
 
     const finalSearchPayload: FiltersPayload = {
       customerName,
-      fromDate: localDates.fromDate && localDates.toDate ? localDates.fromDate : '',
-      toDate: localDates.fromDate && localDates.toDate ? localDates.toDate : '',
+      fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "dd-MM-yyyy") : '',
+      toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "dd-MM-yyyy") : '',
       labelType
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
-    setIsSearchTriggered(true);  // Mark search was triggered
+    dispatch(setIsSearchTriggered(true));
     dispatch(setOpenSliderDaily(false));
     toast.success("Search submitted successfully!");
   };
 
   const handleClear = () => {
-    setLocalDates({
-      fromDate: '',
-      toDate: ''
-    });
+    setLocalDates({ fromDate: null, toDate: null });
 
     dispatch(setFiltersPayload({
       customerName: [],
@@ -91,16 +82,16 @@ const FilterForm: React.FC = () => {
 
     dispatch(setSelectedCustomers([]));
     dispatch(setSelectedLabelTypeIds([]));
+    dispatch(setIsSearchTriggered(true));
     dispatch(setOpenSliderDaily(false));
-
-    setIsSearchTriggered(false);  // Reset trigger
     toast.success("Filters cleared!");
   };
 
-  // Clear selections if sidebar is closed without triggering search
   useEffect(() => {
     if (openSliderDaily) {
+
       if (!isSearchTriggered) {
+        // If slider is closed without a search, reset all
         dispatch(setFiltersPayload({
           customerName: [],
           fromDate: '',
@@ -109,12 +100,8 @@ const FilterForm: React.FC = () => {
         }));
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
-        setLocalDates({
-          fromDate: '',
-          toDate: ''
-        });
+        setLocalDates({ fromDate: null, toDate: null });
       }
-      setIsSearchTriggered(false); // Reset for next interaction
     }
   }, [openSliderDaily, dispatch, isSearchTriggered]);
 
@@ -122,25 +109,19 @@ const FilterForm: React.FC = () => {
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box>
-          <Box sx={{ display: 'flex', gap: '2px',flexDirection:{md:'row',sm:'column'} }}>
+          <Box sx={{ display: 'flex', gap: '2px', flexDirection: { md: 'row', sm: 'column' } }}>
             <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
               <DatePicker
                 label="From Date"
                 open={openFrom}
                 onOpen={() => setOpenFrom(true)}
                 onClose={() => setOpenFrom(false)}
-                value={
-                  localDates?.fromDate
-                    ? new Date(localDates.fromDate)
-                    : filtersPayload.fromDate
-                      ? new Date(filtersPayload.fromDate)
-                      : null
-                }
+                value={localDates.fromDate}
                 onChange={(newValue) => handleDateChange(newValue, "fromDate")}
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 slotProps={{
                   textField: {
-                    placeholder: "MM/dd/yyyy",
+                    placeholder: "dd/MM/yyyy",
                     onClick: () => setOpenFrom(true),
                     sx: {
                       "& .MuiOutlinedInput-root": {
@@ -184,25 +165,19 @@ const FilterForm: React.FC = () => {
                 open={openTo}
                 onOpen={() => setOpenTo(true)}
                 onClose={() => setOpenTo(false)}
-                value={
-                  localDates?.toDate
-                    ? new Date(localDates.toDate)
-                    : filtersPayload.toDate
-                      ? new Date(filtersPayload.toDate)
-                      : null
-                }
+                value={localDates.toDate}
                 onChange={(newValue) => handleDateChange(newValue, "toDate")}
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 shouldDisableDate={(date) => {
-                  if (!localDates?.fromDate) return false;
+                  if (!localDates.fromDate) return false;
                   const from = new Date(localDates.fromDate);
                   const check = new Date(date);
                   return check.setHours(0, 0, 0, 0) < from.setHours(0, 0, 0, 0);
                 }}
-                minDate={localDates?.fromDate ? new Date(localDates.fromDate) : undefined}
+                minDate={localDates.fromDate || undefined}
                 slotProps={{
                   textField: {
-                    placeholder: "MM/dd/yyyy",
+                    placeholder: "dd/MM/yyyy",
                     onClick: () => setOpenTo(true),
                     sx: {
                       "& .MuiOutlinedInput-root": {
@@ -249,27 +224,27 @@ const FilterForm: React.FC = () => {
         <LabelTypeSelector />
       </Grid>
 
-      <Grid size={{xs:12}}>
-  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-  <ButtonComponent
-      text="Clear"
-      borderRadius="100px"
-      onClick={handleClear}
-      color="#f44336"
-      textColor="white"
-      p={2}
-    />
-    <ButtonComponent
-      text="Search"
-      borderRadius="100px"
-      onClick={onSubmit}
-      color="#0073B7"
-      textColor="white"
-      p={2}
-      disabled={!isSearchEnabled}
-    />
-  </Box>
-</Grid>
+      <Grid size={{ xs: 12 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <ButtonComponent
+            text="Clear"
+            borderRadius="100px"
+            onClick={handleClear}
+            color="#f44336"
+            textColor="white"
+            p={2}
+          />
+          <ButtonComponent
+            text="Search"
+            borderRadius="100px"
+            onClick={onSubmit}
+            color="#0073B7"
+            textColor="white"
+            p={2}
+            disabled={!isSearchEnabled}
+          />
+        </Box>
+      </Grid>
     </>
   );
 };

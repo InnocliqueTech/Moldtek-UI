@@ -246,7 +246,7 @@ export interface FiltersPayload{
 interface MasterDataState {
   customers: Customer[];
   labelTypes: LabelType[];
-  selectedLabelTypeIds: number[];
+  selectedLabelTypeIds: LabelType[];
   selectedCustomers: Customer[];
   selectedCustomersData: {
     customers: Customer[];
@@ -284,10 +284,12 @@ printingDataTouched:boolean;
   searchButton:boolean;
   filtersPayload:FiltersPayload;
   printingDataSave:boolean;
-  laminationDataSave:boolean
+  laminationDataSave:boolean;
+  isSearchTriggered:boolean;
 }
 
 const initialState: MasterDataState = {
+  isSearchTriggered:false,
   searchButton:false,
   masterDataDetailsSave:false,
   printingDataSave:false,
@@ -1037,18 +1039,18 @@ state.laminationDataTouched = action.payload
     setLabelTypes(state, action: PayloadAction<LabelType[]>) {
       state.labelTypes = action.payload;
     },
-    setSelectedLabelTypeIds(state, action: PayloadAction<number[]>) {
+    setSelectedLabelTypeIds(state, action: PayloadAction<LabelType[]>) {
       state.selectedLabelTypeIds = action.payload;
     },
-    toggleLabelType: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
-      const exists = state.selectedLabelTypeIds.includes(id);
+    toggleLabelType: (state, action: PayloadAction<LabelType>) => {
+      const {labelTypeId} = action.payload;
+      const exists = state.selectedLabelTypeIds.some((labelType)=> labelType.labelTypeId === labelTypeId);
       if (exists) {
         state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
-          (labelId) => labelId !== id
+          (labelId) => labelId.labelTypeId !==labelTypeId
         );
       } else {
-        state.selectedLabelTypeIds.push(id);
+        state.selectedLabelTypeIds.push(action.payload);
       }
     },
     setSubmitAndPublishButtonMasterData: (state, action: PayloadAction<boolean>) => {
@@ -1083,7 +1085,10 @@ state.laminationDataTouched = action.payload
     },
     setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
     state.filtersPayload = action.payload
-    }  
+    } ,
+    setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
+      state.isSearchTriggered = action.payload
+    } 
   },
 });
 
@@ -1136,6 +1141,7 @@ export const {
   setFiltersPayload,
   setMasterDataDetailsSave,
   setPrintingSave,
-  setLaminationSave
+  setLaminationSave,
+  setIsSearchTriggered
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

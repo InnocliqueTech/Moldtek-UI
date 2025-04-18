@@ -73,8 +73,8 @@ const LabelTypeSelector: React.FC = () => {
     setSearch("");
   };
 
-  const handleSelect = (id: number): void => {
-    dispatch(toggleLabelType(id));
+  const handleSelect = (label: typeof labelTypes[0]) => {
+    dispatch(toggleLabelType(label));
   };
 
   return (
@@ -97,7 +97,7 @@ const LabelTypeSelector: React.FC = () => {
 
       <Box display="flex" gap={1} flexWrap="wrap">
       <Box display="flex" gap={1} flexWrap="wrap">
-  {isLoading ? (
+  {isLoading ? 
     // Show Skeleton while loading
     Array.from({ length: 5 }).map((_, index) => (
       <Skeleton
@@ -109,9 +109,10 @@ const LabelTypeSelector: React.FC = () => {
         sx={{ borderRadius: "20px" }}
       />
     ))
-  ) : (
-    <>
-      {visibleLabels?.map((label: LabelType) => (
+   : 
+   visibleLabels?.map((label: LabelType) => {
+         const isSelected = selectedLabelTypeIds?.some((selected) => selected.labelTypeId === label.labelTypeId);
+                  return (
         <Tooltip title={label?.labelTypeName} key={label?.labelTypeId}>
           <Chip
             label={
@@ -126,12 +127,12 @@ const LabelTypeSelector: React.FC = () => {
                 {label?.labelTypeName}
               </Box>
             }
-            onClick={() => handleSelect(label?.labelTypeId)}
+            onClick={() => handleSelect(label)}
             sx={{
-              backgroundColor: selectedLabelTypeIds?.includes(label?.labelTypeId)
+              backgroundColor: isSelected
                 ? "#E1ECF4"
                 : "#F4F5F7",
-              border: selectedLabelTypeIds?.includes(label?.labelTypeId)
+              border: isSelected
                 ? "2px solid #1677FF"
                 : "none",
               color: "#34495E",
@@ -143,8 +144,9 @@ const LabelTypeSelector: React.FC = () => {
             }}
           />
         </Tooltip>
-      ))}
-      {labelTypes?.length > 5 && (
+  )})}
+
+      {labelTypes.length > 6 && (
         <IconButton
           onClick={handleOpen}
           sx={{ "&:hover": { backgroundColor: "transparent" } }}
@@ -152,8 +154,6 @@ const LabelTypeSelector: React.FC = () => {
           <MoreHorizIcon />
         </IconButton>
       )}
-    </>
-  )}
 </Box>
 
 
@@ -216,17 +216,17 @@ const LabelTypeSelector: React.FC = () => {
               }}
             >
               {filteredLabels?.length > 0 ? (
-                filteredLabels?.map((label: LabelType) => (
+                filteredLabels?.map((label: LabelType) =>{
+                  const isSelected = selectedLabelTypeIds?.some((selected) => selected.labelTypeId === label.labelTypeId);
+                           return (
                   <ListItem
                     key={label?.labelTypeId}
-                    onClick={() => handleSelect(label?.labelTypeId)}
+                    onClick={() => handleSelect(label)}
                     sx={{
-                      backgroundColor: selectedLabelTypeIds?.includes(
-                        label?.labelTypeId
-                      )
+                      backgroundColor:isSelected
                         ? "#E1ECF4"
                         : "#F4F5F7",
-                      border: selectedLabelTypeIds?.includes(label?.labelTypeId)
+                      border: isSelected
                         ? "2px solid #1677FF"
                         : "none",
                       color: "#34495E",
@@ -256,11 +256,11 @@ const LabelTypeSelector: React.FC = () => {
                       />
                     </Tooltip>
 
-                    {selectedLabelTypeIds?.includes(label?.labelTypeId) && (
+                    {isSelected && (
                       <CheckIcon sx={{ color: "#1677FF" }} />
                     )}
                   </ListItem>
-                ))
+                )})
               ) : (
                 <Typography variant="body2" color="textSecondary" sx={{ p: 1 }}>
                   No label types found

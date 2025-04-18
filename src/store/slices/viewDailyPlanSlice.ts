@@ -65,7 +65,7 @@ export interface FiltersPayload{
 export interface viewDailyPlan {
     customers: Customer[];
     labelTypes: LabelType[];
-    selectedLabelTypeIds: number[];
+     selectedLabelTypeIds: LabelType[];
     selectedCustomers: Customer[];
     selectedCustomersData: {
       customers: Customer[];
@@ -78,6 +78,7 @@ export interface viewDailyPlan {
   plateMountingSupervisorReport: PlateMountingSupervisorReport; 
   openSliderDaily:boolean;
     filtersPayload:FiltersPayload
+    isSearchTriggered:boolean
 }
 
 const initialState: viewDailyPlan = {
@@ -127,6 +128,7 @@ const initialState: viewDailyPlan = {
     shiftQcIncharge: ""
   },
   openSliderDaily:false,
+  isSearchTriggered:false
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -177,25 +179,28 @@ const ViewDailyPanSlice = createSlice({
         setLabelTypes(state, action: PayloadAction<LabelType[]>) {
           state.labelTypes = action.payload;
         },
-        setSelectedLabelTypeIds(state, action: PayloadAction<number[]>) {
-          state.selectedLabelTypeIds = action.payload;
-        },
-        toggleLabelType: (state, action: PayloadAction<number>) => {
-          const id = action.payload;
-          const exists = state.selectedLabelTypeIds.includes(id);
-          if (exists) {
-            state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
-              (labelId) => labelId !== id
-            );
-          } else {
-            state.selectedLabelTypeIds.push(id);
-          }
-        },
+    setSelectedLabelTypeIds(state, action: PayloadAction<LabelType[]>) {
+      state.selectedLabelTypeIds = action.payload;
+    },
+    toggleLabelType: (state, action: PayloadAction<LabelType>) => {
+      const {labelTypeId} = action.payload;
+      const exists = state.selectedLabelTypeIds.some((labelType)=> labelType.labelTypeId === labelTypeId);
+      if (exists) {
+        state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
+          (labelId) => labelId.labelTypeId !==labelTypeId
+        );
+      } else {
+        state.selectedLabelTypeIds.push(action.payload);
+      }
+    },
             setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
             state.filtersPayload = action.payload
-            } 
+            } ,
+                setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
+                  state.isSearchTriggered = action.payload
+                } 
   },
 });
 
-export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType } = ViewDailyPanSlice.actions;
+export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType,setIsSearchTriggered } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;
