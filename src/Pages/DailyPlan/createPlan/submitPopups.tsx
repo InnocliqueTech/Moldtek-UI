@@ -5,7 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const SubmitPopups: React.FC = () => {
+interface SubmitPopupsProps {
+  onSubmit: () => Promise<{ success: boolean; error?: any }>;
+  isLoading: boolean;
+}
+
+const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -16,8 +21,9 @@ const SubmitPopups: React.FC = () => {
   const handleSubmitPopupClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
   };
-  const handleSubmitPopupConfirmOpen = () => {
-    setSubmitPopupConfirm(true);
+  const handleSubmitPopupConfirmOpen = async () => {
+    const resp=await onSubmit();
+    if(resp.success) setSubmitPopupConfirm(true);
   };
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));

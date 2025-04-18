@@ -10,6 +10,8 @@ import { AppDispatch } from '../../../store';
 import { setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
 import { listOfLables } from '../../createMasterData/data';
 import { validateFormFields } from './formValidation';
+import { useSaveDailyJobMutation } from '../../../store/services/api';
+import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -64,6 +66,8 @@ const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saveDailyJob, { isLoading, isSuccess, isError, error }] =
+    useSaveDailyJobMutation();
   const handleInputChange = (
     fieldId: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -97,43 +101,63 @@ const CreatePlan: React.FC = () => {
     // toast.success('Data saved successfully!');
   };
 
+  const prepareSubmitData = (): SaveDailyJobRequest => {
+    const formData: any = {};
+    
+    formFields.forEach(field => {
+      // Convert numeric fields
+      if ([
+        'ppcIndentQtyNos',
+        'balanceIndentQtyPlanned',
+        'noOfColorsSetting',
+        'noOfSpecialColors',
+        'webLengthForColorMatch',
+        'numberOfRolls',
+        'ups',
+        'repeatLength',
+        'width'
+      ].includes(field.id)) {
+        formData[field.id] = Number(field.value) || 0;
+      } else {
+        formData[field.id] = field.value;
+      }
+    });
+
+    // Ensure jobRunDate is properly formatted
+    if (formData.jobRunDate) {
+      formData.jobRunDate = new Date(formData.jobRunDate).toISOString().split('T')[0];
+    }
+
+    return formData as SaveDailyJobRequest;
+  };
+
   const handleSubmit = async () => {
-    // const validation = validateFormFields(formFields);
-    // if (!validation.isValid) {
-    //   // Extract errors from validation object
-    //   const { isValid, errorMessage, ...errorFields } = validation;
-    //   setErrors(errorFields);
-    //   toast.error('Please Enter valid data before submitting');
-    //   return;
-    // }
+    const validation = validateFormFields(formFields);
+    if (!validation.isValid) {
+      // Extract errors from validation object
+      const { isValid, errorMessage, ...errorFields } = validation;
+      setErrors(errorFields);
+      toast.error('Please Enter valid data before submitting');
+      return;
+    }
     setErrors({});
-    dispatch(setSubmitAndPublishPopup(true))
-    const formData = formFields.reduce((acc, field) => {
-      acc[field.id] = field.value;
-      return acc;
-    }, {} as Record<string, string | string[]>);
-    console.log(formData,"formData Submitted");
+    dispatch(setSubmitAndPublishPopup(true));
+  };
+
+  const submitFormData = async (): Promise<{ success: boolean; error?: any }> => {
+    const formData = prepareSubmitData();
     try {
-      // Here you would typically make an API call to submit the data
-      // For example:
-      // const response = await fetch('your-api-endpoint', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
-      
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      
-      // Clear localStorage and reset form after successful submission
+      await saveDailyJob(formData).unwrap()
+      toast.success('Data submitted successfully! Form has been reset.');
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       setFormFields(initialFormFields);
-      // toast.success('Data submitted successfully! Form has been reset.');
-    } catch (error) {
-      console.error('Failed to submit data:', error);
-      toast.error('Failed to submit data. Please try again.');
+      return { success: true };
+    } catch (err) {
+      toast.error('Failed to Submit');
+      console.error('Failed to save daily job:', error);
+      return { success: false, error };
     }
-  };
+  }
 
   useEffect(() => {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -215,7 +239,7 @@ const CreatePlan: React.FC = () => {
           />
         </Box>
       </Box>
-      <SubmitPopups/>
+      <SubmitPopups onSubmit={submitFormData} isLoading={isLoading}/>
     </Box>
   );
 };

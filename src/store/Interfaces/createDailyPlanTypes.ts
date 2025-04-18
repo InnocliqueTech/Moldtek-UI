@@ -327,7 +327,8 @@ export interface SaveDailyJobRequest {
   repeatLength: number
   width: number
   substrate: string
-  lamSubstrate: string
+  lamSubstrate: string,
+  typeOfLabel?: string
 }
 
 export interface SaveDailyJobResponse {
