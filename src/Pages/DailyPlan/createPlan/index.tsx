@@ -107,7 +107,7 @@ const CreatePlan: React.FC = () => {
       acc[field.id] = field.value;
       return acc;
     }, {} as Record<string, string | string[]>);
-
+    console.log(formData,"formData Submitted");
     try {
       // Here you would typically make an API call to submit the data
       // For example:

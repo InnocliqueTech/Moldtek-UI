@@ -81,7 +81,14 @@ const initialState: viewDailyPlan = {
     gsm: "",
     dyne: "",
   },
-  plateMountingSupervisorReport: null,
+  plateMountingSupervisorReport: {
+    platesInspection:  null,
+    mounter: "",
+    approver: "",
+    inkKitchenSupervisor: "",
+    plateMountingSupervisor: "",
+    shiftQcIncharge: ""
+  }
 };
 
 const ViewDailyPanSlice = createSlice({

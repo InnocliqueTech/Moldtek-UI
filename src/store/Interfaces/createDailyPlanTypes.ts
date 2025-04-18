@@ -300,3 +300,14 @@ export interface TravelCardDetailsResponse {
     labelDispatchSummary: LabelDispatchSummary
   }
 }
+
+//-------------------------------------DailyPlanFilterApi--------------------------//
+
+export interface DailyJobsFilterParams {
+  fromDate: string
+  toDate: string
+  customerName: string[]
+  labelType: string[]
+  page: number
+  size: number
+}

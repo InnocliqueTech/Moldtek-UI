@@ -8,7 +8,8 @@ import {
   PrintingReportResponse,
   MakeReadyDetailsResponse,
   LabelCuttingDetailsResponse,
-  TravelCardDetailsResponse
+  TravelCardDetailsResponse,
+  DailyJobsFilterParams
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -132,13 +133,13 @@ query:(newItem)=>({
     getPrintingReportDetails: builder.query<PrintingReportResponse, string>({
       query: (jobId) =>
         `/dailyplan/getDailyPlanprintingReportDetails?indentNumber=${jobId}`,
-      providesTags: (result, error, jobId) => [
+      providesTags: (_result, _error, jobId) => [
         { type: "PrintingReport", id: jobId },
       ],
     }),
     getMakeReadyDetails: builder.query<MakeReadyDetailsResponse, string>({
       query: (jobId) => `/dailyplan/getDailyPlanMakeReadyDetails?indentNumber=${jobId}`,
-      providesTags: (result, error, jobId) => [
+      providesTags: (_result, _error, jobId) => [
         { type: 'MakeReadyDetails', id: jobId }
       ],
     }),
@@ -147,7 +148,7 @@ query:(newItem)=>({
         url: '/dailyplan/getDailyPlanLabelCuttingDetails',
         params: { indentNumber }
       }),
-      providesTags: (result, error, indentNumber) => [
+      providesTags: (_result, _error, indentNumber) => [
         { type: 'LabelCuttingDetails', id: indentNumber }
       ],
     }),
@@ -156,9 +157,26 @@ query:(newItem)=>({
         url: '/dailyplan/getDailyPlanTravelCardDetails',
         params: { indentNumber }
       }),
-      providesTags: (result, error, indentNumber) => [
+      providesTags: (_result, _error, indentNumber) => [
         { type: 'TravelCardDetails', id: indentNumber }
       ],
+    }),
+    getFilteredDailyJobs: builder.query<DailyJobsListResponse, DailyJobsFilterParams>({
+      query: (filterParams) => ({
+        url: '/dailyplan/getDailyJobsDataFilters',
+        method: 'POST',
+        body: filterParams
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map((job) => ({
+                type: "DailyJobs" as const,
+                id: getJobUniqueId(job),
+              })),
+              { type: "DailyJobs", id: "LIST" },
+            ]
+          : [{ type: "DailyJobs", id: "LIST" }],
     }),
   }),
 });
@@ -179,5 +197,6 @@ export const {
   useGetMakeReadyDetailsQuery,
   useMasterFiltersMutation,
   useGetLabelCuttingDetailsQuery,
-  useGetTravelCardDetailsQuery
+  useGetTravelCardDetailsQuery,
+  useGetFilteredDailyJobsQuery,
 } = apiSlice;

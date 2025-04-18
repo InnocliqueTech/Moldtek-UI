@@ -5,8 +5,12 @@ import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
 import { UENCell } from '../../Components/helpers';
 import { useNavigate } from "react-router-dom";
-import {  dailyJobsListMockResp } from './data';
-import { useGetDailyJobMetricsQuery , useGetDailyJobsListQuery} from '../../store/services/api';
+// import {  dailyJobsListMockResp } from './data';
+import {
+  useGetDailyJobMetricsQuery,
+  // useGetDailyJobsListQuery,
+  useGetFilteredDailyJobsQuery,
+} from "../../store/services/api";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
 import { toast } from "react-toastify";
@@ -97,17 +101,34 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     // error: metricsError 
   } = useGetDailyJobMetricsQuery();
 
+  
   // Jobs list API call
-  const { 
-    data: dailyJobsList, 
-    isLoading: isJobsLoading,
-    // isError: isJobsError,
-    // error: jobsError
-  } = useGetDailyJobsListQuery(pagination);
+  // const { 
+  //   data: dailyJobsList, 
+  //   isLoading: isJobsLoading,
+  //   // isError: isJobsError,
+  //   // error: jobsError
+  // } = useGetDailyJobsListQuery(pagination);
+
+  const filters = {
+    fromDate: '2025-04-01',
+    toDate: '2025-04-16',
+    customerName: [],
+    labelType: [],
+    page: pagination.page,
+    size: pagination.size
+  }
+
+  const {
+    data: dailyJobsList,
+    isLoading:isJobsLoading,
+    // isError,
+    // error,
+  } = useGetFilteredDailyJobsQuery(filters);
   const stats = transformApiDataToStats(metricsData?.data) ;
   const data = transformJobDataList(dailyJobsList?.data)
   const navigate = useNavigate();
-   const columns = [
+  const columns = [
     { id: "indentNumber", label: "Indent Number", align: false, format: (value: string) => <UENCell value={value} onClick={()=>{
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
