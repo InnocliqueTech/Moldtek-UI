@@ -9,7 +9,8 @@ import {
   MakeReadyDetailsResponse,
   LabelCuttingDetailsResponse,
   TravelCardDetailsResponse,
-  DailyJobsFilterParams
+  SaveDailyJobRequest,
+   SaveDailyJobResponse
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -29,7 +30,8 @@ export const apiSlice = createApi({
     "PrintingReport",
     "MakeReadyDetails",
     "LabelCuttingDetails",
-    "TravelCardDetails"
+    "TravelCardDetails",
+    "SaveDailyJobs"
   ], 
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
@@ -169,6 +171,14 @@ query:(newItem)=>({
         { type: 'TravelCardDetails', id: indentNumber }
       ],
     }),
+    saveDailyJob: builder.mutation<SaveDailyJobResponse, SaveDailyJobRequest>({
+      query: (jobData) => ({
+        url: '/dailyplan/saveDailyJob',
+        method: 'POST',
+        body: jobData,
+      }),
+      invalidatesTags: ['DailyJobs'], // Invalidates cached job lists
+    }),
   }),
 });
 
@@ -190,4 +200,5 @@ export const {
   useGetLabelCuttingDetailsQuery,
   useGetTravelCardDetailsQuery,
   useDailyPlanFiltersMutation,
+  useSaveDailyJobMutation 
 } = apiSlice;

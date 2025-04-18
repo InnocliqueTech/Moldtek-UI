@@ -77,14 +77,14 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
 
   return apiData.map((job: DailyJob) => ({
     _id: generateId(),
-    unitEffectivityNumber: job.unitEffectivityNumber || "N/A",
+    unitEffectivityNumber: job.unitEffectivityNumber || "--",
     customer: { 
       image: "", 
-      customerName: job.customerName || "N/A" 
+      customerName: job.customerName || "--" 
     },
-    indentNumber: job.indentNumber || "N/A",
-    masterVersionNo: job.masterVersionNo || "N/A",
-    labelType: job.labelType || "N/A",
+    indentNumber: job.indentNumber || "--",
+    masterVersionNo: job.masterVersionNo || "--",
+    labelType: job.labelType || "--",
     createdAt: formatDate(job.createdAt),
     jobRunDate: formatDate(job.jobRunDate),
   }));

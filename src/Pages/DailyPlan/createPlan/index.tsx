@@ -26,23 +26,28 @@ const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
 
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
-  { id: 'unitEffNumber', label: 'Unit Effective Number:', value: '' },
-  { id: 'ppcIndentQty', label: 'PPC Indent Qty (NOS):', value: '' },
-  { id: 'colorsForSettings', label: 'No of Colors for settings', value: '' },
-  { id: 'colorsForCirMatch', label: 'No Of Colours for Clr match', value: '' },
-  { id: 'webLength', label: '1 Web Length for Colours Match', value: '' },
+  { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
+  { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
+  { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
+  { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
+  { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
   { id: 'typeOfLabel', label: 'Type of Label', value: '',component: 'dropdown',
     options: typeOfLabelOptions, },
   // { id: 'colorMatching', label: 'Colour Matching', value: '' },
-  { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
+  // { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
+  { id: 'repeatLength', label: 'Repeat Length', value: '' },
+  { id: 'ups', label: 'UPS', value: '' },
+  { id: 'width', label: 'Width', value: '' },
+  { id: 'substrate', label: 'Substrate', value: '' },
+  { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
   {
-    id: 'labelType',
+    id: 'numberOfRolls',
     label: 'No of Rolls',
     component: 'dropdown',
     options: ['1','2','3','4','5','6'],
     value: ''
   },
-  { id: 'batToPrint', label: 'Bat to Print Indent Qty (Mtrs) planned', value: '' },
+  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
   // { id: 'dieCutWastage', label: 'Die-Cut Wastage', value: '' },
   // { id: 'laminationWastage', label: 'Lamination Wastage', value: '' },
   {
@@ -93,14 +98,14 @@ const CreatePlan: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    const validation = validateFormFields(formFields);
-    if (!validation.isValid) {
-      // Extract errors from validation object
-      const { isValid, errorMessage, ...errorFields } = validation;
-      setErrors(errorFields);
-      toast.error('Please Enter valid data before submitting');
-      return;
-    }
+    // const validation = validateFormFields(formFields);
+    // if (!validation.isValid) {
+    //   // Extract errors from validation object
+    //   const { isValid, errorMessage, ...errorFields } = validation;
+    //   setErrors(errorFields);
+    //   toast.error('Please Enter valid data before submitting');
+    //   return;
+    // }
     setErrors({});
     dispatch(setSubmitAndPublishPopup(true))
     const formData = formFields.reduce((acc, field) => {

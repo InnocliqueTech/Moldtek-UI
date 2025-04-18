@@ -22,17 +22,24 @@ export const validateFormFields = (fields: FormField[]): FormValidation => {
       // Field-specific validations
       switch (field.id) {
         case 'indentNumber':
-        case 'unitEffNumber':
+        case 'unitEffectivityNumber':
+        case 'substrate':
+        case 'lamSubstrate':
           if (typeof value === 'string' && !/^[a-zA-Z0-9]+$/.test(value)) {
             errors[field.id] = `${field.label} must be alphanumeric`;
           }
           break;
           
-        case 'ppcIndentQty':
-        case 'colorsForSettings':
+        case 'ppcIndentQtyNos':
+        case 'noOfColorsSetting':
+        case 'noOfSpecialColors':
+        case 'numberOfRolls':
         case 'colorsForCirMatch':
-        case 'webLength':
-        case 'batToPrint':
+        case 'webLengthForColorMatch':
+        case 'balanceIndentQtyPlanned':
+        case 'ups':
+        case 'width':
+        case 'repeatLength':
           if (typeof value === 'string' && !/^\d+$/.test(value)) {
             errors[field.id] = `${field.label} must be a number`;
           }

@@ -311,3 +311,28 @@ export interface DailyJobsFilterParams {
   page: number
   size: number
 }
+
+export interface SaveDailyJobRequest {
+  indentNumber: string
+  unitEffectivityNumber: string
+  ppcIndentQtyNos: number
+  balanceIndentQtyPlanned: number
+  noOfColorsSetting: number
+  noOfSpecialColors: number
+  webLengthForColorMatch: number
+  numberOfRolls: number
+  jobType: string
+  jobRunDate: string
+  ups: number
+  repeatLength: number
+  width: number
+  substrate: string
+  lamSubstrate: string
+}
+
+export interface SaveDailyJobResponse {
+  statusCode: number
+  message: string
+  payload: null
+  data: null
+}
