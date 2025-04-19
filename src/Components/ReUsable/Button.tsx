@@ -23,7 +23,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   height = "40px",
   border = "none",
   borderRadius = "8px", 
-  loading,
+  loading=false,
   p = "2px",
   styles={},
   disabled=false,

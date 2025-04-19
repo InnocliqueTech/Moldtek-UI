@@ -72,7 +72,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     useCreateMasterDataMutation();
 
   const handleSubmitPopupConfirmOpen = () => {
-    createMasterData({ requestPayload })
+    createMasterData(requestPayload)
       .then(() => {
         if (data?.
           statusCode===200)  {
@@ -134,7 +134,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
 
 
-    console.log(laminationDataSave,"LAMINATIONDATSAVE")
   return (
     <Box
       display="flex"
@@ -247,6 +246,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         gifSrc=""
         onClose={() => dispatch(setSubmitAndPublishPopup(false))}
         onClick={handleSubmitPopupConfirmOpen}
+        isLoading={isLoading}
       />
     </Box>
   );
