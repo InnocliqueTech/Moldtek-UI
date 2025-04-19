@@ -8,7 +8,6 @@ import { AppDispatch, RootState } from "../../store";
 import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
-import { jobsList } from "./data";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
 
 
@@ -19,13 +18,14 @@ const JobsList: React.FC = () => {
   if(UEN){
     selectedUEN =  UEN;
  }
-  type StatusType = "In progress" | "On hold" | "Not yet started" | "Completed";
+  type StatusType = "In progress" | "On hold" | "Not yet started" | "Completed"|"Active";
 
   const colorMap: Record<StatusType, string> = {
     "In progress": "#FAECD8",
     "On hold": "#F7DDDA",
     "Not yet started": "#DCEAF7",
     "Completed": "#DDEED8",
+    "Active": "#E6F4FF",
   };
 
   const textColorMap: Record<StatusType, string> = {
@@ -33,11 +33,12 @@ const JobsList: React.FC = () => {
     "On hold": "#B2493A",
     "Not yet started": "#0447A8",
     "Completed": "#478E30",
+    "Active": "#0070F3",
   };
 
   const columns = [
     {
-      id: "unitEffectivityNumber",
+      id: "indentNumber",
       label: "Indent No.",
       align: true,
       disableSorting: false,
@@ -50,22 +51,28 @@ const JobsList: React.FC = () => {
       label: "Type Of Label",
       align: true,
       disableSorting: true,
-      format: (value: string) => (
-        <Box
-          sx={{
-            px: 1.5,
-            py: 0.5,
-            borderRadius: "6px",
-            fontSize: 12,
-            color: "#344054",
-            fontWeight: 500,
-            display: "inline-block",
-            border: "1px solid #ECECEC",
-          }}
-        >
-          {value}
-        </Box>
-      ),
+      format: (value: string) =>
+        value !== null ? (
+          <Tooltip title={value}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "4px 8px",
+                display: "inline-block",
+                backgroundColor: "#F8F9FA",
+                maxWidth: 150,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {value}
+            </Box>
+          </Tooltip>
+        ) : (
+          "N/A"
+        ),
     },
     {
       id: "status",
@@ -73,6 +80,7 @@ const JobsList: React.FC = () => {
       align: true,
       disableSorting: false,
       format: (value: StatusType) => (
+        value !== null ? (
         <Box
           sx={{
             px: 1.5,
@@ -86,8 +94,9 @@ const JobsList: React.FC = () => {
           }}
         >
           {value}
-        </Box>
-      ),
+        </Box>):
+          "N/A"
+        )
     },
     {
       id: "updatedAt",
@@ -158,11 +167,11 @@ const JobsList: React.FC = () => {
     },
     { refetchOnMountOrArgChange: true }
   );
-  
-
   useEffect(() => {
     dispatch(setJobsListData(data?.data));
-  }, [dispatch]);
+  }, [data]);
+const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
+console.log(data,jobListData,"JOBLISTDATA")
   const viewMasterDataDetails = viewMasterDataDetailsData?.data?.masterDataDetails
 
   const maxChars = 120;
@@ -273,9 +282,9 @@ const JobsList: React.FC = () => {
           >
             <ReusableTable
               columns={columns}
-              data={jobsList.data}
+              data={jobListData?jobListData:[]}
               selectable={false}
-              label={`${jobsList.totalRecords} Versions`}
+              label={`${data?.totalRecords?data.totalRecords:0} Versions`}
               title="List of executed jobs"
               info={true}
               searchVisible={true}
@@ -283,7 +292,7 @@ const JobsList: React.FC = () => {
               boxShadow={false}
               searchSize={true}
               isLoading={isLoading}
-              id={"jobsList"}
+              id={"jobListData"}
             />
           </Box>
         </Box>

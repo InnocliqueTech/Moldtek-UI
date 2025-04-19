@@ -18,7 +18,7 @@ const MasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { data, isLoading, isError } = useGetMetricsQuery();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   const stats = [
     { title: "Total Jobs", value: data?.data.totalJobs },
@@ -101,7 +101,9 @@ const MasterData: React.FC = () => {
               {value}
             </Box>
           </Tooltip>
-        ) : 'N/A',
+        ) : (
+          "N/A"
+        ),
     },
     {
       id: "created_at",
@@ -125,7 +127,7 @@ const MasterData: React.FC = () => {
     },
   ];
 
-  const { filtersPayload,openSider } = useSelector(
+  const { filtersPayload, openSider } = useSelector(
     (state: RootState) => state.masterData
   );
   const [
@@ -138,10 +140,10 @@ const MasterData: React.FC = () => {
   ] = useMasterFiltersMutation();
 
   useEffect(() => {
-    if(!openSider){
-    masterFilters({ ...filtersPayload, page: page - 1, size: rowsPerPage });
+    if (!openSider) {
+      masterFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page,openSider]);
+  }, [page, openSider,filtersPayload]);
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,
@@ -205,7 +207,7 @@ const MasterData: React.FC = () => {
                 const selectedUENAction = row?.unit_effectivity_number;
                 const versionNoAction = row?.version_no;
                 localStorage.setItem("actionSelectedUEN", selectedUENAction);
-                localStorage.setItem("actionVersionNo",versionNoAction);
+                localStorage.setItem("actionVersionNo", versionNoAction);
                 navigate(`/viewJobsList`); // If you want this to depend on the row, add params here.
               },
             },
@@ -218,7 +220,7 @@ const MasterData: React.FC = () => {
                   selectedUENActionUpdate
                 );
                 const versionNoAction = row?.version_no;
-                localStorage.setItem("actionVersionNo",versionNoAction);
+                localStorage.setItem("actionVersionNo", versionNoAction);
                 const actionSelectedUpdateUEN =
                   localStorage.getItem("actionSelectedUEN");
                 navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
@@ -229,6 +231,12 @@ const MasterData: React.FC = () => {
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"masterData"}
+          totalLength={
+            listOfCompaniesData?.totalRecords
+              ? listOfCompaniesData?.totalRecords
+              : 0
+          }
+          pageRange={true}
         />
       </Box>
     </Box>

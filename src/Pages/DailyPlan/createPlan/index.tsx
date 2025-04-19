@@ -91,15 +91,15 @@ const CreatePlan: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
-    const formData = formFields.reduce((acc, field) => {
-      acc[field.id] = field.value;
-      return acc;
-    }, {} as Record<string, string | string[]>);
+  // const handleSave = () => {
+  //   const formData = formFields.reduce((acc, field) => {
+  //     acc[field.id] = field.value;
+  //     return acc;
+  //   }, {} as Record<string, string | string[]>);
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-    // toast.success('Data saved successfully!');
-  };
+  //   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+  //   // toast.success('Data saved successfully!');
+  // };
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
@@ -218,7 +218,7 @@ const CreatePlan: React.FC = () => {
           * All fields are mandatory
         </Typography>
         <Box className="flex justify-end">
-          <ButtonComponent
+          {/* <ButtonComponent
             text="Save"
             textColor="#0073B7"
             color="white"
@@ -227,7 +227,7 @@ const CreatePlan: React.FC = () => {
             border="1px solid #0073B7"
             styles={{ marginRight: '.5rem' }}
             onClick={handleSave}
-          />
+          /> */}
           <ButtonComponent
             text="Submit"
             textColor="#ffffff"

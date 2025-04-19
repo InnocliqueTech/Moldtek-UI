@@ -226,14 +226,7 @@ const FilterForm: React.FC = () => {
 
       <Grid size={{ xs: 12 }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-          <ButtonComponent
-            text="Clear"
-            borderRadius="100px"
-            onClick={handleClear}
-            color="#f44336"
-            textColor="white"
-            p={2}
-          />
+        
           <ButtonComponent
             text="Search"
             borderRadius="100px"
@@ -242,6 +235,14 @@ const FilterForm: React.FC = () => {
             textColor="white"
             p={2}
             disabled={!isSearchEnabled}
+          />
+            <ButtonComponent
+            text="Clear"
+            borderRadius="100px"
+            onClick={handleClear}
+            color="#f44336"
+            textColor="white"
+            p={2}
           />
         </Box>
       </Grid>

@@ -1,10 +1,13 @@
 import React from "react";
-import { Typography, Grid, Box, Tooltip } from "@mui/material";
+import { Typography, Grid, Box, Tooltip, Skeleton } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
+interface Props {
+  isLoading: boolean;
+}
 
-const CommenCard: React.FC = () => {
+const CommenCard: React.FC<Props> = ({ isLoading }) => {
 
 const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
 const maxChars = 20
@@ -15,6 +18,20 @@ const renderValue = (value: string | undefined | null | number) => {
 };
   return (
     <Box>
+      {isLoading? (
+        <Grid container spacing={2} pt={1}>
+          {[...Array(3)].map((_, index) => (
+            <Grid size={{xs:12,md:4}} key={index}>
+              <Skeleton variant="text" width="60%" height={30} />
+              <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="40%" height={30} sx={{ mt: 2 }} />
+              <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="50%" height={30} sx={{ mt: 2 }} />
+              <Skeleton variant="rectangular" width="100%" height={50} sx={{ mt: 1 }} />
+            </Grid>
+          ))}
+        </Grid>
+      ) :(
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
         <Grid container spacing={2}>
           <Grid size={{xs:12,md:3}}>
@@ -112,7 +129,7 @@ const renderValue = (value: string | undefined | null | number) => {
             </Box>
           </Grid>
         </Grid>
-      </Box>
+      </Box>)}
     </Box>
   );
 };

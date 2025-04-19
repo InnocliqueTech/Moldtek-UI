@@ -66,10 +66,12 @@ interface TableProps<T> {
   onSelectionChange?: (selectedItems: T[]) => void;
   rowIdentifier?: keyof T;
   searchSize?: boolean;
-  isLoading?:boolean;
-  rowsPerPage?:number;
+  isLoading?: boolean;
+  rowsPerPage?: number;
   onPageChange?: (newPage: number) => void;
-  id?:string
+  id?: string;
+  totalLength?: number;
+  pageRange?: boolean;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -85,12 +87,14 @@ function ReusableTable<T extends Record<string, any>>({
   action = false,
   boxShadow = false,
   onSelectionChange,
-  rowIdentifier = "id" as keyof T, 
+  rowIdentifier = "id" as keyof T,
   searchSize = false,
-  isLoading=false,
-  rowsPerPage=10,
+  isLoading = false,
+  rowsPerPage = 10,
   onPageChange,
-  id
+  id,
+  totalLength = 0,
+  pageRange = false,
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -123,68 +127,75 @@ function ReusableTable<T extends Record<string, any>>({
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
-  
 
   const getValue = (row: any, key: string) => {
-    if (key === "customer_name") return row.customer_name?.customer?.toLowerCase() || "";
+    if (key === "customer_name")
+      return row.customer_name?.customer?.toLowerCase() || "";
     return row[key];
   };
-  
+
   const sortedData = [...data].sort((a, b) => {
     if (!orderBy) return 0;
     const aValue = getValue(a, orderBy);
     const bValue = getValue(b, orderBy);
-  
+
     if (typeof aValue === "string" && typeof bValue === "string") {
       return order === "asc"
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
-  
+
     if (aValue === null || aValue === undefined) return 1;
     if (bValue === null || bValue === undefined) return -1;
-  
+
     return order === "asc"
-      ? aValue > bValue ? 1 : -1
-      : aValue < bValue ? 1 : -1;
+      ? aValue > bValue
+        ? 1
+        : -1
+      : aValue < bValue
+      ? 1
+      : -1;
   });
-  
-  
-  
 
   const filteredData = search
-  ? sortedData.filter((row) => {
-      const searchValue = search.toLowerCase();
+    ? sortedData.filter((row) => {
+        const searchValue = search.toLowerCase();
 
-      if (id === "jobsList") {
-        return Object.entries(row).some(([key, value]) => {
-          if (!value) return false;
+        if (id === "jobsList") {
+          return Object.entries(row).some(([key, value]) => {
+            if (!value) return false;
 
-          let stringValue = "";
+            let stringValue = "";
 
-          // Check if the field is a date field — format it as dd-mm-yyyy
-          if (key.toLowerCase().includes("date")) {
-            const date = new Date(value);
-            if (!isNaN(date.getTime())) {
-              stringValue = date.toLocaleDateString("en-GB").replace(/\//g, "-");
+            // Check if the field is a date field — format it as dd-mm-yyyy
+            if (key.toLowerCase().includes("date")) {
+              const date = new Date(value);
+              if (!isNaN(date.getTime())) {
+                stringValue = date
+                  .toLocaleDateString("en-GB")
+                  .replace(/\//g, "-");
+              }
+            } else {
+              stringValue = value.toString();
             }
-          } else {
-            stringValue = value.toString();
-          }
 
-          return stringValue.toLowerCase().includes(searchValue);
-        });
-      } else {
-        return (
-          row.unitEffectivityNumber?.toString().toLowerCase().includes(searchValue) ||
-          row.indentNumber?.toString().toLowerCase().includes(searchValue) ||
-          row.unit_effectivity_number?.toString().toLowerCase().includes(searchValue)
-        );
-      }
-    })
-  : sortedData;
-
-
+            return stringValue.toLowerCase().includes(searchValue);
+          });
+        } else {
+          return (
+            row.unitEffectivityNumber
+              ?.toString()
+              .toLowerCase()
+              .includes(searchValue) ||
+            row.indentNumber?.toString().toLowerCase().includes(searchValue) ||
+            row.unit_effectivity_number
+              ?.toString()
+              .toLowerCase()
+              .includes(searchValue)
+          );
+        }
+      })
+    : sortedData;
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -335,7 +346,13 @@ function ReusableTable<T extends Record<string, any>>({
             <TextField
               size="small"
               variant="outlined"
-              placeholder={id==='masterData'?"Search for UEN":id==='dailyPlan'?"Search for Indent No or UEN":"Search"}
+              placeholder={
+                id === "masterData"
+                  ? "Search for UEN"
+                  : id === "dailyPlan"
+                  ? "Search for Indent No or UEN"
+                  : "Search"
+              }
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
                 startAdornment: (
@@ -363,8 +380,8 @@ function ReusableTable<T extends Record<string, any>>({
                   padding: "2px 8px",
                 },
                 "& input": {
-                  padding: searchSize ? "2px 0px" : "6px 8px", 
-                  fontSize: "0.875rem", 
+                  padding: searchSize ? "2px 0px" : "6px 8px",
+                  fontSize: "0.875rem",
                 },
               }}
             />
@@ -381,19 +398,14 @@ function ReusableTable<T extends Record<string, any>>({
           mt: { md: !boxShadow ? "-8px" : 0, sm: 0 },
         }}
       >
-        <Table
-          stickyHeader
-          sx={{
-            minWidth: 1000,
-          }}
-        >
+        <Table stickyHeader sx={{ minWidth: 1000 }}>
           <TableHead
             sx={{
               position: "sticky",
               top: "-1px",
               zIndex: 2,
               backgroundColor: "#F5F5F5",
-              height: "32px", 
+              height: "32px",
               "& .MuiTableCell-root": {
                 padding: "4px 8px",
                 height: "32px",
@@ -424,7 +436,7 @@ function ReusableTable<T extends Record<string, any>>({
                   key={column.id}
                   sx={{
                     whiteSpace: "nowrap",
-                    lineHeight: "1", 
+                    lineHeight: "1",
                     color: "#656565",
                     fontSize: "12px",
                     fontWeight: 500,
@@ -432,20 +444,19 @@ function ReusableTable<T extends Record<string, any>>({
                   }}
                 >
                   {!column.disableSorting ? (
-                   <TableSortLabel
-                   active={orderBy === column.id}
+                    <TableSortLabel
+                      active={orderBy === column.id}
                       direction={orderBy === column.id ? order : "desc"}
-                   onClick={() => handleRequestSort(column.id)}
-                   hideSortIcon={false}
-                   sx={{
-                     "& .MuiTableSortLabel-icon": {
-                       opacity: 1,
-                     },
-                   }}
-                 >
-                   {column.label}
-                 </TableSortLabel>
-                 
+                      onClick={() => handleRequestSort(column.id)}
+                      hideSortIcon={false}
+                      sx={{
+                        "& .MuiTableSortLabel-icon": {
+                          opacity: 1,
+                        },
+                      }}
+                    >
+                      {column.label}
+                    </TableSortLabel>
                   ) : (
                     column.label
                   )}
@@ -455,7 +466,7 @@ function ReusableTable<T extends Record<string, any>>({
                 <TableCell
                   sx={{
                     whiteSpace: "nowrap",
-                    lineHeight: "1", 
+                    lineHeight: "1",
                     color: "#656565",
                     fontSize: "12px",
                     fontWeight: 500,
@@ -467,64 +478,68 @@ function ReusableTable<T extends Record<string, any>>({
             </TableRow>
           </TableHead>
           <TableBody
-  sx={{
-    "& .MuiTableCell-root": {
-      padding: "4px 8px",
-      height: "32px",
-    },
-    "& .MuiTableRow-root.Mui-selected": {
-      backgroundColor: "#e3f2fd",
-      "&:hover": {
-        backgroundColor: "#bbdefb",
-      },
-    },
-  }}
->
-  {isLoading ? (
-    Array.from({ length: 8 }).map((_, rowIndex) => (
-      <TableRow key={`skeleton-${rowIndex}`}>
-        {selectable && (
-          <TableCell padding="checkbox">
-            <Checkbox disabled />
-          </TableCell>
-        )}
-        {columns.map((column, index) => (
-          <TableCell key={`${column.id}-skeleton-${index}`}>
-            <Box
-              sx={{
-                width: "100%",
-                height: 16,
-                borderRadius: 1,
-                backgroundColor: "#e0e0e0",
-                animation: "pulse 1.5s infinite ease-in-out",
-                "@keyframes pulse": {
-                  "0%": { opacity: 1 },
-                  "50%": { opacity: 0.4 },
-                  "100%": { opacity: 1 },
+            sx={{
+              "& .MuiTableCell-root": {
+                padding: "4px 8px",
+                height: "32px",
+              },
+              "& .MuiTableRow-root.Mui-selected": {
+                backgroundColor: "#e3f2fd",
+                "&:hover": {
+                  backgroundColor: "#bbdefb",
                 },
-              }}
-            />
-          </TableCell>
-        ))}
+              },
+            }}
+          >
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, rowIndex) => (
+                <TableRow key={`skeleton-${rowIndex}`}>
+                  {selectable && (
+                    <TableCell padding="checkbox">
+                      <Checkbox disabled />
+                    </TableCell>
+                  )}
+                  {columns.map((column, index) => (
+                    <TableCell key={`${column.id}-skeleton-${index}`}>
+                      <Box
+                        sx={{
+                          width: "100%",
+                          height: 16,
+                          borderRadius: 1,
+                          backgroundColor: "#e0e0e0",
+                          animation: "pulse 1.5s infinite ease-in-out",
+                          "@keyframes pulse": {
+                            "0%": { opacity: 1 },
+                            "50%": { opacity: 0.4 },
+                            "100%": { opacity: 1 },
+                          },
+                        }}
+                      />
+                    </TableCell>
+                  ))}
         {action && <TableCell><Box sx={{ width: 24, height: 16, backgroundColor: "#e0e0e0", borderRadius: 1 }} /></TableCell>}
-      </TableRow>
-    ))
-  ) : filteredData.length === 0 ? (
-    <TableRow>
+                </TableRow>
+              ))
+            ) : filteredData.length === 0 ? (
+              <TableRow>
       <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (action ? 1 : 0)} align="center">
-        No Data Available
-      </TableCell>
-    </TableRow>
-  ) : (
-    filteredData
-      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((row, index) => {
-        const isItemSelected = isSelected(row);
-        return (
-          <TableRow
-            key={index}
-            hover
-            selected={isItemSelected}
+                  No Data Available
+                </TableCell>
+              </TableRow>
+            ) : (
+              (pageRange
+                ? filteredData
+                : filteredData.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+              ).map((row, index) => {
+                const isItemSelected = isSelected(row);
+                return (
+                  <TableRow
+                    key={index}
+                    hover
+                    selected={isItemSelected}
                       // onClick={(event) => {
                       //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
                       //     const fakeEvent = {
@@ -533,51 +548,51 @@ function ReusableTable<T extends Record<string, any>>({
                       //     handleSelect(fakeEvent, row);
                       //   }
                       // }}
-            sx={{
-              cursor: selectable ? "pointer" : "default",
-            }}
-          >
-            {selectable && (
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={isItemSelected}
-                  onChange={() => handleSelect(row)}
-                  onClick={(event) => event.stopPropagation()}
-                />
-              </TableCell>
+                    sx={{
+                      cursor: selectable ? "pointer" : "default",
+                    }}
+                  >
+                    {selectable && (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          onChange={() => handleSelect(row)}
+                          onClick={(event) => event.stopPropagation()}
+                        />
+                      </TableCell>
+                    )}
+                    {columns.map((column, index) => (
+                      <TableCell
+                        align={column.align ? "center" : "left"}
+                        key={column.id}
+                        sx={{
+                          whiteSpace: "nowrap",
+                          padding: "4px 8px",
+                          height: "32px",
+                          lineHeight: "1",
+                          color: "#2F2F2F",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          marginLeft: index === 0 ? "8px" : undefined,
+                        }}
+                      >
+                        {column.format
+                          ? column.format(row[column.id], row)
+                          : row[column.id]}
+                      </TableCell>
+                    ))}
+                    {action && (
+                      <TableCell align="left">
+                        <IconButton onClick={(e) => handleMenuOpen(e, row)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })
             )}
-            {columns.map((column, index) => (
-              <TableCell
-                align={column.align ? "center" : "left"}
-                key={column.id}
-                sx={{
-                  whiteSpace: "nowrap",
-                  padding: "4px 8px",
-                  height: "32px",
-                  lineHeight: "1",
-                  color: "#2F2F2F",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  marginLeft: index === 0 ? "8px" : undefined,
-                }}
-              >
-                {column.format
-                  ? column.format(row[column.id], row)  
-                  : row[column.id]}
-              </TableCell>
-            ))}
-            {action && (
-              <TableCell align="left">
-                <IconButton onClick={(e) => handleMenuOpen(e, row)}>
-                  <MoreVertIcon />
-                </IconButton>
-              </TableCell>
-            )}
-          </TableRow>
-        );
-      })
-  )}
-</TableBody>
+          </TableBody>
 
           {selectedRow && (
             <Menu
@@ -603,6 +618,7 @@ function ReusableTable<T extends Record<string, any>>({
           )}
         </Table>
       </TableContainer>
+
       <Box
         sx={{
           display: "flex",
@@ -615,44 +631,92 @@ function ReusableTable<T extends Record<string, any>>({
         <Typography
           sx={{ color: "#2F2F2F", fontWeight: 500, fontSize: "14px" }}
         >
-          Page {page +1} of {Math.ceil(filteredData.length / rowsPerPage)}
+          {pageRange
+            ? `Page ${page + 1} of ${Math.ceil(totalLength / rowsPerPage)}`
+            : `Page ${page + 1} of ${Math.ceil(
+                filteredData.length / rowsPerPage
+              )}`}
         </Typography>
         <Stack spacing={2}>
           <Pagination
-            count={Math.ceil(filteredData.length / rowsPerPage)}
+            count={
+              pageRange
+                ? Math.ceil(totalLength / rowsPerPage)
+                : Math.ceil(filteredData.length / rowsPerPage)
+            }
             page={page + 1}
-            onChange={onPageChange ? (_, newPage) => onPageChange?.(newPage - 1):(_, newPage) => setPage(newPage - 1)}
+            onChange={pageRange? (_, newPage) => {
+              onPageChange?.(newPage-1);
+              setPage(newPage-1);
+            }:(_, newPage) => setPage(newPage - 1)}
             shape="rounded"
             variant="outlined"
-            siblingCount={0} // Show only current + next page
-            boundaryCount={1} // Always show first and last page
-            showFirstButton={false} // Hide default first button
-            showLastButton={false} // Hide default last button
-            renderItem={(item) => (
-              <PaginationItem
-                {...item}
-                components={{
-                  previous: ChevronLeft,
-                  next: ChevronRight,
-                }}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  minWidth: "36px",
-                  height: "36px",
-                  "&.Mui-selected": {
-                    backgroundColor: "#0B72E7",
-                    color: "#FFF",
-                    borderColor: "#0B72E7",
-                  },
-                  "&:hover": {
-                    backgroundColor: "#0B72E7",
-                    color: "#FFF",
-                    borderColor: "#0B72E7",
-                  },
-                }}
-              />
-            )}
+            siblingCount={0}
+            boundaryCount={1}
+            showFirstButton={false}
+            showLastButton={false}
+            renderItem={(item) => {
+              if (pageRange) {
+                const hasNextPage = (page + 1) * rowsPerPage < totalLength;
+                const hasPrevPage = page > 0;
+
+                const disabled =
+                  (item.type === "previous" && !hasPrevPage) ||
+                  (item.type === "next" && !hasNextPage);
+
+                return (
+                  <PaginationItem
+                    {...item}
+                    disabled={disabled}
+                    components={{
+                      previous: ChevronLeft,
+                      next: ChevronRight,
+                    }}
+                    sx={{
+                      border: "1px solid #ccc",
+                      borderRadius: "8px",
+                      minWidth: "36px",
+                      height: "36px",
+                      "&.Mui-selected": {
+                        backgroundColor: "#0B72E7",
+                        color: "#FFF",
+                        borderColor: "#0B72E7",
+                      },
+                      "&:hover": {
+                        backgroundColor: "#0B72E7",
+                        color: "#FFF",
+                        borderColor: "#0B72E7",
+                      },
+                    }}
+                  />
+                );
+              } else {
+                return (
+                  <PaginationItem
+                    {...item}
+                    components={{
+                      previous: ChevronLeft,
+                      next: ChevronRight,
+                    }}
+                    sx={{
+                      border: "1px solid #ccc",
+                      borderRadius: "8px",
+                      minWidth: "36px",
+                      height: "36px",
+                      "&.Mui-selected": {
+                        backgroundColor: "#0B72E7",
+                        color: "#FFF",
+                        borderColor: "#0B72E7",
+                      },
+                      "&:hover": {
+                        backgroundColor: "#0B72E7",
+                        borderColor: "#0B72E7",
+                      },
+                    }}
+                  />
+                );
+              }
+            }}
           />
         </Stack>
       </Box>
@@ -705,7 +769,7 @@ function ReusableTable<T extends Record<string, any>>({
                 sx={{ borderRightWidth: 2 }}
               />
 
-              <ButtonComponent
+              {/* <ButtonComponent
                 text={"Upload"}
                 onClick={handleUpload}
                 textColor="#0073B7"
@@ -713,10 +777,10 @@ function ReusableTable<T extends Record<string, any>>({
                 borderRadius="100px"
                 p={2}
                 border="1px solid #0073B7"
-              />
+              /> */}
 
               <ButtonComponent
-                text={"Download"}
+                text={"Download Template"}
                 onClick={handleDownload}
                 textColor="#0073B7"
                 color="white"

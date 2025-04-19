@@ -75,7 +75,7 @@ const ViewDailyPlan: React.FC = () => {
           borderRadius: "10px",
         }}
       >
-        <CommenCard/>
+        <CommenCard isLoading={isLoading}/>
       </Box>
 
       {/* Tabs Section */}

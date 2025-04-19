@@ -91,7 +91,7 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
 };
 
 const DailyPlan: React.FC<DailyPlanProps> = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   const { 
     data: metricsData, 
@@ -122,9 +122,9 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   ] = useDailyPlanFiltersMutation();
   useEffect(() => {
     if(!openSliderDaily){
-      dailyPlanFilters({ ...filtersPayload, page: page - 1, size: rowsPerPage });
+      dailyPlanFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page,openSliderDaily]);
+  }, [page, openSliderDaily,filtersPayload]);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -248,7 +248,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               columns={columns}
               data={data}
               selectable={true}
-              label={`${data.length.toString()} Jobs`}
+              label={`${listOfCompaniesData?.totalRecords? listOfCompaniesData.totalRecords:0} Jobs`}
               title="List of Job Tracker"
               // lastUpdate="2 hours ago"
               info={true}
@@ -261,6 +261,12 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               rowIdentifier="_id" 
               isLoading={listOfCompaniesLoading}
               rowsPerPage={rowsPerPage}
+              totalLength={
+                listOfCompaniesData?.totalRecords
+                  ? listOfCompaniesData.totalRecords
+                  : 0
+              }
+              pageRange={true}
               onPageChange={handlePageChange}
               actions={[
                 {

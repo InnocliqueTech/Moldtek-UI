@@ -281,10 +281,10 @@ const formattedDate = today
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
-      button1Text: "View Template",
+      button1Text: "Download Template",
       button2Text: "Upload Job Data",
  onButton1Click: () => {
-        downloadFile(); // Ensure downloadFile is executed
+        downloadFile(); 
       },
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
@@ -294,7 +294,7 @@ const formattedDate = today
     },
     "/createPlan": {
       title: "Create Daily Plan",
-      button1Text: "Upload Data",
+      // button1Text: "Upload Data",
       // button2Text: "Submit",
       onButton1Click: () => dispatch(setUploadPopup(true)),
       // onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
