@@ -606,7 +606,7 @@ export const jobMetadata = [
     { label: "Effectivity Unit Number", value: "UEN-20240801" },
     { label: "Indent Number", value: "21426152" },
     { label: "Customer Name", value: "Nestlé" },
-    { label: "Brand Name & Pack", value: "KitKat 50g Wrapper" },
+    { label: "Brand Name and Pack Size", value: "KitKat 50g Wrapper" },
     { label: "PPC Indent Qty", value: "6123512" },
     { label: "Target Labels Qty", value: "6123512" },
     { label: "Target Film Mtrs", value: "5234" },

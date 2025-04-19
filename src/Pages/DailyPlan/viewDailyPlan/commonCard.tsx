@@ -99,7 +99,7 @@ const renderValue = (value: string | undefined | null | number) => {
 
           <Grid size={{xs:12,md:3}}>
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Brand Name & Pack
+            Brand Name and Pack Size
             </Typography>
                          <Tooltip title={isLong ? dailyPlan.brandNamePack : ""} placement="top" arrow>
                            <Typography

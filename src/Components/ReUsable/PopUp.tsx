@@ -176,8 +176,8 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
                   onChange={() => {}}
                 />
                 <ReusableInput
-                  label=" Brand Name & Pack"
-                  placeholder="Enter Brand & Pack"
+                  label="Brand Name and Pack Size"
+                  placeholder="Enter Brand & Pack Size"
                   value={"KitKat 50g Wrapper"}
                   onChange={() => {}}
                 />
