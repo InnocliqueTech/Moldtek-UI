@@ -136,7 +136,7 @@ masterDataDyeCutting: {
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
-    const url = `${BASE_API_URL}master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+    const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
   
     try {
       const response = await fetch(url, { method: 'GET' });
