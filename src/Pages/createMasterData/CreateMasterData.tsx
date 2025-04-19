@@ -66,6 +66,7 @@ const CreateMasterData: React.FC = () => {
   const {viewMasterDataDetails} = useSelector((state: RootState) => state.viewMasterData);
   const [formData, setFormData] = useState<MasterFormData>(
     {
+      job_master_id:0,
     unit_effectivity_number: "",
     customer_name: "",
     customer_logo: "",
@@ -82,6 +83,7 @@ const CreateMasterData: React.FC = () => {
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
   const [formValues, setFormValues] = useState<PrintingFormValues>({
     printingDetails: {
+      machine_settings_id:0, job_master_id:0,
       printing_machine_name: "",
       cylinder_teeth: "",
       tension: "",
@@ -93,8 +95,8 @@ const CreateMasterData: React.FC = () => {
       format_correct: "",
     },
     printingSubstrateSettings: {
-      print_substrate_id: "",
-      machine_settings_id: "",
+      print_substrate_id: 0,
+      machine_settings_id: 0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -103,6 +105,7 @@ const CreateMasterData: React.FC = () => {
       density: "",
     },
     stationWiseMetrics: Array.from({ length: 10 }, (_, i) => ({
+      station_id:0,
       station_no: i + 1,
       color_pantone: "",
       lf_value: "",
@@ -111,6 +114,9 @@ const CreateMasterData: React.FC = () => {
       volume: "",
       uv_led: "",
       uv_led_intensity: "",
+      mounting_tape: "",
+      mptl_code: "",
+      mixing_on_gec: "",
     })),
   });
 
@@ -119,6 +125,7 @@ const CreateMasterData: React.FC = () => {
   >([]);
   const [lamiFormData, setLamiFormData] = useState<LaminationFormData>({
     laminationConditions: {
+      lamination_id:0, job_master_id:0,
       zone1_temp: "",
       zone2_temp: "",
       nip_pressure_bar: "",
@@ -131,6 +138,7 @@ const CreateMasterData: React.FC = () => {
       adhesive_gsm: "",
     },
     laminationSubstrate: {
+      substrate_id:0, lamination_id:0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -140,18 +148,21 @@ const CreateMasterData: React.FC = () => {
     },
     bondingMaterials: [
       {
+        bonding_id:0, lamination_id:0,
         type: "Adhesive",
         code: "",
         brand: "",
         ratio: "",
       },
       {
+        bonding_id:0, lamination_id:0,
         type: "Hardener",
         code: "",
         brand: "",
         ratio: "",
       },
       {
+        bonding_id:0, lamination_id:0,
         type: "Ethyl Acetate",
         code: "",
         brand: "",
@@ -161,6 +172,7 @@ const CreateMasterData: React.FC = () => {
   });
 
   const [dyeFormData, setDyeFormData] = useState<DyeCuttingFormData>({
+    dye_cutting_id:0, job_master_id:0,
     machine_type: "",
     machine_name: "",
     dye_code: "",

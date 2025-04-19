@@ -84,6 +84,7 @@ const Lamination: React.FC<LaminationProps> = ({
   function sanitizeMasterData(data: any): LaminationFormData {
     return {
       laminationConditions: {
+        lamination_id:data?.lamination_id||0, job_master_id:data?.job_master_id||0,
         zone1_temp: data?.zone1_temp || 0,
         zone2_temp: data?.zone2_temp || 0,
         nip_pressure_bar: data?.nip_pressure_bar || 0,
@@ -96,6 +97,7 @@ const Lamination: React.FC<LaminationProps> = ({
         adhesive_gsm: data?.adhesive_gsm || "",
       },
       laminationSubstrate: {
+        substrate_id:data?.substrate_id, lamination_id:data?.lamination_id||0,
         substrate_type: data?.substrate_type || "",
         supplier: data?.supplier || "",
         dyne_level: data?.dyne_level || "",

@@ -182,7 +182,7 @@ const DataTable = <T extends Record<string, any>>({
 
   useEffect(() => {
     if (id === 'printing') {
-      const mandatoryFields = ["color_pantone", "lpcm", "lf_value","ink_supplier","volume","uv_led","uv_led_intensity","mixing_on_Gec","mptl_code","mounting_tape"];
+      const mandatoryFields = ["color_pantone", "lpcm", "lf_value","ink_supplier","volume","uv_led","uv_led_intensity","mixing_on_gec","mptl_code","mounting_tape"];
     
       // Check if any mandatory field has a valid valuecolor_pantone: "",
       const hasValidMandatory = Array.isArray(data) 

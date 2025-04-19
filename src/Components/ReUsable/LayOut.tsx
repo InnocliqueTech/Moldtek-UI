@@ -24,6 +24,7 @@ import { BASE_API_URL } from './../../api.config';
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
@@ -40,88 +41,105 @@ const Layout = () => {
     selectedUENList =  UENAction;
  }
   const { id, version } = useParams();
-const clearRequestPayoad ={    masterDataDetails: {
-  unit_effectivity_number: "",
-  customer_name: "",
-  customer_logo: "",
-  item_code: "",
-  brand_description: "",
-  jar_cap: "",
-  structure: "",
-  label_type: "",
-  repeat_length: 0,
-  ups: 0,
-  tracks: 0,
-},
-masterDataPrinting: {
-  printingDetails: {
-    printing_machine_name: "",
-    cylinder_teeth: 0,
-    tension: 0,
-    unwinder: 0,
-    rewinder: 0,
-    infeed: 0,
-    outfeed: 0,
-    static_charge: 0,
-    format_correct: 0,
+const clearRequestPayoad ={    
+  masterDataDetails: {
+    job_master_id: 0,
+    unit_effectivity_number: "",
+    customer_name: "",
+    customer_logo: "",
+    item_code: "",
+    brand_description: "",
+    jar_cap: "",
+    structure: "",
+    label_type: "",
+    repeat_length: 0,
+    ups: 0,
+    tracks: 0,
   },
-  printingSubstrateSettings: {
-    substrate_type: "",
-    supplier: "",
-    dyne_level: "",
-    width: 0,
-    thickness: 0,
-    density: 0,
-  },
-  stationWiseMetrics: [
-    {
-      station_no: 0,
-      color_pantone: "",
-      lf_value: 0,
-      ink_supplier: "",
-      lpcm: 0,
-      volume: "",
-      uv_led: "",
-      uv_led_intensity: "",
+  masterDataPrinting: {
+    printingDetails: {
+      machine_settings_id: 0,
+      job_master_id: 0,
+      printing_machine_name: "",
+      cylinder_teeth: 0,
+      tension: 0,
+      unwinder: 0,
+      rewinder: 0,
+      infeed: 0,
+      outfeed: 0,
+      static_charge: 0,
+      format_correct: 0,
     },
-  ],
-},
-masterDataLamination: {
-  laminationConditions: {
-    zone1_temp: 0,
-    zone2_temp: 0,
-    nip_pressure_bar: 0,
-    speed: 0,
-    lami_set_tension: "",
-    rewinder_tension: "",
-    printed_film_tension: "",
-    laminate_film_tension: "",
-    viscosity_range: "",
-    adhesive_gsm: "",
-  },
-  laminationSubstrate: {
-    substrate_type: "",
-    supplier: "",
-    dyne_level: "",
-    width: 0,
-    thickness: 0,
-    density: 0,
-  },
-  bondingMaterials: [
-    {
-      type: "",
-      code: "",
-      brand: "",
-      ratio: 0,
+    printingSubstrateSettings: {
+      print_substrate_id:0, machine_settings_id:0,
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0,
     },
-  ],
-},
-masterDataDyeCutting: {
-  machine_type: "",
-  machine_name: "",
-  dye_code: "",
-  run_speed: 0,
-},}
+    stationWiseMetrics: [
+      {
+        station_id: 0,
+        station_no: 0,
+        color_pantone: "",
+        lf_value: 0,
+        ink_supplier: "",
+        lpcm: 0,
+        volume: "",
+        uv_led: "",
+        uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: 0,
+        mixing_on_gec: 0,
+      },
+    ],
+  },
+  masterDataLamination: {
+    laminationConditions: {
+      lamination_id: 0,
+      job_master_id: 0,
+      zone1_temp: 0,
+      zone2_temp: 0,
+      nip_pressure_bar: 0,
+      speed: 0,
+      lami_set_tension: "",
+      rewinder_tension: "",
+      printed_film_tension: "",
+      laminate_film_tension: "",
+      viscosity_range: "",
+      adhesive_gsm: "",
+    },
+    laminationSubstrate: {
+      substrate_id: 0,
+      lamination_id: 0,
+      substrate_type: "",
+      supplier: "",
+      dyne_level: "",
+      width: 0,
+      thickness: 0,
+      density: 0,
+    },
+    bondingMaterials: [
+      {
+        bonding_id: 0,
+        lamination_id: 0,
+        type: "",
+        code: "",
+        brand: "",
+        ratio: 0,
+      },
+    ],
+  },
+  masterDataDyeCutting: {
+    dye_cutting_id: 0,
+    job_master_id: 0,
+    machine_type: "",
+    machine_name: "",
+    dye_code: "",
+    run_speed: 0,
+  },}
   const { indentNo } = useParams();
   // const decodedIndentNo = indentNo
   let unitEffectiveNumberDaily: number | undefined = undefined;
@@ -137,7 +155,7 @@ masterDataDyeCutting: {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
     const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
-  
+    setLoading(true);
     try {
       const response = await fetch(url, { method: 'GET' });
   
@@ -153,13 +171,16 @@ masterDataDyeCutting: {
       const downloadLink = document.createElement('a');
       const fileUrl = URL.createObjectURL(blob);
       downloadLink.href = fileUrl;
-      downloadLink.download = 'daily_job_template.xlsx'; 
+      downloadLink.download = `${decodedIndentNo}.xlsx`; 
       downloadLink.click();
 
       URL.revokeObjectURL(fileUrl);
   
     } catch (error) {
       console.error('Error downloading the file:', error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -281,7 +302,7 @@ const formattedDate = today
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
-      button1Text: "Download Template",
+      button1Text: loading ? 'Downloading...' : 'Download Template',
       button2Text: "Upload Job Data",
  onButton1Click: () => {
         downloadFile(); 

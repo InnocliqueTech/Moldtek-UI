@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
 export interface PrintingTableRow {
+  station_id: number;
   station_no: number;
   color_pantone: string;
   lf_value: string;
@@ -11,9 +10,13 @@ export interface PrintingTableRow {
   volume: string;
   uv_led: string;
   uv_led_intensity: string;
+  mounting_tape: string;
+  mptl_code: string;
+  mixing_on_gec: string;
 }
 export interface LaminatingTableRow {
-  
+  bonding_id: number;
+  lamination_id: number;
   type: string;
   code: string;
   brand: string;
@@ -21,6 +24,7 @@ export interface LaminatingTableRow {
 }
 export interface RequestPayload {
   masterDataDetails: {
+    job_master_id: number;
     unit_effectivity_number: string;
     customer_name: string;
     customer_logo: string;
@@ -35,6 +39,8 @@ export interface RequestPayload {
   };
   masterDataPrinting: {
     printingDetails: {
+      machine_settings_id: number;
+      job_master_id: number;
       printing_machine_name: string;
       cylinder_teeth: number;
       tension: number;
@@ -46,6 +52,8 @@ export interface RequestPayload {
       format_correct: number;
     };
     printingSubstrateSettings: {
+      print_substrate_id: number,
+      machine_settings_id: number,
       substrate_type: string;
       supplier: string;
       dyne_level: string;
@@ -54,6 +62,7 @@ export interface RequestPayload {
       density: number;
     };
     stationWiseMetrics: {
+      station_id: number;
       station_no: number;
       color_pantone: string;
       lf_value: number;
@@ -62,10 +71,15 @@ export interface RequestPayload {
       volume: string;
       uv_led: string;
       uv_led_intensity: string;
+      mounting_tape: string;
+      mptl_code: number;
+      mixing_on_gec: number;
     }[];
   };
   masterDataLamination: {
     laminationConditions: {
+      lamination_id: number;
+      job_master_id: number;
       zone1_temp: number;
       zone2_temp: number;
       nip_pressure_bar: number;
@@ -78,6 +92,8 @@ export interface RequestPayload {
       adhesive_gsm: string;
     };
     laminationSubstrate: {
+      substrate_id: number;
+      lamination_id: number;
       substrate_type: string;
       supplier: string;
       dyne_level: string;
@@ -86,6 +102,8 @@ export interface RequestPayload {
       density: number;
     };
     bondingMaterials: {
+      bonding_id: number;
+      lamination_id: number;
       type: string;
       code: string;
       brand: string;
@@ -93,6 +111,8 @@ export interface RequestPayload {
     }[];
   };
   masterDataDyeCutting: {
+    dye_cutting_id: number;
+    job_master_id: number;
     machine_type: string;
     machine_name: string;
     dye_code: string;
@@ -102,6 +122,8 @@ export interface RequestPayload {
 
 export interface LaminationFormData {
   laminationConditions: {
+    lamination_id: number;
+    job_master_id: number;
     zone1_temp: string;
     zone2_temp: string;
     nip_pressure_bar: string;
@@ -115,6 +137,8 @@ export interface LaminationFormData {
   };
 
   laminationSubstrate: {
+    substrate_id: number;
+    lamination_id: number;
     substrate_type: string;
     supplier: string;
     dyne_level: string;
@@ -126,6 +150,7 @@ export interface LaminationFormData {
   bondingMaterials: LaminatingTableRow[];
 }
 export interface MasterFormData {
+  job_master_id: number;
   unit_effectivity_number: string;
   customer_name: string;
   customer_logo: string;
@@ -140,12 +165,15 @@ export interface MasterFormData {
 }
 
 export interface DyeCuttingFormData {
+  dye_cutting_id: number;
+  job_master_id: number;
   machine_type: string;
   machine_name: string;
   dye_code: string;
   run_speed: string;
 }
 export interface MasterDataFormErrors {
+  job_master_id:string;
   repeat_length: string;
   ups: string;
   tracks: string;
@@ -159,6 +187,8 @@ export interface MasterDataFormErrors {
   label_type: string;
 }
 export interface DyeCuttingFormErrors {
+  job_master_id:string,
+  dye_cutting_id:string,
   machine_type: string;
   machine_name: string;
   dye_code: string;
@@ -185,26 +215,28 @@ export interface PrintingFormErrors {
 }
 export interface LaminationFormErrors {
   zone1_temp: string;
-    zone2_temp: string;
-    nip_pressure_bar: string;
-    speed: string;
-    lami_set_tension:  string;
-    rewinder_tension:  string;
-    printed_film_tension:  string;
-    laminate_film_tension: string;
-    viscosity_range: string;
-    adhesive_gsm: string;
-    substrate_type: string;
-    supplier: string;
-    dyne_level:  string;
-    width: string;
-    thickness: string;
-    density: string;
+  zone2_temp: string;
+  nip_pressure_bar: string;
+  speed: string;
+  lami_set_tension: string;
+  rewinder_tension: string;
+  printed_film_tension: string;
+  laminate_film_tension: string;
+  viscosity_range: string;
+  adhesive_gsm: string;
+  substrate_type: string;
+  supplier: string;
+  dyne_level: string;
+  width: string;
+  thickness: string;
+  density: string;
   [key: string]: string;
 }
 
 export interface PrintingFormValues {
   printingDetails: {
+    machine_settings_id: number;
+      job_master_id: number;
     printing_machine_name: string;
     cylinder_teeth: string;
     tension: string;
@@ -216,8 +248,8 @@ export interface PrintingFormValues {
     format_correct: string;
   };
   printingSubstrateSettings: {
-    print_substrate_id: string;
-    machine_settings_id: string;
+    print_substrate_id: number,
+      machine_settings_id: number,
     substrate_type: string;
     supplier: string;
     dyne_level: string;
@@ -237,11 +269,11 @@ export interface LabelType {
   labelTypeId: number;
   labelTypeName: string;
 }
-export interface FiltersPayload{
-  fromDate: string,
-  toDate: string,
-  customerName: string[],
-  labelType: string[],
+export interface FiltersPayload {
+  fromDate: string;
+  toDate: string;
+  customerName: string[];
+  labelType: string[];
 }
 interface MasterDataState {
   customers: Customer[];
@@ -269,68 +301,68 @@ interface MasterDataState {
   requestPayload: RequestPayload;
   selectedUEN: string;
   submitAndPublishButtonMasterData: boolean;
-  masterDataDetailsSave:boolean;
+  masterDataDetailsSave: boolean;
   submitAndPublishButtonDyeCutting: boolean;
   submitAndPublishButtonPrinting: boolean;
   submitAndPublishButtonLamination: boolean;
   masterDataFormErrors: MasterDataFormErrors;
   invalidFieldsTable: { [key: string]: boolean };
-  printingFormErrors:PrintingFormErrors;
-  laminationFormErrors:LaminationFormErrors;
-  laminationDataTouched:boolean;
-printingDataTouched:boolean;
-  dyeCuttingDataTouched:boolean;
-  masterDataDataTouched:boolean;
-  searchButton:boolean;
-  filtersPayload:FiltersPayload;
-  printingDataSave:boolean;
-  laminationDataSave:boolean;
-  isSearchTriggered:boolean;
-  printingDetails:any;
-  dyeCuttingDetails:any;
-  laminatingDetails:any;
-  rememberMe:boolean;
+  printingFormErrors: PrintingFormErrors;
+  laminationFormErrors: LaminationFormErrors;
+  laminationDataTouched: boolean;
+  printingDataTouched: boolean;
+  dyeCuttingDataTouched: boolean;
+  masterDataDataTouched: boolean;
+  searchButton: boolean;
+  filtersPayload: FiltersPayload;
+  printingDataSave: boolean;
+  laminationDataSave: boolean;
+  isSearchTriggered: boolean;
+  printingDetails: any;
+  dyeCuttingDetails: any;
+  laminatingDetails: any;
+  rememberMe: boolean;
 }
 
 const initialState: MasterDataState = {
-  rememberMe:false,
-  isSearchTriggered:false,
-  dyeCuttingDetails:"",
-laminatingDetails:"",
-  searchButton:false,
-  masterDataDetailsSave:false,
-  printingDataSave:false,
-  laminationDataSave:false,
-  printingDetails:"",
-  laminationFormErrors:{
+  rememberMe: false,
+  isSearchTriggered: false,
+  dyeCuttingDetails: "",
+  laminatingDetails: "",
+  searchButton: false,
+  masterDataDetailsSave: false,
+  printingDataSave: false,
+  laminationDataSave: false,
+  printingDetails: "",
+  laminationFormErrors: {
     zone1_temp: "",
     zone2_temp: "",
     nip_pressure_bar: "",
     speed: "",
-    lami_set_tension:  "",
-    rewinder_tension:  "",
-    printed_film_tension:  "",
+    lami_set_tension: "",
+    rewinder_tension: "",
+    printed_film_tension: "",
     laminate_film_tension: "",
     viscosity_range: "",
     adhesive_gsm: "",
     substrate_type: "",
     supplier: "",
-    dyne_level:  "",
+    dyne_level: "",
     width: "",
     thickness: "",
     density: "",
   },
-  filtersPayload:{
+  filtersPayload: {
     fromDate: "",
     toDate: "",
     customerName: [],
     labelType: [],
   },
-  laminationDataTouched:false,
-  printingDataTouched:false,
-  dyeCuttingDataTouched:false,
-  masterDataDataTouched:false,
-  printingFormErrors:{
+  laminationDataTouched: false,
+  printingDataTouched: false,
+  dyeCuttingDataTouched: false,
+  masterDataDataTouched: false,
+  printingFormErrors: {
     printing_machine_name: "",
     cylinder_teeth: "",
     tension: "",
@@ -348,6 +380,7 @@ laminatingDetails:"",
     density: "",
   },
   masterDataFormErrors: {
+    job_master_id:"",
     repeat_length: "",
     ups: "",
     tracks: "",
@@ -360,8 +393,10 @@ laminatingDetails:"",
     brand_description: "",
     label_type: "",
   },
-  invalidFieldsTable:{},
+  invalidFieldsTable: {},
   dyeCuttingErrors: {
+    job_master_id:"",
+    dye_cutting_id:"",
     machine_type: "",
     machine_name: "",
     dye_code: "",
@@ -386,6 +421,7 @@ laminatingDetails:"",
   },
   selectedUEN: "",
   saveFormData: {
+    job_master_id:0,
     unit_effectivity_number: "",
     customer_name: "",
     customer_logo: "",
@@ -400,6 +436,7 @@ laminatingDetails:"",
   },
   printingSaveFormData: {
     printingDetails: {
+      machine_settings_id:0, job_master_id:0,
       printing_machine_name: "",
       cylinder_teeth: "",
       tension: "",
@@ -411,8 +448,8 @@ laminatingDetails:"",
       format_correct: "",
     },
     printingSubstrateSettings: {
-      print_substrate_id: "",
-      machine_settings_id: "",
+      print_substrate_id: 0,
+      machine_settings_id: 0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -422,6 +459,7 @@ laminatingDetails:"",
     },
     stationWiseMetrics: [
       {
+        station_id:0,
         station_no: 1,
         color_pantone: "",
         lf_value: "",
@@ -430,8 +468,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 2,
         color_pantone: "",
         lf_value: "",
@@ -440,8 +482,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 3,
         color_pantone: "",
         lf_value: "",
@@ -450,8 +496,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 4,
         color_pantone: "",
         lf_value: "",
@@ -460,8 +510,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 5,
         color_pantone: "",
         lf_value: "",
@@ -470,8 +524,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 6,
         color_pantone: "",
         lf_value: "",
@@ -480,8 +538,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 7,
         color_pantone: "",
         lf_value: "",
@@ -490,8 +552,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 8,
         color_pantone: "",
         lf_value: "",
@@ -500,8 +566,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 9,
         color_pantone: "",
         lf_value: "",
@@ -510,8 +580,12 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
       {
+        station_id:0,
         station_no: 10,
         color_pantone: "",
         lf_value: "",
@@ -520,11 +594,15 @@ laminatingDetails:"",
         volume: "",
         uv_led: "",
         uv_led_intensity: "",
+        mounting_tape: "",
+        mptl_code: "",
+        mixing_on_gec: "",
       },
     ],
   },
   laminaionFormData: {
     laminationConditions: {
+      lamination_id:0, job_master_id:0,
       zone1_temp: "",
       zone2_temp: "",
       nip_pressure_bar: "",
@@ -537,6 +615,7 @@ laminatingDetails:"",
       adhesive_gsm: "",
     },
     laminationSubstrate: {
+      substrate_id:0, lamination_id:0,
       substrate_type: "",
       supplier: "",
       dyne_level: "",
@@ -546,18 +625,21 @@ laminatingDetails:"",
     },
     bondingMaterials: [
       {
+        bonding_id:0, lamination_id:0,
         type: "Adhesive",
         code: "",
         brand: "",
         ratio: "",
       },
       {
+        bonding_id:0, lamination_id:0,
         type: "Hardener",
         code: "",
         brand: "",
         ratio: "",
       },
       {
+        bonding_id:0, lamination_id:0,
         type: "Ethyl Acetate",
         code: "",
         brand: "",
@@ -566,6 +648,7 @@ laminatingDetails:"",
     ],
   },
   dyeCuttingFormData: {
+    dye_cutting_id:0, job_master_id:0,
     machine_type: "",
     machine_name: "",
     dye_code: "",
@@ -577,6 +660,7 @@ laminatingDetails:"",
   isPrintingDataSave: false,
   requestPayload: {
     masterDataDetails: {
+      job_master_id: 0,
       unit_effectivity_number: "",
       customer_name: "",
       customer_logo: "",
@@ -591,6 +675,8 @@ laminatingDetails:"",
     },
     masterDataPrinting: {
       printingDetails: {
+        machine_settings_id: 0,
+        job_master_id: 0,
         printing_machine_name: "",
         cylinder_teeth: 0,
         tension: 0,
@@ -602,6 +688,7 @@ laminatingDetails:"",
         format_correct: 0,
       },
       printingSubstrateSettings: {
+        print_substrate_id:0, machine_settings_id:0,
         substrate_type: "",
         supplier: "",
         dyne_level: "",
@@ -611,6 +698,7 @@ laminatingDetails:"",
       },
       stationWiseMetrics: [
         {
+          station_id: 0,
           station_no: 0,
           color_pantone: "",
           lf_value: 0,
@@ -619,11 +707,16 @@ laminatingDetails:"",
           volume: "",
           uv_led: "",
           uv_led_intensity: "",
+          mounting_tape: "",
+          mptl_code: 0,
+          mixing_on_gec: 0,
         },
       ],
     },
     masterDataLamination: {
       laminationConditions: {
+        lamination_id: 0,
+        job_master_id: 0,
         zone1_temp: 0,
         zone2_temp: 0,
         nip_pressure_bar: 0,
@@ -636,6 +729,8 @@ laminatingDetails:"",
         adhesive_gsm: "",
       },
       laminationSubstrate: {
+        substrate_id: 0,
+        lamination_id: 0,
         substrate_type: "",
         supplier: "",
         dyne_level: "",
@@ -645,6 +740,8 @@ laminatingDetails:"",
       },
       bondingMaterials: [
         {
+          bonding_id: 0,
+          lamination_id: 0,
           type: "",
           code: "",
           brand: "",
@@ -653,6 +750,8 @@ laminatingDetails:"",
       ],
     },
     masterDataDyeCutting: {
+      dye_cutting_id: 0,
+      job_master_id: 0,
       machine_type: "",
       machine_name: "",
       dye_code: "",
@@ -698,18 +797,18 @@ const masterDataSlice = createSlice({
         ...action.payload,
       };
     },
-    setLaminationDataTouched:(state,action:PayloadAction<boolean>)=>{
-state.laminationDataTouched = action.payload
+    setLaminationDataTouched: (state, action: PayloadAction<boolean>) => {
+      state.laminationDataTouched = action.payload;
     },
-    setPrintingDataTouched:(state,action:PayloadAction<boolean>)=>{
-      state.printingDataTouched = action.payload
-          },
-          setDyeCuttingDataTouched:(state,action:PayloadAction<boolean>)=>{
-            state.dyeCuttingDataTouched = action.payload
-                },
-                setMasterDataDataTouched:(state,action:PayloadAction<boolean>)=>{
-                  state.masterDataDataTouched = action.payload
-                      },
+    setPrintingDataTouched: (state, action: PayloadAction<boolean>) => {
+      state.printingDataTouched = action.payload;
+    },
+    setDyeCuttingDataTouched: (state, action: PayloadAction<boolean>) => {
+      state.dyeCuttingDataTouched = action.payload;
+    },
+    setMasterDataDataTouched: (state, action: PayloadAction<boolean>) => {
+      state.masterDataDataTouched = action.payload;
+    },
     setLaminationFormData: (
       state,
       action: PayloadAction<LaminationFormData>
@@ -730,6 +829,7 @@ state.laminationDataTouched = action.payload
     },
     clearDyeCuttingFormData: (state) => {
       state.dyeCuttingFormData = {
+        dye_cutting_id:0, job_master_id:0,
         machine_type: "",
         machine_name: "",
         dye_code: "",
@@ -760,11 +860,12 @@ state.laminationDataTouched = action.payload
     ) => {
       state.dyeCuttingErrors = action.payload;
     },
-    setRememberMe:(state,action:PayloadAction<boolean>)=>{
-     state.rememberMe = action.payload
+    setRememberMe: (state, action: PayloadAction<boolean>) => {
+      state.rememberMe = action.payload;
     },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
+        job_master_id:0,
         unit_effectivity_number: "",
         customer_name: "",
         customer_logo: "",
@@ -778,30 +879,27 @@ state.laminationDataTouched = action.payload
         tracks: "",
       };
     },
-    setPrintngFormErros: (
-      state,
-      action: PayloadAction<PrintingFormErrors>
-    ) => {
+    setPrintngFormErros: (state, action: PayloadAction<PrintingFormErrors>) => {
       state.printingFormErrors = action.payload;
     },
-    clearPrintingFormErrors:(state)=>{
-     state.printingFormErrors={
-      printing_machine_name: "",
-      cylinder_teeth: "",
-      tension: "",
-      unwinder: "",
-      infeed: "",
-      outfeed: "",
-      rewinder: "",
-      static_charge: "",
-      format_correct: "",
-      substrate_type: "",
-      supplier: "",
-      dyne_level: "",
-      width: "",
-      thickness: "",
-      density: "",
-     }
+    clearPrintingFormErrors: (state) => {
+      state.printingFormErrors = {
+        printing_machine_name: "",
+        cylinder_teeth: "",
+        tension: "",
+        unwinder: "",
+        infeed: "",
+        outfeed: "",
+        rewinder: "",
+        static_charge: "",
+        format_correct: "",
+        substrate_type: "",
+        supplier: "",
+        dyne_level: "",
+        width: "",
+        thickness: "",
+        density: "",
+      };
     },
     setLaminationFormErros: (
       state,
@@ -809,28 +907,29 @@ state.laminationDataTouched = action.payload
     ) => {
       state.laminationFormErrors = action.payload;
     },
-    clearLaminationFormErrors:(state)=>{
-     state.laminationFormErrors={
+    clearLaminationFormErrors: (state) => {
+      state.laminationFormErrors = {
         zone1_temp: "",
         zone2_temp: "",
         nip_pressure_bar: "",
         speed: "",
-        lami_set_tension:  "",
-        rewinder_tension:  "",
-        printed_film_tension:  "",
+        lami_set_tension: "",
+        rewinder_tension: "",
+        printed_film_tension: "",
         laminate_film_tension: "",
         viscosity_range: "",
         adhesive_gsm: "",
         substrate_type: "",
         supplier: "",
-        dyne_level:  "",
+        dyne_level: "",
         width: "",
         thickness: "",
         density: "",
-      }
+      };
     },
     clearMasterDataFormErrors: (state) => {
       state.masterDataFormErrors = {
+        job_master_id:"",
         repeat_length: "",
         ups: "",
         tracks: "",
@@ -846,6 +945,8 @@ state.laminationDataTouched = action.payload
     },
     clearDyeCuttingFormErrors: (state) => {
       state.dyeCuttingErrors = {
+        job_master_id:"",
+        dye_cutting_id:"",
         machine_type: "",
         machine_name: "",
         dye_code: "",
@@ -855,6 +956,7 @@ state.laminationDataTouched = action.payload
     clearPrintingFormData: (state) => {
       state.printingSaveFormData = {
         printingDetails: {
+          machine_settings_id:0, job_master_id:0,
           printing_machine_name: "",
           cylinder_teeth: "",
           tension: "",
@@ -866,8 +968,8 @@ state.laminationDataTouched = action.payload
           format_correct: "",
         },
         printingSubstrateSettings: {
-          print_substrate_id: "",
-          machine_settings_id: "",
+          print_substrate_id: 0,
+          machine_settings_id: 0,
 
           substrate_type: "",
           supplier: "",
@@ -878,6 +980,7 @@ state.laminationDataTouched = action.payload
         },
         stationWiseMetrics: [
           {
+            station_id:0,
             station_no: 1,
             color_pantone: "",
             lf_value: "",
@@ -886,8 +989,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 2,
             color_pantone: "",
             lf_value: "",
@@ -896,8 +1003,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 3,
             color_pantone: "",
             lf_value: "",
@@ -906,8 +1017,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 4,
             color_pantone: "",
             lf_value: "",
@@ -916,8 +1031,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 5,
             color_pantone: "",
             lf_value: "",
@@ -926,8 +1045,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 6,
             color_pantone: "",
             lf_value: "",
@@ -936,8 +1059,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 7,
             color_pantone: "",
             lf_value: "",
@@ -946,8 +1073,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 8,
             color_pantone: "",
             lf_value: "",
@@ -956,8 +1087,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 9,
             color_pantone: "",
             lf_value: "",
@@ -966,8 +1101,12 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
           {
+            station_id:0,
             station_no: 10,
             color_pantone: "",
             lf_value: "",
@@ -976,6 +1115,9 @@ state.laminationDataTouched = action.payload
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
+            mounting_tape: "",
+            mptl_code: "",
+            mixing_on_gec: "",
           },
         ],
       };
@@ -983,6 +1125,7 @@ state.laminationDataTouched = action.payload
     clearLaminatingFormData: (state) => {
       state.laminaionFormData = {
         laminationConditions: {
+          lamination_id:0, job_master_id:0,
           zone1_temp: "",
           zone2_temp: "",
           nip_pressure_bar: "",
@@ -995,6 +1138,7 @@ state.laminationDataTouched = action.payload
           adhesive_gsm: "",
         },
         laminationSubstrate: {
+          substrate_id:0, lamination_id:0,
           substrate_type: "",
           supplier: "",
           dyne_level: "",
@@ -1004,18 +1148,21 @@ state.laminationDataTouched = action.payload
         },
         bondingMaterials: [
           {
+            bonding_id:0, lamination_id:0,
             type: "Adhesive",
             code: "",
             brand: "",
             ratio: "",
           },
           {
+            bonding_id:0, lamination_id:0,
             type: "Hardener",
             code: "",
             brand: "",
             ratio: "",
           },
           {
+            bonding_id:0, lamination_id:0,
             type: "Ethyl Acetate",
             code: "",
             brand: "",
@@ -1054,17 +1201,22 @@ state.laminationDataTouched = action.payload
       state.selectedLabelTypeIds = action.payload;
     },
     toggleLabelType: (state, action: PayloadAction<LabelType>) => {
-      const {labelTypeId} = action.payload;
-      const exists = state.selectedLabelTypeIds.some((labelType)=> labelType.labelTypeId === labelTypeId);
+      const { labelTypeId } = action.payload;
+      const exists = state.selectedLabelTypeIds.some(
+        (labelType) => labelType.labelTypeId === labelTypeId
+      );
       if (exists) {
         state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
-          (labelId) => labelId.labelTypeId !==labelTypeId
+          (labelId) => labelId.labelTypeId !== labelTypeId
         );
       } else {
         state.selectedLabelTypeIds.push(action.payload);
       }
     },
-    setSubmitAndPublishButtonMasterData: (state, action: PayloadAction<boolean>) => {
+    setSubmitAndPublishButtonMasterData: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
       state.submitAndPublishButtonMasterData = action.payload;
     },
     setMasterDataDetailsSave: (state, action: PayloadAction<boolean>) => {
@@ -1076,39 +1228,51 @@ state.laminationDataTouched = action.payload
     setLaminationSave: (state, action: PayloadAction<boolean>) => {
       state.laminationDataSave = action.payload;
     },
-    setSubmitAndPublishButtonDyeCutting: (state, action: PayloadAction<boolean>) => {
+    setSubmitAndPublishButtonDyeCutting: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
       state.submitAndPublishButtonDyeCutting = action.payload;
     },
-    setSubmitAndPublishButtonPrinting: (state, action: PayloadAction<boolean>) => {
+    setSubmitAndPublishButtonPrinting: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
       state.submitAndPublishButtonPrinting = action.payload;
     },
-    setSubmitAndPublishButtonMasterLamination: (state, action: PayloadAction<boolean>) => {
+    setSubmitAndPublishButtonMasterLamination: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
       state.submitAndPublishButtonLamination = action.payload;
     },
-    setInvalidFieldsTable: (state, action: PayloadAction<{ [key: string]: boolean }>) => {
+    setInvalidFieldsTable: (
+      state,
+      action: PayloadAction<{ [key: string]: boolean }>
+    ) => {
       state.invalidFieldsTable = action.payload;
     },
-    clearInvalidFieldsTable:(state)=>{
-      state.invalidFieldsTable= {}
+    clearInvalidFieldsTable: (state) => {
+      state.invalidFieldsTable = {};
     },
-    setSearchButton:(state,action:PayloadAction<boolean>)=>{
-      state.searchButton = action.payload
+    setSearchButton: (state, action: PayloadAction<boolean>) => {
+      state.searchButton = action.payload;
     },
-    setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
-    state.filtersPayload = action.payload
-    } ,
-    setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
-      state.isSearchTriggered = action.payload
+    setFiltersPayload: (state, action: PayloadAction<FiltersPayload>) => {
+      state.filtersPayload = action.payload;
     },
-    setPrintingDetails:(state,action:PayloadAction<any>)=>{
-      state.printingDetails = action.payload
-    } ,
-    setDyeCuttingDetails:(state,action:PayloadAction<any>)=>{
-      state.dyeCuttingDetails = action.payload
-    } ,
-    setLaminatingDetails:(state,action:PayloadAction<any>)=>{
-      state.laminatingDetails = action.payload
-    } 
+    setIsSearchTriggered: (state, action: PayloadAction<boolean>) => {
+      state.isSearchTriggered = action.payload;
+    },
+    setPrintingDetails: (state, action: PayloadAction<any>) => {
+      state.printingDetails = action.payload;
+    },
+    setDyeCuttingDetails: (state, action: PayloadAction<any>) => {
+      state.dyeCuttingDetails = action.payload;
+    },
+    setLaminatingDetails: (state, action: PayloadAction<any>) => {
+      state.laminatingDetails = action.payload;
+    },
   },
 });
 
@@ -1161,11 +1325,11 @@ export const {
   setPrintingDataTouched,
   setSearchButton,
   setPrintingDetails,
-setRememberMe,
+  setRememberMe,
   setFiltersPayload,
   setMasterDataDetailsSave,
   setPrintingSave,
   setLaminationSave,
-  setIsSearchTriggered
+  setIsSearchTriggered,
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

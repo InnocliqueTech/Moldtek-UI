@@ -22,6 +22,8 @@ interface DyeCuttingProps {
 
 const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   const [errors, setErrors] = useState<DyeCuttingFormErrors>({
+    job_master_id:"",
+    dye_cutting_id:"",
     machine_type: "",
     machine_name: "",
     dye_code: "",
@@ -37,6 +39,8 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
+      job_master_id:data?.job_master_id||0,
+      dye_cutting_id:data?.dye_cutting_id||0,
       machine_type: data?.machine_type || "",
       machine_name: data?.machine_name || "",
       dye_code: data?.dye_code || "",

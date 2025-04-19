@@ -102,6 +102,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [errors, setErrors] = useState<MasterDataFormErrors>({
+    job_master_id:"",
     repeat_length: "",
     ups: "",
     tracks: "",
@@ -245,6 +246,7 @@ console.log(formData,"FORMDATAMASTERDETAILS")
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {
+      job_master_id:data?.job_master_id||0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",

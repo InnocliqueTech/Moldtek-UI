@@ -84,7 +84,7 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "volume", label: "Volume", edit: true },
     { id: "uv_led", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
-    { id: "mixing_on_Gec", label: "Mixing On GEC", edit: true },
+    { id: "mixing_on_gec", label: "Mixing On GEC", edit: true },
     { id: "mptl_code", label: "MPTL Code", edit: true },
     { id: "mounting_tape", label: "Mounting Tape", isDropdown: true, options: ["Soft", "Medium","Hard"] },
   ];
@@ -110,6 +110,7 @@ const Printing: React.FC<PrintingProps> = ({
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
       printingDetails: {
+        machine_settings_id:data?.machine_settings_id||0, job_master_id:data?.job_master_id||0,
         printing_machine_name: data?.printing_machine_name || "",
         cylinder_teeth: data?.cylinder_teeth !== undefined ? String(data.cylinder_teeth) : "",
         tension: data?.tension !== undefined ? String(data.tension) : "",
@@ -141,7 +142,7 @@ const Printing: React.FC<PrintingProps> = ({
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
-            mixing_on_Gec:"",
+            mixing_on_gec:"",
             mptl_code:"",
             mounting_tape:""
           })),
