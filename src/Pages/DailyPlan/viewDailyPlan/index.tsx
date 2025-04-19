@@ -97,7 +97,7 @@ const ViewDailyPlan: React.FC = () => {
         <Box sx={{ padding: 1 }}>
           {selectedTab === 0 && <MakeReady loading={isLoading}/>}
           {selectedTab === 1 && <PrintingReport indentNO={decodedIndentNo}/>}
-          {selectedTab === 2 && <LaminationReport />}
+          {selectedTab === 2 && <LaminationReport indentNumber={decodedIndentNo}/>}
           {selectedTab === 3 && <LabelCutting indentNumber={decodedIndentNo}/>}
           {selectedTab === 4 && <TravelCard indentNumber={decodedIndentNo}/>}
         </Box>

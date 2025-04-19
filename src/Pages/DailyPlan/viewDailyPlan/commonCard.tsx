@@ -9,7 +9,7 @@ const CommenCard: React.FC = () => {
 const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
 const maxChars = 20
 const isLong = dailyPlan?.brandNamePack?.length > maxChars;
-const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :dailyPlan.brandNamePack;
+const displayText = isLong ?dailyPlan.brandNamePack.slice(0, maxChars) + "..." :dailyPlan?.brandNamePack;
 const renderValue = (value: string | undefined | null | number) => {
   return value ? value : "N/A";
 };

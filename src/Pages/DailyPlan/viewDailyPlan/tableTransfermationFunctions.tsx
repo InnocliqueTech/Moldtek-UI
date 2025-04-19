@@ -198,6 +198,49 @@ type TensionApiResponse = {
       },
     ];
   };
+
+  //-----------------------------Lamination Report---------------------//
+
+  type ZoneTempApiResponse = {
+    zone1TempStd?: number;
+    zone1TempActual?: number;
+    zone2TempStd?: number;
+    zone2TempActual?: number;
+    nipPressureStd?: number;
+    nipPressureActual?: number;
+    speedMtrMinStd?: number;
+    speedMtrMinActual?: number;
+  } | undefined;
+  
+  type ZoneTempPressingRow = {
+    particular: string;
+    zone1: string;
+    zone2: string;
+    nipPressure: string;
+    speed: string;
+  };
+  
+  export const transformZoneTempData = (data: ZoneTempApiResponse): ZoneTempPressingRow[] => {
+    const getValue = (value?: number): string => (value !== undefined && value !== null ? String(value) : '--');
+  
+    return [
+      {
+        particular: "STD",
+        zone1: getValue(data?.zone1TempStd),
+        zone2: getValue(data?.zone2TempStd),
+        nipPressure: getValue(data?.nipPressureStd),
+        speed: getValue(data?.speedMtrMinStd),
+      },
+      {
+        particular: "Actual",
+        zone1: getValue(data?.zone1TempActual),
+        zone2: getValue(data?.zone2TempActual),
+        nipPressure: getValue(data?.nipPressureActual),
+        speed: getValue(data?.speedMtrMinActual),
+      },
+    ];
+  };
+  
   
   
   

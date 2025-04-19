@@ -337,3 +337,100 @@ export interface SaveDailyJobResponse {
   payload: null
   data: null
 }
+
+//------------------------Lamination Report----------------------------------------------//
+
+// types.ts
+export interface ZoneTemperatureAndPressing {
+  zone1TempStd: number;
+  zone1TempActual: number;
+  zone2TempStd: number;
+  zone2TempActual: number;
+  nipPressureStd: number;
+  nipPressureActual: number;
+  speedMtrMinStd: number;
+  speedMtrMinActual: number;
+}
+
+export interface UnwindingRewindingTension {
+  priLaminatedStd: string;
+  secUnwinderStd: string;
+  lamiSetStd: string;
+  rewinderStd: string;
+  priLaminatedActual: string;
+  secUnwinderActual: string;
+  lamiSetActual: string;
+  rewinderActual: string;
+}
+
+export interface LaminationFilmSpecifications {
+  priLaminatedWidth: number;
+  priLaminatedThicknessMicrons: number;
+  priLaminatedGsm: number;
+  priLaminatedDyne: string;
+  secUnwinderWidth: number;
+  secUnwinderThicknessMicrons: number;
+  secUnwinderGsm: number;
+  secUnwinderDyne: string;
+}
+
+export interface Repeat {
+  printedFilmRepeat: number;
+  afterLaminationRepeat: number;
+}
+
+export interface BondingMaterialSpec {
+  bondingMaterial: string;
+  code: string;
+  brand: string;
+  mixingRatio: string;
+  actual: string | null;
+}
+
+export interface ViscosityWeightMetrics {
+  viscosityRange: string;
+  actualViscosity: string;
+  gsmRange: string;
+  gsmRangeActual: string;
+  mixingComposition: string;
+  actualComposition: string;
+  rubberRollerWidth: string;
+}
+
+export interface LamProcessReportItem {
+  particular: string;
+  target: string;
+  actual: string;
+}
+
+export interface QCCheckListItem {
+  type: string;
+  repeat: string;
+  curling: string;
+  bondStrength: string;
+  others: string;
+}
+
+export interface PlainFilmLeftOverRoll {
+  plainFilmLeftOverRollMeters: string;
+  plainFilmLeftOverRollKgs: string;
+  qcApproval: string;
+  inchargeComments: string;
+}
+
+export interface LaminationReportResponse {
+  statusCode: number;
+  message: string;
+  payload: null;
+  data: {
+    zoneTemperatureAndPressing: ZoneTemperatureAndPressing;
+    unwindingRewindingTension: UnwindingRewindingTension;
+    laminationFilmSpecifications: LaminationFilmSpecifications;
+    repeat: Repeat;
+    bondingMaterialSpecifications: BondingMaterialSpec[];
+    viscosityWeightMetrics: ViscosityWeightMetrics;
+    laminationProcessReport: LamProcessReportItem[];
+    qcCheckList: QCCheckListItem[];
+    plainFilmLeftOverRoll: PlainFilmLeftOverRoll;
+  };
+}

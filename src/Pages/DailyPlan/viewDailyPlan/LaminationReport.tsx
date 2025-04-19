@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
+import { useGetLaminationReportDetailsQuery } from "../../../store/services/api";
+import { transformZoneTempData } from "./tableTransfermationFunctions";
 
 const zoneTempPressingColumns = [
     { id: 'particular', label: '' },
@@ -9,10 +11,6 @@ const zoneTempPressingColumns = [
     { id: 'speed', label: 'Speed Mtr/min' },
   ];
   
-  const zoneTempPressingData = [
-    { particular: 'STD', zone1: '23', zone2: '23', nipPressure: '23', speed: '23' },
-    { particular: 'Actual', zone1: '23', zone2: '23', nipPressure: '23', speed: '23' },
-  ];
   
   const unwindRewindColumns = [
     { id: 'particular', label: '' },
@@ -120,10 +118,18 @@ const zoneTempPressingColumns = [
     { label: "Incharge comments", value: "--" },
   ]
         
-         
+interface LaminationReportProps {
+    indentNumber: string
+  }      
 
 
-const LaminationReport: React.FC = () => {
+const LaminationReport: React.FC<LaminationReportProps> = ({ indentNumber }) => {
+  const { data, isLoading, isError, error } = useGetLaminationReportDetailsQuery(indentNumber);
+  const zoneTempPressingData = transformZoneTempData(data?.data?.zoneTemperatureAndPressing)
+  console.log(data,"inside laminationReport");
+  if (isLoading) return <div>Loading lamination report...</div>
+  if (isError) return <div>Error loading report: {JSON.stringify(error)}</div>
+  if (!data) return <div>No data found</div>
   return (
     <>
     <Box sx={{ borderRadius: "0px ", p: 1 }}>
