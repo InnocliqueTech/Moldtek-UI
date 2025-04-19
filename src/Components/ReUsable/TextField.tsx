@@ -68,12 +68,28 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
             </InputAdornment>
           ) : null,
         }}
+        inputProps={{
+          autoComplete: "new-password",
+          style: {
+            // Make sure Edge won't add its native icon
+            appearance: "none",
+            MozAppearance: "textfield",
+            WebkitAppearance: "none",
+          }
+        }}
+      
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: "8px",
             "& input": {
               padding: "6px 12px",
               color: "black",
+              "&::-ms-reveal": {
+                display: "none"
+              },
+              "&::-ms-clear": {
+                display: "none"
+              }
             },
           },
         }}

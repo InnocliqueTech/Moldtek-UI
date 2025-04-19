@@ -63,7 +63,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             textColor="#0A0A0A"
             onClick={onClose}
             p={2}
-            loading={isLoading}
+            // loading={isLoading}
           />
         )}
         {buttonText2 && (

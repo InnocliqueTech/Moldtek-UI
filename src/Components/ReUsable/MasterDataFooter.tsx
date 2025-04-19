@@ -68,39 +68,35 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     }
   };
 
-  const [createMasterData, { isLoading,isError,data }] =
+  const [createMasterData, { isLoading }] =
     useCreateMasterDataMutation();
 
-  const handleSubmitPopupConfirmOpen = () => {
-    createMasterData(requestPayload)
-      .then(() => {
-        if (data?.
-          statusCode===200)  {
-          dispatch(setSubmitAndPublishPopup(false));
-          dispatch(setSubmitPopupConfirm(true));
-          dispatch(clearDyeCuttingFormData());
-          dispatch(clearDyeCuttingFormErrors());
-
-          dispatch(clearLaminatingFormData());
-          dispatch(clearLaminationFormErrors());
-
-          dispatch(clearPrintingFormData());
-          dispatch(clearPrintingFormErrors());
-
-          dispatch(clearMasterDetaisData());
-          dispatch(clearMasterDataFormErrors());
-        } else {
+    const handleSubmitPopupConfirmOpen = () => {
+      createMasterData(requestPayload)
+        .then((response) => {  
+          if (response?.data.statusCode === 200) {
+            dispatch(setSubmitAndPublishPopup(false));
+            dispatch(setSubmitPopupConfirm(true));
+            dispatch(clearDyeCuttingFormData());
+            dispatch(clearDyeCuttingFormErrors());
+    
+            dispatch(clearLaminatingFormData());
+            dispatch(clearLaminationFormErrors());
+    
+            dispatch(clearPrintingFormData());
+            dispatch(clearPrintingFormErrors());
+    
+            dispatch(clearMasterDetaisData());
+            dispatch(clearMasterDataFormErrors());
+          } else {
+            toast.error("Error Fetching Data");
+          }
+        })
+        .catch(() => {
           toast.error("Error Fetching Data");
-        }
-      })
-      .catch(() => {
-        // Handle error
-        if (isError) {
-          toast.error("Error Fetching Data");
-        }
-      });
-    // dispatch(setSubmitPopupConfirm(true));
-  };
+        });
+    };
+    
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));

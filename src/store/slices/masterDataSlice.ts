@@ -289,9 +289,11 @@ printingDataTouched:boolean;
   printingDetails:any;
   dyeCuttingDetails:any;
   laminatingDetails:any;
+  rememberMe:boolean;
 }
 
 const initialState: MasterDataState = {
+  rememberMe:false,
   isSearchTriggered:false,
   dyeCuttingDetails:"",
 laminatingDetails:"",
@@ -758,6 +760,9 @@ state.laminationDataTouched = action.payload
     ) => {
       state.dyeCuttingErrors = action.payload;
     },
+    setRememberMe:(state,action:PayloadAction<boolean>)=>{
+     state.rememberMe = action.payload
+    },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
         unit_effectivity_number: "",
@@ -1156,7 +1161,7 @@ export const {
   setPrintingDataTouched,
   setSearchButton,
   setPrintingDetails,
-
+setRememberMe,
   setFiltersPayload,
   setMasterDataDetailsSave,
   setPrintingSave,

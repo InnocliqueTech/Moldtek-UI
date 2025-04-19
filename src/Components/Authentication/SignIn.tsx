@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReusableInput from "../ReUsable/TextField";
@@ -11,6 +11,9 @@ import { EmailOutlined, LockOutlined } from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
 import { useLoginMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { setRememberMe } from "../../store/slices/masterDataSlice";
 
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,14 +21,23 @@ const SignInPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token) {
+      navigate("/masterData", { replace: true });
+    }
+  }, [navigate]);
+
+
+
   const from = location.state?.from?.pathname || "/masterData";
-
+const {rememberMe} = useSelector((state:RootState)=>state.masterData)
   const [login,{isLoading}] = useLoginMutation();
-
+const dispatch = useDispatch();
   const handleLogin = async () => {
     setErrors({});
   
-    // Validate only email with Zod
     const emailResult = signInSchema.shape.email.safeParse(email);
     const trimmedPassword = password.trim();
   
@@ -34,7 +46,7 @@ const SignInPage: React.FC = () => {
     if (!emailResult.success) {
       newErrors.email = emailResult.error.issues[0]?.message || "Invalid email";
     }
-    
+  
     if (!trimmedPassword) {
       newErrors.password = "Password is required";
     }
@@ -47,9 +59,12 @@ const SignInPage: React.FC = () => {
     try {
       const response = await login({ username: email, password: trimmedPassword }).unwrap();
       if (response?.data?.token) {
-        localStorage.setItem("token", response?.data?.token);
-        localStorage.setItem("auth", "true");
-        localStorage.setItem("role", response?.data?.userTypeName);
+  
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem("token", response?.data?.token);
+        storage.setItem("auth", "true");
+        storage.setItem("role", response?.data?.userTypeName);
+  
         navigate(from, { replace: true });
       } else {
         localStorage.removeItem("token");
@@ -146,10 +161,10 @@ const SignInPage: React.FC = () => {
 
           {/* Remember Me & Forgot Password */}
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", mt: 1 }}>
-            <FormControlLabel control={<Checkbox />} label="Remember me" />
-            <Typography variant="body2" sx={{ cursor: "pointer" }} color="primary">
+            <FormControlLabel control={<Checkbox />} label="Remember me" onClick={()=>dispatch(setRememberMe(true))} />
+            {/* <Typography variant="body2" sx={{ cursor: "pointer" }} color="primary">
               Forgot Password?
-            </Typography>
+            </Typography> */}
           </Box>
 
           {/* Sign-In Button */}
