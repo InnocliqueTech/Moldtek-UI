@@ -286,14 +286,20 @@ printingDataTouched:boolean;
   printingDataSave:boolean;
   laminationDataSave:boolean;
   isSearchTriggered:boolean;
+  printingDetails:any;
+  dyeCuttingDetails:any;
+  laminatingDetails:any;
 }
 
 const initialState: MasterDataState = {
   isSearchTriggered:false,
+  dyeCuttingDetails:"",
+laminatingDetails:"",
   searchButton:false,
   masterDataDetailsSave:false,
   printingDataSave:false,
   laminationDataSave:false,
+  printingDetails:"",
   laminationFormErrors:{
     zone1_temp: "",
     zone2_temp: "",
@@ -1088,12 +1094,23 @@ state.laminationDataTouched = action.payload
     } ,
     setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
       state.isSearchTriggered = action.payload
+    },
+    setPrintingDetails:(state,action:PayloadAction<any>)=>{
+      state.printingDetails = action.payload
+    } ,
+    setDyeCuttingDetails:(state,action:PayloadAction<any>)=>{
+      state.dyeCuttingDetails = action.payload
+    } ,
+    setLaminatingDetails:(state,action:PayloadAction<any>)=>{
+      state.laminatingDetails = action.payload
     } 
   },
 });
 
 export const {
   setSelectedTab,
+  setDyeCuttingDetails,
+  setLaminatingDetails,
   setOpenSlider,
   setUploadPopup,
   setSubmitPopupConfirm,
@@ -1138,6 +1155,8 @@ export const {
   setMasterDataDataTouched,
   setPrintingDataTouched,
   setSearchButton,
+  setPrintingDetails,
+
   setFiltersPayload,
   setMasterDataDetailsSave,
   setPrintingSave,

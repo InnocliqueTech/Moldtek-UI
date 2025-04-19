@@ -9,9 +9,12 @@ import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
   MasterDataFormErrors,
+  setDyeCuttingDetails,
+  setLaminatingDetails,
   setMasterDataDataTouched,
   setMasterDataDetailsSave,
   setMasterDataFormErros,
+  setPrintingDetails,
   setSaveFormData,
   setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
@@ -48,10 +51,19 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     const { data} = useViewMasterDataQuery({
       ueNumber: selectedUEN,
       versionNo: versionNo,
+    },    {
+      skip: !id,
+      refetchOnMountOrArgChange: true,
     });
+
+
+    
     useEffect(()=>{
       if(id&&location.pathname.includes('/updateMasterData')){
      dispatch(setViewMasterDataDetails(data?.data?.masterDataDetails));
+     dispatch(setPrintingDetails(data?.data.masterDataPrinting));
+     dispatch(setLaminatingDetails(data?.data.masterDataLamination));
+     dispatch(setDyeCuttingDetails(data?.data.masterDataDyeCutting));
          dispatch(
            setPrintingMachineSettingsData(
              data?.data.masterDataPrinting.printingDetails
@@ -77,7 +89,9 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
              data?.data.masterDataLamination.bondingMaterials
            )
          );
+         setFormData(data?.data?.masterDataDetails)
       }
+
     },[id])
 
   const { saveFormData, masterDataFormErrors,masterDataDataTouched } = useSelector(
@@ -197,6 +211,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     dispatch(setMasterDataFormErros(updatedErrors));
   };
   
+console.log(formData,"FORMDATAMASTERDETAILS")
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setMasterDataDataTouched(true))
     const file = e.target.files?.[0];  // Get the file from the event
@@ -219,13 +235,13 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
 
   useEffect(() => {
-    if (saveFormData) {
+    if ( !id && saveFormData) {
       setFormData(saveFormData);
     }
     if (masterDataFormErrors) {
       setErrors(masterDataFormErrors);
     }
-  }, [saveFormData, masterDataFormErrors]);
+  }, [saveFormData, masterDataFormErrors,id]);
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {

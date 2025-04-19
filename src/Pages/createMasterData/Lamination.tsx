@@ -31,7 +31,7 @@ const Lamination: React.FC<LaminationProps> = ({
   setFormData,
   formData,
 }) => {
-  const { laminaionFormData, laminationFormErrors,laminationDataTouched } = useSelector(
+  const { laminaionFormData, laminationFormErrors,laminationDataTouched,laminatingDetails } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -248,18 +248,22 @@ const Lamination: React.FC<LaminationProps> = ({
       "SaveEnabled:", shouldEnableSave
     );
   }, [errors, formData]);
+   useEffect(()=>{
+      if(id&&location.pathname.includes('/updateMasterData')){
+        setFormData(laminatingDetails)
+      }},[]);
   
   useEffect(() => {
-    if (laminaionFormData) {
+    if (!id && laminaionFormData) {
       setFormData(laminaionFormData);
-      if (laminaionFormData.bondingMaterials) {
+      if (!id && laminaionFormData.bondingMaterials) {
         setTableData(laminaionFormData.bondingMaterials);
       }
     }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
     }
-  }, [laminaionFormData, laminationFormErrors]);
+  }, [laminaionFormData, laminationFormErrors,id]);
   
 
   useEffect(() => {

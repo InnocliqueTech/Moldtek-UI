@@ -27,7 +27,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dye_code: "",
     run_speed: "",
   });
-  const { dyeCuttingFormData, dyeCuttingErrors ,dyeCuttingDataTouched} = useSelector(
+  const { dyeCuttingFormData, dyeCuttingErrors ,dyeCuttingDataTouched,dyeCuttingDetails} = useSelector(
     (state: RootState) => state.masterData
   );
   const { dyeCuttingSettings } = useSelector(
@@ -136,15 +136,19 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
     dispatch(setSubmitAndPublishButtonDyeCutting(hasErrors));
   }, [formData, errors]);
+     useEffect(()=>{
+        if(id&&location.pathname.includes('/updateMasterData')){
+          setFormData(dyeCuttingDetails)
+        }},[]);
 
   useEffect(() => {
-    if (dyeCuttingFormData) {
+    if (!id && dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
     }
-    if (dyeCuttingErrors) {
+    if ( dyeCuttingErrors) {
       setErrors(dyeCuttingErrors);
     }
-  }, [dyeCuttingFormData,dyeCuttingErrors]);
+  }, [dyeCuttingFormData,dyeCuttingErrors,id]);
 
   useEffect(() => {
     if (id && dyeCuttingSettings&&!dyeCuttingDataTouched) {

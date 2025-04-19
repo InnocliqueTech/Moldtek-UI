@@ -60,7 +60,7 @@ const Printing: React.FC<PrintingProps> = ({
   setTableData,
   setFormValues,
 }) => {
-  const { printingSaveFormData,printingFormErrors,printingDataTouched } = useSelector(
+  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -274,19 +274,22 @@ const updatedErros = {
       />
     );
   };
-
+  useEffect(()=>{
+    if(id&&location.pathname.includes('/updateMasterData')){
+      setFormValues(printingDetails)
+    }},[])
 
   useEffect(() => {
-    if (printingSaveFormData) {
+    if (!id && printingSaveFormData) {
       setFormValues(printingSaveFormData);
-      if (printingSaveFormData.stationWiseMetrics) {
+      if (!id && printingSaveFormData.stationWiseMetrics) {
         setTableData(printingSaveFormData.stationWiseMetrics);
       }
     }
-    if(printingFormErrors){
+    if( printingFormErrors){
       setErrors(printingFormErrors)
     }
-  }, [printingSaveFormData,printingFormErrors]);
+  }, [printingSaveFormData,printingFormErrors,id]);
 
   useEffect(() => {
     if (id&&!printingDataTouched) {
