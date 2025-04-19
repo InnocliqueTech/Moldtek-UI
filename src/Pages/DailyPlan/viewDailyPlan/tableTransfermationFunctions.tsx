@@ -240,6 +240,134 @@ type TensionApiResponse = {
       },
     ];
   };
+
+  type UnwindRewindApiResponse = {
+    priLaminatedStd?: string;
+    secUnwinderStd?: string;
+    lamiSetStd?: string;
+    rewinderStd?: string;
+    priLaminatedActual?: string;
+    secUnwinderActual?: string;
+    lamiSetActual?: string;
+    rewinderActual?: string;
+  } | undefined;
+  
+  type UnwindRewindRow = {
+    particular: string;
+    priLaminated: string;
+    secUnwinder: string;
+    lamiSet: string;
+    rewinder: string;
+  };
+  
+  export const transformUnwindRewindData = (
+    data: UnwindRewindApiResponse
+  ): UnwindRewindRow[] => {
+    const getVal = (val?: string): string => (val !== undefined && val !== null ? val : '--');
+  
+    return [
+      {
+        particular: 'STD',
+        priLaminated: getVal(data?.priLaminatedStd),
+        secUnwinder: getVal(data?.secUnwinderStd),
+        lamiSet: getVal(data?.lamiSetStd),
+        rewinder: getVal(data?.rewinderStd),
+      },
+      {
+        particular: 'Actual',
+        priLaminated: getVal(data?.priLaminatedActual),
+        secUnwinder: getVal(data?.secUnwinderActual),
+        lamiSet: getVal(data?.lamiSetActual),
+        rewinder: getVal(data?.rewinderActual),
+      },
+    ];
+  };
+
+  type LaminationFilmApiResponse = {
+    priLaminatedWidth?: number | string;
+    priLaminatedThicknessMicrons?: number | string;
+    priLaminatedGsm?: number | string;
+    priLaminatedDyne?: number | string;
+    secUnwinderWidth?: number | string;
+    secUnwinderThicknessMicrons?: number | string;
+    secUnwinderGsm?: number | string;
+    secUnwinderDyne?: number | string;
+  } | undefined;
+  
+  type LaminationFilmRow = {
+    spec: string;
+    priLaminated: string;
+    secUnwinder: string;
+  };
+  
+  export const transformLaminationFilmData = (
+    data: LaminationFilmApiResponse
+  ): LaminationFilmRow[] => {
+    const getVal = (val?: string | number): string => 
+      val !== undefined && val !== null ? String(val) : '--';
+  
+    return [
+      {
+        spec: 'Width',
+        priLaminated: getVal(data?.priLaminatedWidth),
+        secUnwinder: getVal(data?.secUnwinderWidth),
+      },
+      {
+        spec: 'Thickness (Microns)',
+        priLaminated: getVal(data?.priLaminatedThicknessMicrons),
+        secUnwinder: getVal(data?.secUnwinderThicknessMicrons),
+      },
+      {
+        spec: 'GSM',
+        priLaminated: getVal(data?.priLaminatedGsm),
+        secUnwinder: getVal(data?.secUnwinderGsm),
+      },
+      {
+        spec: 'DYNE',
+        priLaminated: getVal(data?.priLaminatedDyne),
+        secUnwinder: getVal(data?.secUnwinderDyne),
+      },
+    ];
+  };
+
+  type PlainFilmApiResponse = {
+    plainFilmLeftOverRollMeters?: string | number;
+    plainFilmLeftOverRollKgs?: string | number;
+    qcApproval?: string;
+    inchargeComments?: string;
+  } | undefined;
+  
+  type PlainFilmInfoItem = {
+    label: string;
+    value: string;
+  };
+  
+  export const transformPlainFilmInfo = (
+    data: PlainFilmApiResponse
+  ): PlainFilmInfoItem[] => {
+    const getVal = (val?: string | number): string =>
+      val !== undefined && val !== null && val !== '' ? String(val) : '--';
+  
+    return [
+      {
+        label: 'Plain Film Left Over Roll(meters)',
+        value: getVal(data?.plainFilmLeftOverRollMeters),
+      },
+      {
+        label: 'Plain Film Left Over Roll(Kgs)',
+        value: getVal(data?.plainFilmLeftOverRollKgs),
+      },
+      {
+        label: 'QC Approval',
+        value: getVal(data?.qcApproval),
+      },
+      {
+        label: 'Incharge comments',
+        value: getVal(data?.inchargeComments),
+      },
+    ];
+  };
+  
   
   
   

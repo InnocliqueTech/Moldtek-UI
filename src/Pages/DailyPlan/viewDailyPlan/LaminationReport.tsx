@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetLaminationReportDetailsQuery } from "../../../store/services/api";
-import { transformZoneTempData } from "./tableTransfermationFunctions";
+import { transformZoneTempData , transformUnwindRewindData, transformLaminationFilmData,transformPlainFilmInfo} from "./tableTransfermationFunctions";
 
 const zoneTempPressingColumns = [
     { id: 'particular', label: '' },
@@ -19,11 +19,7 @@ const zoneTempPressingColumns = [
     { id: 'lamiSet', label: 'Lami-Set' },
     { id: 'rewinder', label: 'Re-Winder' },
   ];
-  
-  const unwindRewindData = [
-    { particular: 'STD', priLaminated: '23', secUnwinder: '23', lamiSet: '23', rewinder: '23' },
-    { particular: 'Actual', priLaminated: '23', secUnwinder: '23', lamiSet: '23', rewinder: '23' },
-  ];
+
   
   const laminationFilmColumns = [
     { id: 'spec', label: '' },
@@ -31,77 +27,66 @@ const zoneTempPressingColumns = [
     { id: 'secUnwinder', label: 'Sec.Unwinder (Plain Film)' },
   ];
   
-  const laminationFilmData = [
-    { spec: 'Width', priLaminated: '23', secUnwinder: '23' },
-    { spec: 'Thickness (Microns)', priLaminated: '23', secUnwinder: '23' },
-    { spec: 'GSM', priLaminated: '23', secUnwinder: '23' },
-    { spec: 'DYNE', priLaminated: '--', secUnwinder: '--' },
-  ];
+
   
   const repeatColumns = [
     { id: 'label', label: '' },
-    { id: 'printedFilm', label: 'Printed Film' },
-    { id: 'afterLamination', label: 'After Lamination' },
+    { id: 'printedFilmRepeat', label: 'Printed Film' },
+    { id: 'afterLaminationRepeat', label: 'After Lamination' },
   ];
   
-  const repeatData = [
-    { label: 'Repeat (MM)', printedFilm: '12', afterLamination: '--' },
-  ];
-  
+ 
   const bondingMaterialColumns = [
-    { id: 'material', label: 'Bonding Material' },
+    { id: 'bondingMaterial', label: 'Bonding Material' },
     { id: 'code', label: 'Code' },
     { id: 'brand', label: 'Brand' },
     { id: 'mixingRatio', label: 'Mixing Ratio' },
     { id: 'actual', label: 'Actual' },
   ];
   
-  const bondingMaterialData = [
-    { material: 'Adhesive', code: 'ADH232', brand: 'Henkel', mixingRatio: '1.2/6', actual: '21' },
-    { material: 'Hardener', code: 'ADH235', brand: 'Henkel', mixingRatio: '1.2/6', actual: '12' },
-    { material: 'Ethyl Acetate', code: 'ADH323', brand: 'Henkel', mixingRatio: '1.2/6', actual: '43' },
-  ];
   
+
+//   {
+//     "viscosityRange": "16-80",
+//     "actualViscosity": "8",
+//     "gsmRange": "224",
+//     "gsmRangeActual": "",
+//     "mixingComposition": "7",
+//     "actualComposition": "3.0",
+//     "rubberRollerWidth": ""
+// }
+// vicosity range, actual, GSM range, actual,mixing compositions, ruber roller width, composite gsm 
   const viscosityWeightColumns = [
     // { id: 'metric', label: '' },
     { id: 'viscosityRange', label: 'Viscosity Range' },
-    { id: 'viscosityActual', label: 'Actual' },
+    { id: 'actualViscosity', label: 'Actual' },
     { id: 'gsmRange', label: 'GSM Range' },
+    { id: 'gsmRangeActual', label: 'Actual' },
     { id: 'mixingComposition', label:"Mixing Composition"},
-    { id: 'gsmActual', label: 'Actual' },
+    { id: 'actualComposition', label: 'Actual' },
+    { id: 'rubberRollerWidth', label:"Rubber Roller Width"},
+    { id: 'compositeGsm', label: 'Composite gsm ' },
   ];
-  
-  const viscosityWeightData = [
-    { viscosityRange: '16 - 17', viscosityActual: '16 - 17', gsmRange: '16 - 17',mixingComposition:"24" ,gsmActual: '16 - 17' },
-  ];
+//   {
+//     "particular": "STARTING TIME",
+//     "target": "2025-04-13T05:30",
+//     "actual": "2025-04-13T05:30"
+// }
   const laminationProcessColumns = [
-    { id: 'stage', label: '' },
+    { id: 'particular', label: '' },
     { id: 'target', label: 'Target' },
     { id: 'actual', label: 'Actual' },
   ];
   
-  const laminationProcessData = [
-    { stage: 'Starting Time', target: '12.00', actual: '21' },
-    { stage: 'Completion Time', target: '12.00', actual: '21' },
-    { stage: 'Total Time', target: '12.00', actual: '21' },
-    { stage: 'Accepted Printed Film Mtrs', target: '12.00', actual: '21' },
-    { stage: 'Input Plain Film Mtrs', target: '12.00', actual: '21' },
-    { stage: 'Set-Up Wastage', target: '12.00', actual: '12' },
-    { stage: 'In-Process Wastage', target: '12.00', actual: '12' },
-    { stage: 'Doctoring Wastage Mtrs', target: '12.00', actual: '43' },
-    { stage: 'Lamination Wastage Mtrs', target: '12.00', actual: '43' },
-    { stage: 'Laminated Film Issued For Next Process', target: '12.00', actual: '43' },
-  ];
   const qcCheckColumns = [
+    { id: 'type', label: 'Type' },
     { id: 'repeat', label: 'Repeat' },
     { id: 'curling', label: 'Curling' },
     { id: 'bondStrength', label: 'Bond Strength' },
     { id: 'others', label: 'Others' },
   ];
   
-  const qcCheckData = [
-    { repeat: '12', curling: '--', bondStrength: '--', others: '--' },
-  ];
+  
   const plainFilmLeftColumns = [
     { id: 'meters', label: 'Meters' },
     { id: 'kgs', label: 'Kgs.' },
@@ -125,7 +110,16 @@ interface LaminationReportProps {
 
 const LaminationReport: React.FC<LaminationReportProps> = ({ indentNumber }) => {
   const { data, isLoading, isError, error } = useGetLaminationReportDetailsQuery(indentNumber);
-  const zoneTempPressingData = transformZoneTempData(data?.data?.zoneTemperatureAndPressing)
+  const zoneTempPressingData = transformZoneTempData(data?.data?.zoneTemperatureAndPressing);
+  const unwindRewindData = transformUnwindRewindData(data?.data?.unwindingRewindingTension);
+  const laminationFilmData = transformLaminationFilmData(data?.data?.laminationFilmSpecifications);
+  const repeatData = [{...data?.data?.repeat,label: 'Repeat (MM)'}];
+  const bondingMaterialData = data?.data?.bondingMaterialSpecifications;
+  const viscosityWeightData = [{...data?.data?.viscosityWeightMetrics}];
+  const laminationProcessData = data?.data?.laminationProcessReport;
+  const qcCheckData = data?.data?.qcCheckList;
+  const plainFilmInfoItems = transformPlainFilmInfo(data?.data?.plainFilmLeftOverRoll);
+
   console.log(data,"inside laminationReport");
   if (isLoading) return <div>Loading lamination report...</div>
   if (isError) return <div>Error loading report: {JSON.stringify(error)}</div>
