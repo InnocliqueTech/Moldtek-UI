@@ -1,4 +1,4 @@
-import React, { useState, JSX, useEffect } from "react";
+import React, { useState, JSX } from "react";
 import {
   Table,
   TableBody,
@@ -39,8 +39,10 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
 import { useUpdateStatusJobMutation } from "../../store/services/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
+import { RootState } from "../../store";
+import { toast } from "react-toastify";
 
 interface Column {
   id: string;
@@ -119,7 +121,7 @@ function ReusableTable<T extends Record<string, any>>({
 
   const dispatch = useDispatch();
 
-
+const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
 
 
   const handleMenuOpen = (
@@ -286,31 +288,38 @@ function ReusableTable<T extends Record<string, any>>({
 
   
   const handleDropdownChange = async (row: T, field: string, newValue: string) => {
-    console.log(row, field, newValue, "NEW VALUE OF DATA");
-  setLoading(true);
+    console.log(field,"DONT Remove This")
+    setLoading(true);
     try {
-      // Directly capture the response from API
       const response = await updateStatusJob({
         indentNumber: row.indentNumber,
         status: newValue,
       }).unwrap();
   
-      console.log(response, "API RESPONSE");
   
       if (response?.statusCode === 200) {
-        dispatch(setDropDown(true));
+        dispatch(setDropDown(!dropDown)); 
+        if(response?.message!=="Status Updated"){
+          toast.error(response?.message);
+          setLoading(false);
+          } 
+          else{
+               toast.success("Status Updated Succesfully!")
+          }
+      } else {
+        toast.error(response?.message);
+        dispatch(setDropDown(!dropDown));  
         setLoading(false);
-      }
-      else{
-        setLoading(false);
-        dispatch(setDropDown(false));
       }
     } catch (error) {
-      console.error("Error in API chain:", error);
+      toast.error("Something Went Wrong!");
+      dispatch(setDropDown(!dropDown)); 
       setLoading(false);
-      dispatch(setDropDown(false));
+    } finally {
+      setLoading(false);
     }
   };
+  
   
   return (
     <Paper

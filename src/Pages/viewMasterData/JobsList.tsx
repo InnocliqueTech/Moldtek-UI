@@ -171,7 +171,6 @@ const JobsList: React.FC = () => {
     dispatch(setJobsListData(data?.data));
   }, [data]);
 const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
-console.log(data,jobListData,"JOBLISTDATA")
   const viewMasterDataDetails = viewMasterDataDetailsData?.data?.masterDataDetails
 
   const maxChars = 120;

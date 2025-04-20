@@ -212,7 +212,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     dispatch(setMasterDataFormErros(updatedErrors));
   };
   
-console.log(formData,"FORMDATAMASTERDETAILS")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setMasterDataDataTouched(true))

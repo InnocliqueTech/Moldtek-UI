@@ -366,7 +366,6 @@ const Printing: React.FC<PrintingProps> = ({
       return false;
     });
   
-    console.log(!hasErrors, "MASTERDATAFOOTER2");
     dispatch(setSubmitAndPublishButtonPrinting(!hasErrors));
   }, [formValues, errors]);
   

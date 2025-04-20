@@ -57,13 +57,12 @@ const DataTable = <T extends Record<string, any>>({
   id,
 }: DataTableProps<T>) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { printingSaveFormData, laminaionFormData, invalidFieldsTable,submitAndPublishButtonPrinting } =
+  const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
     useSelector((state: RootState) => state.masterData);
 
   const [invalidFields, setInvalidFields] = useState<{
     [key: string]: boolean;
   }>({});
- console.log(data,"DATAOFTHETABLE")
   const validateInput = (columnId: string, value: string): boolean => {
     const numericFields = ["volume", "uv_led_intensity", "lf_value","mptl_code","mixing_on_gec"];
     const lpcmFields = ["lpcm"];
@@ -82,7 +81,7 @@ const DataTable = <T extends Record<string, any>>({
     }
     return /^[A-Za-z\s]*$/.test(value);
   };
-// console.log(submitAndPublishButtonPrinting,"MASTERDATAFOOTER1")
+
   const handleChange = <K extends keyof T>(
     rowIndex: number,
     columnId: K,
@@ -149,7 +148,7 @@ const DataTable = <T extends Record<string, any>>({
     const hasAnyInvalidField = Object.values(invalidFields).some(
       (isInvalid) => isInvalid
     );
-console.log(hasEmptyMandatory,hasAnyInvalidField,"MASTERDATAFOOTER1")
+
     // Set the global error state
     dispatch(setSubmitAndPublishButtonPrinting(hasEmptyMandatory || hasAnyInvalidField));
   }
@@ -229,7 +228,7 @@ console.log(hasEmptyMandatory,hasAnyInvalidField,"MASTERDATAFOOTER1")
     const isReady = hasValidMandatory && !hasAnyInvalidField;
   
     dispatch(setLaminationSave(!isReady)); // this one only for lamination
-    console.log(!isReady, "ISREADY");
+
   }
     
   }, [data, invalidFields,id]);

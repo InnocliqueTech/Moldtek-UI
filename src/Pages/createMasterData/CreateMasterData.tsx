@@ -240,7 +240,6 @@ const {id} = useParams();
     };
   
     dispatch(setRequestPayload(updatedPayload));
-    console.log(requestPayload,data,"REQUESTPAYLOAD")
   };
   
 

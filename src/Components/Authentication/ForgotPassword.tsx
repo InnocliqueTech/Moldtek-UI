@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
+import { Box, Typography} from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReusableInput from "../ReUsable/TextField";
 import ReusableButton from "../ReUsable/Button";
@@ -7,15 +7,14 @@ import { signInSchema } from "../ZodSchemas/signInpageValidation";
 import Logo from "../../assets/Images/Logo.svg";
 import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
-import { EmailOutlined, LockOutlined } from "@mui/icons-material";
+import { EmailOutlined} from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
 import { useLoginMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+  const [errors, setErrors] = useState<{ email?: string;}>(
     {}
   );
   const navigate = useNavigate();
@@ -29,16 +28,11 @@ const ForgotPassword: React.FC = () => {
 
     // Validate only email with Zod
     const emailResult = signInSchema.shape.email.safeParse(email);
-    const trimmedPassword = password.trim();
 
     const newErrors: { email?: string; password?: string } = {};
 
     if (!emailResult.success) {
       newErrors.email = emailResult.error.issues[0]?.message || "Invalid email";
-    }
-
-    if (!trimmedPassword) {
-      newErrors.password = "Password is required";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -49,7 +43,6 @@ const ForgotPassword: React.FC = () => {
     try {
       const response = await login({
         username: email,
-        password: trimmedPassword,
       }).unwrap();
       if (response?.data?.token) {
         localStorage.setItem("token", response?.data?.token);
@@ -73,10 +66,9 @@ const ForgotPassword: React.FC = () => {
   };
 
   const isFormValid = () => {
-    const trimmedPassword = password.trim();
     const emailResult = signInSchema.shape.email.safeParse(email);
 
-    return emailResult.success && trimmedPassword.length > 0;
+    return emailResult.success
   };
 
   return (

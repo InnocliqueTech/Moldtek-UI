@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -22,9 +22,10 @@ import { ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
-
+import { useUpdateStatusJobMutation } from "../../store/services/api";
+import { toast } from "react-toastify";
 
 interface HeaderProps {
   title: string;
@@ -38,10 +39,12 @@ interface HeaderProps {
   lastUpdate?: string;
   headerButton?: boolean;
   onBack?: () => void;
-  filterTitle?:string;
-  uploadTitle?:string;
-  uploadSubTitle?:string;
-  headerButtonColor?:boolean
+  filterTitle?: string;
+  uploadTitle?: string;
+  uploadSubTitle?: string;
+  headerButtonColor?: boolean;
+  dropDown?: boolean;
+  dropDownOptions?: string[];
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -59,71 +62,121 @@ const Header: React.FC<HeaderProps> = ({
   filterTitle,
   uploadTitle,
   uploadSubTitle,
-  headerButtonColor=false
+  headerButtonColor = false,
+  dropDown = false,
+  dropDownOptions = [],
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup,submitAndPublish } = useSelector((store: RootState) => store.masterData);
-  const [submitPopup,setSubmitPopup] = useState<boolean>(false);
-  const [submitPopupConfirm,setSubmitPopupConfirm]=useState<boolean>(false);
+  const { updatePopup, submitAndPublish } = useSelector(
+    (store: RootState) => store.masterData
+  );
+  const [submitPopup, setSubmitPopup] = useState<boolean>(false);
+  const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
+  const [selectedStatus, setSelectedStatus] = useState<string>("Select");
+
   const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Handle getting status from localStorage when the component mounts
+  useEffect(() => {
+    const storedStatus = localStorage.getItem("status");
+    if (storedStatus) {
+      setSelectedStatus(storedStatus);
+    }
+  }, []);
+  const { indentNo } = useParams();
+  const decodedIndentNo = decodeURIComponent(indentNo || "");
+  const [updateStatusJob] = useUpdateStatusJobMutation();
+  const handleDropdownChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newStatus = e.target.value;
+    const previousStatus = selectedStatus; // Store the previous status value
+
+    setSelectedStatus(newStatus); // Temporarily update the state to the new value
+
+    try {
+      const response = await updateStatusJob({
+        indentNumber: decodedIndentNo,
+        status: newStatus,
+      }).unwrap();
+
+      if (response?.statusCode === 200) {
+        localStorage.setItem("status", newStatus);
+        if (response?.message !== "Status Updated") {
+          toast.error(response?.message);
+        } else {
+          toast.success("Status Updated Succesfully!");
+        }
+      } else {
+        // If the status update fails, revert the status to the previous one
+        setSelectedStatus(previousStatus);
+        localStorage.setItem("status", previousStatus); // Retain the previous status in localStorage
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      // If an error occurs, revert the status to the previous one
+      setSelectedStatus(previousStatus);
+      localStorage.setItem("status", previousStatus); // Retain the previous status in localStorage
+      toast.error("Something Went Wrong!");
+    }
+  };
+
   const handleClosePopUp = () => {
     dispatch(setUploadPopup(false));
   };
-  const location = useLocation();
-  const navigate = useNavigate();
+
   const handleSubmitAndPublishPopupOpen = () => {
     dispatch(setUploadPopup(false));
-    if(location.pathname ==='/viewDailyPlan'||location.pathname ==='/createPlan'){
-      setSubmitPopup(true)
+    if (
+      location.pathname === "/viewDailyPlan" ||
+      location.pathname === "/createPlan"
+    ) {
+      setSubmitPopup(true);
+    } else {
+      dispatch(setSubmitAndPublishPopup(true));
     }
-    else{
-    dispatch(setSubmitAndPublishPopup(true));
-    }
-    
   };
-  const handleSubmitPopupClose =()=>{
+
+  const handleSubmitPopupClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false);
   };
-  const handleSubmitPopupConfirmOpen = ()=>{
-    setSubmitPopupConfirm(true)
-  }
-  const handleSubmitPopupConfirmClose = ()=>{
+
+  const handleSubmitPopupConfirmOpen = () => {
+    setSubmitPopupConfirm(true);
+  };
+
+  const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
-    setSubmitPopup(false)
-    setSubmitPopupConfirm(false)
-  }
-  const handleSubmitPopupConfirmClick = ()=>{
+    setSubmitPopup(false);
+    setSubmitPopupConfirm(false);
+  };
+
+  const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
-    setSubmitPopup(false)
-    setSubmitPopupConfirm(false)
-    navigate('/dailyPlan')
-  }
+    setSubmitPopup(false);
+    setSubmitPopupConfirm(false);
+    navigate("/dailyPlan");
+  };
 
   const handleDownloadSampleFileMasterData = (filePath: string) => {
-    // Fetch the file from the provided path
     fetch(filePath)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch the file");
-        }
+        if (!response.ok) throw new Error("Failed to fetch the file");
         return response.blob();
       })
       .then((blob) => {
-        // Create a link to trigger the download
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = filePath.split("/").pop() || "download"; 
+        link.download = filePath.split("/").pop() || "download";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       })
-      .catch((error) => {
-        console.error("Error downloading the file:", error);
-      });
+      .catch((error) => console.error("Error downloading the file:", error));
   };
-  
-  
 
   return (
     <>
@@ -139,7 +192,7 @@ const Header: React.FC<HeaderProps> = ({
           top: 0,
           zIndex: 100,
           overflowY: "auto",
-          padding:".25rem 1rem",
+          padding: ".25rem 1rem",
         }}
       >
         <Toolbar
@@ -159,62 +212,6 @@ const Header: React.FC<HeaderProps> = ({
             <MenuIcon />
           </IconButton>
 
-          {/* <TextField
-            variant="outlined"
-            placeholder="Search..."
-            size="small"
-            sx={{
-              borderRadius: "100px",
-              width: { xs: "50%", sm: "40%", md: "30%" },
-              mr: 2,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "50px",
-              },
-              mt: "10px",
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <Badge
-            overlap="circular"
-            variant="dot"
-            color="error"
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{
-              "& .MuiBadge-dot": {
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                border: "2px solid white",
-              },
-            }}
-          >
-            <Box
-              sx={{
-                width: 30,
-                height: 30,
-                borderRadius: "50%",
-                border: "2px solid #E5E5E5",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <NotificationsIcon sx={{ fontSize: 20 }} />
-            </Box>
-          </Badge> */}
-
-          {/* 
-        <Box sx={{ height: 10 }} />
-        <Divider />
-        <Box sx={{ height: 10 }} /> */}
-
           <Box
             display="flex"
             justifyContent="space-between"
@@ -224,7 +221,7 @@ const Header: React.FC<HeaderProps> = ({
             paddingBottom="0px"
             width="100%"
           >
-            <Box display={"flex"} flexDirection={"row"}>
+            <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
               {headerButton && (
                 <IconButton
                   onClick={onBack}
@@ -242,7 +239,39 @@ const Header: React.FC<HeaderProps> = ({
                 {title}
               </Typography>
             </Box>
+
             <Box display="flex" gap={2}>
+              {dropDown && (
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 500, color: "#1976D2" }}
+                  >
+                    Status:
+                  </Typography>
+                  <Box
+                    component="select"
+                    value={selectedStatus}
+                    onChange={handleDropdownChange}
+                    sx={{
+                      borderRadius: "20px",
+                      padding: "10px 16px",
+                      border: "1px solid #ccc",
+                      background: "#fff",
+                      fontSize: "14px",
+                      outline: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <option value="Select">Select</option>
+                    {dropDownOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Box>
+                </Box>
+              )}
               {button1Text && (
                 <ButtonComponent
                   onClick={onButton1Click}
@@ -270,11 +299,19 @@ const Header: React.FC<HeaderProps> = ({
               {button2Text && (
                 <ButtonComponent
                   onClick={onButton2Click}
-                  color={(headerButton&&!headerButtonColor) ? "white" : "#0073B7"}
+                  color={
+                    headerButton && !headerButtonColor ? "white" : "#0073B7"
+                  }
                   text={button2Text}
-                  textColor={(headerButton&&!headerButtonColor) ? "#0E0E0E" : "#FFFFFF"}
+                  textColor={
+                    headerButton && !headerButtonColor ? "#0E0E0E" : "#FFFFFF"
+                  }
                   borderRadius="100px"
-                  border={(headerButton&&!headerButtonColor) ? "1px solid #E5E5E5" : "none"}
+                  border={
+                    headerButton && !headerButtonColor
+                      ? "1px solid #E5E5E5"
+                      : "none"
+                  }
                   p={"4px"}
                   width={"200px"}
                 />
@@ -284,7 +321,7 @@ const Header: React.FC<HeaderProps> = ({
         </Toolbar>
       </AppBar>
 
-      {/* Master Data Popup */}
+      {/* Popups and Filter Components */}
       <ReusablePopup
         open={masterDataCreatePopup}
         onClose={onClosePopup}
@@ -292,7 +329,7 @@ const Header: React.FC<HeaderProps> = ({
         confirmText="Continue"
         onConfirm={() => {}}
         text="Upload Picture"
-        dropdownOptions={structureOptions} // Dynamic dropdown options
+        dropdownOptions={structureOptions}
         upload={true}
         textField={true}
         dropdown={true}
@@ -302,14 +339,19 @@ const Header: React.FC<HeaderProps> = ({
         upload={true}
         onConfirm={handleSubmitAndPublishPopupOpen}
         confirmText="Submit"
-        title={uploadTitle?uploadTitle:''}
+        title={uploadTitle || ""}
         onClose={handleClosePopUp}
-        subText={uploadSubTitle?uploadSubTitle:''}
+        subText={uploadSubTitle || ""}
         sampleFile={true}
-        handleDownloadSampleFile={() => handleDownloadSampleFileMasterData(excelFile)}
+        handleDownloadSampleFile={() =>
+          handleDownloadSampleFileMasterData(excelFile)
+        }
       />
       <ConfirmPopup
-        open={(location.pathname ==='/createPlan' && submitAndPublish) || submitPopup}
+        open={
+          (location.pathname === "/createPlan" && submitAndPublish) ||
+          submitPopup
+        }
         title="Are you sure you want submit ? Daily Plan"
         message=""
         buttonText="No"
@@ -327,8 +369,8 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
       />
-      <Filter filterTitle={filterTitle?filterTitle:''} />
-      <FilterDailyPlan filterTitle="Daily Plan Filter"/>
+      <Filter filterTitle={filterTitle || ""} />
+      <FilterDailyPlan filterTitle="Daily Plan Filter" />
       <VersinDetails />
     </>
   );

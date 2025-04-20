@@ -27,14 +27,6 @@ const tabs = [
 
 const ViewDailyPlan: React.FC = () => {
   const { indentNo } = useParams();
-  // const decodedIndentNo = indentNo
-  let unitEffectiveNumberDaily: number | undefined = undefined;
-
-  const uen = localStorage.getItem('unitEffectiveNumberDaily');
-  if (uen !== null) {
-    unitEffectiveNumberDaily = Number(uen);
-  }
-  
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const {
     data: makeReady,

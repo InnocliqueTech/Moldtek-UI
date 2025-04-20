@@ -10,7 +10,7 @@ interface SubmitPopupsProps {
   isLoading: boolean;
 }
 
-const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
+const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();

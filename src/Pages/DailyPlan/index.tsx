@@ -124,10 +124,13 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     },
   ] = useDailyPlanFiltersMutation();
   useEffect(() => {
-    if(!openSliderDaily){
+
+  
+    if (!openSliderDaily|| dropDown) {
       dailyPlanFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page, openSliderDaily,filtersPayload,dropDown]);
+  }, [page, openSliderDaily, filtersPayload, dropDown]);
+  
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -139,6 +142,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     { id: "indentNumber", label: "Indent Number", align: false, format: (value: string,row:any) => <UENCell value={value} onClick={()=>{
       const uniteffectiveNumber = row.unitEffectivityNumber
       localStorage.setItem("unitEffectiveNumberDaily",uniteffectiveNumber);
+      localStorage.setItem("status",row.status);
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
     }} />, },

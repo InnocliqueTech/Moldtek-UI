@@ -96,12 +96,12 @@ const zoneTempPressingColumns = [
     { meters: '12', kgs: '--' },
   ];
 
-  const plainFilmInfoItems = [
-    { label: "Plain Film Left Over Roll(meters)", value: "721" },
-    { label: "Plain Film Left Over Roll(Kgs)", value: "72" },
-    { label: "QC Approval", value: "--" },
-    { label: "Incharge comments", value: "--" },
-  ]
+  // const plainFilmInfoItems = [
+  //   { label: "Plain Film Left Over Roll(meters)", value: "721" },
+  //   { label: "Plain Film Left Over Roll(Kgs)", value: "72" },
+  //   { label: "QC Approval", value: "--" },
+  //   { label: "Incharge comments", value: "--" },
+  // ]
         
 interface LaminationReportProps {
     indentNumber: string
@@ -119,8 +119,6 @@ const LaminationReport: React.FC<LaminationReportProps> = ({ indentNumber }) => 
   const laminationProcessData = data?.data?.laminationProcessReport;
   const qcCheckData = data?.data?.qcCheckList;
   const plainFilmInfoItems = transformPlainFilmInfo(data?.data?.plainFilmLeftOverRoll);
-
-  console.log(data,"inside laminationReport");
   if (isLoading) return <div>Loading lamination report...</div>
   if (isError) return <div>Error loading report: {JSON.stringify(error)}</div>
   if (!data) return <div>No data found</div>
