@@ -69,19 +69,26 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     let finalValue: string | string[] | number = "";
     let errorMessage = "";
   
-    const isNumberField = key === "run_speed";
+    const numberFields = ["run_speed", "dye_code"];
+    const isNumberField = numberFields.includes(key);
     const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
   
     if (isNumberField) {
-      // Allow string for input display but validate it
       if (typeof newValue === "string") {
-        finalValue = newValue;  // Store exactly what user typed
+        finalValue = newValue; // always store the user input as string first for display
   
-        if (newValue.trim() === "" || newValue === "0") {
-          errorMessage = "Run speed cannot be 0 or empty";
-        } else if (!/^\d+(\.\d+)?$/.test(newValue.trim())) {
+        const trimmed = newValue.trim();
+        if (trimmed === "" || trimmed === "0") {
+          errorMessage = `${key.replace(/_/g, " ")} cannot be empty or 0`;
+        } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
           errorMessage = "Please enter a valid number";
+        } else {
+          // Valid number -> convert & store as number
+          finalValue = Number(trimmed);
         }
+      } else {
+        finalValue = "";
+        errorMessage = "Invalid input type";
       }
     } else {
       if (typeof newValue === "string") {
@@ -102,10 +109,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
       }
     }
   
-    // Save to state — always what user typed
+    // Always store the current user input for display
     const updated = {
       ...formData,
-      [key]: finalValue,
+      [key]: isNumberField ? newValue : finalValue,  // if number field, store as string until valid
     };
   
     setFormData(updated);
@@ -117,8 +124,20 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   
     setErrors(updatedErrors);
     dispatch(setDyeCuttingFormErros(updatedErrors));
-    dispatch(setDyeCuttingFormData(updated));
+  
+    // Save number only if valid, else save raw user input
+    const toSave = {
+      ...formData,
+      [key]:
+        isNumberField && errorMessage === ""
+          ? Number(newValue) // valid: save number
+          : newValue,        // invalid: save raw input
+    };
+  
+    dispatch(setDyeCuttingFormData(toSave));
   };
+  
+  
   
   
 

@@ -89,7 +89,7 @@ const DataTable = <T extends Record<string, any>>({
     value: T[K] | string
   ) => {
     const updated = [...data];
-    const numberKeys = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec"];
+    const numberKeys = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec","uv_led_intensity","volume"];
     let updatedValue: any = value;
 
     if (numberKeys.includes(columnId as string)) {

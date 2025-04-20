@@ -146,35 +146,63 @@ const Lamination: React.FC<LaminationProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    dispatch(setLaminationDataTouched(true));  
+    dispatch(setLaminationDataTouched(true));
+  
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
-
+  
     let finalValue: string | string[] | number = newValue;
     let errorMessage = "";
-
+  
     const onlyAlphanumericRegex = /^[A-Za-z0-9\s]+$/;
-
+  
+    // Handle specific fields
     if (field === "thickness") {
       const trimmed = (newValue as string).trim();
-
+  
       if (trimmed === "") {
         errorMessage = "Thickness cannot be empty.";
-      } else if (!onlyAlphanumericRegex.test(trimmed)) {
-        errorMessage =
-          "Thickness can only contain letters, numbers, and spaces.";
+      } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
+        errorMessage = "Thickness must be a valid number.";
       } else {
         errorMessage = "";
       }
-
-      // Keep whatever user types, valid or invalid, for the input box.
-      finalValue = newValue;
+  
+      finalValue = trimmed !== "" && errorMessage === "" ? Number(trimmed) : finalValue;
+  
+    } else if (field === "dyne_level") {
+      const trimmed = (newValue as string).trim();
+  
+      if (trimmed === "") {
+        errorMessage = "Dyne level cannot be empty.";
+      } else {
+        errorMessage = "";
+      }
+  
+      finalValue = trimmed; // Always save as string for dyne_level
+  
+    } else if (
+      // Handle numeric fields for tension (which are similar to thickness)
+      ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension"].includes(field)
+    ) {
+      const trimmed = (newValue as string).trim();
+  
+      if (trimmed === "") {
+        errorMessage = `${field.replace('_', ' ')} cannot be empty.`;
+      } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
+        errorMessage = `${field.replace('_', ' ')} must be a valid number.`;
+      } else {
+        errorMessage = "";
+      }
+  
+      finalValue = trimmed !== "" && errorMessage === "" ? (newValue as string).trim() : finalValue;
+  
     } else if (numericFields.has(field)) {
       if (!isNaN(Number(newValue)) && newValue !== "") {
-        finalValue = Number(newValue);
+        finalValue = Number(newValue); // Save valid numbers
         errorMessage = "";
       } else {
         finalValue = newValue;
@@ -182,7 +210,7 @@ const Lamination: React.FC<LaminationProps> = ({
       }
     } else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
-
+  
       if (trimmed === "") {
         errorMessage = "This field cannot be empty.";
       } else if (!onlyAlphanumericRegex.test(trimmed)) {
@@ -190,27 +218,41 @@ const Lamination: React.FC<LaminationProps> = ({
       } else {
         errorMessage = "";
       }
-
+  
       finalValue = newValue;
     }
-    const updatedErros = {
+  
+    // Dispatch the errors to Redux
+    const updatedErrors = {
       ...errors,
       [field]: errorMessage,
     };
-    setErrors(updatedErros);
-    dispatch(setLaminationFormErros(updatedErros));
-
+    setErrors(updatedErrors);
+    dispatch(setLaminationFormErros(updatedErrors));
+  
+    // Save to the form data and dispatch to Redux with strings for the tension fields
     const updatedFormData = {
       ...formData,
       [section]: {
         ...(formData as any)[section],
-        [field]: finalValue,
+        [field]:
+          field === "thickness" && errorMessage === ""
+            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
+            : ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension"].includes(field) && errorMessage === ""
+            ? (newValue as string).trim()  // Save these fields as strings
+            : field === "dyne_level"
+            ? (newValue as string).trim() // Save dyne_level as a string
+            : numericFields.has(field) // Ensure numeric fields are saved as numbers
+            ? Number(newValue)
+            : finalValue,
       },
     };
-
+  
     setFormData(updatedFormData);
     dispatch(setLaminationFormData(updatedFormData));
   };
+  
+  
 
   useEffect(() => {
     const errorValues = Object.values(errors);
@@ -223,9 +265,11 @@ const Lamination: React.FC<LaminationProps> = ({
       const section = (formData as any)[sectionKey];
       if (section && typeof section === "object") {
         for (const fieldKey in section) {
-          if (section[fieldKey].type) continue;
+          const field = section[fieldKey];
+          const value = typeof field === "object" && field !== null && 'value' in field
+            ? field.value
+            : field;
   
-          const value = section[fieldKey];
           const isEmpty =
             value === "" ||
             value === null ||
@@ -244,28 +288,22 @@ const Lamination: React.FC<LaminationProps> = ({
     const shouldEnableSave = isAnyFieldFilled && !hasAnyError;
     const shouldEnableSubmitAndPublish = areAllFieldsFilled && !hasAnyError;
   
-    dispatch(setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish));
-    dispatch(setLaminationSave(shouldEnableSave));
-  
-    console.log(
-      "Validation Check — hasAnyError:", hasAnyError,
-      "isAnyFieldFilled:", isAnyFieldFilled,
-      "areAllFieldsFilled:", areAllFieldsFilled,
-      "SaveEnabled:", shouldEnableSave,
-      "SubmitAndPublishEnabled:", shouldEnableSubmitAndPublish
-    );
+    dispatch(setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish));
+    dispatch(setLaminationSave(!shouldEnableSave));
   }, [errors, formData]);
+  
+  
   
    useEffect(()=>{
       if(id&&location.pathname.includes('/updateMasterData')){
         setFormData(laminatingDetails)
-      }},[]);
+      }},[id]);
   
   useEffect(() => {
     if (!id && laminaionFormData) {
       setFormData(laminaionFormData);
-      if (!id && laminaionFormData.bondingMaterials) {
-        setTableData(laminaionFormData.bondingMaterials);
+      if (!id && laminaionFormData?.bondingMaterials) {
+        setTableData(laminaionFormData?.bondingMaterials);
       }
     }
     if (laminationFormErrors) {
@@ -281,13 +319,13 @@ const Lamination: React.FC<LaminationProps> = ({
   
       const combinedValues: LaminationFormData = {
         ...sanitizedLaminationData,
-        laminationSubstrate: sanitizedSubstrateData.laminationSubstrate,
+        laminationSubstrate: sanitizedSubstrateData?.laminationSubstrate,
       };
       setFormData(combinedValues);  
       dispatch(setLaminationFormData(combinedValues));
   
       const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
-      const adhesiveDetails: LaminatingTableRow[] = sanitizedBondingMaterials.bondingMaterials;
+      const adhesiveDetails: LaminatingTableRow[] = sanitizedBondingMaterials?.bondingMaterials;
       setTableData(adhesiveDetails);
   
 
@@ -311,7 +349,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-1 Temp (°C)"
-                value={formData.laminationConditions.zone1_temp}
+                value={formData?.laminationConditions?.zone1_temp?formData?.laminationConditions?.zone1_temp:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -326,7 +364,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Zone-2 Temp (°C)"
-                value={formData.laminationConditions.zone2_temp}
+                value={formData.laminationConditions?.zone2_temp?formData.laminationConditions.zone2_temp:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -341,7 +379,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Nip Pressure (bar)"
-                value={formData.laminationConditions.nip_pressure_bar}
+                value={formData.laminationConditions?.nip_pressure_bar?formData.laminationConditions.nip_pressure_bar:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -356,7 +394,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Speed (m/min)"
-                value={formData.laminationConditions.speed}
+                value={formData.laminationConditions?.speed?formData.laminationConditions.speed:''}
                 onChange={(e) =>
                   handleChange("laminationConditions", "speed", e.target.value)
                 }
@@ -367,7 +405,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Lami Set Tension"
-                value={formData.laminationConditions.lami_set_tension}
+                value={formData?.laminationConditions?.lami_set_tension?formData.laminationConditions.lami_set_tension:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -382,7 +420,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Rewinder Tension"
-                value={formData.laminationConditions.rewinder_tension}
+                value={formData.laminationConditions?.rewinder_tension?formData.laminationConditions.rewinder_tension:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -397,7 +435,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Printed Film Tension"
-                value={formData.laminationConditions.printed_film_tension}
+                value={formData.laminationConditions?.printed_film_tension?formData.laminationConditions.printed_film_tension:''}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -412,7 +450,7 @@ const Lamination: React.FC<LaminationProps> = ({
             <Grid size={{ xs: 12, md: 4 }}>
               <ReusableInput
                 label="Laminated Film Tension"
-                value={formData.laminationConditions.laminate_film_tension}
+                value={formData.laminationConditions?.laminate_film_tension}
                 onChange={(e) =>
                   handleChange(
                     "laminationConditions",
@@ -445,7 +483,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 <DropdownComponent
                   label="Substrate Type"
                   options={["PET"]}
-                  value={formData.laminationSubstrate.substrate_type}
+                  value={formData.laminationSubstrate?.substrate_type}
                   onChange={(value) =>
                     handleChange("laminationSubstrate", "substrate_type", value)
                   }
@@ -461,7 +499,7 @@ const Lamination: React.FC<LaminationProps> = ({
                     "Huhtamaki",
                     "Gulf Pack Supplier",
                   ]}
-                  value={formData.laminationSubstrate.supplier}
+                  value={formData.laminationSubstrate?.supplier}
                   onChange={(value) =>
                     handleChange("laminationSubstrate", "supplier", value)
                   }
@@ -472,7 +510,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Dyne Level"
-                  value={formData.laminationSubstrate.dyne_level}
+                  value={formData.laminationSubstrate?.dyne_level}
                   onChange={(e) =>
                     handleChange(
                       "laminationSubstrate",
@@ -487,7 +525,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Width (mm)"
-                  value={formData.laminationSubstrate.width}
+                  value={formData.laminationSubstrate?.width?formData.laminationSubstrate.width:''}
                   onChange={(e) =>
                     handleChange("laminationSubstrate", "width", e.target.value)
                   }
@@ -498,7 +536,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Thickness"
-                  value={formData.laminationSubstrate.thickness}
+                  value={formData.laminationSubstrate?.thickness?formData.laminationSubstrate.thickness:''}
                   onChange={(e) =>
                     handleChange(
                       "laminationSubstrate",
@@ -513,7 +551,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Density (g/cm)"
-                  value={formData.laminationSubstrate.density}
+                  value={formData.laminationSubstrate?.density?formData.laminationSubstrate.density:''}
                   onChange={(e) =>
                     handleChange(
                       "laminationSubstrate",

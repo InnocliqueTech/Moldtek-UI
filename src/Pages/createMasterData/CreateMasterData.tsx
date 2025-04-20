@@ -200,7 +200,7 @@ const CreateMasterData: React.FC = () => {
   const handleSaveLamination = () => {
     const finalSaveData = {
       ...lamiFormData,
-      laminaionFormData: tableData,
+      bondingMaterials: LaminationTableData,
     };
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
