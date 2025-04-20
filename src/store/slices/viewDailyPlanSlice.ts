@@ -77,11 +77,13 @@ export interface viewDailyPlan {
   materialSpecification: MaterialSpecification;
   plateMountingSupervisorReport: PlateMountingSupervisorReport; 
   openSliderDaily:boolean;
-    filtersPayload:FiltersPayload
-    isSearchTriggered:boolean
+    filtersPayload:FiltersPayload;
+    isSearchTriggered:boolean;
+    dropDown:boolean;
 }
 
 const initialState: viewDailyPlan = {
+  dropDown:false,
   filtersPayload:{
     fromDate: "",
     toDate: "",
@@ -128,7 +130,7 @@ const initialState: viewDailyPlan = {
     shiftQcIncharge: ""
   },
   openSliderDaily:false,
-  isSearchTriggered:false
+  isSearchTriggered:false,
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -198,9 +200,12 @@ const ViewDailyPanSlice = createSlice({
             } ,
                 setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
                   state.isSearchTriggered = action.payload
-                } 
+                } ,
+                setDropDown:(state,action:PayloadAction<boolean>)=>{
+                  state.dropDown = action.payload
+                }
   },
 });
 
-export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType,setIsSearchTriggered } = ViewDailyPanSlice.actions;
+export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType,setIsSearchTriggered,setDropDown } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

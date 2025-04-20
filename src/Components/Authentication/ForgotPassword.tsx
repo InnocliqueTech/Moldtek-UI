@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReusableInput from "../ReUsable/TextField";
@@ -12,60 +12,49 @@ import indicator from "../../assets/Images/indicator.png";
 import { useLoginMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
 
-const SignInPage: React.FC = () => {
+const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/masterData";
 
   const [login, { isLoading }] = useLoginMutation();
 
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("rememberMeEmail");
-    const savedPassword = localStorage.getItem("rememberMePassword");
-
-    if (savedEmail && savedPassword) {
-      setEmail(savedEmail);
-      setPassword(savedPassword);
-      setRememberMe(true);
-    }
-  }, []);
-
   const handleLogin = async () => {
     setErrors({});
+
+    // Validate only email with Zod
     const emailResult = signInSchema.shape.email.safeParse(email);
     const trimmedPassword = password.trim();
+
     const newErrors: { email?: string; password?: string } = {};
 
     if (!emailResult.success) {
       newErrors.email = emailResult.error.issues[0]?.message || "Invalid email";
     }
+
     if (!trimmedPassword) {
       newErrors.password = "Password is required";
     }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
     try {
-      const response = await login({ username: email, password: trimmedPassword }).unwrap();
+      const response = await login({
+        username: email,
+        password: trimmedPassword,
+      }).unwrap();
       if (response?.data?.token) {
         localStorage.setItem("token", response?.data?.token);
         localStorage.setItem("auth", "true");
         localStorage.setItem("role", response?.data?.userTypeName);
-
-        if (rememberMe) {
-          localStorage.setItem("rememberMeEmail", email);
-          localStorage.setItem("rememberMePassword", trimmedPassword);
-        } else {
-          localStorage.removeItem("rememberMeEmail");
-          localStorage.removeItem("rememberMePassword");
-        }
-
         navigate(from, { replace: true });
       } else {
         localStorage.removeItem("token");
@@ -86,6 +75,7 @@ const SignInPage: React.FC = () => {
   const isFormValid = () => {
     const trimmedPassword = password.trim();
     const emailResult = signInSchema.shape.email.safeParse(email);
+
     return emailResult.success && trimmedPassword.length > 0;
   };
 
@@ -117,13 +107,20 @@ const SignInPage: React.FC = () => {
         </Box>
 
         {/* Sign In Form */}
-        <Box sx={{ width: "100%", maxWidth: "500px", textAlign: "center", mt: 20 }}>
+        <Box
+          sx={{ width: "100%", maxWidth: "500px", textAlign: "center", mt: 20 }}
+        >
           <Typography fontWeight={600} color="#2F2F2F" fontSize={32}>
-            Sign In
+            Forgot Password
           </Typography>
 
+          {/* Email Input */}
           <Box sx={{ textAlign: "left", width: "100%" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 500, marginBottom: "4px" }}
+              color="#656565"
+            >
               Email
             </Typography>
             <ReusableInput
@@ -137,44 +134,16 @@ const SignInPage: React.FC = () => {
               icon={<EmailOutlined />}
             />
           </Box>
-
-          <Box sx={{ textAlign: "left", width: "100%", mt: 2 }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
-              Password
-            </Typography>
-            <ReusableInput
-              label=""
-              placeholder="Enter your password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!errors.password}
-              helperText={errors.password || ""}
-              icon={<LockOutlined />}
-            />
-          </Box>
-
-          {/* Remember Me & Forgot Password */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", mt: 1 }}>
-            <FormControlLabel 
-              control={
-                <Checkbox 
-                  checked={rememberMe} 
-                  onChange={(e) => setRememberMe(e.target.checked)} 
-                />
-              } 
-              label="Remember me" 
-            />
-            <Box onClick={() => navigate('/forgotPassword')}>
-              <Typography variant="body2" sx={{ cursor: "pointer" }} color="primary">
-                Forgot Password?
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
-            <ReusableButton 
-              text="Sign In"
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              mt: 2,
+            }}
+          >
+            <ReusableButton
+              text="Send Email"
               onClick={handleLogin}
               width="100%"
               borderRadius="100px"
@@ -209,10 +178,16 @@ const SignInPage: React.FC = () => {
             backgroundColor: "white",
           }}
         >
+          {/* Image Section */}
           <Box sx={{ flex: 0.2 }}>
-            <img src={SignInImage} alt="Sign In" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={SignInImage}
+              alt="Sign In"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
           </Box>
 
+          {/* Content Section */}
           <Box
             sx={{
               flex: 0.8,
@@ -227,13 +202,27 @@ const SignInPage: React.FC = () => {
             }}
           >
             <Box sx={{ mb: 1 }}>
-              <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
+              <img
+                src={indicator}
+                alt="Indicator Icon"
+                style={{ height: "4px" }}
+              />
             </Box>
-            <Typography sx={{ color: '#ECECEC', fontWeight: 600, fontSize: '20px' }}>
+            <Typography
+              sx={{ color: "#ECECEC", fontWeight: 600, fontSize: "20px" }}
+            >
               Print & Lamination Data Hub
             </Typography>
-            <Typography sx={{ mt: 1, color: '#ECECEC', fontWeight: 400, fontSize: '15px' }}>
-              Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
+            <Typography
+              sx={{
+                mt: 1,
+                color: "#ECECEC",
+                fontWeight: 400,
+                fontSize: "15px",
+              }}
+            >
+              Enhance productivity with seamless data entry. Log in to access
+              and update manufacturing records.
             </Typography>
           </Box>
         </Box>
@@ -242,4 +231,4 @@ const SignInPage: React.FC = () => {
   );
 };
 
-export default SignInPage;
+export default ForgotPassword;

@@ -17,7 +17,15 @@ import {
 const getJobUniqueId = (job: DailyJob) => {
   return `${job.unitEffectivityNumber}-${job.masterVersionNo}-${job.jobRunDate}-${job.indentNumber}`;
 };
+interface UpdateStatusRequest {
+  indentNumber: string;
+  status: string;
+}
 
+interface UpdateStatusResponse {
+  statusCode: number;
+  message: string;
+}
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -90,6 +98,16 @@ export const apiSlice = createApi({
         };
       },
     }),
+    updateStatusJob: builder.mutation<UpdateStatusResponse, UpdateStatusRequest>({
+      query: ({ indentNumber, status }) => ({
+        url: '/dailyplan/updateStatusForJob',
+        method: 'GET',
+        params: { indentNumber, status },
+      }),
+      
+    }),
+    
+
     createMasterData: builder.mutation<any, any>({
       query: (newItem) => ({
         url: "/master/save",
@@ -210,4 +228,5 @@ export const {
   useDailyPlanFiltersMutation,
   useSaveDailyJobMutation ,
   useGetLaminationReportDetailsQuery,
+  useUpdateStatusJobMutation
 } = apiSlice;

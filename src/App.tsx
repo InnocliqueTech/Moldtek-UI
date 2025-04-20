@@ -16,6 +16,7 @@ const DailyPlan = lazy(()=>import("./Pages/DailyPlan"));
 const JobsList = lazy(()=>import("./Pages/viewMasterData/JobsList"));
 const CreatePlan = lazy(()=>import("./Pages/DailyPlan/createPlan"));
 const ViewDailyPlan = lazy(()=>import("./Pages/DailyPlan/viewDailyPlan"));
+const ForgotPassword = lazy(()=>import("./Components/Authentication/ForgotPassword"));
 
 
 const App: React.FC = () => {
@@ -24,6 +25,7 @@ const App: React.FC = () => {
       <Suspense fallback={<Loader/>}>
         <Routes>
           <Route path="/" element={<SignInPage />} />
+          <Route path="/forgotPassword" element={<ForgotPassword/>}/>
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<DashboardPage />} />

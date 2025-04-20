@@ -37,6 +37,7 @@ interface TableDataModel {
   labelType: string;
   createdAt: string;
   jobRunDate: string;
+  status:string;
 }
 
 const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatItem[] => {
@@ -72,6 +73,7 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
       labelType: "N/A",
       createdAt: "N/A",
       jobRunDate: "N/A",
+      status:"N/A"
     }]
   }
 
@@ -87,6 +89,7 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
     labelType: job.labelType || "--",
     createdAt: formatDate(job.createdAt),
     jobRunDate: formatDate(job.jobRunDate),
+    status:job.status
   }));
 };
 
@@ -109,7 +112,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   //   // error: jobsError
   // } = useGetDailyJobsListQuery(pagination);
 
-    const { filtersPayload,openSliderDaily } = useSelector(
+    const { filtersPayload,openSliderDaily,dropDown } = useSelector(
       (state: RootState) => state.viewDailyPlan
     );
   const [
@@ -124,7 +127,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     if(!openSliderDaily){
       dailyPlanFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page, openSliderDaily,filtersPayload]);
+  }, [page, openSliderDaily,filtersPayload,dropDown]);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -197,6 +200,18 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         id: "masterVersionNo",
         label: "Master Data Version",
         align: true,
+      },
+      {
+        id: "status",
+        label: "Status",
+        align: true,
+        dropdown: true,
+        dropdownOptions: [
+          { label: "In progress", value: "In progress" },
+          { label: "Completed", value: "Completed" },
+          { label: "Active", value: "Active" },
+          {label:"In active",value:"In active"}
+        ]
       },
       { id: "createdAt", label: "Created On", align: false },
       // { id: "lastUpdated", label: "Last Updated", align: false },

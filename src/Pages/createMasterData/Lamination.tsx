@@ -217,6 +217,7 @@ const Lamination: React.FC<LaminationProps> = ({
     const hasAnyError = errorValues.some((err) => err !== "");
   
     let isAnyFieldFilled = false;
+    let areAllFieldsFilled = true;
   
     for (const sectionKey in formData) {
       const section = (formData as any)[sectionKey];
@@ -225,31 +226,36 @@ const Lamination: React.FC<LaminationProps> = ({
           if (section[fieldKey].type) continue;
   
           const value = section[fieldKey];
-          if (
-            value !== "" &&
-            value !== null &&
-            value !== undefined &&
-            !(Array.isArray(value) && value.length === 0)
-          ) {
+          const isEmpty =
+            value === "" ||
+            value === null ||
+            value === undefined ||
+            (Array.isArray(value) && value.length === 0);
+  
+          if (!isEmpty) {
             isAnyFieldFilled = true;
-            break;
+          } else {
+            areAllFieldsFilled = false;
           }
         }
       }
-  
-      if (isAnyFieldFilled) break;
     }
   
     const shouldEnableSave = isAnyFieldFilled && !hasAnyError;
-    dispatch(setSubmitAndPublishButtonMasterLamination(!shouldEnableSave));
-    dispatch(setLaminationSave(!shouldEnableSave));
+    const shouldEnableSubmitAndPublish = areAllFieldsFilled && !hasAnyError;
+  
+    dispatch(setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish));
+    dispatch(setLaminationSave(shouldEnableSave));
   
     console.log(
       "Validation Check — hasAnyError:", hasAnyError,
       "isAnyFieldFilled:", isAnyFieldFilled,
-      "SaveEnabled:", shouldEnableSave
+      "areAllFieldsFilled:", areAllFieldsFilled,
+      "SaveEnabled:", shouldEnableSave,
+      "SubmitAndPublishEnabled:", shouldEnableSubmitAndPublish
     );
   }, [errors, formData]);
+  
    useEffect(()=>{
       if(id&&location.pathname.includes('/updateMasterData')){
         setFormData(laminatingDetails)

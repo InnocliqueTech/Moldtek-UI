@@ -323,37 +323,38 @@ const updatedErros = {
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
     )[];
-
+  
     const hasErrors = importantFields.some((field) => {
       const isInPrintingDetails = field in formValues.printingDetails;
-      const isInPrintingSubstrateSettings =
-        field in formValues.printingSubstrateSettings;
-    
+      const isInPrintingSubstrateSettings = field in formValues.printingSubstrateSettings;
+  
       if (isInPrintingDetails) {
         const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
         return (
-          errors[field] !== "" ||
+          (!!errors[field] && errors[field] !== "") ||
           value === "" ||
           value === null ||
           value === undefined
         );
       }
-    
+  
       if (isInPrintingSubstrateSettings) {
         const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
         return (
-          errors[field] !== "" ||
+          (!!errors[field] && errors[field] !== "") ||
           value === "" ||
           value === null ||
           value === undefined
         );
       }
-    
+  
       return false;
     });
-    dispatch(setSubmitAndPublishButtonPrinting(hasErrors));
-    
+  
+    console.log(!hasErrors, "MASTERDATAFOOTER2");
+    dispatch(setSubmitAndPublishButtonPrinting(!hasErrors));
   }, [formValues, errors]);
+  
 
   useEffect(() => {
     const importantFields = [

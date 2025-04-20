@@ -1,4 +1,4 @@
-import React, { useState, JSX } from "react";
+import React, { useState, JSX, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -25,6 +25,7 @@ import {
   Slide,
   Divider,
   InputAdornment,
+  Select,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -37,12 +38,18 @@ import {
 import { useMediaQuery, useTheme } from "@mui/material";
 import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
+import { useUpdateStatusJobMutation } from "../../store/services/api";
+import { useDispatch } from "react-redux";
+import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
+
 interface Column {
   id: string;
   label: string;
   disableSorting?: boolean;
   format?: (value: any, row: any) => string | JSX.Element | null;
   align: boolean;
+  dropdown?: boolean;
+  dropdownOptions?: { label: string; value: string }[];
 }
 interface TableAction<T> {
   label: string;
@@ -98,7 +105,7 @@ function ReusableTable<T extends Record<string, any>>({
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
-  const [page, setPage] = useState<number>(0);
+   const [page, setPage] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
@@ -108,6 +115,12 @@ function ReusableTable<T extends Record<string, any>>({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
   const [showSelectionBar, setShowSelectionBar] = useState(false);
+  const [loading,setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
+
+
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -197,21 +210,28 @@ function ReusableTable<T extends Record<string, any>>({
       })
     : sortedData;
 
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = filteredData.slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      );
+    const handleSelectAll = () => {
+      // Ensure we have the correct current page
+      const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage); // Correct page calculation here
+      const allSelected = currentPageRows.every((row) => isSelected(row));
+    
+      // Update selected state based on current page rows and all selected state
+      let newSelected: T[] = [];
+      
+      if (!allSelected) {
+        newSelected = [...newSelected, ...currentPageRows]; // Select all rows for the current page
+      } else {
+        // Deselect rows for the current page
+        newSelected = selected.filter((row) => !currentPageRows.some((r) => r[rowIdentifier] === row[rowIdentifier]));
+      }
+    
+      // Set selected rows and selection bar visibility
       setSelected(newSelected);
-      setShowSelectionBar(event.target.checked);
+      setShowSelectionBar(newSelected.length > 0);
       if (onSelectionChange) onSelectionChange(newSelected);
-      return;
-    }
-    setSelected([]);
-    setShowSelectionBar(event.target.checked);
-    if (onSelectionChange) onSelectionChange([]);
-  };
+    };
+    
+    
 
   const handleSelect = (row: T) => {
     const selectedIndex = selected.findIndex(
@@ -243,12 +263,12 @@ function ReusableTable<T extends Record<string, any>>({
 
   const isAllSelected = () => {
     if (filteredData.length === 0) return false;
-    const currentPageRows = filteredData.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
-    );
-    return currentPageRows.every((row) => isSelected(row));
+    const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage);  // Calculate current page rows
+    return currentPageRows.every((row) => isSelected(row)); // Check if all rows are selected for this page
   };
+  
+  
+  
 
   const handleClearSelection = () => {
     setSelected([]);
@@ -259,9 +279,39 @@ function ReusableTable<T extends Record<string, any>>({
     console.log("Download selected:", selected);
   };
 
-  const handleUpload = () => {
-    console.log("Upload selected:", selected);
+  // const handleUpload = () => {
+  //   console.log("Upload selected:", selected);
+  // };
+  const [updateStatusJob] = useUpdateStatusJobMutation();
+
+  
+  const handleDropdownChange = async (row: T, field: string, newValue: string) => {
+    console.log(row, field, newValue, "NEW VALUE OF DATA");
+  setLoading(true);
+    try {
+      // Directly capture the response from API
+      const response = await updateStatusJob({
+        indentNumber: row.indentNumber,
+        status: newValue,
+      }).unwrap();
+  
+      console.log(response, "API RESPONSE");
+  
+      if (response?.statusCode === 200) {
+        dispatch(setDropDown(true));
+        setLoading(false);
+      }
+      else{
+        setLoading(false);
+        dispatch(setDropDown(false));
+      }
+    } catch (error) {
+      console.error("Error in API chain:", error);
+      setLoading(false);
+      dispatch(setDropDown(false));
+    }
   };
+  
   return (
     <Paper
       elevation={0}
@@ -491,7 +541,7 @@ function ReusableTable<T extends Record<string, any>>({
               },
             }}
           >
-            {isLoading ? (
+            {isLoading || loading? (
               Array.from({ length: 8 }).map((_, rowIndex) => (
                 <TableRow key={`skeleton-${rowIndex}`}>
                   {selectable && (
@@ -517,12 +567,28 @@ function ReusableTable<T extends Record<string, any>>({
                       />
                     </TableCell>
                   ))}
-        {action && <TableCell><Box sx={{ width: 24, height: 16, backgroundColor: "#e0e0e0", borderRadius: 1 }} /></TableCell>}
+                  {action && (
+                    <TableCell>
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 16,
+                          backgroundColor: "#e0e0e0",
+                          borderRadius: 1,
+                        }}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             ) : filteredData.length === 0 ? (
               <TableRow>
-      <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (action ? 1 : 0)} align="center">
+                <TableCell
+                  colSpan={
+                    columns.length + (selectable ? 1 : 0) + (action ? 1 : 0)
+                  }
+                  align="center"
+                >
                   No Data Available
                 </TableCell>
               </TableRow>
@@ -540,14 +606,14 @@ function ReusableTable<T extends Record<string, any>>({
                     key={index}
                     hover
                     selected={isItemSelected}
-                      // onClick={(event) => {
-                      //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
-                      //     const fakeEvent = {
-                      //       target: { checked: !isItemSelected },
-                      //     } as React.ChangeEvent<HTMLInputElement>;
-                      //     handleSelect(fakeEvent, row);
-                      //   }
-                      // }}
+                    // onClick={(event) => {
+                    //   if (selectable && !(event.target instanceof HTMLElement && event.target.tagName === 'INPUT')) {
+                    //     const fakeEvent = {
+                    //       target: { checked: !isItemSelected },
+                    //     } as React.ChangeEvent<HTMLInputElement>;
+                    //     handleSelect(fakeEvent, row);
+                    //   }
+                    // }}
                     sx={{
                       cursor: selectable ? "pointer" : "default",
                     }}
@@ -563,8 +629,8 @@ function ReusableTable<T extends Record<string, any>>({
                     )}
                     {columns.map((column, index) => (
                       <TableCell
-                        align={column.align ? "center" : "left"}
                         key={column.id}
+                        align={column.align ? "center" : "left"}
                         sx={{
                           whiteSpace: "nowrap",
                           padding: "4px 8px",
@@ -576,9 +642,30 @@ function ReusableTable<T extends Record<string, any>>({
                           marginLeft: index === 0 ? "8px" : undefined,
                         }}
                       >
-                        {column.format
-                          ? column.format(row[column.id], row)
-                          : row[column.id]}
+                        {column.dropdown && column.dropdownOptions ? (
+                          <Select
+                            size="small"
+                            value={row[column.id] || ""} // handle null to prevent controlled/uncontrolled warning
+                            onChange={(e) =>
+                              handleDropdownChange(
+                                row,
+                                column.id,
+                                e.target.value
+                              )
+                            }
+                            sx={{ minWidth: 120 }}
+                          >
+                            {column.dropdownOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : column.format ? (
+                          column.format(row[column.id], row)
+                        ) : (
+                          row[column.id]
+                        )}
                       </TableCell>
                     ))}
                     {action && (
@@ -664,30 +751,30 @@ function ReusableTable<T extends Record<string, any>>({
                   (item.type === "previous" && !hasPrevPage) ||
                   (item.type === "next" && !hasNextPage);
 
-                return (
-                  <PaginationItem
-                    {...item}
+              return (
+                <PaginationItem
+                  {...item}
                     disabled={disabled}
-                    components={{
-                      previous: ChevronLeft,
-                      next: ChevronRight,
-                    }}
-                    sx={{
-                      border: "1px solid #ccc",
-                      borderRadius: "8px",
-                      minWidth: "36px",
-                      height: "36px",
-                      "&.Mui-selected": {
-                        backgroundColor: "#0B72E7",
-                        color: "#FFF",
-                        borderColor: "#0B72E7",
-                      },
-                      "&:hover": {
-                        backgroundColor: "#0B72E7",
-                        color: "#FFF",
-                        borderColor: "#0B72E7",
-                      },
-                    }}
+                  components={{
+                    previous: ChevronLeft,
+                    next: ChevronRight,
+                  }}
+                  sx={{
+                    border: "1px solid #ccc",
+                    borderRadius: "8px",
+                    minWidth: "36px",
+                    height: "36px",
+                    "&.Mui-selected": {
+                      backgroundColor: "#0B72E7",
+                      color: "#FFF",
+                      borderColor: "#0B72E7",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#0B72E7",
+                      color: "#FFF",
+                      borderColor: "#0B72E7",
+                    },
+                  }}
                   />
                 );
               } else {
@@ -716,7 +803,7 @@ function ReusableTable<T extends Record<string, any>>({
                   />
                 );
               }
-            }}
+              }}
           />
         </Stack>
       </Box>
