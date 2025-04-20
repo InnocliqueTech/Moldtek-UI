@@ -634,9 +634,9 @@ export const labelDispatchRows = [
 ]
 
 export const machineSpecsColumns = [
-    { id: "machineName", label: "Machine Name" },
-    { id: "dieToolCode", label: "Die tool Code" },
-    { id: "machineSpeed", label: "Machine Speed" },
+    { id: "machineName", label: "Machine Name" , edit: false},
+    { id: "dieToolCode", label: "Die tool Code", edit: true },
+    { id: "machineSpeed", label: "Machine Speed", edit: true },
 ]
 
 export const machineSpecsRows = [
@@ -644,12 +644,20 @@ export const machineSpecsRows = [
       dieToolCode:"NCP091",
       machineSpeed:"290 revolutions/min"
     },
+    { machineName:"--",
+        dieToolCode:"NCP091",
+        machineSpeed:"290 revolutions/min"
+      },
+      { machineName:"--",
+        dieToolCode:"NCP091",
+        machineSpeed:"290 revolutions/min"
+      },
 ]
 
 export const productionColumns = [
-    { id: 'particular', label: 'Particular' },
-    { id: 'target', label: 'Target' },
-    { id: 'actual', label: 'Actual' },
+    { id: 'particular', label: 'Particular' ,edit:false },
+    { id: 'target', label: 'Target' ,edit:false},
+    { id: 'actual', label: 'Actual' , edit:true},
   ];
 
 
@@ -668,10 +676,10 @@ export const productionColumns = [
 ];
 
   export const approvalColumns = [
-    { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" },
-    { id: "qcApproval", label: "QC APPROVAL" },
-    { id: "inchargeComments", label: "INCHARGE COMMENTS" },
-    { id: "remarks", label: "REMARKS" } // Added new column at the end
+    { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" , edit: true},
+    { id: "qcApproval", label: "QC APPROVAL", edit: true },
+    { id: "inchargeComments", label: "INCHARGE COMMENTS", edit: true },
+    { id: "remarks", label: "REMARKS", edit: true} // Added new column at the end
   ];
   
   export const approvalData = [
