@@ -388,7 +388,7 @@ const Printing: React.FC<PrintingProps> = ({
     // 2️⃣ Check if any field inside errors has any value (deep check)
     const hasErrors =
     Object.values(errors).some(error => error) ;
-  
+  console.log(errors,"ERRORS")
     // 3️⃣ Set button state
     if (isInvalid && hasErrors) {
       dispatch(setSubmitAndPublishButtonPrinting(true)); // ❌ Disable
@@ -440,9 +440,10 @@ const Printing: React.FC<PrintingProps> = ({
   
       return false;
     });
-  
+    const hasErrors =
+    Object.values(errors).some(error => error) ;
     const hasValidData = !isAnyFieldFilled;
-    dispatch(setPrintingSave(hasValidData));
+    dispatch(setPrintingSave(hasValidData||hasErrors));
   }, [formValues, errors, dispatch]);
   
   
