@@ -35,9 +35,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
   InfoOutline,
+  InsertDriveFile,
   ReplayOutlined,
 } from "@mui/icons-material";
 import { useMediaQuery, useTheme } from "@mui/material";
@@ -49,6 +51,8 @@ import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "../../api.config";
+import ErrorIcon from '@mui/icons-material/Error';
+
 
 interface Column {
   id: string;
@@ -987,35 +991,97 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
         </Fade>
         
       )}
-      <Dialog open={!!downloadSummary} onClose={() => setDownloadSummary(null)} maxWidth="sm" fullWidth>
+<Dialog
+  open={!!downloadSummary}
+  onClose={() => setDownloadSummary(null)}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    sx: { borderRadius: 3 } // Rounded corners
+  }}
+>
   <DialogTitle>Download Summary</DialogTitle>
+
   <DialogContent dividers>
     {downloadSummary && (
       <>
-        <Typography>Total Files Selected: {downloadSummary.total}</Typography>
-        <Typography sx={{ mt: 2 }}> Downloaded Files:</Typography>
-        <ul>
-          {downloadSummary.downloaded.length > 0 ? (
-            downloadSummary.downloaded.map((name) => <li key={name}>{name}</li>)
-          ) : (
-            <li>None</li>
-          )}
-        </ul>
-        <Typography sx={{ mt: 2 }}>Failed Files:</Typography>
-        <ul>
-          {downloadSummary.errors.length > 0 ? (
-            downloadSummary.errors.map((err, i) => <li key={i}>{err}</li>)
-          ) : (
-            <li>None</li>
-          )}
-        </ul>
+        <Box 
+          sx={{ 
+            p: 2, 
+            mb: 2, 
+            display: 'flex', 
+            alignItems: 'center', 
+            bgcolor: 'grey.100', 
+            borderRadius: 2 
+          }}
+        >
+          <InsertDriveFile sx={{ color: 'grey.700', mr: 1 }} />
+          <Typography variant="subtitle1" fontWeight="bold">
+            Total Files Selected: {downloadSummary.total}
+          </Typography>
+        </Box>
+
+        <Box 
+          sx={{ 
+            p: 2, 
+            mb: 2, 
+            bgcolor: 'green.50', 
+            border: '1px solid', 
+            borderColor: 'green.300', 
+            borderRadius: 2 
+          }}
+        >
+          <Typography 
+            variant="subtitle1" 
+            sx={{ display: 'flex', alignItems: 'center', mb: 1, color: 'green.700' }}
+          >
+            <CheckCircle sx={{ mr: 1 }} /> Downloaded Files:
+          </Typography>
+          <ul style={{ margin: 0, paddingLeft: 24 }}>
+            {downloadSummary.downloaded.length > 0 ? (
+              downloadSummary.downloaded.map((name) => (
+                <li key={name}>{name}</li>
+              ))
+            ) : (
+              <li>None</li>
+            )}
+          </ul>
+        </Box>
+
+        <Box 
+          sx={{ 
+            p: 2, 
+            bgcolor: 'red.50', 
+            border: '1px solid', 
+            borderColor: 'red.300', 
+            borderRadius: 2 
+          }}
+        >
+          <Typography 
+            variant="subtitle1" 
+            sx={{ display: 'flex', alignItems: 'center', mb: 1, color: 'error.main' }}
+          >
+            <ErrorIcon sx={{ mr: 1 }} /> Failed Files:
+          </Typography>
+          <ul style={{ margin: 0, paddingLeft: 24 }}>
+            {downloadSummary.errors.length > 0 ? (
+              downloadSummary.errors.map((err, i) => <li key={i}>{err}</li>)
+            ) : (
+              <li>None</li>
+            )}
+          </ul>
+        </Box>
       </>
     )}
   </DialogContent>
+
   <DialogActions>
-    <Button onClick={() => setDownloadSummary(null)} variant="contained">Close</Button>
+    <Button onClick={() => setDownloadSummary(null)} variant="contained" color="primary">
+      Close
+    </Button>
   </DialogActions>
 </Dialog>
+
 </>
     </Paper>
   );
