@@ -1,4 +1,4 @@
-import React, { useState, JSX } from "react";
+import React, { useState, JSX, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -81,6 +81,7 @@ interface TableProps<T> {
   id?: string;
   totalLength?: number;
   pageRange?: boolean;
+  pageNumber?:number;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -104,10 +105,11 @@ function ReusableTable<T extends Record<string, any>>({
   id,
   totalLength = 0,
   pageRange = false,
+  pageNumber=0
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
-   const [page, setPage] = useState<number>(0);
+   const [page, setPage] = useState<number>(pageRange?pageNumber:0);
   const [search, setSearch] = useState<string>("");
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
@@ -269,6 +271,11 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     return currentPageRows.every((row) => isSelected(row)); // Check if all rows are selected for this page
   };
   
+  useEffect(() => {
+    if (!pageRange) {
+      setPage(0);  
+    }
+  }, [pageRange]);
   
   
 
@@ -319,7 +326,17 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
       setLoading(false);
     }
   };
-  
+  const storageKey = `${id}-page`; 
+  useEffect(() => {
+    const savedPage = localStorage.getItem(storageKey);
+    if (savedPage !== null) {
+      setPage(Number(savedPage));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, page.toString());
+  }, [page]);
   
   return (
     <Paper

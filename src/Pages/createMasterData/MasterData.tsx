@@ -18,7 +18,11 @@ const MasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { data, isLoading, isError } = useGetMetricsQuery();
-  const [page, setPage] = useState(0);
+  const storageKey = "masterDataPage";
+  const [page, setPage] = useState(() => {
+    const savedPage = localStorage.getItem(storageKey);
+    return savedPage !== null ? Number(savedPage) : 0;
+  });
   const rowsPerPage = 10;
   const stats = [
     { title: "Total Jobs", value: data?.data.totalJobs },
@@ -153,6 +157,11 @@ const MasterData: React.FC = () => {
       customer: row.customer_name,
     },
   }));
+  
+  useEffect(() => {
+    localStorage.setItem(storageKey, page.toString());
+  }, [page]);
+  
 
   if (isError || companiesError) {
     return (
@@ -165,6 +174,7 @@ const MasterData: React.FC = () => {
   }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    localStorage.setItem(storageKey, newPage.toString());
   };
   return (
     <Box sx={{ p: 0 }}>
@@ -190,6 +200,7 @@ const MasterData: React.FC = () => {
         <ReusableTable
           boxShadow={true}
           columns={columns}
+          pageNumber={page}
           data={transformedData ? transformedData : []}
           selectable={false}
           label={
