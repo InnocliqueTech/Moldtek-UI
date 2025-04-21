@@ -17,7 +17,7 @@ interface TitledDataTableProps<T> {
   title?: string;
   columns?: Column[];
   data?: T[];
-  setData?: React.Dispatch<React.SetStateAction<T[]>>;
+  setData?: ((data: T[]) => void) | React.Dispatch<React.SetStateAction<T[]>>;
   borderColor?: string;
   borderRadius?: string | number;
   titleColor?: string;

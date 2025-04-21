@@ -213,7 +213,7 @@ const ViewDailyPanSlice = createSlice({
     setIsSearchTriggered: (state, action: PayloadAction<boolean>) => {
       state.isSearchTriggered = action.payload
     },
-    setUpdateDailyPlanPayload : (state, action: any) => {
+    setUpdateDailyPlanPayload : (state, action: PayloadAction<any>) => {
       state.updateDailyPlanPayload = action.payload
     },
     clearUpdateDailyPlanPayload: (state) =>{

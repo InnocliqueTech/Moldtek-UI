@@ -37,7 +37,7 @@ interface Column {
 
 interface DataTableProps<T> {
   data: T[];
-  setData?: React.Dispatch<React.SetStateAction<T[]>>;
+  setData?: ((data: T[]) => void) | React.Dispatch<React.SetStateAction<T[]>>;
   columns: Column[];
   tableTitle?: boolean;
   firstRow?: boolean;
@@ -75,7 +75,8 @@ const DataTable = <T extends Record<string, any>>({
     if (id==='lamination' && laminationFileds.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
-    return /^[A-Za-z\s]*$/.test(value);
+    return true
+    // return /^[A-Za-z\s]*$/.test(value);
   };
 
   const handleChange = <K extends keyof T>(
