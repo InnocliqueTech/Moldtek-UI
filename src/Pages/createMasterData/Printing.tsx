@@ -155,8 +155,9 @@ const Printing: React.FC<PrintingProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    if(id){
     dispatch(setPrintingDataTouched(true));
-  
+    }
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"

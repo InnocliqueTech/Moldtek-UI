@@ -10,6 +10,14 @@ import Header from "./Header";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import {
+  clearDyeCuttingFormData,
+  clearDyeCuttingFormErrors,
+  clearLaminatingFormData,
+  clearLaminationFormErrors,
+  clearMasterDataFormErrors,
+  clearMasterDetaisData,
+  clearPrintingFormData,
+  clearPrintingFormErrors,
   setOpenSlider,
   setRequestPayload,
   setSelectedTab,
@@ -183,7 +191,20 @@ const clearRequestPayoad ={
       setLoading(false);
     }
   };
-
+  const handleCreateMasterData = () => {
+    dispatch(setSelectedTab(0));
+    dispatch(setRequestPayload(clearRequestPayoad));
+    dispatch(clearDyeCuttingFormData());
+    dispatch(clearDyeCuttingFormErrors());
+    dispatch(clearLaminatingFormData());
+    dispatch(clearLaminationFormErrors());
+    dispatch(clearPrintingFormData());
+    dispatch(clearPrintingFormErrors());
+    dispatch(clearMasterDetaisData());
+    dispatch(clearMasterDataFormErrors());
+    navigate("/createMasterData");
+  };
+  
 
 const today = new Date();
 const formattedDate = today
@@ -231,9 +252,7 @@ const formattedDate = today
       button1Text: "Filter",
       button2Text: "Create Master Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
-      onButton2Click: () => {
-        navigate("/createMasterData"), dispatch(setSelectedTab(0),dispatch(setRequestPayload(clearRequestPayoad)))
-      },
+      onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
     },
     "/createMasterData": {

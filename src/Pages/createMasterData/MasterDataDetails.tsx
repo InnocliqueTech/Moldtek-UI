@@ -120,7 +120,9 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     field: keyof MasterFormData,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    dispatch(setMasterDataDataTouched(true))
+    if(id){
+    dispatch(setMasterDataDataTouched(true));
+    }
     let newValue: string | string[] = Array.isArray(value)
       ? value
       : typeof value === "string"

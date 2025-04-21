@@ -227,10 +227,10 @@ const {id} = useParams();
   );
   
   const handleSaveDyeCutting = () => {
-    const finalMasterDataDetails =(data?.data.masterDataDetails&&!masterDataDataTouched) ? data?.data.masterDataDetails : (data?.data.masterDataDetails&&masterDataDataTouched&&id)? viewMasterDataDetails:saveFormData;
-    const finalPrintingData =  (data?.data.masterDataPrinting&&!printingDataTouched) ?  data?.data.masterDataPrinting: (data?.data.masterDataPrinting&&printingDataTouched&&id)?printingDetails:printingSaveFormData
-    const finalLaminationData = (data?.data.masterDataLamination&&!laminationDataTouched)? data?.data.masterDataLamination :(data?.data.masterDataLamination&&laminationDataTouched&&id)?laminatingDetails:laminaionFormData
-    const finalDyeCuttingData = (data?.data.masterDataDyeCutting&&!dyeCuttingDataTouched) ? data?.data.masterDataDyeCutting : (data?.data.masterDataDyeCutting&&dyeCuttingDataTouched&&id)?dyeCuttingDetails:dyeCuttingFormData;
+    const finalMasterDataDetails =(data?.data.masterDataDetails&&!masterDataDataTouched) ? data?.data.masterDataDetails :saveFormData;
+    const finalPrintingData =  (data?.data.masterDataPrinting&&!printingDataTouched) ?  data?.data.masterDataPrinting:printingSaveFormData
+    const finalLaminationData = (data?.data.masterDataLamination&&!laminationDataTouched)? data?.data.masterDataLamination :laminaionFormData
+    const finalDyeCuttingData = (data?.data.masterDataDyeCutting&&!dyeCuttingDataTouched) ? data?.data.masterDataDyeCutting :dyeCuttingFormData;
     const updatedPayload = {
       ...requestPayload,
       masterDataDetails: finalMasterDataDetails,

@@ -26,7 +26,6 @@ import {
   setLaminationSave,
   setPrintingSave,
   setSavePrintingFormData,
-  setSubmitAndPublishButtonMasterLamination,
   setSubmitAndPublishButtonPrinting,
 } from "../../store/slices/masterDataSlice";
 
@@ -151,30 +150,6 @@ const DataTable = <T extends Record<string, any>>({
 
     // Set the global error state
     dispatch(setSubmitAndPublishButtonPrinting(hasEmptyMandatory || hasAnyInvalidField));
-  }
-  if(id==='lamination'){
-    const mandatoryFields = ["code","ratio","brand"];
-
-    // Check if any mandatory field is empty
-    const hasEmptyMandatory = Array.isArray(data) 
-    ? data?.some((row) =>
-        mandatoryFields.some((field) => {
-          const value = row[field];
-          return (
-            value === "" || value === 0 || value === null || value === undefined
-          );
-        })
-      )
-    : false;
-  
-
-    // Check if any field is marked invalid in your state
-    const hasAnyInvalidField = Object.values(invalidFields).some(
-      (isInvalid) => isInvalid
-    );
-
-    // Set the global error state
-    dispatch(setSubmitAndPublishButtonMasterLamination(hasEmptyMandatory || hasAnyInvalidField));
   }
   }, [data, invalidFields]);
 

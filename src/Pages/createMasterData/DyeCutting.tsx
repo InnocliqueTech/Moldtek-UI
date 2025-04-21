@@ -63,8 +63,9 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     key: keyof DyeCuttingFormData,
     rawValue: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    if(id){
     dispatch(setDyeCuttingDataTouched(true));
-  
+    }
     const newValue = extractValue(rawValue);
     let finalValue: string | string[] | number = "";
     let errorMessage = "";
