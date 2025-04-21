@@ -679,7 +679,7 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
                                 e.target.value
                               )
                             }
-                            sx={{ minWidth: 120 }}
+                            sx={{ width: 150 }}
                           >
                             {column.dropdownOptions.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
