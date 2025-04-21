@@ -12,7 +12,9 @@ import LaminationReport from "./LaminationReport";
 import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
 import CommenCard from "./commonCard";
-import { setAnaloxSpecifications, setDailyPlan, setInkCoatingSpecifications, setMaterialSpecification, setMountingTapeSpecifications, setPlateMountingSupervisorReport } from "../../../store/slices/viewDailyPlanSlice";
+import { setAnaloxSpecifications, setDailyPlan, setInkCoatingSpecifications, setMaterialSpecification, setMountingTapeSpecifications, setPlateMountingSupervisorReport,
+setIsEditing
+ } from "../../../store/slices/viewDailyPlanSlice";
 import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
 import { useSaveLabelCuttingDetailsMutation } from "../../../store/services/api";
 
@@ -29,11 +31,10 @@ const tabs = [
 
 const ViewDailyPlan: React.FC = () => {
   const { indentNo } = useParams();
-  const [isEditing, setIsEditing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [nextTab, setNextTab] = useState<number | null>(null);
   const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
-  const [saveLabelCuttingDetails, { isLoading:submitDailyPlanLoadin, isSuccess, isError }] =
+  const [saveLabelCuttingDetails, { isLoading:submitDailyPlanLoading, isSuccess, isError }] =
     useSaveLabelCuttingDetailsMutation();
   let unitEffectiveNumberDaily: number | undefined;
 
@@ -55,7 +56,7 @@ const ViewDailyPlan: React.FC = () => {
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-  const {updateDailyPlanPayload,updateCommonCard} = useSelector((state:RootState)=>state.viewDailyPlan)
+  const {updateDailyPlanPayload,updateCommonCard,isEditing} = useSelector((state:RootState)=>state.viewDailyPlan)
 
   // Initialize data when loaded
   useEffect(() => {
@@ -78,21 +79,17 @@ const ViewDailyPlan: React.FC = () => {
     }
   };
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-    setHasUnsavedChanges(false);
-  };
 
   const handleSave = async() => {
     await saveLabelCuttingDetails({indentNumber:decodedIndentNo,...updateDailyPlanPayload,...updateCommonCard}).unwrap();
     // Here you would implement your save logic
     // For now, we'll just exit edit mode
-    setIsEditing(false);
+    dispatch(setIsEditing(false));
     setHasUnsavedChanges(false);
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
+    dispatch(setIsEditing(false));
     setHasUnsavedChanges(false);
     // Here you would also reset any unsaved changes
   };
@@ -132,6 +129,12 @@ const ViewDailyPlan: React.FC = () => {
     }
   };
 
+  useEffect(()=>{
+    if(isEditing){
+      setHasUnsavedChanges(false)
+    }
+  },[isEditing])
+
   return (
     <Box sx={{ 
       width: "100%", 
@@ -140,24 +143,6 @@ const ViewDailyPlan: React.FC = () => {
       gap: 1,
       pb: isEditing ? '80px' : 0 // Add padding for fixed footer
     }}>
-      {/* Edit Button */}
-      {!isEditing && (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton 
-            onClick={handleEditClick}
-            color="primary"
-            aria-label="edit"
-            sx={{ 
-              backgroundColor: 'white',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 255, 0.1)'
-              }
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Box>
-      )}
 
       {/* Common Card */}
       <Box sx={{

@@ -18,7 +18,7 @@ import {
 import { useDispatch} from "react-redux";
 import { AppDispatch} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-import { setOpenSliderDaily } from "../../store/slices/viewDailyPlanSlice";
+import { setOpenSliderDaily,setIsEditing } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from './../../api.config';
 
@@ -207,7 +207,9 @@ const formattedDate = today
       uploadSubTitle?: string;
       headerButtonColor?: boolean;
       dropDown?:boolean;
-      dropDownOptions?:string[]
+      dropDownOptions?:string[],
+      editButton?: boolean,
+      editClick?: () => void
     }
   > = {
     "/dashboard": {
@@ -306,7 +308,7 @@ const formattedDate = today
       title: "View Daily Plan",
       button1Text: loading ? 'Downloading...' : 'Download Template',
       button2Text: "Upload Job Data",
- onButton1Click: () => {
+      onButton1Click: () => {
         downloadFile(); 
       },
       onButton2Click: () => dispatch(setUploadPopup(true)),
@@ -315,7 +317,9 @@ const formattedDate = today
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "",
       dropDown:true,
-      dropDownOptions:["Completed","In active","Active","In progress"]
+      dropDownOptions:["Completed","In active","Active","In progress"],
+      editButton: true,
+      editClick: () => dispatch(setIsEditing(true))
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -389,6 +393,8 @@ const formattedDate = today
           headerButtonColor={headerData.headerButtonColor}
           dropDown={headerData.dropDown}
           dropDownOptions={headerData.dropDownOptions}
+          editButton={headerData.editButton}
+          editClick = {headerData.editClick}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

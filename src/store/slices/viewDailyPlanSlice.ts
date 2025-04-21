@@ -85,6 +85,7 @@ export interface viewDailyPlan {
     workOrderNumber: string
   },
   dropDown:boolean;
+  isEditing:boolean;
 }
 
 const initialState: viewDailyPlan = {
@@ -140,7 +141,8 @@ const initialState: viewDailyPlan = {
   updateCommonCard:{
     shift: "",
     workOrderNumber: ""
-  }
+  },
+  isEditing:false
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -226,6 +228,9 @@ const ViewDailyPanSlice = createSlice({
     },
     setDropDown:(state,action:PayloadAction<boolean>)=>{
       state.dropDown = action.payload
+    },
+    setIsEditing : (state, action:PayloadAction<boolean>) => {
+      state.isEditing = action.payload
     }
   },
 });
@@ -249,6 +254,7 @@ export const {
   setUpdateDailyPlanPayload,
   clearUpdateDailyPlanPayload,
   setUpdateCommonCard,
-  setDropDown
+  setDropDown,
+  setIsEditing
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

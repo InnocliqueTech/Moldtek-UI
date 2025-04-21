@@ -26,6 +26,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
 import { useUpdateStatusJobMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
+import EditIcon from '@mui/icons-material/Edit';
 
 interface HeaderProps {
   title: string;
@@ -45,6 +46,8 @@ interface HeaderProps {
   headerButtonColor?: boolean;
   dropDown?: boolean;
   dropDownOptions?: string[];
+  editButton?:boolean;
+  editClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -65,10 +68,15 @@ const Header: React.FC<HeaderProps> = ({
   headerButtonColor = false,
   dropDown = false,
   dropDownOptions = [],
+  editButton = false,
+  editClick
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup, submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
+  );
+  const { isEditing } = useSelector(
+    (store: RootState) => store.viewDailyPlan
   );
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
@@ -238,6 +246,23 @@ const Header: React.FC<HeaderProps> = ({
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
+              {editButton && !isEditing && (
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton
+                    onClick={editClick}
+                    color="primary"
+                    aria-label="edit"
+                    sx={{
+                      backgroundColor: "white",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 255, 0.1)",
+                      },
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Box>
+              )}
             </Box>
 
             <Box display="flex" gap={2}>
