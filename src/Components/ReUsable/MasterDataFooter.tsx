@@ -126,8 +126,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const successTitle = id
-    ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V${displayVersion}.`
-    : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
+    ? `You have successfully updated master data. Your version is ${selectedUEN} V${displayVersion}.`
+    : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   return (
     <Box

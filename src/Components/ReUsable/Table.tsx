@@ -26,6 +26,11 @@ import {
   Divider,
   InputAdornment,
   Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -238,7 +243,7 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     };
     
     
-    
+    console.log(data,"TABLEDATA")
 
   const handleSelect = (row: T) => {
     const selectedIndex = selected.findIndex(
@@ -333,7 +338,12 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     localStorage.setItem(storageKey, page.toString());
   }, [page]);
 
-
+  const [downloadSummary, setDownloadSummary] = useState<null | {
+    total: number;
+    downloaded: string[];
+    errors: string[];
+  }>(null);
+  
   const handleBulkDownload = async () => {
     if (selected.length === 0) {
       toast.warning("Please select at least one row!");
@@ -341,7 +351,7 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     }
   
     setLoaderDownload(true);
-    const errors: string[] = [];
+    const results: { indentNumber: string; status: "success" | "error"; message?: string; blob?: Blob }[] = [];
   
     try {
       const downloadTasks = selected.map(async (row) => {
@@ -351,32 +361,56 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
   
         try {
           const response = await fetch(url, { method: 'GET' });
-  
           if (!response.ok) {
             const errorData = await response.json();
-            errors.push(`Indent: ${indentNumber} — ${errorData?.message || 'Download failed.'}`);
-            return;
+            results.push({
+              indentNumber,
+              status: "error",
+              message: errorData?.message || "Download failed.",
+            });
+          } else {
+            const blob = await response.blob();
+            results.push({
+              indentNumber,
+              status: "success",
+              blob,
+            });
           }
-  
-          const blob = await response.blob();
-          const fileUrl = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = fileUrl;
-          link.download = `${indentNumber}.xlsx`;
-          link.click();
-          URL.revokeObjectURL(fileUrl);
         } catch (err) {
-          errors.push(`Indent: ${indentNumber} — ${err instanceof Error ? err.message : 'Unknown error'}`);
+          results.push({
+            indentNumber,
+            status: "error",
+            message: err instanceof Error ? err.message : "Unknown error",
+          });
         }
       });
   
       await Promise.all(downloadTasks);
   
-      if (errors.length > 0) {
-        errors.forEach(err => toast.error(err));
-      } else {
-        toast.success("All files downloaded successfully!");
-      }
+      // Download successful files
+      results
+        .filter(result => result.status === "success")
+        .forEach(({ indentNumber, blob }) => {
+          if (blob) {
+            const fileUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = fileUrl;
+            link.download = `${indentNumber}.xlsx`;
+            link.click();
+            URL.revokeObjectURL(fileUrl);
+          }
+        });
+  
+      // After all are done: prepare summary
+      const successful = results.filter(r => r.status === "success").map(r => r.indentNumber);
+      const failed = results.filter(r => r.status === "error").map(r => `${r.indentNumber}: ${r.message}`);
+  
+      // Show popup
+      setDownloadSummary({
+        total: selected.length,
+        downloaded: successful,
+        errors: failed
+      });
   
     } finally {
       setLoaderDownload(false);
@@ -384,12 +418,12 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
   };
   
   
-  
   return (
     <Paper
       elevation={0}
       sx={{ borderRadius: !boxShadow ? 0 : 2, overflow: "hidden" }}
     >
+      <>
       <Toolbar
         disableGutters
         sx={{
@@ -951,7 +985,38 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
             </Box>
           </Slide>
         </Fade>
+        
       )}
+      <Dialog open={!!downloadSummary} onClose={() => setDownloadSummary(null)} maxWidth="sm" fullWidth>
+  <DialogTitle>Download Summary</DialogTitle>
+  <DialogContent dividers>
+    {downloadSummary && (
+      <>
+        <Typography>Total Files Selected: {downloadSummary.total}</Typography>
+        <Typography sx={{ mt: 2 }}> Downloaded Files:</Typography>
+        <ul>
+          {downloadSummary.downloaded.length > 0 ? (
+            downloadSummary.downloaded.map((name) => <li key={name}>{name}</li>)
+          ) : (
+            <li>None</li>
+          )}
+        </ul>
+        <Typography sx={{ mt: 2 }}>Failed Files:</Typography>
+        <ul>
+          {downloadSummary.errors.length > 0 ? (
+            downloadSummary.errors.map((err, i) => <li key={i}>{err}</li>)
+          ) : (
+            <li>None</li>
+          )}
+        </ul>
+      </>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setDownloadSummary(null)} variant="contained">Close</Button>
+  </DialogActions>
+</Dialog>
+</>
     </Paper>
   );
 }

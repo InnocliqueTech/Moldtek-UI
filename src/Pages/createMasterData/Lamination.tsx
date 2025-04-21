@@ -369,6 +369,7 @@ const Lamination: React.FC<LaminationProps> = ({
     { label: "Viscocity Range", key: "viscosity_range" },
     { label: "Adhesive GSM", key: "adhesive_gsm" },
   ];
+  console.log(tableData,"TABLEDATA")
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>

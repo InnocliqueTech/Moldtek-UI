@@ -418,35 +418,47 @@ const Printing: React.FC<PrintingProps> = ({
       "width",
       "thickness",
       "density",
-      "color_pantone", "lpcm", "lf_value","ink_supplier","volume","uv_led","uv_led_intensity","mixing_on_gec","mptl_code","mounting_tape"
+      "color_pantone", "lpcm", "lf_value", "ink_supplier", "volume", "uv_led", "uv_led_intensity", "mixing_on_gec", "mptl_code", "mounting_tape"
     ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
+      | keyof PrintingFormValues["stationWiseMetrics"][number]
     )[];
   
     const isAnyFieldFilled = importantFields.some((field) => {
-      const isInDetails = field in formValues.printingDetails;
-      const isInSubstrate = field in formValues.printingSubstrateSettings;
-  
-      if (isInDetails) {
+      // Check in printingDetails
+      if (field in formValues.printingDetails) {
         const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
         return value !== "" && value !== null && value !== undefined;
       }
   
-      if (isInSubstrate) {
+      // Check in printingSubstrateSettings
+      if (field in formValues.printingSubstrateSettings) {
         const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
         return value !== "" && value !== null && value !== undefined;
       }
   
-      return false;
+      // Check in stationWiseMetrics array
+      return formValues.stationWiseMetrics.some(
+        (station) =>
+          field in station &&
+          station[field as keyof typeof station] !== "" &&
+          station[field as keyof typeof station] !== null &&
+          station[field as keyof typeof station] !== undefined
+      );
     });
-    const hasErrors =
-    Object.values(errors).some(error => error) ;
-    const hasValidData = !isAnyFieldFilled;
-    dispatch(setPrintingSave(hasValidData||hasErrors));
+  
+    const hasErrors = Object.values(errors).some((error) => error);
+  
+    const isSaveEnabled = isAnyFieldFilled || hasErrors;
+    console.log(isSaveEnabled,isAnyFieldFilled,hasErrors,"HASERRORS1")
+    dispatch(setPrintingSave(!isSaveEnabled));
   }, [formValues, errors, dispatch]);
   
   
+  
+  
+  console.log(tableData,"TABLEDATA")
   
   
   
