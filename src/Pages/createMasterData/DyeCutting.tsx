@@ -69,7 +69,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     let finalValue: string | string[] | number = "";
     let errorMessage = "";
   
-    const numberFields = ["run_speed", "dye_code"];
+    const numberFields = ["run_speed"];
     const isNumberField = numberFields.includes(key);
     const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
   

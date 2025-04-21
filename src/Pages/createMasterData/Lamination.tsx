@@ -128,14 +128,13 @@ const Lamination: React.FC<LaminationProps> = ({
     "lami_set_tension",
     "rewinder_tension",
     "dyne_level",
+    "adhesive_gsm"
   ]);
 
   const characterFields = new Set([
     "viscosity_range",
-    "adhesive_gsm",
     "substrate_type",
     "supplier",
-
     "type",
     "code",
     "brand",
@@ -173,34 +172,22 @@ const Lamination: React.FC<LaminationProps> = ({
   
       finalValue = trimmed !== "" && errorMessage === "" ? Number(trimmed) : finalValue;
   
-    } else if (field === "dyne_level") {
-      const trimmed = (newValue as string).trim();
-  
-      if (trimmed === "") {
-        errorMessage = "Dyne level cannot be empty.";
-      } else {
-        errorMessage = "";
-      }
-  
-      finalValue = trimmed; // Always save as string for dyne_level
-  
-    } else if (
-      // Handle numeric fields for tension (which are similar to thickness)
-      ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension"].includes(field)
+    }
+    else if (
+      ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension", "dyne_level", "adhesive_gsm"].includes(field)
     ) {
       const trimmed = (newValue as string).trim();
-  
+    
       if (trimmed === "") {
-        errorMessage = `${field.replace('_', ' ')} cannot be empty.`;
+        errorMessage = `${field.replace(/_/g, ' ')} cannot be empty.`;
       } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
-        errorMessage = `${field.replace('_', ' ')} must be a valid number.`;
+        errorMessage = `${field.replace(/_/g, ' ')} must be a valid number.`;
       } else {
+        finalValue = Number(trimmed);  // Save as number
         errorMessage = "";
       }
-  
-      finalValue = trimmed !== "" && errorMessage === "" ? (newValue as string).trim() : finalValue;
-  
-    } else if (numericFields.has(field)) {
+    }
+     else if (numericFields.has(field)) {
       if (!isNaN(Number(newValue)) && newValue !== "") {
         finalValue = Number(newValue); // Save valid numbers
         errorMessage = "";
@@ -237,12 +224,8 @@ const Lamination: React.FC<LaminationProps> = ({
         ...(formData as any)[section],
         [field]:
           field === "thickness" && errorMessage === ""
-            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
-            : ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension"].includes(field) && errorMessage === ""
-            ? (newValue as string).trim()  // Save these fields as strings
-            : field === "dyne_level"
-            ? (newValue as string).trim() // Save dyne_level as a string
-            : numericFields.has(field) // Ensure numeric fields are saved as numbers
+            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number // Save these fields as strings
+            :  numericFields.has(field) // Ensure numeric fields are saved as numbers
             ? Number(newValue)
             : finalValue,
       },
@@ -331,6 +314,10 @@ const Lamination: React.FC<LaminationProps> = ({
 
     }
   }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
+  const fields = [
+    { label: "Viscocity Range", key: "viscosity_range" },
+    { label: "Adhesive GSM", key: "adhesive_gsm" },
+  ];
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -615,32 +602,29 @@ const Lamination: React.FC<LaminationProps> = ({
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
           />
         </Box>
-        <Grid container spacing={2} pt={1}>
-          {[
-            { label: "Viscocity Range", key: "viscosity_range" },
-            { label: "Adhesive GSM", key: "adhesive_gsm" },
-          ].map(({ label, key }) => (
-            <Grid size={{ xs: 12, md: 6 }} key={key}>
-              <ReusableInput
-                label={label}
-                value={
-                  typeof formData.laminationConditions?.[
-                    key as keyof typeof formData.laminationConditions
-                  ] === "string"
-                    ? (formData.laminationConditions[
-                        key as keyof typeof formData.laminationConditions
-                      ] as string)
-                    : ""
-                }
-                onChange={(e) =>
-                  handleChange("laminationConditions", key, e.target.value)
-                }
-                error={!!errors[key]}
-                helperText={errors[key]}
-              />
-            </Grid>
-          ))}
-        </Grid>
+
+
+<Grid container spacing={2} pt={1}>
+  {fields.map(({ label, key }) => (
+    <Grid key={key} size={{xs:12,md:6}}>
+      <ReusableInput
+        label={label}
+        value={
+          formData.laminationConditions && key in formData.laminationConditions
+            ? String((formData.laminationConditions as Record<string, unknown>)[key] ?? "")
+            : ""
+        }
+        onChange={(e) =>
+          handleChange("laminationConditions", key, e.target.value)
+        }
+        error={!!errors[key]}
+        helperText={errors[key]}
+      />
+    </Grid>
+  ))}
+</Grid>
+
+
       </Box>
     </Box>
   );

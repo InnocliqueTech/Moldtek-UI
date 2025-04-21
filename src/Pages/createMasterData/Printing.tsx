@@ -174,7 +174,10 @@ const Printing: React.FC<PrintingProps> = ({
       "outfeed",
       "rewinder",
       "static_charge",
-      "format_correct"
+      "format_correct",
+      "cylinder_teeth",
+      "dyne_level"
+
     ].includes(field);
   
     // Machine and substrate field checks
