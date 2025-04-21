@@ -43,6 +43,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
+import { BASE_API_URL } from "../../api.config";
 
 interface Column {
   id: string;
@@ -120,6 +121,7 @@ function ReusableTable<T extends Record<string, any>>({
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
   const [showSelectionBar, setShowSelectionBar] = useState(false);
   const [loading,setLoading] = useState(false);
+  const [loaderDownload,setLoaderDownload] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -215,25 +217,26 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     : sortedData;
 
     const handleSelectAll = () => {
-      // Ensure we have the correct current page
-      const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage); // Correct page calculation here
+      const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
       const allSelected = currentPageRows.every((row) => isSelected(row));
-    
-      // Update selected state based on current page rows and all selected state
+      
       let newSelected: T[] = [];
       
       if (!allSelected) {
-        newSelected = [...newSelected, ...currentPageRows]; // Select all rows for the current page
+        newSelected = [...newSelected, ...currentPageRows];
       } else {
-        // Deselect rows for the current page
         newSelected = selected.filter((row) => !currentPageRows.some((r) => r[rowIdentifier] === row[rowIdentifier]));
       }
     
-      // Set selected rows and selection bar visibility
+      console.log("Previous Selected:", selected);
+      console.log("New Selected:", newSelected);
+      console.log("All Selected:", allSelected);
+    
       setSelected(newSelected);
       setShowSelectionBar(newSelected.length > 0);
       if (onSelectionChange) onSelectionChange(newSelected);
     };
+    
     
     
 
@@ -283,14 +286,6 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     setSelected([]);
     setShowSelectionBar(false);
   };
-
-  const handleDownload = () => {
-    console.log("Download selected:", selected);
-  };
-
-  // const handleUpload = () => {
-  //   console.log("Upload selected:", selected);
-  // };
   const [updateStatusJob] = useUpdateStatusJobMutation();
 
   
@@ -337,6 +332,58 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
   }, [page]);
+
+
+  const handleBulkDownload = async () => {
+    if (selected.length === 0) {
+      toast.warning("Please select at least one row!");
+      return;
+    }
+  
+    setLoaderDownload(true);
+    const errors: string[] = [];
+  
+    try {
+      const downloadTasks = selected.map(async (row) => {
+        const unitNumber = row.unitEffectivityNumber;
+        const indentNumber = decodeURIComponent(row.indentNumber || "");
+        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+  
+        try {
+          const response = await fetch(url, { method: 'GET' });
+  
+          if (!response.ok) {
+            const errorData = await response.json();
+            errors.push(`Indent: ${indentNumber} — ${errorData?.message || 'Download failed.'}`);
+            return;
+          }
+  
+          const blob = await response.blob();
+          const fileUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = fileUrl;
+          link.download = `${indentNumber}.xlsx`;
+          link.click();
+          URL.revokeObjectURL(fileUrl);
+        } catch (err) {
+          errors.push(`Indent: ${indentNumber} — ${err instanceof Error ? err.message : 'Unknown error'}`);
+        }
+      });
+  
+      await Promise.all(downloadTasks);
+  
+      if (errors.length > 0) {
+        errors.forEach(err => toast.error(err));
+      } else {
+        toast.success("All files downloaded successfully!");
+      }
+  
+    } finally {
+      setLoaderDownload(false);
+    }
+  };
+  
+  
   
   return (
     <Paper
@@ -893,8 +940,8 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
               /> */}
 
               <ButtonComponent
-                text={"Download Template"}
-                onClick={handleDownload}
+                text={loaderDownload ? "Downloading...":"Download Template"}
+                onClick={handleBulkDownload}
                 textColor="#0073B7"
                 color="white"
                 borderRadius="100px"
