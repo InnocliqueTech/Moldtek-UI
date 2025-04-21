@@ -153,9 +153,7 @@ console.log(submitAndPublishButtonLamination,submitAndPublishButtonPrinting,"SUB
           onClick={handleSubmitAndPublishPopupOpen}
           disabled={
             submitAndPublishButtonMasterData ||
-            submitAndPublishButtonDyeCutting ||
-            submitAndPublishButtonLamination ||
-            submitAndPublishButtonPrinting
+            submitAndPublishButtonDyeCutting 
               ? true
               : false
           }
