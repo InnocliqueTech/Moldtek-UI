@@ -235,15 +235,14 @@ const Lamination: React.FC<LaminationProps> = ({
     dispatch(setLaminationFormData(updatedFormData));
   };
   
-  
-
   useEffect(() => {
     const errorValues = Object.values(errors);
     const hasAnyError = errorValues.some((err) => err !== "");
   
-    let isAnyFieldFilled = false;
-    let areAllFieldsFilled = true;
+    let isAnyFieldFilled = false;   // To check if at least one field is filled
+    let areAllFieldsFilled = true;  // To check if all fields are filled
   
+    // Loop through formData to check for empty fields
     for (const sectionKey in formData) {
       const section = (formData as any)[sectionKey];
       if (section && typeof section === "object") {
@@ -253,27 +252,40 @@ const Lamination: React.FC<LaminationProps> = ({
             ? field.value
             : field;
   
+          // Check if the field is empty (empty string, null, undefined, or empty array)
           const isEmpty =
             value === "" ||
             value === null ||
             value === undefined ||
             (Array.isArray(value) && value.length === 0);
   
+          // If the field is not empty, consider it filled
           if (!isEmpty) {
             isAnyFieldFilled = true;
           } else {
-            areAllFieldsFilled = false;
+            areAllFieldsFilled = false; // If any field is empty, set to false
           }
         }
       }
     }
   
+    // Enable Save button if any field is filled and no errors
     const shouldEnableSave = isAnyFieldFilled && !hasAnyError;
-    const shouldEnableSubmitAndPublish = areAllFieldsFilled && !hasAnyError;
   
-    dispatch(setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish));
-    dispatch(setLaminationSave(!shouldEnableSave));
+    // Set Submit and Publish button to true only if **all** fields are filled and no errors
+    const shouldEnableSubmitAndPublish = !areAllFieldsFilled && !hasAnyError;
+  
+    // Dispatch actions to enable/disable buttons
+    dispatch(setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish));
+    dispatch(setLaminationSave(shouldEnableSave));
+  
+    // Debugging: Log the status of the Save and Submit buttons
+    console.log("shouldEnableSave:", shouldEnableSave);
+    console.log("shouldEnableSubmitAndPublish:", shouldEnableSubmitAndPublish);
+  
   }, [errors, formData]);
+  
+  
   
   
   
