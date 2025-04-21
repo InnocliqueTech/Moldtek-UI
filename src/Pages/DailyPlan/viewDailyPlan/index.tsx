@@ -22,8 +22,7 @@ import {
   setPlateMountingSupervisorReport,
   setIsEditing
 } from "../../../store/slices/viewDailyPlanSlice";
-import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
-import { useSaveLabelCuttingDetailsMutation } from "../../../store/services/api";
+import { useGetMakeReadyDetailsQuery,useSaveLabelCuttingDetailsMutation,useSaveTravelCardDetailsMutation } from "../../../store/services/api";
 
 const tabs = [
   "Make Ready",
@@ -39,6 +38,8 @@ const ViewDailyPlan: React.FC = () => {
   const [nextTab, setNextTab] = useState<number | null>(null);
   const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
   const [saveLabelCuttingDetails, { isLoading: isSaving }] = useSaveLabelCuttingDetailsMutation();
+  const [saveTravelCardDetails] = useSaveTravelCardDetailsMutation();
+  const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
   let unitEffectiveNumberDaily: number | undefined;
 
   const uen = localStorage.getItem('unitEffectiveNumberDaily');
@@ -82,21 +83,58 @@ const ViewDailyPlan: React.FC = () => {
     }
   };
 
+  const saveTabData = async (
+    selectedTab: number,
+    payload: any,
+    saveLabelCuttingDetails: ReturnType<typeof useSaveLabelCuttingDetailsMutation>[0],
+    saveTravelCardDetails: ReturnType<typeof useSaveTravelCardDetailsMutation>[0],
+    setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>
+  ) => {
+    setSavingTabIndex(selectedTab); // show loader on current tab
+    try {
+      switch (selectedTab) {
+        case 3:
+          await saveLabelCuttingDetails(payload).unwrap();
+          toast.success("Label cutting details saved successfully!");
+          break;
+  
+        case 4:
+          await saveTravelCardDetails(payload).unwrap();
+          toast.success("Travel card details saved successfully!");
+          break;
+  
+        default:
+          toast.info("No save action defined for this tab.");
+          break;
+      }
+    } finally {
+      setSavingTabIndex(null); // hide loader
+    }
+  };
+  
+  
+
   const handleSave = async () => {
     try {
-      await saveLabelCuttingDetails({
-        indentNumber: decodedIndentNo,
+      console.log(updateDailyPlanPayload,updateCommonCard,"inside save");
+      const commonPayload = {
         ...updateDailyPlanPayload,
-        ...updateCommonCard
-      }).unwrap();
-      
-      toast.success("Data saved successfully!");
-      
-      // If not on the last tab, move to next tab
+        ...updateCommonCard,
+        indentNumber: decodedIndentNo,
+      };
+  
+      await saveTabData(
+        selectedTab,
+        commonPayload,
+        saveLabelCuttingDetails,
+        saveTravelCardDetails,
+        setSavingTabIndex
+      );
+  
       if (selectedTab < tabs.length - 1) {
         dispatch(setSelectedTab(selectedTab + 1));
       }
-      
+  
       dispatch(setIsEditing(false));
       setHasUnsavedChanges(false);
     } catch (error) {
@@ -152,89 +190,96 @@ const ViewDailyPlan: React.FC = () => {
   }, [isEditing]);
 
   return (
-    <Box sx={{ 
-      width: "100%", 
-      display: "flex", 
-      flexDirection: "column", 
-      gap: 1,
-      pb: isEditing ? '80px' : 0
-    }}>
-      {/* Common Card */}
-      <Box sx={{
+    <Box
+      sx={{
         width: "100%",
-        backgroundColor: "white",
-        padding: 2,
-        borderRadius: "10px",
-      }}>
-        <CommenCard 
-          isLoading={isLoading} 
+        display: "flex",
+        flexDirection: "column",
+        gap: 1,
+        pb: isEditing ? "80px" : 0,
+      }}
+    >
+      {/* Common Card */}
+      <Box
+        sx={{
+          width: "100%",
+          backgroundColor: "white",
+          padding: 2,
+          borderRadius: "10px",
+        }}
+      >
+        <CommenCard
+          isLoading={isLoading}
           isEditing={isEditing}
           onDataChange={handleDataChange}
         />
       </Box>
 
       {/* Tabs Section */}
-      <Box sx={{
-        width: "100%",
-        backgroundColor: "white",
-        borderRadius: "10px",
-        overflow: "hidden",
-        mt: 1,
-        minHeight: "400px"
-      }}>
+      <Box
+        sx={{
+          width: "100%",
+          backgroundColor: "white",
+          borderRadius: "10px",
+          overflow: "hidden",
+          mt: 1,
+          minHeight: "400px",
+        }}
+      >
         <TabsComponent
           tabs={tabs}
           value={selectedTab}
           onChange={handleTabChange}
         />
-        <Box sx={{ padding: 1 }}>
-          {renderTabContent()}
-        </Box>
+        <Box sx={{ padding: 1 }}>{renderTabContent()}</Box>
       </Box>
 
       {/* Fixed Footer for Edit Mode */}
       {isEditing && (
-        <Box sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          boxShadow: '0px -2px 10px rgba(0,0,0,0.1)',
-          padding: '16px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          zIndex: 1000
-        }}>
-          <Button 
-            variant="outlined" 
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "white",
+            boxShadow: "0px -2px 10px rgba(0,0,0,0.1)",
+            padding: "16px",
+            display: "flex",
+            justifyContent: "flex-end",
+            zIndex: 1000,
+          }}
+        >
+          <Button
+            variant="outlined"
             onClick={handleCancel}
             sx={{ mr: 2 }}
             disabled={isSaving}
           >
             Cancel
           </Button>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={handleSave}
             color="primary"
-            disabled={isSaving}
-            startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : null}
+            disabled={savingTabIndex === selectedTab}
+            startIcon={
+              savingTabIndex === selectedTab ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : null
+            }
           >
-            {isSaving ? (
-              'Saving...'
-            ) : (
-              selectedTab === tabs.length - 1 ? 'Save' : 'Save & Next'
-            )}
+            {savingTabIndex === selectedTab
+              ? "Saving..."
+              : selectedTab === tabs.length - 1
+              ? "Save"
+              : "Save & Next"}
           </Button>
         </Box>
       )}
 
       {/* Tab Change Confirmation Dialog */}
-      <Dialog
-        open={showTabChangeDialog}
-        onClose={handleDialogCancel}
-      >
+      <Dialog open={showTabChangeDialog} onClose={handleDialogCancel}>
         <DialogTitle>Unsaved Changes</DialogTitle>
         <DialogContent>
           You have unsaved changes. Are you sure you want to switch tabs?

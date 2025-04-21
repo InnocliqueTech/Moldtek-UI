@@ -43,9 +43,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
   }, [labelCuttingData]);
 
   const handleDataUpdate = (table: string, newData: any) => {
-    console.log(table,newData,"inside dataUpdate");
     if (!editableData) return;
-    let _payloadData;
     setEditableData(prev => {
       if (!prev) return null;
       
@@ -66,12 +64,10 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
         default:
           break;
       }
-      _payloadData={...updatedData,machineConfiguration:updatedData.machineConfiguration[0],approvalRemarks:updatedData.approvalRemarks[0]}
+      dispatch(setUpdateDailyPlanPayload({...updatedData,machineConfiguration:updatedData.machineConfiguration[0],approvalRemarks:updatedData.approvalRemarks[0]}));
       
       return updatedData;
     });
-    dispatch(setUpdateDailyPlanPayload(_payloadData));
-    // Notify parent component about data changes
     onDataChange();
   };
 

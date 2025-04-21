@@ -453,3 +453,23 @@ export interface SaveLabelCuttingResponse {
   payload: null;
   data: null;
 }
+
+
+//--------------------------------travelCard edit------------------------//
+
+export interface SaveTravelCardRequest {
+  indentNumber: number;
+  shift: string;
+  workOrderNumber: string;
+  printingMachine: MachineDetails;
+  laminationMachine: MachineDetails;
+  labelCuttingMachine: MachineDetails;
+  labelDispatchSummary: LabelDispatchSummary;
+}
+
+export interface SaveTravelCardResponse {
+  statusCode: number;
+  message: string;
+  payload: null;
+  data: null;
+}
