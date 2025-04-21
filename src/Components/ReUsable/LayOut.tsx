@@ -206,6 +206,8 @@ const formattedDate = today
       uploadTitle?: string;
       uploadSubTitle?: string;
       headerButtonColor?: boolean;
+      dropDown?:boolean;
+      dropDownOptions?:string[]
     }
   > = {
     "/dashboard": {
@@ -312,6 +314,8 @@ const formattedDate = today
       onBack: () => navigate("/dailyPlan"),
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "",
+      dropDown:true,
+      dropDownOptions:["Completed","In active","Active","In progress"]
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -383,6 +387,8 @@ const formattedDate = today
           uploadTitle={headerData.uploadTitle}
           uploadSubTitle={headerData.uploadSubTitle}
           headerButtonColor={headerData.headerButtonColor}
+          dropDown={headerData.dropDown}
+          dropDownOptions={headerData.dropDownOptions}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

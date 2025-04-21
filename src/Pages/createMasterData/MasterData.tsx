@@ -127,6 +127,7 @@ const MasterData: React.FC = () => {
     },
   ];
 
+
   const { filtersPayload, openSider } = useSelector(
     (state: RootState) => state.masterData
   );

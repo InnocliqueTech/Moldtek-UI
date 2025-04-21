@@ -66,7 +66,7 @@ const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [saveDailyJob, { isLoading, isSuccess, isError, error }] =
+  const [saveDailyJob, { isLoading, error }] =
     useSaveDailyJobMutation();
   const handleInputChange = (
     fieldId: string,

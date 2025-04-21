@@ -63,9 +63,8 @@ const DataTable = <T extends Record<string, any>>({
   const [invalidFields, setInvalidFields] = useState<{
     [key: string]: boolean;
   }>({});
- 
   const validateInput = (columnId: string, value: string): boolean => {
-    const numericFields = ["volume", "uv_led_intensity", "lf_value"];
+    const numericFields = ["volume", "uv_led_intensity", "lf_value","mptl_code","mixing_on_gec"];
     const lpcmFields = ["lpcm"];
     const laminationFileds =  ["code","ratio","brand"]
 
@@ -89,7 +88,7 @@ const DataTable = <T extends Record<string, any>>({
     value: T[K] | string
   ) => {
     const updated = [...data];
-    const numberKeys = ["lf_value", "lpcm", "station_no", "ratio"];
+    const numberKeys = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec","uv_led_intensity","volume"];
     let updatedValue: any = value;
 
     if (numberKeys.includes(columnId as string)) {
@@ -229,7 +228,7 @@ const DataTable = <T extends Record<string, any>>({
     const isReady = hasValidMandatory && !hasAnyInvalidField;
   
     dispatch(setLaminationSave(!isReady)); // this one only for lamination
-    console.log(!isReady, "ISREADY");
+
   }
     
   }, [data, invalidFields,id]);

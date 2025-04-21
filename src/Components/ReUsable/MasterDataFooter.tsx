@@ -129,7 +129,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     ? `You have successfully updated master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`
     : `You have successfully created master data. Your version is ${selectedUEN} V${displayVersion}.`;
 
-
   return (
     <Box
       display="flex"

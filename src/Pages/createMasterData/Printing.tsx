@@ -155,44 +155,51 @@ const Printing: React.FC<PrintingProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    dispatch(setPrintingDataTouched(true))
+    dispatch(setPrintingDataTouched(true));
+  
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
-
+  
+    // Fields that should be saved as numbers
     const isNumberField = [
-      "tension",
+      "thickness",
       "width",
       "density",
-      "cylinder_teeth",
+      "tension",
       "unwinder",
       "infeed",
       "outfeed",
+      "rewinder",
       "static_charge",
-      "format_correct",
-      "dyne_level",
-      "rewinder"
+      "format_correct"
     ].includes(field);
-
+  
+    // Machine and substrate field checks
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
-
+  
+    // Regex for validation
     const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/; // letters, numbers, spaces
     const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
-
+  
     let errorMsg = "";
-
+    let finalValue: string | number | string[] = newValue;
+  
+    // Validate number fields
     if (isNumberField) {
       if (newValue === "0" || newValue === "") {
         errorMsg = "Value cannot be 0 or empty";
       } else if (!isNaN(Number(newValue))) {
         errorMsg = ""; // valid number
+        finalValue = Number(newValue); // Convert to number
       } else {
         errorMsg = `Invalid number`;
       }
     } else if (field === "thickness") {
+      // Validate thickness field (assumed to be string with no special characters)
       if (typeof newValue === "string") {
         const trimmed = newValue.trim();
         if (trimmed === "") {
@@ -202,6 +209,7 @@ const Printing: React.FC<PrintingProps> = ({
         }
       }
     } else if (typeof newValue === "string") {
+      // For other string-based fields
       const trimmed = newValue.trim();
       if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
@@ -210,26 +218,33 @@ const Printing: React.FC<PrintingProps> = ({
           "Only alphabets are allowed — no numbers or special characters";
       }
     }
-const updatedErros = {
-  ...errors,
-  [field]: errorMsg
-}
+  
+    // Set the error message for the field
+    const updatedErros = {
+      ...errors,
+      [field]: errorMsg,
+    };
+  
     setErrors(updatedErros);
-    dispatch(setPrintngFormErros(updatedErros))
-
+    dispatch(setPrintngFormErros(updatedErros));
+  
+    // Update form data with new value (whether number or string)
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
-        ? { ...formValues.printingDetails, [field]: newValue }
+        ? { ...formValues.printingDetails, [field]: finalValue }
         : formValues.printingDetails,
       printingSubstrateSettings: isSubstrateField
-        ? { ...formValues.printingSubstrateSettings, [field]: newValue }
+        ? { ...formValues.printingSubstrateSettings, [field]: finalValue }
         : formValues.printingSubstrateSettings,
     };
-
+  
+    // Save the updated form data
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
+  
+  
   const renderField = (field: {
     id: string;
     label: string;
@@ -323,37 +338,37 @@ const updatedErros = {
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
     )[];
-
+  
     const hasErrors = importantFields.some((field) => {
       const isInPrintingDetails = field in formValues.printingDetails;
-      const isInPrintingSubstrateSettings =
-        field in formValues.printingSubstrateSettings;
-    
+      const isInPrintingSubstrateSettings = field in formValues.printingSubstrateSettings;
+  
       if (isInPrintingDetails) {
         const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
         return (
-          errors[field] !== "" ||
+          (!!errors[field] && errors[field] !== "") ||
           value === "" ||
           value === null ||
           value === undefined
         );
       }
-    
+  
       if (isInPrintingSubstrateSettings) {
         const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
         return (
-          errors[field] !== "" ||
+          (!!errors[field] && errors[field] !== "") ||
           value === "" ||
           value === null ||
           value === undefined
         );
       }
-    
+  
       return false;
     });
-    dispatch(setSubmitAndPublishButtonPrinting(hasErrors));
-    
+  
+    dispatch(setSubmitAndPublishButtonPrinting(!hasErrors));
   }, [formValues, errors]);
+  
 
   useEffect(() => {
     const importantFields = [
