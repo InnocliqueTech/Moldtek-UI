@@ -5,12 +5,14 @@ interface TabsComponentProps {
   tabs: string[];
   value: number;
   onChange: (event: React.SyntheticEvent, newValue: number) => void;
+  disabled?: boolean;
 }
 
 const TabsComponent: React.FC<TabsComponentProps> = ({
   tabs,
   value,
   onChange,
+  disabled=false
 }) => {
   return (
     <MUITabs
@@ -34,6 +36,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
           key={index}
           label={tab}
           value={index}
+          disabled={disabled}
           sx={{
             textTransform: "none",
             fontSize: "14px",
