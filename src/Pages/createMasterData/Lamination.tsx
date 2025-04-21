@@ -145,8 +145,9 @@ const Lamination: React.FC<LaminationProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    if(id){
     dispatch(setLaminationDataTouched(true));
-  
+    }
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -177,7 +178,7 @@ const Lamination: React.FC<LaminationProps> = ({
       ["lami_set_tension", "rewinder_tension", "printed_film_tension", "laminate_film_tension", "dyne_level", "adhesive_gsm"].includes(field)
     ) {
       const trimmed = (newValue as string).trim();
-    
+  
       if (trimmed === "") {
         errorMessage = `${field.replace(/_/g, ' ')} cannot be empty.`;
       } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
@@ -187,7 +188,7 @@ const Lamination: React.FC<LaminationProps> = ({
         errorMessage = "";
       }
     }
-     else if (numericFields.has(field)) {
+    else if (numericFields.has(field)) {
       if (!isNaN(Number(newValue)) && newValue !== "") {
         finalValue = Number(newValue); // Save valid numbers
         errorMessage = "";
@@ -215,12 +216,12 @@ const Lamination: React.FC<LaminationProps> = ({
       [field]: errorMessage,
     };
     setErrors(updatedErrors);
-    dispatch(setLaminationFormErros(updatedErrors));
+      dispatch(setLaminationFormErros(updatedErrors));
   
     // Save to the form data and dispatch to Redux with strings for the tension fields
-    const updatedFormData = {
+      const updatedFormData = {
       ...formData,
-      [section]: {
+        [section]: {
         ...(formData as any)[section],
         [field]:
           field === "thickness" && errorMessage === ""
