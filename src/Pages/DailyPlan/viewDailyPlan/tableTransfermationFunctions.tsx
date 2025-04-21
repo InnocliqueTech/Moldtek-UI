@@ -1,4 +1,5 @@
 import { formatDate } from "../../../Components/helpers";
+import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 type StationData = {
     stationNo: number;
     colorPantone: string | null;
@@ -166,35 +167,48 @@ type TensionApiResponse = {
     hod: string;
   };
   
-  export const transformJobDetails = (data: JobDetailsApiResponse | undefined) => {
-    if(!data){
-      return [];
-    }
-
+  export const transformJobDetails = (
+    data: JobDetailsApiResponse | undefined,
+    makeEditable: boolean = false
+  ): InfoItem[] => {
+    if (!data) return [];
+  
     return [
       {
         label: "Job Starting Time",
         value: formatDate(data.jobStartingTime),
+        editable: makeEditable,
+        keyName: "jobStartingTime",
       },
       {
         label: "Completion Time",
         value: formatDate(data.completionTime),
+        editable: makeEditable,
+        keyName: "completionTime",
       },
       {
         label: "Total Printing Time",
         value: data.totalPrintingTime || "--",
+        editable: makeEditable,
+        keyName: "totalPrintingTime",
       },
       {
         label: "Operator",
         value: data.operator || "--",
+        editable: makeEditable,
+        keyName: "operator",
       },
       {
         label: "Supervisor",
         value: data.supervisor || "--",
+        editable: makeEditable,
+        keyName: "supervisor",
       },
       {
         label: "HOD",
         value: data.hod || "--",
+        editable: makeEditable,
+        keyName: "hod",
       },
     ];
   };

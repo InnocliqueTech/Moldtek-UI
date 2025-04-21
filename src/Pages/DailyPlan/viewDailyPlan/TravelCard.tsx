@@ -16,6 +16,7 @@ import {
   MachineDetails,
   LabelDispatchSummary,
 } from "../../../store/Interfaces/createDailyPlanTypes";
+import { InfoItem } from "../../../Components/ReUsable/InfoContainer"; // adjust path if needed
 
 interface TravelCardProps {
   indentNumber: string;
@@ -40,9 +41,20 @@ const TravelCard: React.FC<TravelCardProps> = ({
 
   const [editableData, setEditableData] = useState<EditableTravelCardData | null>(null);
 
+  // infoItems state for editing job details
+  const [printingInfo, setPrintingInfo] = useState<InfoItem[]>([]);
+  const [laminationInfo, setLaminationInfo] = useState<InfoItem[]>([]);
+  const [cuttingInfo, setCuttingInfo] = useState<InfoItem[]>([]);
+
+  // On data load, set editable states
   useEffect(() => {
     if (data?.data) {
-      setEditableData({ ...data.data });
+      const newData = { ...data.data };
+      setEditableData(newData);
+
+      setPrintingInfo(transformJobDetails(newData.printingMachine, true));
+      setLaminationInfo(transformJobDetails(newData.laminationMachine, true));
+      setCuttingInfo(transformJobDetails(newData.labelCuttingMachine, true));
     }
   }, [data]);
 
@@ -59,11 +71,54 @@ const TravelCard: React.FC<TravelCardProps> = ({
         categories: [...newData],
       };
     }
-console.log(updated,"inside handleDataUpdate");
+
     setEditableData(updated);
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();
   };
+
+  const handleInfoUpdate = (
+    section: keyof EditableTravelCardData,
+    updatedItems: InfoItem[]
+  ) => {
+    if (!editableData) return;
+  
+    if (
+      section !== "printingMachine" &&
+      section !== "laminationMachine" &&
+      section !== "labelCuttingMachine"
+    ) {
+      console.warn("handleInfoUpdate not supported for:", section);
+      return;
+    }
+  
+    const updated: EditableTravelCardData = { ...editableData };
+    const machine = { ...updated[section] } as MachineDetails;
+  
+    updatedItems.forEach((item) => {
+      if (item.keyName && item.value !== undefined) {
+        (machine as any)[item.keyName] = item.value;
+      }
+    });
+  
+    updated[section] = machine; 
+    setEditableData(updated);
+    dispatch(setUpdateDailyPlanPayload({ ...updated }));
+    onDataChange();
+    // Update local infoItem state
+    switch (section) {
+      case "printingMachine":
+        setPrintingInfo(updatedItems);
+        break;
+      case "laminationMachine":
+        setLaminationInfo(updatedItems);
+        break;
+      case "labelCuttingMachine":
+        setCuttingInfo(updatedItems);
+        break;
+    }
+  };
+  
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error loading details: {JSON.stringify(error)}</div>;
@@ -71,7 +126,7 @@ console.log(updated,"inside handleDataUpdate");
 
   return (
     <>
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Printing Machine"
           columns={printingColumns.map((col) => ({
@@ -79,14 +134,16 @@ console.log(updated,"inside handleDataUpdate");
             edit: isEditing && col.edit,
           }))}
           data={editableData.printingMachine.categories}
-          setData={(newData:any) => handleDataUpdate("printingMachine", newData)}
-          firstRow={true}
-          infoItems={transformJobDetails(editableData.printingMachine)}
-          showInfoSection={true}
+          setData={(newData: any[]) => handleDataUpdate("printingMachine", newData)}
+          firstRow
+          infoItems={printingInfo}
+          setInfoItems={(updatedItems) => handleInfoUpdate("printingMachine", updatedItems)}
+          isEditing={isEditing}
+          showInfoSection
         />
       </Box>
 
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Lamination Machine"
           columns={laminationColumns.map((col) => ({
@@ -94,14 +151,16 @@ console.log(updated,"inside handleDataUpdate");
             edit: isEditing && col.edit,
           }))}
           data={editableData.laminationMachine.categories}
-          setData={(newData:any) => handleDataUpdate("laminationMachine", newData)}
-          firstRow={true}
-          infoItems={transformJobDetails(editableData.laminationMachine)}
-          showInfoSection={true}
+          setData={(newData: any[]) => handleDataUpdate("laminationMachine", newData)}
+          firstRow
+          infoItems={laminationInfo}
+          setInfoItems={(updatedItems) => handleInfoUpdate("laminationMachine", updatedItems)}
+          isEditing={isEditing}
+          showInfoSection
         />
       </Box>
 
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Label Cutting Machine"
           columns={labelCuttingColumns.map((col) => ({
@@ -109,14 +168,16 @@ console.log(updated,"inside handleDataUpdate");
             edit: isEditing && col.edit,
           }))}
           data={editableData.labelCuttingMachine.categories}
-          setData={(newData:any) => handleDataUpdate("labelCuttingMachine", newData)}
-          firstRow={true}
-          infoItems={transformJobDetails(editableData.labelCuttingMachine)}
-          showInfoSection={true}
+          setData={(newData: any[]) => handleDataUpdate("labelCuttingMachine", newData)}
+          firstRow
+          infoItems={cuttingInfo}
+          setInfoItems={(updatedItems) => handleInfoUpdate("labelCuttingMachine", updatedItems)}
+          isEditing={isEditing}
+          showInfoSection
         />
       </Box>
 
-      <Box sx={{ borderRadius: "0px ", p: 1 }}>
+      <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Label Dispatch Summary"
           columns={labelDispatchColums.map((col) => ({
@@ -124,7 +185,7 @@ console.log(updated,"inside handleDataUpdate");
             edit: isEditing && col.edit,
           }))}
           data={[editableData.labelDispatchSummary]}
-          setData={(newData:any) => handleDataUpdate("labelDispatchSummary", newData)}
+          setData={(newData: any[]) => handleDataUpdate("labelDispatchSummary", newData)}
         />
       </Box>
     </>

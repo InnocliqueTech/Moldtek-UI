@@ -26,6 +26,8 @@ interface TitledDataTableProps<T> {
   infoItems?: InfoItem[];
   showInfoSection?: boolean;
   showTableSection?:boolean;
+  isEditing?: boolean;
+  setInfoItems?: (items: InfoItem[]) => void;
 }
 
 const TitledDataTable = <T extends Record<string, any>>({
@@ -41,6 +43,8 @@ const TitledDataTable = <T extends Record<string, any>>({
   infoItems = [],
   showInfoSection = false,
   showTableSection = true,
+  isEditing,
+  setInfoItems,
 }: TitledDataTableProps<T>) => {
   return (
     <Box
@@ -57,7 +61,7 @@ const TitledDataTable = <T extends Record<string, any>>({
           justifyContent: "space-between",
           alignItems: "center",
           // padding: !showTableSection?  "8px 8px 0px 8px" : "8px",
-          padding:"8px 8px 0px 8px"
+          padding: "8px 8px 0px 8px",
         }}
       >
         <Typography
@@ -70,28 +74,32 @@ const TitledDataTable = <T extends Record<string, any>>({
         >
           {title}
         </Typography>
-        <InfoOutline
-          sx={{ color: infoIconColor, width: 20, height: 20 }}
-        />
+        <InfoOutline sx={{ color: infoIconColor, width: 20, height: 20 }} />
       </Box>
-      {showTableSection && <Box sx={{
-        borderBottom: `1px solid ${borderColor}`,
-        borderRadius: borderRadius,
-        marginBottom: showInfoSection ? "1rem" :"0px"
-      }}>
-        <DataTable
-          columns={columns}
-          data={data}
-          setData={setData}
-          tableTitle={true}
-          firstRow={firstRow ? true : false}
-        />
-      </Box>}
+      {showTableSection && (
+        <Box
+          sx={{
+            borderBottom: `1px solid ${borderColor}`,
+            borderRadius: borderRadius,
+            marginBottom: showInfoSection ? "1rem" : "0px",
+          }}
+        >
+          <DataTable
+            columns={columns}
+            data={data}
+            setData={setData}
+            tableTitle={true}
+            firstRow={firstRow ? true : false}
+          />
+        </Box>
+      )}
       {/* container with title and text  */}
 
       {showInfoSection && infoItems.length > 0 && (
-        <InfoContainer 
-          infoItems={infoItems} 
+        <InfoContainer
+          infoItems={infoItems}
+          isEditing={isEditing}
+          setInfoItems={setInfoItems}
           borderColor={borderColor}
         />
       )}
