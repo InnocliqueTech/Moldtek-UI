@@ -11,7 +11,9 @@ import {
   TravelCardDetailsResponse,
   SaveDailyJobRequest,
   SaveDailyJobResponse,
-  LaminationReportResponse 
+  LaminationReportResponse ,
+  SaveLabelCuttingResponse,
+  SaveLabelCuttingRequest
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -204,7 +206,21 @@ query:(newItem)=>({
       providesTags: (_result, _error, indentNumber) => [
         { type: 'LaminationReport', id: indentNumber }
       ],
-    })
+    }),
+    saveLabelCuttingDetails: builder.mutation<
+      SaveLabelCuttingResponse,
+      SaveLabelCuttingRequest
+    >({
+      query: (labelCuttingData) => ({
+        url: '/dailyplan/saveLabelCuttingDetails',
+        method: 'POST',
+        body: labelCuttingData,
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: 'LabelCuttingDetails', id: arg.indentNumber.toString() },
+        "MakeReadyDetails"
+      ],
+    }),
   }),
 });
 
@@ -228,5 +244,6 @@ export const {
   useDailyPlanFiltersMutation,
   useSaveDailyJobMutation ,
   useGetLaminationReportDetailsQuery,
-  useUpdateStatusJobMutation
+  useUpdateStatusJobMutation,
+  useSaveLabelCuttingDetailsMutation 
 } = apiSlice;

@@ -3,6 +3,8 @@ import { Box } from "@mui/material";
 import { machineSpecsColumns, productionColumns, approvalColumns } from "../data";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetLabelCuttingDetailsQuery } from "../../../store/services/api";
+import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import { useDispatch } from "react-redux";
 import Loader from "../../../Loader";
 
 interface LabelCuttingDetailsProps {
@@ -22,6 +24,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
   isEditing,
   onDataChange 
 }) => {
+  const dispatch = useDispatch();
   const { data: labelCuttingData, isLoading, isError, error } = 
     useGetLabelCuttingDetailsQuery(indentNumber);
 
@@ -42,7 +45,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
   const handleDataUpdate = (table: string, newData: any) => {
     console.log(table,newData,"inside dataUpdate");
     if (!editableData) return;
-    
+    let _payloadData;
     setEditableData(prev => {
       if (!prev) return null;
       
@@ -63,10 +66,11 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
         default:
           break;
       }
+      _payloadData={...updatedData,machineConfiguration:updatedData.machineConfiguration[0],approvalRemarks:updatedData.approvalRemarks[0]}
       
       return updatedData;
     });
-
+    dispatch(setUpdateDailyPlanPayload(_payloadData));
     // Notify parent component about data changes
     onDataChange();
   };

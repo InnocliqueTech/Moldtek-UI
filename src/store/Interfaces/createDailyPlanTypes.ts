@@ -434,3 +434,22 @@ export interface LaminationReportResponse {
     plainFilmLeftOverRoll: PlainFilmLeftOverRoll;
   };
 }
+
+
+//-------------------------Update Api's------------------------//
+
+export interface SaveLabelCuttingRequest {
+  indentNumber: number;
+  shift: string;
+  workOrderNumber: string;
+  machineConfiguration: MachineConfiguration;
+  labelCuttingProcessReport: ProcessReportItem[];
+  approvalRemarks: ApprovalRemarks;
+}
+
+export interface SaveLabelCuttingResponse {
+  statusCode: number;
+  message: string;
+  payload: null;
+  data: null;
+}

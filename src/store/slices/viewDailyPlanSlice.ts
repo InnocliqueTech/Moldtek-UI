@@ -56,35 +56,38 @@ export interface LabelType {
   labelTypeId: number;
   labelTypeName: string;
 }
-export interface FiltersPayload{
+export interface FiltersPayload {
   fromDate: string,
   toDate: string,
   customerName: string[],
   labelType: string[],
 }
 export interface viewDailyPlan {
+  customers: Customer[];
+  labelTypes: LabelType[];
+  selectedLabelTypeIds: LabelType[];
+  selectedCustomers: Customer[];
+  selectedCustomersData: {
     customers: Customer[];
-    labelTypes: LabelType[];
-     selectedLabelTypeIds: LabelType[];
-    selectedCustomers: Customer[];
-    selectedCustomersData: {
-      customers: Customer[];
-    };
+  };
   dailyPlan: DailyPlan;
   inkCoatingSpecifications: InkCoatingSpecification[];
   analoxSpecifications: AnaloxSpecification[];
   mountingTapeSpecifications: any[];
   materialSpecification: MaterialSpecification;
-  plateMountingSupervisorReport: PlateMountingSupervisorReport; 
-  openSliderDaily:boolean;
-    filtersPayload:FiltersPayload;
-    isSearchTriggered:boolean;
-    dropDown:boolean;
+  plateMountingSupervisorReport: PlateMountingSupervisorReport;
+  openSliderDaily: boolean;
+  filtersPayload: FiltersPayload
+  isSearchTriggered: boolean
+  updateDailyPlanPayload: any,
+  updateCommonCard:{
+    shift: string,
+    workOrderNumber: string
+  }
 }
 
 const initialState: viewDailyPlan = {
-  dropDown:false,
-  filtersPayload:{
+  filtersPayload: {
     fromDate: "",
     toDate: "",
     customerName: [],
@@ -122,15 +125,20 @@ const initialState: viewDailyPlan = {
     dyne: "",
   },
   plateMountingSupervisorReport: {
-    platesInspection:  null,
+    platesInspection: null,
     mounter: "",
     approver: "",
     inkKitchenSupervisor: "",
     plateMountingSupervisor: "",
     shiftQcIncharge: ""
   },
-  openSliderDaily:false,
-  isSearchTriggered:false,
+  openSliderDaily: false,
+  isSearchTriggered: false,
+  updateDailyPlanPayload: {},
+  updateCommonCard:{
+    shift: "",
+    workOrderNumber: ""
+  }
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -140,72 +148,101 @@ const ViewDailyPanSlice = createSlice({
     setDailyPlan: (state, action: PayloadAction<DailyPlan>) => {
       state.dailyPlan = action.payload;
     },
-    setInkCoatingSpecifications:(state, action: PayloadAction<InkCoatingSpecification[]>) => {
+    setInkCoatingSpecifications: (state, action: PayloadAction<InkCoatingSpecification[]>) => {
       state.inkCoatingSpecifications = action.payload
     },
-    setAnaloxSpecifications:(state,action:PayloadAction<AnaloxSpecification[]>)=>{
-      state.analoxSpecifications=action.payload
+    setAnaloxSpecifications: (state, action: PayloadAction<AnaloxSpecification[]>) => {
+      state.analoxSpecifications = action.payload
     },
-    setMountingTapeSpecifications:(state,action:PayloadAction<any[]>)=>{
-      state.mountingTapeSpecifications=action.payload
+    setMountingTapeSpecifications: (state, action: PayloadAction<any[]>) => {
+      state.mountingTapeSpecifications = action.payload
     },
-    setMaterialSpecification:(state,action:PayloadAction<MaterialSpecification>)=>{
-      state.materialSpecification=action.payload
+    setMaterialSpecification: (state, action: PayloadAction<MaterialSpecification>) => {
+      state.materialSpecification = action.payload
     },
-    setPlateMountingSupervisorReport:(state,action:PayloadAction<any>)=>{
-      state.plateMountingSupervisorReport=action.payload
+    setPlateMountingSupervisorReport: (state, action: PayloadAction<any>) => {
+      state.plateMountingSupervisorReport = action.payload
     },
     setOpenSliderDaily: (state, action: PayloadAction<boolean>) => {
       state.openSliderDaily = action.payload;
     },
-        setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
-          state.selectedCustomers = action.payload;
-        },
-        toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
-          const { customerId } = action.payload;
-          const exists = state.selectedCustomers.some(
-            (customer) => customer.customerId === customerId
-          );
-          if (exists) {
-            state.selectedCustomers = state.selectedCustomers.filter(
-              (customer) => customer.customerId !== customerId
-            );
-          } else {
-            state.selectedCustomers.push(action.payload);
-          }
-        },
-    
-        setCustomers(state, action: PayloadAction<Customer[]>) {
-          state.customers = action.payload;
-        },
-        setLabelTypes(state, action: PayloadAction<LabelType[]>) {
-          state.labelTypes = action.payload;
-        },
+    setSelectedCustomers: (state, action: PayloadAction<Customer[]>) => {
+      state.selectedCustomers = action.payload;
+    },
+    toggleCustomerSelection: (state, action: PayloadAction<Customer>) => {
+      const { customerId } = action.payload;
+      const exists = state.selectedCustomers.some(
+        (customer) => customer.customerId === customerId
+      );
+      if (exists) {
+        state.selectedCustomers = state.selectedCustomers.filter(
+          (customer) => customer.customerId !== customerId
+        );
+      } else {
+        state.selectedCustomers.push(action.payload);
+      }
+    },
+
+    setCustomers(state, action: PayloadAction<Customer[]>) {
+      state.customers = action.payload;
+    },
+    setLabelTypes(state, action: PayloadAction<LabelType[]>) {
+      state.labelTypes = action.payload;
+    },
     setSelectedLabelTypeIds(state, action: PayloadAction<LabelType[]>) {
       state.selectedLabelTypeIds = action.payload;
     },
     toggleLabelType: (state, action: PayloadAction<LabelType>) => {
-      const {labelTypeId} = action.payload;
-      const exists = state.selectedLabelTypeIds.some((labelType)=> labelType.labelTypeId === labelTypeId);
+      const { labelTypeId } = action.payload;
+      const exists = state.selectedLabelTypeIds.some((labelType) => labelType.labelTypeId === labelTypeId);
       if (exists) {
         state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
-          (labelId) => labelId.labelTypeId !==labelTypeId
+          (labelId) => labelId.labelTypeId !== labelTypeId
         );
       } else {
         state.selectedLabelTypeIds.push(action.payload);
       }
     },
-            setFiltersPayload:(state,action:PayloadAction<FiltersPayload>)=>{
-            state.filtersPayload = action.payload
-            } ,
-                setIsSearchTriggered:(state,action:PayloadAction<boolean>)=>{
-                  state.isSearchTriggered = action.payload
-                } ,
-                setDropDown:(state,action:PayloadAction<boolean>)=>{
-                  state.dropDown = action.payload
-                }
+    setFiltersPayload: (state, action: PayloadAction<FiltersPayload>) => {
+      state.filtersPayload = action.payload
+    },
+    setIsSearchTriggered: (state, action: PayloadAction<boolean>) => {
+      state.isSearchTriggered = action.payload
+    },
+    setUpdateDailyPlanPayload : (state, action: any) => {
+      state.updateDailyPlanPayload = action.payload
+    },
+    clearUpdateDailyPlanPayload: (state) =>{
+      state.updateDailyPlanPayload = {}
+    },
+    setUpdateCommonCard : (state,action: PayloadAction<{
+      shift: string,
+      workOrderNumber: string
+    
+  }>) => {
+      state.updateCommonCard = action.payload
+    }
   },
 });
 
-export const { setDailyPlan,setAnaloxSpecifications,setInkCoatingSpecifications,setMaterialSpecification,setMountingTapeSpecifications,setPlateMountingSupervisorReport,setOpenSliderDaily,setCustomers,setFiltersPayload,setSelectedLabelTypeIds,setLabelTypes,setSelectedCustomers,toggleCustomerSelection,toggleLabelType,setIsSearchTriggered,setDropDown } = ViewDailyPanSlice.actions;
+export const {
+  setDailyPlan,
+  setAnaloxSpecifications,
+  setInkCoatingSpecifications,
+  setMaterialSpecification,
+  setMountingTapeSpecifications,
+  setPlateMountingSupervisorReport,
+  setOpenSliderDaily,
+  setCustomers,
+  setFiltersPayload,
+  setSelectedLabelTypeIds,
+  setLabelTypes,
+  setSelectedCustomers,
+  toggleCustomerSelection,
+  toggleLabelType,
+  setIsSearchTriggered,
+  setUpdateDailyPlanPayload,
+  clearUpdateDailyPlanPayload,
+  setUpdateCommonCard
+} = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

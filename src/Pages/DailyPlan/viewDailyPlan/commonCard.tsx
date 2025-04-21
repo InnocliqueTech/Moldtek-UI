@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Grid, Box, Tooltip, Skeleton } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import ReusableInput from "../../../Components/ReUsable/TextField"; // Adjust the import path as needed
+import { useDispatch } from "react-redux";
+import ReusableInput from "../../../Components/ReUsable/TextField";
+import { setUpdateCommonCard } from "../../../store/slices/viewDailyPlanSlice";
 
 interface Props {
   isLoading: boolean;
@@ -11,6 +13,7 @@ interface Props {
 }
 
 const CommenCard: React.FC<Props> = ({ isLoading, isEditing, onDataChange  }) => {
+  const dispatch = useDispatch()
   const { dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
   const [editValues, setEditValues] = useState({
     shift: dailyPlan?.shift || "",
@@ -32,6 +35,9 @@ const CommenCard: React.FC<Props> = ({ isLoading, isEditing, onDataChange  }) =>
     }));
     onDataChange();
   };
+  useEffect(()=>{
+    dispatch(setUpdateCommonCard(editValues))
+  },[editValues])
 console.log(editValues, dailyPlan.shift,dailyPlan.workOrderNumber,"inside the commonCard");
   return (
     <Box>
