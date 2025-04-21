@@ -75,7 +75,7 @@ export interface viewDailyPlan {
   analoxSpecifications: AnaloxSpecification[];
   mountingTapeSpecifications: any[];
   materialSpecification: MaterialSpecification;
-  plateMountingSupervisorReport: PlateMountingSupervisorReport;
+  plateMountingSupervisorReport: PlateMountingSupervisorReport; 
   openSliderDaily: boolean;
   filtersPayload: FiltersPayload
   isSearchTriggered: boolean
@@ -83,11 +83,13 @@ export interface viewDailyPlan {
   updateCommonCard:{
     shift: string,
     workOrderNumber: string
-  }
+  },
+  dropDown:boolean;
 }
 
 const initialState: viewDailyPlan = {
-  filtersPayload: {
+  dropDown:false,
+  filtersPayload:{
     fromDate: "",
     toDate: "",
     customerName: [],
@@ -221,6 +223,9 @@ const ViewDailyPanSlice = createSlice({
     
   }>) => {
       state.updateCommonCard = action.payload
+    },
+    setDropDown:(state,action:PayloadAction<boolean>)=>{
+      state.dropDown = action.payload
     }
   },
 });
@@ -243,6 +248,7 @@ export const {
   setIsSearchTriggered,
   setUpdateDailyPlanPayload,
   clearUpdateDailyPlanPayload,
-  setUpdateCommonCard
+  setUpdateCommonCard,
+  setDropDown
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;
