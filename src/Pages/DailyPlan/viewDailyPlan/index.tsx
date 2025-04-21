@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button, CircularProgress  } from "@mui/material";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
@@ -11,21 +13,24 @@ import LaminationReport from "./LaminationReport";
 import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
 import CommenCard from "./commonCard";
-import { setAnaloxSpecifications, setDailyPlan, setInkCoatingSpecifications, setMaterialSpecification, setMountingTapeSpecifications, setPlateMountingSupervisorReport,
-setIsEditing
- } from "../../../store/slices/viewDailyPlanSlice";
+import { 
+  setAnaloxSpecifications, 
+  setDailyPlan, 
+  setInkCoatingSpecifications, 
+  setMaterialSpecification, 
+  setMountingTapeSpecifications, 
+  setPlateMountingSupervisorReport,
+  setIsEditing
+} from "../../../store/slices/viewDailyPlanSlice";
 import { useGetMakeReadyDetailsQuery } from "../../../store/services/api";
 import { useSaveLabelCuttingDetailsMutation } from "../../../store/services/api";
-
-
-
 
 const tabs = [
   "Make Ready",
   "Printing Report",
   "Lamination Report",
   "Label Cutting",
-  " Travel Card",
+  "Travel Card",
 ];
 
 const ViewDailyPlan: React.FC = () => {
@@ -33,8 +38,7 @@ const ViewDailyPlan: React.FC = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [nextTab, setNextTab] = useState<number | null>(null);
   const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
-  const [saveLabelCuttingDetails, { isLoading:submitDailyPlanLoading, isSuccess, isError }] =
-    useSaveLabelCuttingDetailsMutation();
+  const [saveLabelCuttingDetails, { isLoading: isSaving }] = useSaveLabelCuttingDetailsMutation();
   let unitEffectiveNumberDaily: number | undefined;
 
   const uen = localStorage.getItem('unitEffectiveNumberDaily');
@@ -55,7 +59,7 @@ const ViewDailyPlan: React.FC = () => {
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-  const {updateDailyPlanPayload,updateCommonCard,isEditing} = useSelector((state:RootState)=>state.viewDailyPlan)
+  const { updateDailyPlanPayload, updateCommonCard, isEditing } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // Initialize data when loaded
   useEffect(() => {
@@ -78,19 +82,32 @@ const ViewDailyPlan: React.FC = () => {
     }
   };
 
-
-  const handleSave = async() => {
-    await saveLabelCuttingDetails({indentNumber:decodedIndentNo,...updateDailyPlanPayload,...updateCommonCard}).unwrap();
-    // Here you would implement your save logic
-    // For now, we'll just exit edit mode
-    dispatch(setIsEditing(false));
-    setHasUnsavedChanges(false);
+  const handleSave = async () => {
+    try {
+      await saveLabelCuttingDetails({
+        indentNumber: decodedIndentNo,
+        ...updateDailyPlanPayload,
+        ...updateCommonCard
+      }).unwrap();
+      
+      toast.success("Data saved successfully!");
+      
+      // If not on the last tab, move to next tab
+      if (selectedTab < tabs.length - 1) {
+        dispatch(setSelectedTab(selectedTab + 1));
+      }
+      
+      dispatch(setIsEditing(false));
+      setHasUnsavedChanges(false);
+    } catch (error) {
+      toast.error("Failed to save data. Please try again.");
+      console.error("Save error:", error);
+    }
   };
 
   const handleCancel = () => {
     dispatch(setIsEditing(false));
     setHasUnsavedChanges(false);
-    // Here you would also reset any unsaved changes
   };
 
   const handleDataChange = () => {
@@ -128,11 +145,11 @@ const ViewDailyPlan: React.FC = () => {
     }
   };
 
-  useEffect(()=>{
-    if(isEditing){
-      setHasUnsavedChanges(false)
+  useEffect(() => {
+    if (isEditing) {
+      setHasUnsavedChanges(false);
     }
-  },[isEditing])
+  }, [isEditing]);
 
   return (
     <Box sx={{ 
@@ -140,9 +157,8 @@ const ViewDailyPlan: React.FC = () => {
       display: "flex", 
       flexDirection: "column", 
       gap: 1,
-      pb: isEditing ? '80px' : 0 // Add padding for fixed footer
+      pb: isEditing ? '80px' : 0
     }}>
-
       {/* Common Card */}
       <Box sx={{
         width: "100%",
@@ -170,7 +186,6 @@ const ViewDailyPlan: React.FC = () => {
           tabs={tabs}
           value={selectedTab}
           onChange={handleTabChange}
-          // disabled={isEditing && hasUnsavedChanges}
         />
         <Box sx={{ padding: 1 }}>
           {renderTabContent()}
@@ -195,6 +210,7 @@ const ViewDailyPlan: React.FC = () => {
             variant="outlined" 
             onClick={handleCancel}
             sx={{ mr: 2 }}
+            disabled={isSaving}
           >
             Cancel
           </Button>
@@ -202,8 +218,14 @@ const ViewDailyPlan: React.FC = () => {
             variant="contained" 
             onClick={handleSave}
             color="primary"
+            disabled={isSaving}
+            startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : null}
           >
-            Save & Next
+            {isSaving ? (
+              'Saving...'
+            ) : (
+              selectedTab === tabs.length - 1 ? 'Save' : 'Save & Next'
+            )}
           </Button>
         </Box>
       )}
