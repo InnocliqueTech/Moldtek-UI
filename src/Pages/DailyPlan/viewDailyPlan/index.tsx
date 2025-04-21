@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button,IconButton } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
