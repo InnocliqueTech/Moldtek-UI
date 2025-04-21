@@ -23,10 +23,8 @@ import {
   PrintingTableRow,
   setInvalidFieldsTable,
   setLaminationFormData,
-  setLaminationSave,
   setPrintingSave,
   setSavePrintingFormData,
-  setSubmitAndPublishButtonPrinting,
 } from "../../store/slices/masterDataSlice";
 
 interface Column {
@@ -127,31 +125,6 @@ const DataTable = <T extends Record<string, any>>({
     }
   }, [invalidFieldsTable]);
 
-  // Check mandatory fields on data change
-  useEffect(() => {
-    if(id==='printing'){
-    const mandatoryFields = ["color_pantone", "lpcm", "lf_value"];
-
-    // Check if any mandatory field is empty
-    const hasEmptyMandatory = Array.isArray(data) 
-    ? data?.some((row) =>
-      mandatoryFields.some((field) => {
-        const value = row[field];
-        return (
-          value === "" || value === 0 || value === null || value === undefined
-        );
-      })
-    ) : false;
-
-    // Check if any field is marked invalid in your state
-    const hasAnyInvalidField = Object.values(invalidFields).some(
-      (isInvalid) => isInvalid
-    );
-
-    // Set the global error state
-    dispatch(setSubmitAndPublishButtonPrinting(hasEmptyMandatory || hasAnyInvalidField));
-  }
-  }, [data, invalidFields]);
 
 
   useEffect(() => {

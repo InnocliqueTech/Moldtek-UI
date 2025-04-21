@@ -149,9 +149,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
           disabled={
-            submitAndPublishButtonMasterData ||
-            submitAndPublishButtonDyeCutting ||
-            submitAndPublishButtonLamination
+           submitAndPublishButtonPrinting||submitAndPublishButtonDyeCutting||submitAndPublishButtonLamination||submitAndPublishButtonMasterData
               ? true
               : false
           }

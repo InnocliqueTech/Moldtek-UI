@@ -196,7 +196,6 @@ export interface DyeCuttingFormErrors {
 }
 
 export interface PrintingFormErrors {
-  printing_machine_name: string;
   cylinder_teeth: string;
   tension: string;
   unwinder: string;
@@ -205,12 +204,20 @@ export interface PrintingFormErrors {
   rewinder: string;
   static_charge: string;
   format_correct: string;
-  substrate_type: string;
-  supplier: string;
   dyne_level: string;
   width: string;
   thickness: string;
   density: string;
+  color_pantone: string,
+            lf_value: string,
+            ink_supplier: string,
+            lpcm: string,
+            volume: string,
+            uv_led: string,
+            uv_led_intensity: string,
+            mixing_on_gec:string,
+            mptl_code:string,
+            mounting_tape:string
   [key: string]: string;
 }
 export interface LaminationFormErrors {
@@ -363,7 +370,6 @@ const initialState: MasterDataState = {
   dyeCuttingDataTouched: false,
   masterDataDataTouched: false,
   printingFormErrors: {
-    printing_machine_name: "",
     cylinder_teeth: "",
     tension: "",
     unwinder: "",
@@ -372,12 +378,20 @@ const initialState: MasterDataState = {
     rewinder: "",
     static_charge: "",
     format_correct: "",
-    substrate_type: "",
-    supplier: "",
     dyne_level: "",
     width: "",
     thickness: "",
     density: "",
+    color_pantone: "",
+            lf_value: "",
+            ink_supplier: "",
+            lpcm: "",
+            volume: "",
+            uv_led: "",
+            uv_led_intensity: "",
+            mixing_on_gec:"",
+            mptl_code:"",
+            mounting_tape:""
   },
   masterDataFormErrors: {
     job_master_id:"",
@@ -884,7 +898,6 @@ const masterDataSlice = createSlice({
     },
     clearPrintingFormErrors: (state) => {
       state.printingFormErrors = {
-        printing_machine_name: "",
         cylinder_teeth: "",
         tension: "",
         unwinder: "",
@@ -893,12 +906,20 @@ const masterDataSlice = createSlice({
         rewinder: "",
         static_charge: "",
         format_correct: "",
-        substrate_type: "",
-        supplier: "",
         dyne_level: "",
         width: "",
         thickness: "",
         density: "",
+        color_pantone: "",
+            lf_value: "",
+            ink_supplier: "",
+            lpcm: "",
+            volume: "",
+            uv_led: "",
+            uv_led_intensity: "",
+            mixing_on_gec:"",
+            mptl_code:"",
+            mounting_tape:""
       };
     },
     setLaminationFormErros: (

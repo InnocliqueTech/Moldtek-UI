@@ -90,7 +90,6 @@ const Printing: React.FC<PrintingProps> = ({
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({
-    printing_machine_name: "",
     cylinder_teeth: "",
     tension: "",
     unwinder: "",
@@ -99,12 +98,20 @@ const Printing: React.FC<PrintingProps> = ({
     rewinder: "",
     static_charge: "",
     format_correct: "",
-    substrate_type: "",
-    supplier: "",
     dyne_level: "",
     width: "",
     thickness: "",
     density: "",
+    color_pantone: "",
+            lf_value: "",
+            ink_supplier: "",
+            lpcm: "",
+            volume: "",
+            uv_led: "",
+            uv_led_intensity: "",
+            mixing_on_gec:"",
+            mptl_code:"",
+            mounting_tape:""
   });
 
   function sanitizeMasterData(data: any): PrintingFormValues {
@@ -332,46 +339,66 @@ const Printing: React.FC<PrintingProps> = ({
     printingSubstrateSettings,
   ]);
 
+
+  const importantFields = [
+    "static_charge",
+    "format_correct",
+    "substrate_type",
+    "supplier",
+    "color_pantone",
+    "lpcm",
+    "lf_value",
+  ];
+  
   useEffect(() => {
-    const importantFields = [
-      "static_charge",
-      "format_correct",
-      "substrate_type",
-      "supplier",
-    ] as (
-      | keyof PrintingFormValues["printingDetails"]
-      | keyof PrintingFormValues["printingSubstrateSettings"]
-    )[];
+    let isInvalid = false;
   
-    const hasErrors = importantFields.some((field) => {
-      const isInPrintingDetails = field in formValues.printingDetails;
-      const isInPrintingSubstrateSettings = field in formValues.printingSubstrateSettings;
+    // 1️⃣ Loop through importantFields only for empty or missing values
+    for (const field of importantFields) {
   
-      if (isInPrintingDetails) {
-        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
-        return (
-          (!!errors[field] && errors[field] !== "") ||
-          value === "" ||
-          value === null ||
-          value === undefined
-        );
+      if (["static_charge", "format_correct", "cylinder_teeth"].includes(field)) {
+        const value = formValues.printingDetails[field as keyof typeof formValues.printingDetails];
+  
+        if (value === "" || value === null || value === undefined) {
+          isInvalid = true;
+          break;
+        }
+  
+      } else if (["substrate_type", "supplier"].includes(field)) {
+        const value = formValues.printingSubstrateSettings[field as keyof typeof formValues.printingSubstrateSettings];
+  
+        if (value === "" || value === null || value === undefined) {
+          isInvalid = true;
+          break;
+        }
+  
+      } else if (["color_pantone", "lpcm", "lf_value"].includes(field)) {
+        const hasEmpty = formValues.stationWiseMetrics.some((station: any) => {
+          const value = station?.[field];
+          return value === "" || value === null || value === undefined;
+        });
+  
+        if (hasEmpty) {
+          isInvalid = true;
+          break;
+        }
       }
+    }
   
-      if (isInPrintingSubstrateSettings) {
-        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
-        return (
-          (!!errors[field] && errors[field] !== "") ||
-          value === "" ||
-          value === null ||
-          value === undefined
-        );
-      }
+    // 2️⃣ Check if any field inside errors has any value (deep check)
+    const hasErrors =
+    Object.values(errors).some(error => error) ;
   
-      return false;
-    });
-  
-    dispatch(setSubmitAndPublishButtonPrinting(!hasErrors));
+    // 3️⃣ Set button state
+    if (isInvalid && hasErrors) {
+      dispatch(setSubmitAndPublishButtonPrinting(true)); // ❌ Disable
+    } else {
+      dispatch(setSubmitAndPublishButtonPrinting(false));  // ✅ Enable
+    }
   }, [formValues, errors]);
+  
+  
+  
   
 
   useEffect(() => {
@@ -390,7 +417,8 @@ const Printing: React.FC<PrintingProps> = ({
       "dyne_level",
       "width",
       "thickness",
-      "density"
+      "density",
+      "color_pantone", "lpcm", "lf_value","ink_supplier","volume","uv_led","uv_led_intensity","mixing_on_gec","mptl_code","mounting_tape"
     ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
@@ -420,7 +448,7 @@ const Printing: React.FC<PrintingProps> = ({
   
   
   
-
+  
   return (
     <Box sx={{ borderRadius: "0px" }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
