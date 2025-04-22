@@ -211,10 +211,10 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         align: true,
         dropdown: true,
         dropdownOptions: [
-          { label: "In progress", value: "In progress" },
+          { label: "Inprogress", value: "Inprogress" },
           { label: "Completed", value: "Completed" },
           { label: "Active", value: "Active" },
-          {label:"In active",value:"In active"}
+          {label:"Inactive",value:"Inactive"}
         ]
       },
       { id: "createdAt", label: "Created On", align: false },

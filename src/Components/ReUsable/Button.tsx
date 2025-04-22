@@ -34,7 +34,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   return (
     <MUIButton
       {...props}
-      disabled={disabled}
+      disabled={disabled||loading}
       sx={{
         backgroundColor: color,
         color: textColor,

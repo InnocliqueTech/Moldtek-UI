@@ -40,6 +40,8 @@ const transformAnaloxData = (specs: any[]) => {
 interface PrintingReportProps {
   loading: boolean;
   error: boolean;
+  isEditing:boolean;
+  onDataChange:()=>void
 }
 
 const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=false}) => {

@@ -45,7 +45,8 @@ export const apiSlice = createApi({
     "LabelCuttingDetails",
     "TravelCardDetails",
     "SaveDailyJobs",
-    "LaminationReport"
+    "LaminationReport",
+    "LaminationReportDetails"
   ], 
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
@@ -209,6 +210,17 @@ query:(newItem)=>({
         { type: 'LaminationReport', id: indentNumber }
       ],
     }),
+    
+    saveLaminationReportDetails: builder.mutation<any, any>({
+      query: (laminationReportData) => ({
+        url: '/dailyplan/dailyplan/saveLaminationReport',
+        method: 'POST',
+        body: laminationReportData,
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: 'LaminationReportDetails', id: arg.indentNumber.toString() }
+      ],
+    }),
     saveLabelCuttingDetails: builder.mutation<
       SaveLabelCuttingResponse,
       SaveLabelCuttingRequest
@@ -271,4 +283,5 @@ export const {
   useSaveLabelCuttingDetailsMutation ,
   useSaveTravelCardDetailsMutation,
   useSavePrintingReportDetailsMutation,
+    useSaveLaminationReportDetailsMutation
 } = apiSlice;

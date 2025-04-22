@@ -23,12 +23,7 @@ import {
   setIsEditing,
   clearUpdateDailyPlanPayload
 } from "../../../store/slices/viewDailyPlanSlice";
-import {
-  useGetMakeReadyDetailsQuery,
-  useSaveLabelCuttingDetailsMutation,
-  useSaveTravelCardDetailsMutation,
-  useSavePrintingReportDetailsMutation,
-} from "../../../store/services/api";
+import { useGetMakeReadyDetailsQuery,useSaveLabelCuttingDetailsMutation,useSaveLaminationReportDetailsMutation,useSaveTravelCardDetailsMutation,  useSavePrintingReportDetailsMutation, } from "../../../store/services/api";
 
 const tabs = [
   "Make Ready",
@@ -44,6 +39,7 @@ const ViewDailyPlan: React.FC = () => {
   const [nextTab, setNextTab] = useState<number | null>(null);
   const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
   const [saveLabelCuttingDetails, { isLoading: isSaving }] = useSaveLabelCuttingDetailsMutation();
+  const [saveLaminationReportDetails] = useSaveLaminationReportDetailsMutation();
   const [saveTravelCardDetails] = useSaveTravelCardDetailsMutation();
   const [savePrintingReportDetails] = useSavePrintingReportDetailsMutation();
   const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
@@ -96,13 +92,14 @@ const ViewDailyPlan: React.FC = () => {
     payload: any,
     saveLabelCuttingDetails: ReturnType<typeof useSaveLabelCuttingDetailsMutation>[0],
     saveTravelCardDetails: ReturnType<typeof useSaveTravelCardDetailsMutation>[0],
-    savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
-    setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>
+  savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
+    setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>,
+    saveLaminationReportDetails: ReturnType<typeof useSaveLaminationReportDetailsMutation>[0],
   ) => {
     setSavingTabIndex(selectedTab); // show loader on current tab
     try {
       switch (selectedTab) {
-        case 1: {
+            case 1: {
           const printingPayload = {
             ...updateDailyPlanPayload,
             dailyPlan: {
@@ -116,7 +113,11 @@ const ViewDailyPlan: React.FC = () => {
           toast.success("Printing report saved successfully!");
           break;
         }
-  
+        case 2:
+
+          await saveLaminationReportDetails(payload).unwrap()
+          toast.success("Lamination details saved successfully!");
+          break;
         case 3:
           await saveLabelCuttingDetails(payload).unwrap();
           toast.success("Label cutting details saved successfully!");
@@ -152,8 +153,9 @@ const ViewDailyPlan: React.FC = () => {
         commonPayload,
         saveLabelCuttingDetails,
         saveTravelCardDetails,
-        savePrintingReportDetails, 
-        setSavingTabIndex
+        savePrintingReportDetails,
+        setSavingTabIndex,
+        saveLaminationReportDetails
       );
   
       if (selectedTab < tabs.length - 1) {
@@ -194,7 +196,7 @@ const ViewDailyPlan: React.FC = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
-        return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} error={isError}/>;
+        return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} error={isError} />;
       case 1:
         return <PrintingReport indentNO={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
       case 2:

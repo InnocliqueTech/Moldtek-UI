@@ -391,7 +391,7 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
   
       await Promise.all(downloadTasks);
   
-      // Download successful files
+      // Handle successful downloads
       results
         .filter(result => result.status === "success")
         .forEach(({ indentNumber, blob }) => {
@@ -405,21 +405,24 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
           }
         });
   
-      // After all are done: prepare summary
       const successful = results.filter(r => r.status === "success").map(r => r.indentNumber);
       const failed = results.filter(r => r.status === "error").map(r => `${r.indentNumber}: ${r.message}`);
   
-      // Show popup
-      setDownloadSummary({
-        total: selected.length,
-        downloaded: successful,
-        errors: failed
-      });
+      if (failed.length > 0) {
+        setDownloadSummary({
+          total: selected.length,
+          downloaded: successful,
+          errors: failed
+        });
+      } else if (successful.length > 0&&failed.length <= 0) {
+        toast.success(`${successful.length===1 ? "File downloaded successfully.":"Files downloaded successfully."}`);
+      }
   
     } finally {
       setLoaderDownload(false);
     }
   };
+  
   
   
   return (

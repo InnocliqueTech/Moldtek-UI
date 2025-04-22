@@ -80,19 +80,21 @@ const Header: React.FC<HeaderProps> = ({
   );
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
-  const [selectedStatus, setSelectedStatus] = useState<string>("Select");
+  const [selectedStatus, setSelectedStatus] = useState<string>(() => {
+    return localStorage.getItem("status") || "";
+  });
+  
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Handle getting status from localStorage when the component mounts
+  const storedStatus = localStorage.getItem("status");
   useEffect(() => {
-    const storedStatus = localStorage.getItem("status");
-    if (storedStatus) {
+        if (storedStatus) {
       setSelectedStatus(storedStatus);
     }
-  }, []);
+  }, [storedStatus]);
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const [updateStatusJob] = useUpdateStatusJobMutation();
@@ -288,7 +290,6 @@ const Header: React.FC<HeaderProps> = ({
                       cursor: "pointer",
                     }}
                   >
-                    <option value="Select">Select</option>
                     {dropDownOptions.map((option) => (
                       <option key={option} value={option}>
                         {option}
@@ -299,7 +300,7 @@ const Header: React.FC<HeaderProps> = ({
               )}
               {button1Text && (
                 <ButtonComponent
-                  onClick={onButton1Click}
+                {...(onButton1Click && { onClick: onButton1Click })}
                   color="white"
                   text={button1Text}
                   textColor="#0E0E0E"

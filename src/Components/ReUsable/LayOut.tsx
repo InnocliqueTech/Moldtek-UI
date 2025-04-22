@@ -259,7 +259,7 @@ const formattedDate = today
       title: "Create Master Data",
       button1Text: `Created on: ${formattedDate}`,
       button2Text: "Upload Master Data",
-      onButton1Click: () => alert("Edit Profile Clicked"),
+      // onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       uploadTitle: "Create Master Data",
       uploadSubTitle: "Upload Master Data",
@@ -336,7 +336,7 @@ const formattedDate = today
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "",
       dropDown:true,
-      dropDownOptions:["Completed","In active","Active","In progress"],
+      dropDownOptions:["Completed","Inactive","Active","Inprogress"],
       editButton: true,
       editClick: () => dispatch(setIsEditing(true))
     },
