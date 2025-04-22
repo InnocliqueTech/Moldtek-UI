@@ -49,10 +49,14 @@ export const validateFormFields = (fields: FormField[]): FormValidation => {
           if (typeof value === 'string') {
             const selectedDate = new Date(value);
             const currentDate = new Date();
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+          
             if (selectedDate < currentDate) {
               errors[field.id] = 'Job run date cannot be in the past';
             }
           }
+          
           break;
           
         // Add any other specific validations as needed
