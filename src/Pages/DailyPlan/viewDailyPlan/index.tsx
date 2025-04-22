@@ -23,7 +23,12 @@ import {
   setIsEditing,
   clearUpdateDailyPlanPayload
 } from "../../../store/slices/viewDailyPlanSlice";
-import { useGetMakeReadyDetailsQuery,useSaveLabelCuttingDetailsMutation,useSaveTravelCardDetailsMutation } from "../../../store/services/api";
+import {
+  useGetMakeReadyDetailsQuery,
+  useSaveLabelCuttingDetailsMutation,
+  useSaveTravelCardDetailsMutation,
+  useSavePrintingReportDetailsMutation,
+} from "../../../store/services/api";
 
 const tabs = [
   "Make Ready",
@@ -40,6 +45,7 @@ const ViewDailyPlan: React.FC = () => {
   const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
   const [saveLabelCuttingDetails, { isLoading: isSaving }] = useSaveLabelCuttingDetailsMutation();
   const [saveTravelCardDetails] = useSaveTravelCardDetailsMutation();
+  const [savePrintingReportDetails] = useSavePrintingReportDetailsMutation();
   const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
   let unitEffectiveNumberDaily: number | undefined;
 
@@ -90,11 +96,27 @@ const ViewDailyPlan: React.FC = () => {
     payload: any,
     saveLabelCuttingDetails: ReturnType<typeof useSaveLabelCuttingDetailsMutation>[0],
     saveTravelCardDetails: ReturnType<typeof useSaveTravelCardDetailsMutation>[0],
+    savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
     setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>
   ) => {
     setSavingTabIndex(selectedTab); // show loader on current tab
     try {
       switch (selectedTab) {
+        case 1: {
+          const printingPayload = {
+            ...updateDailyPlanPayload,
+            dailyPlan: {
+              unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
+              indentNumber: decodedIndentNo,
+              shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
+              workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
+            },
+          };
+          await savePrintingReportDetails(printingPayload).unwrap();
+          toast.success("Printing report saved successfully!");
+          break;
+        }
+  
         case 3:
           await saveLabelCuttingDetails(payload).unwrap();
           toast.success("Label cutting details saved successfully!");
@@ -130,6 +152,7 @@ const ViewDailyPlan: React.FC = () => {
         commonPayload,
         saveLabelCuttingDetails,
         saveTravelCardDetails,
+        savePrintingReportDetails, 
         setSavingTabIndex
       );
   

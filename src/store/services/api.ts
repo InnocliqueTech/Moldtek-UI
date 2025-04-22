@@ -233,6 +233,17 @@ query:(newItem)=>({
         { type: 'TravelCardDetails', id: arg.indentNumber.toString() }
       ],
     }),
+    savePrintingReportDetails: builder.mutation<
+  { statusCode: number; message: string; payload: null; data: string },
+  any
+>({
+  query: (reportData) => ({
+    url: "/dailyplan/updateDailyPlanPrintingReportDetails",
+    method: "POST",
+    body: reportData,
+  }),
+  invalidatesTags: ["PrintingReport"], // Optional: adjust if needed
+})
   }),
 });
 
@@ -258,5 +269,6 @@ export const {
   useGetLaminationReportDetailsQuery,
   useUpdateStatusJobMutation,
   useSaveLabelCuttingDetailsMutation ,
-  useSaveTravelCardDetailsMutation
+  useSaveTravelCardDetailsMutation,
+  useSavePrintingReportDetailsMutation,
 } = apiSlice;
