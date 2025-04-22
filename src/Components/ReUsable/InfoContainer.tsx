@@ -36,7 +36,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
       <Grid container spacing={2} pt={1}>
         {infoItems.map((item, index) => (
           <Grid
-            key={index}
+            key={`${item.keyName || item.label}-${item.label}`}
             size={{ xs: item.gridSize?.xs || 12, sm: item.gridSize?.sm || 6, md: item.gridSize?.md || 4, lg: item.gridSize?.lg || 3 }}
           >
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
