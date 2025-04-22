@@ -38,7 +38,6 @@ const CommenCard: React.FC<Props> = ({ isLoading, isEditing, onDataChange  }) =>
   useEffect(()=>{
     dispatch(setUpdateCommonCard(editValues))
   },[editValues])
-console.log(editValues, dailyPlan.shift,dailyPlan.workOrderNumber,"inside the commonCard");
   return (
     <Box>
       {isLoading ? (

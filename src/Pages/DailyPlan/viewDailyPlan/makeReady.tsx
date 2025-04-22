@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { tapeColumns, materialColumns } from "../data";
 import { useSelector } from "react-redux";
@@ -38,13 +38,11 @@ const transformAnaloxData = (specs: any[]) => {
 };
 
 interface PrintingReportProps {
-  loading: boolean
+  loading: boolean;
+  error: boolean;
 }
 
-const MakeReady: React.FC<PrintingReportProps> = ({
-  loading = false
-}) => {
-   
+const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=false}) => {
   const {
     inkCoatingSpecifications,
     materialSpecification,
@@ -54,15 +52,31 @@ const MakeReady: React.FC<PrintingReportProps> = ({
   } = useSelector((state: RootState) => state.viewDailyPlan);
   const plateMountingReport = [
     { label: "Plates Inspection", value: plateMountingSupervisorReport?.platesInspection || "" },
-    { label: "Mounter", value: plateMountingSupervisorReport?.mounter || ""},
-    { label: "Approver", value: plateMountingSupervisorReport?.approver || ""},
-    { label: "Ink Kitchen Supervisor", value:plateMountingSupervisorReport?.inkKitchenSupervisor || ""},
-    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport?.plateMountingSupervisor || ""},
-    { label: "Shift QC Incharge", value: plateMountingSupervisorReport?.shiftQcIncharge || ""}
+    { label: "Mounter", value: plateMountingSupervisorReport?.mounter || "" },
+    { label: "Approver", value: plateMountingSupervisorReport?.approver || "" },
+    { label: "Ink Kitchen Supervisor", value: plateMountingSupervisorReport?.inkKitchenSupervisor || "" },
+    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport?.plateMountingSupervisor || "" },
+    { label: "Shift QC Incharge", value: plateMountingSupervisorReport?.shiftQcIncharge || "" },
   ];
+
   const analoxCols = generateAnaloxColumns(analoxSpecifications);
   const analoxData = transformAnaloxData(analoxSpecifications);
-  if(loading) return <Loader/>
+
+  if (loading) return <Loader />;
+
+  if (error) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Failed to load Make Ready data
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          An unexpected error occurred. Please try again later
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Box sx={{ borderRadius: "0px", p: 1 }}>

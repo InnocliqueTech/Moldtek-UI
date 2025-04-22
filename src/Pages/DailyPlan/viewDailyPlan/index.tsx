@@ -58,7 +58,7 @@ const ViewDailyPlan: React.FC = () => {
   const {
     data: makeReady,
     isLoading,
-    // isError,
+    isError,
     // error,
   } = useGetMakeReadyDetailsQuery(decodedIndentNo);
 
@@ -194,7 +194,7 @@ const ViewDailyPlan: React.FC = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
-        return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} />;
+        return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} error={isError}/>;
       case 1:
         return <PrintingReport indentNO={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
       case 2:

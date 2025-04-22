@@ -34,16 +34,16 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       setEditableData(printingReportsData.data);
       const usage = printingReportsData.data.materialUsageShiftDetails;
       const info: InfoItem[] = [
-        { label: "Plain Film Weight/Repeat", value: usage.plainFilmWeightPerRepeat.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
-        { label: "Printed Film Weight/Repeat", value: usage.printedFilmWeightPerRepeat.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
-        { label: "Ink Weight/Repeat", value: usage.inkWeightPerRepeat.toString(), editable: true, keyName: "inkWeightPerRepeat" },
-        { label: "Machine Name", value: usage.printingMCName, editable: true, keyName: "printingMCName" },
-        { label: "Left Over Roll (m)", value: usage.leftOverRollMeters?.toString() || "", editable: true, keyName: "leftOverRollMeters" },
-        { label: "Left Over Roll (kg)", value: usage.leftOverRollKgs, editable: true, keyName: "leftOverRollKgs" },
-        { label: "Operator", value: usage.operator, editable: true, keyName: "operator" },
-        { label: "Shift QC", value: usage.shiftQc, editable: true, keyName: "shiftQc" },
-        { label: "Supervisor", value: usage.supervisor, editable: true, keyName: "supervisor" },
-        { label: "Remarks", value: usage.remarks, editable: true, keyName: "remarks" },
+        { label: "Plain Film Weight/Repeat", value: usage?.plainFilmWeightPerRepeat.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
+        { label: "Printed Film Weight/Repeat", value: usage?.printedFilmWeightPerRepeat.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
+        { label: "Ink Weight/Repeat", value: usage?.inkWeightPerRepeat.toString(), editable: true, keyName: "inkWeightPerRepeat" },
+        { label: "Machine Name", value: usage?.printingMCName, editable: true, keyName: "printingMCName" },
+        { label: "Left Over Roll (m)", value: usage?.leftOverRollMeters?.toString() || "", editable: true, keyName: "leftOverRollMeters" },
+        { label: "Left Over Roll (kg)", value: usage?.leftOverRollKgs, editable: true, keyName: "leftOverRollKgs" },
+        { label: "Operator", value: usage?.operator, editable: true, keyName: "operator" },
+        { label: "Shift QC", value: usage?.shiftQc, editable: true, keyName: "shiftQc" },
+        { label: "Supervisor", value: usage?.supervisor, editable: true, keyName: "supervisor" },
+        { label: "Remarks", value: usage?.remarks, editable: true, keyName: "remarks" },
       ];
       setInfoItems(info);
     }

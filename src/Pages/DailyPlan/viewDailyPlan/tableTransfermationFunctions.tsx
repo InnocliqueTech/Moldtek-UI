@@ -145,7 +145,7 @@ type TensionApiResponse = {
   
       return {
         particular,
-        target: target ?? null, // ✅ force to string | number | null
+        target: target === "--" ? null : target, 
         rollValues,
       };
     });
