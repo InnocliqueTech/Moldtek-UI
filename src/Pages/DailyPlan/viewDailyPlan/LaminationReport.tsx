@@ -38,8 +38,8 @@ const laminationFilmColumns = [
 
 const repeatColumns = [
   { id: "label", label: "" },
-  { id: "printedFilmRepeat", label: "Printed Film",edit:true },
-  { id: "afterLaminationRepeat", label: "After Lamination",edit:true },
+  { id: "printedFilmRepeat", label: "Printed Film", edit: true },
+  { id: "afterLaminationRepeat", label: "After Lamination", edit: true },
 ];
 
 const bondingMaterialColumns = [
@@ -47,33 +47,33 @@ const bondingMaterialColumns = [
   { id: "code", label: "Code" },
   { id: "brand", label: "Brand" },
   { id: "mixingRatio", label: "Mixing Ratio" },
-  { id: "actual", label: "Actual",edit:true },
+  { id: "actual", label: "Actual", edit: true },
 ];
 
 const viscosityWeightColumns = [
   // { id: 'metric', label: '' },
   { id: "viscosityRange", label: "Viscosity Range" },
-  { id: "actualViscosity", label: "Actual",edit:true },
-  { id: "gsmRange", label: "GSM Range",edit:true },
-  { id: "gsmRangeActual", label: "Actual",edit:true },
-  { id: "mixingComposition", label: "Mixing Composition",edit:true },
-  { id: "actualComposition", label: "Actual",edit:true },
-  { id: "rubberRollerWidth", label: "Rubber Roller Width",edit:true },
+  { id: "actualViscosity", label: "Actual", edit: true },
+  { id: "gsmRange", label: "GSM Range", edit: true },
+  { id: "gsmRangeActual", label: "Actual", edit: true },
+  { id: "mixingComposition", label: "Mixing Composition", edit: true },
+  { id: "actualComposition", label: "Actual", edit: true },
+  { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true },
   // { id: "compositeGsm", label: "Composite gsm ",edit:true },
 ];
 
 const laminationProcessColumns = [
   { id: "particular", label: "" },
-  { id: "target", label: "Target",edit:true },
-  { id: "actual", label: "Actual",edit:true },
+  { id: "target", label: "Target", edit: true },
+  { id: "actual", label: "Actual", edit: true },
 ];
 
 const qcCheckColumns = [
   { id: "type", label: "Type" },
-  { id: "repeat", label: "Repeat",edit:true },
-  { id: "curling", label: "Curling",edit:true },
-  { id: "bondStrength", label: "Bond Strength",edit:true },
-  { id: "others", label: "Others",edit:true },
+  { id: "repeat", label: "Repeat", edit: true },
+  { id: "curling", label: "Curling", edit: true },
+  { id: "bondStrength", label: "Bond Strength", edit: true },
+  { id: "others", label: "Others", edit: true },
 ];
 
 const plainFilmLeftColumns = [
@@ -97,45 +97,66 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const { data, isLoading, isError, error } =
     useGetLaminationReportDetailsQuery(indentNumber);
 
-
-
   const [editableData, setEditableData] = useState<
     LaminationReportResponse["data"] | null
   >(null);
- const [infoItems, setInfoItems] = useState<any>([]);
+  const [infoItems, setInfoItems] = useState<any>([]);
   useEffect(() => {
     if (data?.data) {
       setEditableData(data?.data);
-            const usage = data.data.plainFilmLeftOverRoll;
-            const info: InfoItem[] = [
-              { label: "Plain Film Weight/Repeat", value: usage.plainFilmLeftOverRollMeters.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
-              { label: "Printed Film Weight/Repeat", value: usage.plainFilmLeftOverRollKgs.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
-              { label: "Ink Weight/Repeat", value: usage.qcApproval.toString(), editable: true, keyName: "inkWeightPerRepeat" },
-              { label: "Machine Name", value: usage.inchargeComments, editable: true, keyName: "printingMCName" },
-            ];
-            setInfoItems(info);
+      const usage = data.data.plainFilmLeftOverRoll;
+      const info: InfoItem[] = [
+        {
+          label: "Plain Film LeftOverRoll Meters",
+          value: usage?.plainFilmLeftOverRollMeters.toString(),
+          editable: true,
+          keyName: "plainFilmLeftOverRollMeters",
+        },
+        {
+          label: "Plain Film LeftOverRoll Kgs",
+          value: usage?.plainFilmLeftOverRollKgs.toString(),
+          editable: true,
+          keyName: "plainFilmLeftOverRollKgs",
+        },
+        {
+          label: "Qc Approval",
+          value: usage?.qcApproval.toString(),
+          editable: true,
+          keyName: "qcApproval",
+        },
+        {
+          label: "Incharge Comments",
+          value: usage?.inchargeComments,
+          editable: true,
+          keyName: "inchargeComments",
+        },
+      ];
+      setInfoItems(info);
     }
-  }, []);
+  }, [data]);
+  
 
-    const handleInfoUpdate = (updatedItems: InfoItem[]) => {
-      if (!editableData) return;
-  
-      const updated = { ...editableData };
-      const shiftDetails = { ...updated.plainFilmLeftOverRoll };
-  
-      updatedItems.forEach((item) => {
-        if (item.keyName && item.value !== undefined) {
-          (shiftDetails as any)[item.keyName] = isNaN(Number(item.value)) ? item.value : Number(item.value);
-        }
-      });
-  
-      updated.plainFilmLeftOverRoll = shiftDetails;
-      setEditableData(updated);
-      setInfoItems(updatedItems);
-  
-      dispatch(setUpdateDailyPlanPayload({ ...updated }));
-      onDataChange();
-    };
+  const handleInfoUpdate = (updatedItems: InfoItem[]) => {
+    if (!editableData) return;
+
+    const updated = { ...editableData };
+    const shiftDetails = { ...updated.plainFilmLeftOverRoll };
+
+    updatedItems.forEach((item) => {
+      if (item.keyName && item.value !== undefined) {
+        (shiftDetails as any)[item.keyName] = isNaN(Number(item.value))
+          ? item.value
+          : Number(item.value);
+      }
+    });
+
+    updated.plainFilmLeftOverRoll = shiftDetails;
+    setEditableData(updated);
+    setInfoItems(updatedItems);
+
+    dispatch(setUpdateDailyPlanPayload({ ...updated }));
+    onDataChange();
+  };
   const dispatch = useDispatch();
 
   const handleDataUpdate = (
@@ -178,9 +199,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
         break;
       }
       case "laminationFilmSpecifications": {
-        const actualsRow = newData.find(
-          (row: any) => row.spec === "GSM"
-        );
+        const actualsRow = newData.find((row: any) => row.spec === "GSM");
         if (actualsRow) {
           updated.laminationFilmSpecifications = {
             ...updated.laminationFilmSpecifications,
@@ -196,18 +215,22 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
         );
         updated.repeat = {
           ...updated.repeat,
-          printedFilmRepeat: actualsRow.printedFilmRepeat ? Number(actualsRow.printedFilmRepeat) : 0,
-          afterLaminationRepeat: actualsRow.afterLaminationRepeat ? Number(actualsRow.afterLaminationRepeat) : 0,
+          printedFilmRepeat: actualsRow.printedFilmRepeat
+            ? Number(actualsRow.printedFilmRepeat)
+            : 0,
+          afterLaminationRepeat: actualsRow.afterLaminationRepeat
+            ? Number(actualsRow.afterLaminationRepeat)
+            : 0,
         };
         break;
       }
       case "bondingMaterialSpecifications": {
         updated.bondingMaterialSpecifications = newData.map((item: any) => ({
-          bondingMaterial: item.bondingMaterial || "",   // required field
-    code: item.code || "",                         // required field
-    brand: item.brand || "",                       // required field
-    mixingRatio: item.mixingRatio || "",           // required field
-    actual: item.actual !== undefined ? String(item.actual) : null,
+          bondingMaterial: item.bondingMaterial || "", // required field
+          code: item.code || "", // required field
+          brand: item.brand || "", // required field
+          mixingRatio: item.mixingRatio || "", // required field
+          actual: item.actual !== undefined ? String(item.actual) : null,
         }));
         break;
       }
@@ -228,23 +251,22 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       }
       case "laminationProcessReport": {
         updated.laminationProcessReport = newData.map((item: any) => ({
-          particular:item.particular,
-          target: item.target || "",   // required field
-    actual: item.actual || "",                 
+          particular: item.particular,
+          target: item.target || "", // required field
+          actual: item.actual || "",
         }));
         break;
       }
       case "qcCheckList": {
         updated.qcCheckList = newData.map((item: any) => ({
- 
-    type: item.type || "",
-    repeat: item.repeat || "",
-    curling:item.curling || "",
-    bondStrength: item.bondStrength || "",
-    others:item.others || "",             
+          type: item.type || "",
+          repeat: item.repeat || "",
+          curling: item.curling || "",
+          bondStrength: item.bondStrength || "",
+          others: item.others || "",
         }));
         break;
-      } 
+      }
 
       default:
         return;
@@ -261,30 +283,30 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
     editableData.unwindingRewindingTension
   );
   const laminationFilmData = transformLaminationFilmData(
-   editableData.laminationFilmSpecifications
+    editableData.laminationFilmSpecifications
   );
   const repeatData = [{ ...editableData.repeat, label: "Repeat (MM)" }];
-  
+
   const bondingMaterialData = editableData.bondingMaterialSpecifications;
   const viscosityWeightData = [{ ...editableData.viscosityWeightMetrics }];
   const laminationProcessData = editableData.laminationProcessReport;
-  const qcCheckData =editableData.qcCheckList;
+  const qcCheckData = editableData.qcCheckList;
   const plainFilmInfoItems = transformPlainFilmInfo(
     infoItems.plainFilmLeftOverRoll
   );
-  
-    if (error || isError) {
-      return (
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="h6" color="error" gutterBottom>
-            Failed to load Make Ready data
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            An unexpected error occurred. Please try again later
-          </Typography>
-        </Box>
-      );
-    }
+
+  if (error || isError) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Failed to load Make Ready data
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          An unexpected error occurred. Please try again later
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -342,9 +364,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
           }))}
           data={repeatData}
           firstRow={false}
-          setData={(data: any) =>
-            handleDataUpdate("repeat", data)
-          }
+          setData={(data: any) => handleDataUpdate("repeat", data)}
           rowEditable={(row) => row.label === "Repeat (MM)"}
         />
       </Box>
@@ -399,9 +419,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
           }))}
           data={qcCheckData}
           firstRow={false}
-          setData={(data: any) =>
-            handleDataUpdate("qcCheckList", data)
-          }
+          setData={(data: any) => handleDataUpdate("qcCheckList", data)}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>

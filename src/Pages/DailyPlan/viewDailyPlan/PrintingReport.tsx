@@ -130,7 +130,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Ink & Coating Specifications"
-          columns={inkColumns.map(col => ({ ...col, edit: isEditing && col.edit }))}
+          columns={inkColumns.map(col => ({ ...col, edit: isEditing  }))}
           data={inkRows}
           setData={(data:any) => handleDataUpdate("inkCoatingSpecifications", data)}
           firstRow

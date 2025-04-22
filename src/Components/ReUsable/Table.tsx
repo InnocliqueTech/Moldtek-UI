@@ -226,62 +226,58 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
     : sortedData;
 
     const handleSelectAll = () => {
-      const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
-      const allSelected = currentPageRows.every((row) => isSelected(row));
-      
-      let newSelected: T[] = [];
-      
-      if (!allSelected) {
-        newSelected = [...newSelected, ...currentPageRows];
-      } else {
-        newSelected = selected.filter((row) => !currentPageRows.some((r) => r[rowIdentifier] === row[rowIdentifier]));
-      }
+      const allSelected = filteredData.every((row) => isSelected(row)); 
     
-      console.log("Previous Selected:", selected);
-      console.log("New Selected:", newSelected);
-      console.log("All Selected:", allSelected);
+      let newSelected: T[] = [];
+    
+      if (!allSelected) {
+        newSelected = [...filteredData]; 
+      } else {
+        newSelected = []; 
+      }
     
       setSelected(newSelected);
       setShowSelectionBar(newSelected.length > 0);
       if (onSelectionChange) onSelectionChange(newSelected);
     };
     
+
     
     console.log(data,"TABLEDATA")
 
-  const handleSelect = (row: T) => {
-    const selectedIndex = selected.findIndex(
-      (item) => item[rowIdentifier] === row[rowIdentifier]
-    );
-    let newSelected: T[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, row);
+    const handleSelect = (row: T) => {
+      const selectedIndex = selected.findIndex(
+        (item) => item[rowIdentifier] === row[rowIdentifier]
+      );
+      let newSelected: T[] = [];
+    
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, row);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
+        );
+      }
+    
     setSelected(newSelected);
     if (onSelectionChange) onSelectionChange(newSelected);
     setShowSelectionBar(newSelected.length > 0);
-  };
-
+    };
+    
   const isSelected = (row: T) => {
     return selected.some((item) => item[rowIdentifier] === row[rowIdentifier]);
   };
 
   const isAllSelected = () => {
     if (filteredData.length === 0) return false;
-    const currentPageRows = filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage);  // Calculate current page rows
-    return currentPageRows.every((row) => isSelected(row)); // Check if all rows are selected for this page
+    return filteredData.every((row) => isSelected(row)); // Check if all rows are selected in the entire filtered data
   };
+  
   
   useEffect(() => {
     if (!pageRange) {
