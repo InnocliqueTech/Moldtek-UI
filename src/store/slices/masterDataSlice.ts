@@ -329,9 +329,11 @@ interface MasterDataState {
   dyeCuttingDetails: any;
   laminatingDetails: any;
   rememberMe: boolean;
+  submitTrue:boolean;
 }
 
 const initialState: MasterDataState = {
+  submitTrue:false,
   rememberMe: false,
   isSearchTriggered: false,
   dyeCuttingDetails: "",
@@ -792,6 +794,9 @@ const masterDataSlice = createSlice({
     },
     setSubmitPopup: (state, action: PayloadAction<boolean>) => {
       state.submitPopup = action.payload;
+    },
+    setSubmitTrue: (state, action: PayloadAction<boolean>) => {
+      state.submitTrue = action.payload;
     },
     setSubmitAndPublishPopup: (state, action: PayloadAction<boolean>) => {
       state.submitAndPublish = action.payload;
@@ -1305,6 +1310,7 @@ export const {
   setUploadPopup,
   setSubmitPopupConfirm,
   setSubmitPopup,
+  setSubmitTrue,
   setSubmitAndPublishPopup,
   setSaveFormData,
   setSavePrintingFormData,

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setSubmitAndPublishPopup,
+  setSubmitTrue,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
 import { ReplayOutlined } from "@mui/icons-material";
@@ -138,6 +139,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleSubmitAndPublishPopupOpen = () => {
+    dispatch(setSubmitTrue(true));
     dispatch(setUploadPopup(false));
     if (
       location.pathname === "/viewDailyPlan" ||

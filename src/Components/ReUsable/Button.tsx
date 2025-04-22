@@ -22,19 +22,20 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   width = "auto",
   height = "40px",
   border = "none",
-  borderRadius = "8px", 
-  loading=false,
+  borderRadius = "8px",
+  loading = false,
   p = "2px",
-  styles={},
-  disabled=false,
+  styles = {},
+  disabled = false,
   ...props
 }) => {
 
+  const hasClick = typeof props.onClick === "function";
 
   return (
     <MUIButton
       {...props}
-      disabled={disabled||loading}
+      disabled={disabled || loading}
       sx={{
         backgroundColor: color,
         color: textColor,
@@ -45,21 +46,28 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         border: border !== "none" ? border : "2px solid transparent",
         borderRadius: borderRadius,
         textTransform: "none",
+        cursor: hasClick ? "pointer" : "default",
+        pointerEvents: hasClick ? "auto" : "none",
         "&:hover": {
-          backgroundColor: color ? `${color}D9` : "transparent",
+          backgroundColor: hasClick
+            ? color
+              ? `${color}D9`
+              : "transparent"
+            : color,
         },
         "&.Mui-disabled": {
-          backgroundColor: "#E0E0E0",  
-          color: "#000000", 
-          border:'none'          
+          backgroundColor: "#E0E0E0",
+          color: "#000000",
+          border: "none",
         },
         ...(color === "none" && { color: textColor || "black" }),
-        ...styles
+        ...styles,
       }}
     >
-      {loading ? "Loading....": text}
+      {loading ? "Loading...." : text}
     </MUIButton>
   );
 };
+
 
 export default ButtonComponent;

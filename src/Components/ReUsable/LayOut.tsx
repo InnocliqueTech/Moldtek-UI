@@ -271,7 +271,7 @@ const formattedDate = today
       title: "Update Master Data",
       button1Text: `Updated on:${formattedDate}`,
       // button2Text: "Upload Master Data",
-      onButton1Click: () => alert("Edit Profile Clicked"),
+      // onButton1Click: () => alert("Edit Profile Clicked"),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       uploadTitle: "Update Master Data",
       uploadSubTitle: "Upload Master Data",

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetLaminationReportDetailsQuery } from "../../../store/services/api";
 import {
@@ -102,7 +102,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const [editableData, setEditableData] = useState<
     LaminationReportResponse["data"] | null
   >(null);
- const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
+ const [infoItems, setInfoItems] = useState<any>([]);
   useEffect(() => {
     if (data?.data) {
       setEditableData(data?.data);
@@ -270,8 +270,21 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const laminationProcessData = editableData.laminationProcessReport;
   const qcCheckData =editableData.qcCheckList;
   const plainFilmInfoItems = transformPlainFilmInfo(
-    editableData.plainFilmLeftOverRoll
+    infoItems.plainFilmLeftOverRoll
   );
+  
+    if (error || isError) {
+      return (
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="h6" color="error" gutterBottom>
+            Failed to load Make Ready data
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            An unexpected error occurred. Please try again later
+          </Typography>
+        </Box>
+      );
+    }
 
   return (
     <>

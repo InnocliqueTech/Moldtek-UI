@@ -49,7 +49,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     requestPayload,
     masterDataDetailsSave,
     printingDataSave,
-    laminationDataSave
+    laminationDataSave,
+    submitTrue
     
   } = useSelector((store: RootState) => store.masterData);
   const handleNextClick = () => {
@@ -72,6 +73,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     useCreateMasterDataMutation();
 
     const handleSubmitPopupConfirmOpen = () => {
+      if(!submitTrue){
       createMasterData(requestPayload)
         .then((response) => {  
           if (response?.data.statusCode === 200) {
@@ -95,6 +97,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         .catch(() => {
           toast.error("Error Fetching Data");
         });
+      }
+      dispatch(setSubmitAndPublishPopup(false));
+      dispatch(setSubmitPopupConfirm(true));
     };
     
   const handleSubmitPopupConfirmClose = () => {
