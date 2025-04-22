@@ -29,8 +29,6 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   useEffect(() => {
     if (printingReportsData?.data) {
       setEditableData(printingReportsData.data);
-
-      // transform infoItems for materialUsageShiftDetails
       const usage = printingReportsData.data.materialUsageShiftDetails;
       const info: InfoItem[] = [
         { label: "Plain Film Weight/Repeat", value: usage.plainFilmWeightPerRepeat.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
@@ -50,16 +48,16 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
 
   const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData: any[]) => {
     if (!editableData) return;
-  
+
     const updated = { ...editableData };
-  
+
     switch (section) {
       case "inkCoatingSpecifications":
       case "printingProcessReport":
       case "printingRunMetrics":
         updated[section] = [...newData];
         break;
-  
+
       case "tensionControl": {
         const actualsRow = newData.find((row: any) => row.label === "Actuals");
         if (actualsRow) {
@@ -75,21 +73,21 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
         }
         break;
       }
-  
+
       case "printRepeatLabellingDetails":
       case "materialSpecifications":
       case "foilRollConsumptionDetails":
         updated[section] = newData[0];
         break;
-  
+
       default:
         return;
     }
+    console.log(updated,"inside dataUpdate");
     setEditableData(updated);
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();
   };
-  
 
   const handleInfoUpdate = (updatedItems: InfoItem[]) => {
     if (!editableData) return;
@@ -120,7 +118,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   const foilConsumptionData = [editableData.foilRollConsumptionDetails];
   const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
   const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
-  console.log(tensionColumns,tensionRows,"inside tensionColumn");
+
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -132,12 +130,13 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           firstRow
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Tension Control"
           columns={tensionColumns.map(col => ({
             ...col,
-            edit: isEditing && col.id !== "label", // only numeric fields editable
+            edit: isEditing && col.id !== "label",
           }))}
           rowEditable={(row) => row.label === "Actuals"}
           data={tensionRows}
@@ -145,6 +144,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           firstRow
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Print Repeat & Labelling Details"
@@ -156,25 +156,25 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           ]}
           data={printRepeatData}
           setData={(data:any) => handleDataUpdate("printRepeatLabellingDetails", data)}
-          firstRow={false}
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Material Specifications"
           columns={[
-            { id: "widthMm", label: "Width mm", edit: isEditing },
-            { id: "thicknessMicrons", label: "Thickness Microns", edit: isEditing },
+            { id: "widthMm", label: "Width mm" },
+            { id: "thicknessMicrons", label: "Thickness Microns" },
             { id: "gsm", label: "GSM", edit: isEditing },
-            { id: "dyne", label: "DYNE", edit: isEditing },
+            { id: "dyne", label: "DYNE" },
             { id: "staticCharge", label: "Static Charge", edit: isEditing },
             { id: "formatCorrection", label: "Format Correction", edit: isEditing },
           ]}
           data={materialSpecsData}
           setData={(data:any) => handleDataUpdate("materialSpecifications", data)}
-          firstRow={false}
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Foil Roll Consumption Details"
@@ -186,9 +186,9 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           ]}
           data={foilConsumptionData}
           setData={(data:any) => handleDataUpdate("foilRollConsumptionDetails", data)}
-          firstRow={false}
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Process Report"
@@ -200,9 +200,9 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           ]}
           data={printingProcessData}
           setData={(data:any) => handleDataUpdate("printingProcessReport", data)}
-          firstRow
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Run Metrics"
@@ -213,9 +213,9 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           ]}
           data={printingRunMetricsRows}
           setData={(data:any) => handleDataUpdate("printingRunMetrics", data)}
-          firstRow
         />
       </Box>
+
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Material Usage and Shift Details"
