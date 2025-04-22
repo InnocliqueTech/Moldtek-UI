@@ -20,7 +20,8 @@ import {
   setMaterialSpecification, 
   setMountingTapeSpecifications, 
   setPlateMountingSupervisorReport,
-  setIsEditing
+  setIsEditing,
+  clearUpdateDailyPlanPayload
 } from "../../../store/slices/viewDailyPlanSlice";
 import { useGetMakeReadyDetailsQuery,useSaveLabelCuttingDetailsMutation,useSaveTravelCardDetailsMutation } from "../../../store/services/api";
 
@@ -80,6 +81,7 @@ const ViewDailyPlan: React.FC = () => {
       setShowTabChangeDialog(true);
     } else {
       dispatch(setSelectedTab(newValue));
+      dispatch(clearUpdateDailyPlanPayload());
     }
   };
 

@@ -6,12 +6,15 @@ import {
   transformTensionData,
   transformPrintingProcessDataList,
   transformInkCoatingData,
+  revertPrintingProcessData,
 } from "./tableTransfermationFunctions";
 import Loader from "../../../Loader";
 import { useDispatch } from "react-redux";
 import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
-import { PrintingReportResponse } from "../../../store/Interfaces/createDailyPlanTypes";
+import { PrintingReportResponse, } from "../../../store/Interfaces/createDailyPlanTypes";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
+import { ProcessReportItem } from "../../../store/Interfaces/createDailyPlanTypes";
+
 
 interface PrintingReportsProps {
   indentNO: string;
@@ -52,11 +55,14 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
     const updated = { ...editableData };
 
     switch (section) {
-      case "inkCoatingSpecifications":
       case "printingProcessReport":
-      case "printingRunMetrics":
-        updated[section] = [...newData];
-        break;
+        case "printingRunMetrics":
+          updated[section] = revertPrintingProcessData(newData) as ProcessReportItem[];
+          break;
+    
+        case "inkCoatingSpecifications":
+          updated[section] = [...newData];
+          break;
 
       case "tensionControl": {
         const actualsRow = newData.find((row: any) => row.label === "Actuals");
@@ -208,6 +214,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           title="Printing Run Metrics"
           columns={[
             { id: "particular", label: "", edit: false },
+            { id: "target", label: "Target", edit: false },
             { id: "roll1", label: "Roll-1", edit: isEditing },
             { id: "roll2", label: "Roll-2", edit: isEditing },
           ]}

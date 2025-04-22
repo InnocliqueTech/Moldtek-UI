@@ -135,6 +135,22 @@ type TensionApiResponse = {
     });
   };
 
+  export const revertPrintingProcessData = (uiData: any[]): ProcessReportItem[] => {
+    return uiData.map((item) => {
+      const { particular, target, roll1, roll2 } = item;
+  
+      const rollValues: Record<string, string | number> = {};
+      if (roll1 !== undefined) rollValues["Roll-1"] = roll1;
+      if (roll2 !== undefined) rollValues["Roll-2"] = roll2;
+  
+      return {
+        particular,
+        target: target ?? null, // ✅ force to string | number | null
+        rollValues,
+      };
+    });
+  };
+  
 
   export const printingMCMapping = {
     plainFilmWeightPerRepeat: "Plain Film Weight Per Repeat",
