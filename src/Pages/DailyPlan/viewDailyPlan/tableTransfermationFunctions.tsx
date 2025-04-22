@@ -69,7 +69,8 @@ type TensionApiResponse = {
   };
   
   type TensionColumn = { id: string; label: string };
-  type TensionRow = { label: string; [key: string]: string | number };
+  type TensionRow = { label: string;  edit?: boolean;
+    [key: string]: string | number | boolean | undefined;  };
 
   
   export const transformTensionData = (
@@ -93,6 +94,7 @@ type TensionApiResponse = {
       },
       {
         label: "Actuals",
+        edit:true,
         ...apiData.actuals,
       },
     ];

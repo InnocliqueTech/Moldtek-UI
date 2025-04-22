@@ -1,152 +1,229 @@
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetPrintingReportDetailsQuery } from "../../../store/services/api";
 import {
   transformTensionData,
   transformPrintingProcessDataList,
-  transformPrintingMCData,
   transformInkCoatingData,
 } from "./tableTransfermationFunctions";
 import Loader from "../../../Loader";
-
-const printRepeatColumns = [
-  { id: "repeatInMM", label: "Repeat in MM" },
-  { id: "ups", label: "UPS" },
-  { id: "jarCap", label: "JAR/CAP" },
-  { id: "labelsPerMtrs", label: "Labels Per Mtrs" },
-];
-
-const materialSpecsColumns = [
-  { id: "widthMm", label: "Width mm" },
-  { id: "thicknessMicrons", label: "Thickness Microns" },
-  { id: "gsm", label: "GSM" },
-  { id: "dyne", label: "DYNE" },
-  { id: "staticCharge", label: "Static Charge" },
-  { id: "formatCorrection", label: "Format Correction" },
-];
-
-const foilConsumptionColumns = [
-  { id: "foilInputRoll", label: "Foil Input Roll" },
-  { id: "foilReturnRoll", label: "Foil Return Roll" },
-  { id: "consumption", label: "Consumption" },
-  { id: "foilWidth", label: "Foil Width" },
-];
-
-const printingProcessColumns = [
-  { id: "particular", label: "Particular" },
-  { id: "target", label: "Target" },
-  { id: "roll1", label: "Roll-1" },
-  { id: "roll2", label: "Roll-2" },
-];
-
-const printingRunMetricsColumns = [
-  { id: "particular", label: "" },
-  { id: "roll1", label: "Roll-1" },
-  { id: "roll2", label: "Roll-2" },
-];
+import { useDispatch } from "react-redux";
+import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import { PrintingReportResponse } from "../../../store/Interfaces/createDailyPlanTypes";
+import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 
 interface PrintingReportsProps {
   indentNO: string;
+  isEditing: boolean;
+  onDataChange: () => void;
 }
 
-const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO }) => {
-  const {
-    data: printingReportsData,
-    isLoading: printingReportsLoading,
-    // isError: printingReportsIsError,
-    // error: printingReportError,
-  } = useGetPrintingReportDetailsQuery(indentNO);
-  const { rows, columns } = transformInkCoatingData(
-    printingReportsData?.data?.inkCoatingSpecifications
-  );
-  const { columns: Tensioncolumns, rows: TensionData } = transformTensionData(
-    printingReportsData?.data?.tensionControl
-  );
-  const printRepeatData = [
-    { ...printingReportsData?.data?.printRepeatLabellingDetails },
-  ];
-  const materialSpecsData = [
-    { ...printingReportsData?.data?.materialSpecifications },
-  ];
-  const foilConsumptionData = [
-    { ...printingReportsData?.data?.foilRollConsumptionDetails },
-  ];
-  const printingProcessData = transformPrintingProcessDataList(
-    printingReportsData?.data?.printingProcessReport
-  );
-  const printingRunMetricsRows = transformPrintingProcessDataList(
-    printingReportsData?.data?.printingRunMetrics
-  );
-  const printingMCData = transformPrintingMCData(
-    printingReportsData?.data?.materialUsageShiftDetails
-  );
+const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, onDataChange }) => {
+  const dispatch = useDispatch();
+  const { data: printingReportsData, isLoading } = useGetPrintingReportDetailsQuery(indentNO);
 
-  if (printingReportsLoading) return <Loader/>
+  const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
+  const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
 
+  useEffect(() => {
+    if (printingReportsData?.data) {
+      setEditableData(printingReportsData.data);
+
+      // transform infoItems for materialUsageShiftDetails
+      const usage = printingReportsData.data.materialUsageShiftDetails;
+      const info: InfoItem[] = [
+        { label: "Plain Film Weight/Repeat", value: usage.plainFilmWeightPerRepeat.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
+        { label: "Printed Film Weight/Repeat", value: usage.printedFilmWeightPerRepeat.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
+        { label: "Ink Weight/Repeat", value: usage.inkWeightPerRepeat.toString(), editable: true, keyName: "inkWeightPerRepeat" },
+        { label: "Machine Name", value: usage.printingMCName, editable: true, keyName: "printingMCName" },
+        { label: "Left Over Roll (m)", value: usage.leftOverRollMeters?.toString() || "", editable: true, keyName: "leftOverRollMeters" },
+        { label: "Left Over Roll (kg)", value: usage.leftOverRollKgs, editable: true, keyName: "leftOverRollKgs" },
+        { label: "Operator", value: usage.operator, editable: true, keyName: "operator" },
+        { label: "Shift QC", value: usage.shiftQc, editable: true, keyName: "shiftQc" },
+        { label: "Supervisor", value: usage.supervisor, editable: true, keyName: "supervisor" },
+        { label: "Remarks", value: usage.remarks, editable: true, keyName: "remarks" },
+      ];
+      setInfoItems(info);
+    }
+  }, [printingReportsData]);
+
+  const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData: any[]) => {
+    if (!editableData) return;
+  
+    const updated = { ...editableData };
+  
+    switch (section) {
+      case "inkCoatingSpecifications":
+      case "printingProcessReport":
+      case "printingRunMetrics":
+        updated[section] = [...newData];
+        break;
+  
+      case "tensionControl": {
+        const actualsRow = newData.find((row: any) => row.label === "Actuals");
+        if (actualsRow) {
+          updated.tensionControl = {
+            ...updated.tensionControl,
+            actuals: {
+              unwinder: Number(actualsRow.unwinder),
+              infeed: Number(actualsRow.infeed),
+              outfeed: Number(actualsRow.outfeed),
+              rewinder: Number(actualsRow.rewinder),
+            },
+          };
+        }
+        break;
+      }
+  
+      case "printRepeatLabellingDetails":
+      case "materialSpecifications":
+      case "foilRollConsumptionDetails":
+        updated[section] = newData[0];
+        break;
+  
+      default:
+        return;
+    }
+    setEditableData(updated);
+    dispatch(setUpdateDailyPlanPayload({ ...updated }));
+    onDataChange();
+  };
+  
+
+  const handleInfoUpdate = (updatedItems: InfoItem[]) => {
+    if (!editableData) return;
+
+    const updated = { ...editableData };
+    const shiftDetails = { ...updated.materialUsageShiftDetails };
+
+    updatedItems.forEach((item) => {
+      if (item.keyName && item.value !== undefined) {
+        (shiftDetails as any)[item.keyName] = isNaN(Number(item.value)) ? item.value : Number(item.value);
+      }
+    });
+
+    updated.materialUsageShiftDetails = shiftDetails;
+    setEditableData(updated);
+    setInfoItems(updatedItems);
+
+    dispatch(setUpdateDailyPlanPayload({ ...updated }));
+    onDataChange();
+  };
+
+  if (isLoading || !editableData) return <Loader />;
+
+  const { columns: inkColumns, rows: inkRows } = transformInkCoatingData(editableData.inkCoatingSpecifications);
+  const { columns: tensionColumns, rows: tensionRows } = transformTensionData(editableData.tensionControl);
+  const printRepeatData = [editableData.printRepeatLabellingDetails];
+  const materialSpecsData = [editableData.materialSpecifications];
+  const foilConsumptionData = [editableData.foilRollConsumptionDetails];
+  const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
+  const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
+  console.log(tensionColumns,tensionRows,"inside tensionColumn");
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Ink & Coating Specifications"
-          columns={columns}
-          data={rows}
-          firstRow={true}
+          columns={inkColumns.map(col => ({ ...col, edit: isEditing && col.edit }))}
+          data={inkRows}
+          setData={(data:any) => handleDataUpdate("inkCoatingSpecifications", data)}
+          firstRow
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Tension Control"
-          columns={Tensioncolumns}
-          data={TensionData}
-          firstRow={true}
+          columns={tensionColumns.map(col => ({
+            ...col,
+            edit: isEditing && col.id !== "label", // only numeric fields editable
+          }))}
+          rowEditable={(row) => row.label === "Actuals"}
+          data={tensionRows}
+          setData={(data:any) => handleDataUpdate("tensionControl", data)}
+          firstRow
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Print Repeat & Labelling Details"
-          columns={printRepeatColumns}
+          columns={[
+            { id: "repeatInMM", label: "Repeat in MM", edit: isEditing },
+            { id: "ups", label: "UPS", edit: isEditing },
+            { id: "jarCap", label: "JAR/CAP", edit: isEditing },
+            { id: "labelsPerMtrs", label: "Labels Per Mtrs", edit: isEditing },
+          ]}
           data={printRepeatData}
+          setData={(data:any) => handleDataUpdate("printRepeatLabellingDetails", data)}
           firstRow={false}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Material Specifications"
-          columns={materialSpecsColumns}
+          columns={[
+            { id: "widthMm", label: "Width mm", edit: isEditing },
+            { id: "thicknessMicrons", label: "Thickness Microns", edit: isEditing },
+            { id: "gsm", label: "GSM", edit: isEditing },
+            { id: "dyne", label: "DYNE", edit: isEditing },
+            { id: "staticCharge", label: "Static Charge", edit: isEditing },
+            { id: "formatCorrection", label: "Format Correction", edit: isEditing },
+          ]}
           data={materialSpecsData}
+          setData={(data:any) => handleDataUpdate("materialSpecifications", data)}
           firstRow={false}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Foil Roll Consumption Details"
-          columns={foilConsumptionColumns}
+          columns={[
+            { id: "foilInputRoll", label: "Foil Input Roll", edit: isEditing },
+            { id: "foilReturnRoll", label: "Foil Return Roll", edit: isEditing },
+            { id: "consumption", label: "Consumption", edit: isEditing },
+            { id: "foilWidth", label: "Foil Width", edit: isEditing },
+          ]}
           data={foilConsumptionData}
+          setData={(data:any) => handleDataUpdate("foilRollConsumptionDetails", data)}
           firstRow={false}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Process Report"
-          columns={printingProcessColumns}
+          columns={[
+            { id: "particular", label: "Particular", edit: false },
+            { id: "target", label: "Target", edit: isEditing },
+            { id: "roll1", label: "Roll-1", edit: isEditing },
+            { id: "roll2", label: "Roll-2", edit: isEditing },
+          ]}
           data={printingProcessData}
-          firstRow={true}
+          setData={(data:any) => handleDataUpdate("printingProcessReport", data)}
+          firstRow
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Run Metrics"
-          columns={printingRunMetricsColumns}
+          columns={[
+            { id: "particular", label: "", edit: false },
+            { id: "roll1", label: "Roll-1", edit: isEditing },
+            { id: "roll2", label: "Roll-2", edit: isEditing },
+          ]}
           data={printingRunMetricsRows}
-          firstRow={true}
+          setData={(data:any) => handleDataUpdate("printingRunMetrics", data)}
+          firstRow
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
-          title="Material Usage and Shift details"
-          showInfoSection={true}
+          title="Material Usage and Shift Details"
+          showInfoSection
           showTableSection={false}
-          infoItems={printingMCData}
+          infoItems={infoItems}
+          setInfoItems={handleInfoUpdate}
+          isEditing={isEditing}
         />
       </Box>
     </>

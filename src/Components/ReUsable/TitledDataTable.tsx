@@ -28,6 +28,7 @@ interface TitledDataTableProps<T> {
   showTableSection?:boolean;
   isEditing?: boolean;
   setInfoItems?: (items: InfoItem[]) => void;
+  rowEditable?: (row: T) => boolean;
 }
 
 const TitledDataTable = <T extends Record<string, any>>({
@@ -45,6 +46,7 @@ const TitledDataTable = <T extends Record<string, any>>({
   showTableSection = true,
   isEditing,
   setInfoItems,
+  rowEditable
 }: TitledDataTableProps<T>) => {
   return (
     <Box
@@ -90,6 +92,7 @@ const TitledDataTable = <T extends Record<string, any>>({
             setData={setData}
             tableTitle={true}
             firstRow={firstRow ? true : false}
+            rowEditable={rowEditable}
           />
         </Box>
       )}

@@ -262,7 +262,7 @@ const ViewDailyPlan: React.FC = () => {
             variant="contained"
             onClick={handleSave}
             color="primary"
-            disabled={savingTabIndex === selectedTab}
+            disabled={savingTabIndex === selectedTab || !hasUnsavedChanges}
             startIcon={
               savingTabIndex === selectedTab ? (
                 <CircularProgress size={20} color="inherit" />

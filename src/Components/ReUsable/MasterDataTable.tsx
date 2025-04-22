@@ -42,6 +42,7 @@ interface DataTableProps<T> {
   tableTitle?: boolean;
   firstRow?: boolean;
   id?: string;
+  rowEditable?: (row: T) => boolean;
 }
 
 const DataTable = <T extends Record<string, any>>({
@@ -51,6 +52,7 @@ const DataTable = <T extends Record<string, any>>({
   tableTitle = false,
   firstRow = false,
   id,
+  rowEditable,
 }: DataTableProps<T>) => {
   const dispatch = useDispatch<AppDispatch>();
   const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
@@ -425,7 +427,7 @@ const DataTable = <T extends Record<string, any>>({
                             )
                           }
                         />
-                      ) : column.edit ? (
+                      ) : (column.edit && (!rowEditable || rowEditable(row))) ? (                  
                         <TextField
                           variant="standard"
                           value={row[column.id]}
