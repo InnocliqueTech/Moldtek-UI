@@ -33,7 +33,7 @@ const initialFormFields: FormField[] = [
   { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
   { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
   { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
-  { id: 'typeOfLabel', label: 'Type of Label', value: '',component: 'dropdown',
+  { id: 'labelType', label: 'Type of Label', value: '',component: 'dropdown',
     options: typeOfLabelOptions, },
   // { id: 'colorMatching', label: 'Colour Matching', value: '' },
   // { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
