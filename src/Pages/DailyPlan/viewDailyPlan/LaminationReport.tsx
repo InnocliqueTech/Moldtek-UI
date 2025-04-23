@@ -174,10 +174,10 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
         if (actualsRow) {
           updated.zoneTemperatureAndPressing = {
             ...updated.zoneTemperatureAndPressing,
-            zone1TempActual: Number(actualsRow.zone1),
-            zone2TempActual: Number(actualsRow.zone2),
-            nipPressureActual: Number(actualsRow.nipPressure),
-            speedMtrMinActual: Number(actualsRow.speed),
+            zone1TempActual: actualsRow.zone1,
+            zone2TempActual: actualsRow.zone2,
+            nipPressureActual: actualsRow.nipPressure,
+            speedMtrMinActual: actualsRow.speed,
           };
         }
         break;
