@@ -244,7 +244,7 @@ const DataTable = <T extends Record<string, any>>({
                       }}
                     >
              {
-              (row.type === 'Ethyl Acetate' && ["code", "brand","ratio"].includes(column.id))||row.type === 'Adhesive' && ["ratio"].includes(column.id)||row.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
+              (row?.type === 'Ethyl Acetate' && ["code", "brand","ratio"].includes(column.id))||row?.type === 'Adhesive' && ["ratio"].includes(column.id)||row?.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
               <TextField
               variant="standard"
               value={row[column.id]}
@@ -468,7 +468,7 @@ const DataTable = <T extends Record<string, any>>({
                           }}
                         />
                       ) : (
-                        <Tooltip title={String(row[column.id])} arrow>
+                        <Tooltip title={String(row ? row[column?.id] : "")} arrow>
                           <Box
                             sx={{
                               maxWidth: "100%",
@@ -483,7 +483,7 @@ const DataTable = <T extends Record<string, any>>({
                               justifyContent: "center",
                             }}
                           >
-                            {row[column.id] || "N/A"}
+                            {row ? row[column?.id] : "N/A"}
                           </Box>
                         </Tooltip>
                       )}

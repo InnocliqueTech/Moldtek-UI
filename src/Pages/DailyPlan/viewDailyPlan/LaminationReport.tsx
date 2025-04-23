@@ -108,19 +108,19 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       const info: InfoItem[] = [
         {
           label: "Plain Film LeftOverRoll Meters",
-          value: usage?.plainFilmLeftOverRollMeters.toString(),
+          value: usage?.plainFilmLeftOverRollMeters?.toString(),
           editable: true,
           keyName: "plainFilmLeftOverRollMeters",
         },
         {
           label: "Plain Film LeftOverRoll Kgs",
-          value: usage?.plainFilmLeftOverRollKgs.toString(),
+          value: usage?.plainFilmLeftOverRollKgs?.toString(),
           editable: true,
           keyName: "plainFilmLeftOverRollKgs",
         },
         {
           label: "Qc Approval",
-          value: usage?.qcApproval.toString(),
+          value: usage?.qcApproval?.toString(),
           editable: true,
           keyName: "qcApproval",
         },

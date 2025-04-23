@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box , Typography} from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetPrintingReportDetailsQuery } from "../../../store/services/api";
 import {
@@ -24,7 +24,7 @@ interface PrintingReportsProps {
 
 const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, onDataChange }) => {
   const dispatch = useDispatch();
-  const { data: printingReportsData, isLoading } = useGetPrintingReportDetailsQuery(indentNO);
+  const { data: printingReportsData, isLoading, isError, error } = useGetPrintingReportDetailsQuery(indentNO);
 
   const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
@@ -34,9 +34,9 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       setEditableData(printingReportsData.data);
       const usage = printingReportsData.data.materialUsageShiftDetails;
       const info: InfoItem[] = [
-        { label: "Plain Film Weight/Repeat", value: usage?.plainFilmWeightPerRepeat.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
-        { label: "Printed Film Weight/Repeat", value: usage?.printedFilmWeightPerRepeat.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
-        { label: "Ink Weight/Repeat", value: usage?.inkWeightPerRepeat.toString(), editable: true, keyName: "inkWeightPerRepeat" },
+        { label: "Plain Film Weight/Repeat", value: usage?.plainFilmWeightPerRepeat?.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
+        { label: "Printed Film Weight/Repeat", value: usage?.printedFilmWeightPerRepeat?.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
+        { label: "Ink Weight/Repeat", value: usage?.inkWeightPerRepeat?.toString(), editable: true, keyName: "inkWeightPerRepeat" },
         { label: "Machine Name", value: usage?.printingMCName, editable: true, keyName: "printingMCName" },
         { label: "Left Over Roll (m)", value: usage?.leftOverRollMeters?.toString() || "", editable: true, keyName: "leftOverRollMeters" },
         { label: "Left Over Roll (kg)", value: usage?.leftOverRollKgs, editable: true, keyName: "leftOverRollKgs" },
@@ -117,6 +117,19 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
 
   if (isLoading || !editableData) return <Loader />;
 
+ if (isError) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Failed to load Make Ready data
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          An unexpected error occurred. Please try again later
+        </Typography>
+      </Box>
+    );
+  }
+
   const { columns: inkColumns, rows: inkRows } = transformInkCoatingData(editableData.inkCoatingSpecifications);
   const { columns: tensionColumns, rows: tensionRows } = transformTensionData(editableData.tensionControl);
   const printRepeatData = [editableData.printRepeatLabellingDetails];
@@ -130,7 +143,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Ink & Coating Specifications"
-          columns={inkColumns.map(col => ({ ...col, edit: isEditing  }))}
+          columns={inkColumns.map(col => ({ ...col, edit: isEditing && col.edit }))}
           data={inkRows}
           setData={(data:any) => handleDataUpdate("inkCoatingSpecifications", data)}
           firstRow
