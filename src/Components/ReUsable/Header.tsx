@@ -282,7 +282,7 @@ const Header: React.FC<HeaderProps> = ({
   size="small"
   sx={{
     borderRadius: "20px",
-    padding: "0px 16px",
+    padding: "0px 0px",
     border: "1px solid #00000000",
     background: "#fff",
     fontSize: "14px",
