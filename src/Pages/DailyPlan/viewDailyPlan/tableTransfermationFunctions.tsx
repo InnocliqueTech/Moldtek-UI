@@ -12,6 +12,7 @@ type StationData = {
   type TableColumn = {
     id: string;
     label: string;
+    edit: boolean;
   };
   
   type TableRow = {
@@ -43,10 +44,11 @@ type StationData = {
     });
   
     const columns: TableColumn[] = [
-      { id: "stationNo", label: "Station No" },
+      { id: "stationNo", label: "Station No" , edit: false },
       ...apiData.map((station) => ({
         id: String(station.stationNo),
         label: String(station.stationNo),
+        edit:false
       })),
     ];
   

@@ -24,7 +24,7 @@ interface PrintingReportsProps {
 
 const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, onDataChange }) => {
   const dispatch = useDispatch();
-  const { data: printingReportsData, isLoading, isError, error } = useGetPrintingReportDetailsQuery(indentNO);
+  const { data: printingReportsData, isLoading, isError, } = useGetPrintingReportDetailsQuery(indentNO);
 
   const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);

@@ -84,7 +84,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
             edit: isEditing && col.edit
           }))}
           data={editableData.machineConfiguration}
-          setData={(newData) => handleDataUpdate('machineConfig', newData)}
+          setData={(newData:any) => handleDataUpdate('machineConfig', newData)}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -95,7 +95,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
             edit: isEditing && col.edit
           }))}
           data={editableData.labelCuttingProcessReport}
-          setData={(newData) => handleDataUpdate('production', newData)}
+          setData={(newData:any) => handleDataUpdate('production', newData)}
           firstRow={true}
         />
       </Box>
@@ -107,7 +107,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
             edit: isEditing && col.edit
           }))}
           data={editableData.approvalRemarks}
-          setData={(newData) => handleDataUpdate('approval', newData)}
+          setData={(newData:any) => handleDataUpdate('approval', newData)}
           firstRow={true}
         />
       </Box>

@@ -5,7 +5,6 @@ import {
   transformZoneTempData,
   transformUnwindRewindData,
   transformLaminationFilmData,
-  transformPlainFilmInfo,
 } from "./tableTransfermationFunctions";
 import { LaminationReportResponse } from "../../../store/Interfaces/createDailyPlanTypes";
 import { useEffect, useState } from "react";
