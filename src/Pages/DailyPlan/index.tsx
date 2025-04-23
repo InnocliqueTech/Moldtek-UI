@@ -12,9 +12,10 @@ import {
 } from "../../store/services/api";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
-import { toast } from "react-toastify";
-import { useSelector } from 'react-redux';
+// import { toast } from "react-toastify";
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { setSelectedTab } from '../../store/slices/viewMasterDataSlice';
 
 interface DailyPlanProps {
   title?: string;
@@ -136,7 +137,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   }, [page, openSliderDaily, filtersPayload, dropDown]);
   
 
-
+const dispatch = useDispatch()
   const stats = transformApiDataToStats(metricsData?.data) ;
   const data = transformJobDataList(listOfCompaniesData?.data)
   const navigate = useNavigate();
@@ -147,6 +148,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
       localStorage.setItem("status",row.status);
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
+      dispatch(setSelectedTab(0))
     }} />, },
       {
         id: "unitEffectivityNumber",
@@ -284,7 +286,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               pageNumber={page}
               info={true}
               searchVisible={true}
-              action={true}
+              action={false}
               onSelectionChange={(selectedItems) => {
                 console.log('Selected items:', selectedItems);
               }}
@@ -299,37 +301,37 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               }
               pageRange={true}
               onPageChange={handlePageChange}
-              actions={[
-                {
-                  label: "Download",
-                  onClick: async () => {
-                    // this is the sample file download , replace it when we get the real url
-                    try{
-                    const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
+              // actions={[
+              //   {
+              //     label: "Download",
+              //     onClick: async () => {
+              //       // this is the sample file download , replace it when we get the real url
+              //       try{
+              //       const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
+              //       const blob = await response.blob();
+              //       const url = window.URL.createObjectURL(blob);
 
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'sample.pdf';
-                    document.body.appendChild(link);
-                    link.click();
+              //       const link = document.createElement('a');
+              //       link.href = url;
+              //       link.download = 'sample.pdf';
+              //       document.body.appendChild(link);
+              //       link.click();
 
-                    // Clean up
-                    link.remove();
-                    window.URL.revokeObjectURL(url);
-                    }
-                    catch(e){
-                      toast.error("Failed to Downlaod");
+              //       // Clean up
+              //       link.remove();
+              //       window.URL.revokeObjectURL(url);
+              //       }
+              //       catch(e){
+              //         toast.error("Failed to Downlaod");
                       
-                    }
-                  },
-                },
-                {
-                  label: "InActive",
-                  onClick: () =>     toast.success("Status Updated Successfully")
-                },
-              ]}
+              //       }
+              //     },
+              //   },
+              //   {
+              //     label: "InActive",
+              //     onClick: () =>     toast.success("Status Updated Successfully")
+              //   },
+              // ]}
               boxShadow={true}
             />
           </Box>
