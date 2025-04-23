@@ -94,7 +94,11 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
 };
 
 const DailyPlan: React.FC<DailyPlanProps> = () => {
-  const [page, setPage] = useState(0);
+  const storageKey = "dailyPlanDataPage";
+  const [page, setPage] = useState(() => {
+    const savedPage = localStorage.getItem(storageKey);
+    return savedPage !== null ? Number(savedPage) : 0;
+  });
   const rowsPerPage = 10;
   const { 
     data: metricsData, 
@@ -131,9 +135,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     }
   }, [page, openSliderDaily, filtersPayload, dropDown]);
   
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
+
 
   const stats = transformApiDataToStats(metricsData?.data) ;
   const data = transformJobDataList(listOfCompaniesData?.data)
@@ -230,6 +232,16 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
           </Box>
         );
       }
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, page.toString());
+  }, [page]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    localStorage.setItem(storageKey, newPage.toString());
+  };
+
   return (
      <Box sx={{ p: 0 }}>
           <Grid container spacing={1}>
@@ -269,7 +281,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               selectable={true}
               label={`${listOfCompaniesData?.totalRecords? listOfCompaniesData.totalRecords:0} Jobs`}
               title="List of Job Tracker"
-              // lastUpdate="2 hours ago"
+              pageNumber={page}
               info={true}
               searchVisible={true}
               action={true}

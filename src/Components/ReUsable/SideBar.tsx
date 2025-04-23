@@ -140,7 +140,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
     localStorage.setItem("masterData-page",(0).toString())
-    localStorage.setItem("dailyPlan-page",(0).toString())
+    localStorage.setItem("dailyPlan-page",(0).toString());
+    localStorage.setItem("dailyPlanDataPage",(0).toString())
 
     if(!isDyeCuttingDataSave){
       dispatch(clearDyeCuttingFormData());

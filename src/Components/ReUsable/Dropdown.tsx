@@ -39,7 +39,13 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    setSelectedOptions(Array.isArray(value) ? value : [value]);
+    if (Array.isArray(value)) {
+      setSelectedOptions(value.filter((v) => v !== ''));
+    } else if (value) {
+      setSelectedOptions(Array.isArray(value) ? value : [value]);
+    } else {
+      setSelectedOptions([]);
+    }
   }, [value]);
 
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
@@ -64,9 +70,30 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           multiple={isMultiSelect}
           value={selectedOptions}
           onChange={handleSelectChange}
-          renderValue={(selected) =>
-            Array.isArray(selected) ? selected.join(', ') : selected
-          }
+          displayEmpty
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return (
+                <Typography color="text.secondary" sx={{ opacity: 0.7 }}>
+                  Select {label}
+                </Typography>
+              );
+            }
+            const displayText = Array.isArray(selected) ? selected.join(', ') : selected;
+            return (
+              <Tooltip title={displayText} arrow>
+                <div
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {displayText}
+                </div>
+              </Tooltip>
+            );
+          }}
           MenuProps={{
             anchorOrigin: {
               vertical: 'bottom',
@@ -106,37 +133,37 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           )}
 
           {options.map((option) => (
-           <MenuItem
-           key={option}
-           value={option}
-           sx={{
-             backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
-             display: 'flex',
-             alignItems: 'center',
-             gap: 1,
-           }}
-         >
-           {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
-           <Tooltip title={option} arrow>
-             <div
-               style={{
-                 whiteSpace: 'nowrap',
-                 overflow: 'hidden',
-                 textOverflow: 'ellipsis',
-                 maxWidth: '300px',
-                 flexGrow: 1,
-                 color: '#2F2F2F',
-               }}
-             >
-               {option}
-             </div>
-           </Tooltip>
-           {!checkbox && selectedOptions.includes(option) && (
-             <IconButton sx={{ color: '#0073B7' }}>
-               <Done />
-             </IconButton>
-           )}
-         </MenuItem>
+            <MenuItem
+              key={option}
+              value={option}
+              sx={{
+                backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
+              {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
+              <Tooltip title={option} arrow>
+                <div
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '300px',
+                    flexGrow: 1,
+                    color: '#2F2F2F',
+                  }}
+                >
+                  {option}
+                </div>
+              </Tooltip>
+              {!checkbox && selectedOptions.includes(option) && (
+                <IconButton sx={{ color: '#0073B7' }}>
+                  <Done />
+                </IconButton>
+              )}
+            </MenuItem>
           ))}
         </Select>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}

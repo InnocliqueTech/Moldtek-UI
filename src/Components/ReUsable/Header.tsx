@@ -28,6 +28,7 @@ import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
 import { useUpdateStatusJobMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
 import EditIcon from '@mui/icons-material/Edit';
+import SuccessPopup from "./SuccessPopup";
 
 interface HeaderProps {
   title: string;
@@ -380,7 +381,7 @@ const Header: React.FC<HeaderProps> = ({
           (location.pathname === "/createPlan" && submitAndPublish) ||
           submitPopup
         }
-        title="Are you sure you want submit ? Daily Plan"
+        title="Are you sure you want submit Daily Plan ?"
         message=""
         buttonText="No"
         buttonText2="Yes,Save it!"
@@ -388,12 +389,10 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
       />
-      <ConfirmPopup
+      <SuccessPopup
         open={submitPopupConfirm}
-        title="You have successfully add a daily job"
-        message=""
-        buttonText2="Go back to Daily Plan"
-        gifSrc=""
+        message="You have successfully add a daily job"
+        buttonText="Go back to Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
       />
