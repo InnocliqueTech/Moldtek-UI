@@ -30,7 +30,6 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
     updated[index] = { ...updated[index], value: newValue };
     setInfoItems(updated);
   };
-  console.log(isEditing,"inside infoContainer");
   return (
     <Box className="px-4 pb-4">
       <Grid container spacing={2} pt={1}>

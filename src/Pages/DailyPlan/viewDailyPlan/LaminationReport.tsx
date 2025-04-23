@@ -291,9 +291,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const viscosityWeightData = [{ ...editableData.viscosityWeightMetrics }];
   const laminationProcessData = editableData.laminationProcessReport;
   const qcCheckData = editableData.qcCheckList;
-  const plainFilmInfoItems = transformPlainFilmInfo(
-    infoItems.plainFilmLeftOverRoll
-  );
+
 
   if (error || isError) {
     return (
@@ -429,7 +427,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
           data={plainFilmLeftData}
           firstRow={false}
           showTableSection={false}
-          infoItems={plainFilmInfoItems}
+          infoItems={infoItems}
           showInfoSection={true}
           setInfoItems={handleInfoUpdate}
           isEditing={isEditing}
