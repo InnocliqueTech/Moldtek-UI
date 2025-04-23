@@ -70,10 +70,10 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           updated.tensionControl = {
             ...updated.tensionControl,
             actuals: {
-              unwinder: Number(actualsRow.unwinder),
-              infeed: Number(actualsRow.infeed),
-              outfeed: Number(actualsRow.outfeed),
-              rewinder: Number(actualsRow.rewinder),
+              unwinder: actualsRow.unwinder ? Number(actualsRow.unwinder) : null,
+              infeed: actualsRow.infeed ? Number(actualsRow.infeed) : null,
+              outfeed: actualsRow.outfeed ? Number(actualsRow.outfeed) : null,
+              rewinder: actualsRow.rewinder ? Number(actualsRow.rewinder) : null,
             },
           };
         }
@@ -137,7 +137,6 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   const foilConsumptionData = [editableData.foilRollConsumptionDetails];
   const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
   const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
-
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>

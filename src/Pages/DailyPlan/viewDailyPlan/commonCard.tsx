@@ -46,6 +46,13 @@ const CommenCard: React.FC<Props> = ({
   useEffect(() => {
     dispatch(setUpdateCommonCard(editValues));
   }, [editValues]);
+  
+  useEffect(() => {
+    setEditValues({
+      shift: dailyPlan?.shift || "",
+      workOrderNumber: dailyPlan?.workOrderNumber || "",
+    });
+  }, [dailyPlan]);
   return (
     <Box>
       {isLoading ? (

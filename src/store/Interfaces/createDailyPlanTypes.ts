@@ -80,10 +80,10 @@ export interface TensionControl {
     rewinder: number
   }
   actuals: {
-    unwinder: number
-    infeed: number
-    outfeed: number
-    rewinder: number
+    unwinder: number | null
+    infeed: number  | null
+    outfeed: number | null
+    rewinder: number  | null
   }
 }
 
