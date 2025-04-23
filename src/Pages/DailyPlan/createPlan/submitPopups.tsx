@@ -4,13 +4,14 @@ import { setSubmitAndPublishPopup } from "../../../store/slices/masterDataSlice"
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store";
 import { useLocation, useNavigate } from "react-router-dom";
+import SuccessPopup from "../../../Components/ReUsable/SuccessPopup";
 
 interface SubmitPopupsProps {
   onSubmit: () => Promise<{ success: boolean; error?: any }>;
   isLoading: boolean;
 }
 
-const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit}) => {
+const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -38,20 +39,19 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit}) => {
     <>
       <ConfirmPopup
         open={location.pathname === "/createPlan" && submitAndPublish}
-        title="Are you sure you want submit ? Daily Plan"
+        title="Are you sure you want submit Daily Plan ?"
         message=""
         buttonText="No"
         buttonText2="Yes,Save it!"
         gifSrc=""
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
+        isLoading={isLoading}
       />
-      <ConfirmPopup
+      <SuccessPopup
         open={submitPopupConfirm}
-        title="You have successfully add a daily job"
-        message=""
-        buttonText2="Go back to Daily Plan"
-        gifSrc=""
+        message="You have successfully add a daily job"
+        buttonText="Go back to Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
       />

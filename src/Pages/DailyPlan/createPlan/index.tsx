@@ -66,7 +66,7 @@ const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [saveDailyJob, { isLoading, error }] =
+  const [saveDailyJob, { isLoading }] =
     useSaveDailyJobMutation();
   const handleInputChange = (
     fieldId: string,
@@ -147,17 +147,22 @@ const CreatePlan: React.FC = () => {
   const submitFormData = async (): Promise<{ success: boolean; error?: any }> => {
     const formData = prepareSubmitData();
     try {
-      await saveDailyJob(formData).unwrap()
-      toast.success('Data submitted successfully! Form has been reset.');
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      setFormFields(initialFormFields);
-      return { success: true };
+      const data = await saveDailyJob(formData).unwrap();
+      if (data?.statusCode === 201) {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        setFormFields(initialFormFields);
+        return { success: true };
+      } else {
+        toast.error(data?.message?data?.message:"Error Fetching Data");
+        return { success: false };
+      }
     } catch (err) {
-      toast.error('Failed to Submit');
-      console.error('Failed to save daily job:', error);
-      return { success: false, error };
+      toast.error("Failed to Submit");
+      console.error("Failed to save daily job:", err);
+      return { success: false, error: err };
     }
-  }
+  };
+  
 
   useEffect(() => {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
