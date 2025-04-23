@@ -537,7 +537,14 @@ const {dropDown} = useSelector((state:RootState)=>state.viewDailyPlan)
                 },
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "50px",
-                  padding: "2px 8px",
+                  px: 1, // remove padding that can cause issues
+                },
+                "& .MuiInputBase-input": {
+                  padding:searchSize ? "2px 0px" : "4px 0", // vertical padding only
+                  fontSize: "0.875rem",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
                 },
                 "& input": {
                   padding: searchSize ? "2px 0px" : "6px 8px",
