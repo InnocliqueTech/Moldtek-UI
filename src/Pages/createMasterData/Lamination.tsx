@@ -50,7 +50,7 @@ const Lamination: React.FC<LaminationProps> = ({
       label: "Code",
       editable: true, // Enable editing
       isDropdown: true,
-      options: ["A:1009N"],
+      options: ["1009N"],
     },
     {
       id: "brand",

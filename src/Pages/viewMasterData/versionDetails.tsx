@@ -12,12 +12,18 @@ const VersinDetails: React.FC = () => {
         align: true,
         format: (_: any, row: any) => {
           const combinedValue = `${row.unit_effective_number} - ${row.version_no}`;
-
+      
+          const handleClick = () => {
+            localStorage.setItem("VersionNumber", row.version_no);
+            localStorage.setItem("UEN", row.unit_effective_number);
+          };
+      
           return (
             <a
-              href={`/versiondetails/${row.unit_effective_number}/${row.version_no}`}
+              href="/versionDetails"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={handleClick}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -35,7 +41,7 @@ const VersinDetails: React.FC = () => {
             </a>
           );
         },
-      },
+      },      
       {
         id: "created_at",
         label: "Last Update",

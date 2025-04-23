@@ -48,7 +48,8 @@ const Layout = () => {
   if(UENAction){
     selectedUENList =  UENAction;
  }
-  const { id, version } = useParams();
+ const UnitEffectiveNumber = localStorage.getItem("UEN");
+ const VersionNumber = localStorage.getItem("VersionNumber")
 const clearRequestPayoad ={    
   masterDataDetails: {
     job_master_id: 0,
@@ -305,8 +306,8 @@ const formattedDate = today
       headerButton: true,
       onBack: () => navigate("/masterData"),
     },
-    "/versiondetails/:id/:version": {
-      title: `${id}-${version}`,
+    "/versionDetails": {
+      title: `${UnitEffectiveNumber}-${VersionNumber}`,
     },
     "/settings": {
       title: "Settings",

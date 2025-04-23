@@ -49,14 +49,15 @@ const ViewMasterData: React.FC = () => {
     dispatch(setSelectedTab(newValue));
   };
 
-  const { id, version: VersionData } = useParams();
-  const versionNumber = VersionData
-    ? VersionData.replace(/[^\d]/g, "")
+const UnitEffectiveNumber = localStorage.getItem("UEN");
+const VersionNumber = localStorage.getItem("VersionNumber")
+  const versionNumber = VersionNumber
+    ? VersionNumber.replace(/[^\d]/g, "")
     : undefined;
-
+const path = location.pathname.includes("/versionDetails")
   const { data, isLoading } = useViewMasterDataQuery({
-    ueNumber: id ? id : selectedUEN,
-    versionNo: versionNumber ? versionNumber : versionNo,
+    ueNumber: path ? UnitEffectiveNumber : selectedUEN,
+    versionNo: path ? versionNumber : versionNo,
   });
 
   useEffect(() => {

@@ -16,6 +16,7 @@ import {
   InputAdornment,
   Stack,
   PaginationItem,
+  TableContainer,
 } from "@mui/material";
 import { ChevronLeft, ChevronRight, InfoOutline } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -161,8 +162,30 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
         {table && (
           <>
             <Box sx={{ overflowX: "auto" }}>
-              <Table size="small">
-                <TableHead>
+            <TableContainer
+              sx={{
+                maxHeight: 400,
+                overflowY: "auto",
+                overflowX: "auto",
+                position: "relative",
+                mt: { md:  0, sm: 0 },
+              }}
+            >
+              <Table stickyHeader>
+                <TableHead
+                  sx={{
+                    position: "sticky",
+                    top: "-1px",
+                    zIndex: 2,
+                    backgroundColor: "#F5F5F5",
+                    height: "32px",
+                    "& .MuiTableCell-root": {
+                      padding: "4px 8px",
+                      height: "32px",
+                      backgroundColor: "#F5F5F5",
+                    },
+                  }}
+                >
                   <TableRow>
                     {tableColumns.map((col) => (
                       <TableCell
@@ -224,7 +247,8 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>
+                </Table>
+              </TableContainer>
             </Box>
 
             {/* Pagination */}

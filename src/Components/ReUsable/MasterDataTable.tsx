@@ -127,7 +127,7 @@ const DataTable = <T extends Record<string, any>>({
     }
   }, [invalidFieldsTable]);
 
-  const hardenerCodeOptions = ["H:KN75"];
+  const hardenerCodeOptions = ["KN75"];
 
 
   return (

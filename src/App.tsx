@@ -37,7 +37,7 @@ const App: React.FC = () => {
               <Route path="/viewJobsList" element={<JobsList/>}/>
               <Route path="/createPlan" element={<CreatePlan/>}/>
               <Route path="/viewDailyPlan/:indentNo" element={<ViewDailyPlan/>}/>  
-              <Route path ="/versiondetails/:id/:version" element={<ViewMasterData/>}/>       
+              <Route path ="/versionDetails" element={<ViewMasterData/>}/>       
             </Route>
           </Route>
           <Route path="*" element={<NotFoundPage />} />

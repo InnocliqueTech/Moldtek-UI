@@ -56,7 +56,6 @@ const viscosityWeightColumns = [
   { id: "gsmRange", label: "GSM Range" },
   { id: "gsmRangeActual", label: "Actual", edit: true },
   { id: "mixingComposition", label: "Mixing Composition", edit: true },
-  { id: "actualComposition", label: "Actual", edit: true },
   { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true },
   { id: "compositeGsm", label: "Composite gsm ",edit:true },
 ];
@@ -243,7 +242,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
           gsmRange: actualsRow.gsmRange,
           gsmRangeActual: actualsRow.gsmRangeActual,
           mixingComposition: actualsRow.mixingComposition,
-          actualComposition: actualsRow.actualComposition,
+          actualComposition: actualsRow.compositeGsm,
           rubberRollerWidth: actualsRow.rubberRollerWidth,
         };
         break;
