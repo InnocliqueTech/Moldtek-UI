@@ -15,7 +15,8 @@ import {
   SaveLabelCuttingResponse,
   SaveLabelCuttingRequest,
   SaveTravelCardResponse,
-  SaveTravelCardRequest
+  SaveTravelCardRequest,
+  SaveMakeReadyRequest
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -255,7 +256,17 @@ query:(newItem)=>({
     body: reportData,
   }),
   invalidatesTags: ["PrintingReport"], // Optional: adjust if needed
-})
+}),
+saveMakeReadyDetails: builder.mutation<SaveTravelCardResponse, SaveMakeReadyRequest>({
+  query: (payload) => ({
+    url: "/dailyplan/updateDailyPlanMakeReadyDetails",
+    method: "POST",
+    body: payload,
+  }),
+  invalidatesTags: (_result, _error, arg) => [
+    { type: "MakeReadyDetails", id: arg?.dailyPlan?.indentNumber?.toString() },
+  ],
+}),
   }),
 });
 
@@ -283,5 +294,6 @@ export const {
   useSaveLabelCuttingDetailsMutation ,
   useSaveTravelCardDetailsMutation,
   useSavePrintingReportDetailsMutation,
-    useSaveLaminationReportDetailsMutation
+  useSaveLaminationReportDetailsMutation,
+  useSaveMakeReadyDetailsMutation
 } = apiSlice;

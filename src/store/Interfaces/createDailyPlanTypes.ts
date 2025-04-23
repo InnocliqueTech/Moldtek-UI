@@ -473,3 +473,27 @@ export interface SaveTravelCardResponse {
   payload: null;
   data: null;
 }
+
+
+//==========================updateGetReady===========================//
+
+export interface SaveMakeReadyRequest {
+  dailyPlan: {
+    unitEffectivityNumber: string;
+    indentNumber: string;
+    shift: string;
+    workOrderNumber: string;
+  };
+  inkCoatingSpecifications: GetReadyInkCoatingSpecification[];
+  analoxSpecifications: AnaloxSpecification[];
+  mountingTapeSpecifications: MountingTapeSpecification[];
+  materialSpecification: MaterialSpecification;
+  plateMountingSupervisorReport: PlateMountingSupervisorReport;
+}
+
+export interface SaveMakeReadyResponse {
+  statusCode: number;
+  message: string;
+  payload: null;
+  data: string;
+}

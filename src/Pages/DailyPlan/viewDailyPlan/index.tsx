@@ -23,7 +23,14 @@ import {
   setIsEditing,
   clearUpdateDailyPlanPayload
 } from "../../../store/slices/viewDailyPlanSlice";
-import { useGetMakeReadyDetailsQuery,useSaveLabelCuttingDetailsMutation,useSaveLaminationReportDetailsMutation,useSaveTravelCardDetailsMutation,  useSavePrintingReportDetailsMutation, } from "../../../store/services/api";
+import {
+  useGetMakeReadyDetailsQuery,
+  useSaveLabelCuttingDetailsMutation,
+  useSaveLaminationReportDetailsMutation,
+  useSaveTravelCardDetailsMutation,
+  useSavePrintingReportDetailsMutation,
+  useSaveMakeReadyDetailsMutation,
+} from "../../../store/services/api";
 
 const tabs = [
   "Make Ready",
@@ -42,6 +49,7 @@ const ViewDailyPlan: React.FC = () => {
   const [saveLaminationReportDetails] = useSaveLaminationReportDetailsMutation();
   const [saveTravelCardDetails] = useSaveTravelCardDetailsMutation();
   const [savePrintingReportDetails] = useSavePrintingReportDetailsMutation();
+  const [saveMakeReadyDetails] = useSaveMakeReadyDetailsMutation();
   const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
   let unitEffectiveNumberDaily: number | undefined;
 
@@ -92,13 +100,27 @@ const ViewDailyPlan: React.FC = () => {
     payload: any,
     saveLabelCuttingDetails: ReturnType<typeof useSaveLabelCuttingDetailsMutation>[0],
     saveTravelCardDetails: ReturnType<typeof useSaveTravelCardDetailsMutation>[0],
-  savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
+    savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
     setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>,
     saveLaminationReportDetails: ReturnType<typeof useSaveLaminationReportDetailsMutation>[0],
+    saveMakeReadyDetails: ReturnType<typeof useSaveMakeReadyDetailsMutation>[0]
   ) => {
     setSavingTabIndex(selectedTab); // show loader on current tab
     try {
       switch (selectedTab) {
+          case 0:
+            const makeReadyPayload = {
+              ...updateDailyPlanPayload,
+              dailyPlan: {
+                unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
+                indentNumber: decodedIndentNo,
+                shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
+                workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
+              },
+            };
+          await saveMakeReadyDetails(makeReadyPayload).unwrap();
+          toast.success("Make Ready details saved successfully!");
+          break;
             case 1: {
           const printingPayload = {
             ...updateDailyPlanPayload,
@@ -155,7 +177,8 @@ const ViewDailyPlan: React.FC = () => {
         saveTravelCardDetails,
         savePrintingReportDetails,
         setSavingTabIndex,
-        saveLaminationReportDetails
+        saveLaminationReportDetails,
+        saveMakeReadyDetails,
       );
   
       if (selectedTab < tabs.length - 1) {

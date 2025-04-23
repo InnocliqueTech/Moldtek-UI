@@ -1,9 +1,12 @@
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { tapeColumns, materialColumns } from "../data";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../../../store";
 import Loader from "../../../Loader";
+import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
+import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -37,14 +40,21 @@ const transformAnaloxData = (specs: any[]) => {
   });
 };
 
-interface PrintingReportProps {
+interface MakeReadyProps {
   loading: boolean;
   error: boolean;
-  isEditing:boolean;
-  onDataChange:()=>void
+  isEditing: boolean;
+  onDataChange: () => void;
 }
 
-const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=false}) => {
+const MakeReady: React.FC<MakeReadyProps> = ({
+  loading = false,
+  error = false,
+  isEditing,
+  onDataChange,
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const {
     inkCoatingSpecifications,
     materialSpecification,
@@ -52,14 +62,86 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
     plateMountingSupervisorReport,
     analoxSpecifications = [],
   } = useSelector((state: RootState) => state.viewDailyPlan);
-  const plateMountingReport = [
-    { label: "Plates Inspection", value: plateMountingSupervisorReport?.platesInspection || "" },
-    { label: "Mounter", value: plateMountingSupervisorReport?.mounter || "" },
-    { label: "Approver", value: plateMountingSupervisorReport?.approver || "" },
-    { label: "Ink Kitchen Supervisor", value: plateMountingSupervisorReport?.inkKitchenSupervisor || "" },
-    { label: "Plate Mounting Supervisor Report", value: plateMountingSupervisorReport?.plateMountingSupervisor || "" },
-    { label: "Shift QC Incharge", value: plateMountingSupervisorReport?.shiftQcIncharge || "" },
-  ];
+
+  const [editableMaterialSpec, setEditableMaterialSpec] = useState(materialSpecification || {});
+  const [plateReportItems, setPlateReportItems] = useState<InfoItem[]>([]);
+
+  useEffect(() => {
+    if (plateMountingSupervisorReport) {
+      const report: InfoItem[] = [
+        {
+          label: "Plates Inspection",
+          value: plateMountingSupervisorReport.platesInspection ?? "",
+          editable: true,
+          keyName: "platesInspection",
+        },
+        {
+          label: "Mounter",
+          value: plateMountingSupervisorReport.mounter,
+          editable: true,
+          keyName: "mounter",
+        },
+        {
+          label: "Approver",
+          value: plateMountingSupervisorReport.approver,
+          editable: true,
+          keyName: "approver",
+        },
+        {
+          label: "Ink Kitchen Supervisor",
+          value: plateMountingSupervisorReport.inkKitchenSupervisor,
+          editable: true,
+          keyName: "inkKitchenSupervisor",
+        },
+        {
+          label: "Plate Mounting Supervisor Report",
+          value: plateMountingSupervisorReport.plateMountingSupervisor,
+          editable: true,
+          keyName: "plateMountingSupervisor",
+        },
+        {
+          label: "Shift QC Incharge",
+          value: plateMountingSupervisorReport.shiftQcIncharge,
+          editable: true,
+          keyName: "shiftQcIncharge",
+        },
+      ];
+      setPlateReportItems(report);
+    }
+  }, [plateMountingSupervisorReport]);
+
+  const handleShiftReportUpdate = (items: InfoItem[]) => {
+    setPlateReportItems(items);
+    const updatedReport: any = {};
+    items.forEach((item) => {
+      updatedReport[item.keyName!] = item.value;
+    });
+    dispatch(setUpdateDailyPlanPayload({
+    plateMountingSupervisorReport: updatedReport,
+    materialSpecification: editableMaterialSpec,
+    inkCoatingSpecifications,
+    analoxSpecifications,
+    mountingTapeSpecifications,
+    // Optionally include other sections (inkCoatingSpecifications etc.)
+  }));
+    onDataChange();
+  };
+
+  const handleMaterialSpecChange = (newData: any[]) => {
+    if (newData.length > 0) {
+      const updated = newData[0];
+      setEditableMaterialSpec(updated);
+      dispatch(setUpdateDailyPlanPayload({
+        plateMountingSupervisorReport: Object.fromEntries(plateReportItems.map(item => [item.keyName!, item.value])),
+        materialSpecification: updated,
+        inkCoatingSpecifications,
+        analoxSpecifications,
+        mountingTapeSpecifications,
+        // Add others here if you want a complete payload
+      }));
+      onDataChange();
+    }
+  };
 
   const analoxCols = generateAnaloxColumns(analoxSpecifications);
   const analoxData = transformAnaloxData(analoxSpecifications);
@@ -73,7 +155,7 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
           Failed to load Make Ready data
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          An unexpected error occurred. Please try again later
+          An unexpected error occurred. Please try again later.
         </Typography>
       </Box>
     );
@@ -86,7 +168,7 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
           title="Ink & Coating Specifications"
           columns={inkCoatingColumns}
           data={inkCoatingSpecifications || []}
-          firstRow={true}
+          firstRow
         />
       </Box>
 
@@ -95,7 +177,7 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
           title="Analox Specifications"
           columns={analoxCols}
           data={analoxData}
-          firstRow={true}
+          firstRow
         />
       </Box>
 
@@ -104,15 +186,19 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
           title="Mounting Tape Specifications"
           columns={tapeColumns}
           data={mountingTapeSpecifications || []}
-          firstRow={true}
+          firstRow
         />
       </Box>
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Material Specifications"
-          columns={materialColumns}
-          data={materialSpecification ? [materialSpecification] : []}
+          columns={materialColumns.map((col) => ({
+            ...col,
+            edit: isEditing && col.id === "gsm", // ✅ Only GSM editable
+          }))}
+          data={[editableMaterialSpec]}
+          setData={handleMaterialSpecChange}
         />
       </Box>
 
@@ -121,7 +207,9 @@ const MakeReady: React.FC<PrintingReportProps> = ({ loading = false , error=fals
           title="Shift Supervisor Report"
           showInfoSection={true}
           showTableSection={false}
-          infoItems={plateMountingReport || []}
+          infoItems={plateReportItems}
+          setInfoItems={handleShiftReportUpdate}
+          isEditing={isEditing}
         />
       </Box>
     </>
