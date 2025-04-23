@@ -241,7 +241,7 @@ const CommenCard: React.FC<Props> = ({
                   Film Required For Printing
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.filmRequiredForPrinting || "N/A")}
+                  {renderValue(dailyPlan?.filmRequiredPrintingMtrs || "N/A")}
                 </Typography>
               </Box>
 

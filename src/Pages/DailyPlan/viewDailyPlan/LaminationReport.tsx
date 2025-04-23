@@ -53,12 +53,12 @@ const viscosityWeightColumns = [
   // { id: 'metric', label: '' },
   { id: "viscosityRange", label: "Viscosity Range" },
   { id: "actualViscosity", label: "Actual", edit: true },
-  { id: "gsmRange", label: "GSM Range", edit: true },
+  { id: "gsmRange", label: "GSM Range" },
   { id: "gsmRangeActual", label: "Actual", edit: true },
   { id: "mixingComposition", label: "Mixing Composition", edit: true },
   { id: "actualComposition", label: "Actual", edit: true },
   { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true },
-  // { id: "compositeGsm", label: "Composite gsm ",edit:true },
+  { id: "compositeGsm", label: "Composite gsm ",edit:true },
 ];
 
 const laminationProcessColumns = [
@@ -225,10 +225,10 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       }
       case "bondingMaterialSpecifications": {
         updated.bondingMaterialSpecifications = newData.map((item: any) => ({
-          bondingMaterial: item.bondingMaterial || "", // required field
-          code: item.code || "", // required field
-          brand: item.brand || "", // required field
-          mixingRatio: item.mixingRatio || "", // required field
+          bondingMaterial: item.bondingMaterial || "", 
+          code: item.code || "",
+          brand: item.brand || "", 
+          mixingRatio: item.mixingRatio || "",
           actual: item.actual !== undefined ? String(item.actual) : null,
         }));
         break;
@@ -251,7 +251,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       case "laminationProcessReport": {
         updated.laminationProcessReport = newData.map((item: any) => ({
           particular: item.particular,
-          target: item.target || "", // required field
+          target: item.target || "", 
           actual: item.actual || "",
         }));
         break;

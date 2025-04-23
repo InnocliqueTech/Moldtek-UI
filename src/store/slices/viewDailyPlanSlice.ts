@@ -8,7 +8,7 @@ interface DailyPlan {
   ppcIndentQty: number;
   targetLabelsQty: number;
   targetFilmMtrs: number;
-  filmRequiredForPrinting: number | null;
+  filmRequiredPrintingMtrs: number | null;
   jarCap: string;
   date: string;
   shift: string;
@@ -111,7 +111,7 @@ const initialState: viewDailyPlan = {
     ppcIndentQty: 0,
     targetLabelsQty: 0,
     targetFilmMtrs: 0,
-    filmRequiredForPrinting: null,
+    filmRequiredPrintingMtrs: null,
     jarCap: "",
     date: "",
     shift: "",

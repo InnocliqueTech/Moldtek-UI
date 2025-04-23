@@ -6,6 +6,9 @@ import {
   Box,
   Typography,
   Chip,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
@@ -100,41 +103,37 @@ const Header: React.FC<HeaderProps> = ({
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const [updateStatusJob] = useUpdateStatusJobMutation();
-  const handleDropdownChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleDropdownChange = async (e: SelectChangeEvent<string>) => {
     const newStatus = e.target.value;
-    const previousStatus = selectedStatus; // Store the previous status value
-
-    setSelectedStatus(newStatus); // Temporarily update the state to the new value
-
+    const previousStatus = selectedStatus;
+  
+    setSelectedStatus(newStatus);
+  
     try {
       const response = await updateStatusJob({
         indentNumber: decodedIndentNo,
         status: newStatus,
       }).unwrap();
-
+  
       if (response?.statusCode === 200) {
         localStorage.setItem("status", newStatus);
         if (response?.message !== "Status Updated") {
           toast.error(response?.message);
         } else {
-          toast.success("Status Updated Succesfully!");
+          toast.success("Status Updated Successfully!");
         }
       } else {
-        // If the status update fails, revert the status to the previous one
         setSelectedStatus(previousStatus);
-        localStorage.setItem("status", previousStatus); // Retain the previous status in localStorage
+        localStorage.setItem("status", previousStatus);
         toast.error(response?.message);
       }
     } catch (error) {
-      // If an error occurs, revert the status to the previous one
       setSelectedStatus(previousStatus);
-      localStorage.setItem("status", previousStatus); // Retain the previous status in localStorage
+      localStorage.setItem("status", previousStatus);
       toast.error("Something Went Wrong!");
     }
   };
-
+  
   const handleClosePopUp = () => {
     dispatch(setUploadPopup(false));
   };
@@ -271,36 +270,34 @@ const Header: React.FC<HeaderProps> = ({
             </Box>
 
             <Box display="flex" gap={2}>
-              {dropDown && (
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 500, color: "#1976D2" }}
-                  >
-                    Status:
-                  </Typography>
-                  <Box
-                    component="select"
-                    value={selectedStatus}
-                    onChange={handleDropdownChange}
-                    sx={{
-                      borderRadius: "20px",
-                      padding: "10px 16px",
-                      border: "1px solid #ccc",
-                      background: "#fff",
-                      fontSize: "14px",
-                      outline: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {dropDownOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </Box>
-                </Box>
-              )}
+            {dropDown && (
+  <Box display="flex" alignItems="center" gap={1}>
+    <Typography variant="subtitle2" sx={{ fontWeight: 500, color: "#1976D2" }}>
+      Status:
+    </Typography>
+    <Select
+  value={selectedStatus}
+  onChange={handleDropdownChange}
+  displayEmpty
+  size="small"
+  sx={{
+    borderRadius: "20px",
+    padding: "0px 16px",
+    border: "1px solid #00000000",
+    background: "#fff",
+    fontSize: "14px",
+    outline: "none",
+    cursor: "pointer",
+  }}
+>
+  {dropDownOptions.map((option) => (
+    <MenuItem key={option} value={option}>
+      {option}
+    </MenuItem>
+  ))}
+</Select>
+  </Box>
+)}
               {button1Text && (
                 <ButtonComponent
                 {...(onButton1Click && { onClick: onButton1Click })}
@@ -341,8 +338,7 @@ const Header: React.FC<HeaderProps> = ({
                       ? "1px solid #E5E5E5"
                       : "none"
                   }
-                  p={"4px"}
-                  width={"200px"}
+                  p={"14px"}
                 />
               )}
             </Box>

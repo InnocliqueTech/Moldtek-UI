@@ -27,7 +27,7 @@ export interface DailyJob {
   ppcIndentQty: number | null
   targetLabelsQty: number
   targetFilmMtrs: number | null
-  filmRequiredForPrinting: number | null
+  filmRequiredPrintingMtrs: number | null
   jarCap: string | null
   date: string | null
   shift: string
@@ -165,7 +165,7 @@ export interface DailyPlan {
   ppcIndentQty: number
   targetLabelsQty: number
   targetFilmMtrs: number
-  filmRequiredForPrinting: number | null
+  filmRequiredPrintingMtrs: number | null
   jarCap: string
   date: string
   shift: string
