@@ -84,7 +84,7 @@ const MasterData: React.FC = () => {
     {
       id: "label_type",
       label: "Type Of Label",
-      align: true,
+      align: false,
       disableSorting: false,
       format: (value: string) =>
         value !== null ? (

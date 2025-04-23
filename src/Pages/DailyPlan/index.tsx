@@ -182,7 +182,7 @@ const dispatch = useDispatch()
       {
         id: "labelType",
         label: "Type Of Label",
-        align: true,
+        align: false,
       format: (value: string) =>
              value !== null ? (
                <Tooltip title={value}>

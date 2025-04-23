@@ -18,20 +18,20 @@ const JobsList: React.FC = () => {
   if(UEN){
     selectedUEN =  UEN;
  }
-  type StatusType = "In progress" | "On hold" | "Not yet started" | "Completed"|"Active";
+  type StatusType = "Inprogress" | "On hold" | "Inactive" | "Completed"|"Active";
 
   const colorMap: Record<StatusType, string> = {
-    "In progress": "#FAECD8",
+    "Inprogress": "#FAECD8",
     "On hold": "#F7DDDA",
-    "Not yet started": "#DCEAF7",
+    "Inactive": "#ffebee",
     "Completed": "#DDEED8",
     "Active": "#E6F4FF",
   };
 
   const textColorMap: Record<StatusType, string> = {
-    "In progress": "#C08532",
+    "Inprogress": "#C08532",
     "On hold": "#B2493A",
-    "Not yet started": "#0447A8",
+    "Inactive": "#c62828",
     "Completed": "#478E30",
     "Active": "#0070F3",
   };
@@ -49,7 +49,7 @@ const JobsList: React.FC = () => {
     {
       id: "labelType",
       label: "Type Of Label",
-      align: true,
+      align: false,
       disableSorting: true,
       format: (value: string) =>
         value !== null ? (
