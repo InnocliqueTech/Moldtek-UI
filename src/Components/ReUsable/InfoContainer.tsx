@@ -10,7 +10,8 @@ export interface InfoItem {
     lg?: number;
   };
   editable?: boolean; 
-  keyName?: string;   
+  keyName?: string;
+  type?: string;   
 }
 interface InfoContainerProps {
   infoItems: InfoItem[];
@@ -44,6 +45,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
             {isEditing && item.editable ? (
               <TextField
                 fullWidth
+                type={item?.type || "text"}
                 size="small"
                 variant="outlined"
                 value={item.value}

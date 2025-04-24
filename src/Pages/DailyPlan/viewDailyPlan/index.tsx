@@ -31,6 +31,7 @@ import {
   useSavePrintingReportDetailsMutation,
   useSaveMakeReadyDetailsMutation,
 } from "../../../store/services/api";
+import ButtonComponent from "../../../Components/ReUsable/Button";
 
 const tabs = [
   "Make Ready",
@@ -299,45 +300,76 @@ const ViewDailyPlan: React.FC = () => {
             zIndex: 1000,
           }}
         >
-          <Button
+          <ButtonComponent
+            color="white"
+            text="Cancel"
             variant="outlined"
             onClick={handleCancel}
-            sx={{ mr: 2 }}
+            textColor="#0E0E0E"
+            borderRadius="100px"
+            border="1px solid #E5E5E5"
+            p={"14px"}
+            styles={{ mr: 1 }}
             disabled={isSaving}
-          >
-            Cancel
-          </Button>
-          <Button
+          />
+
+          <ButtonComponent
+            text={
+              savingTabIndex === selectedTab
+                ? "Saving..."
+                : selectedTab === tabs.length - 1
+                ? "Save"
+                : "Save & Next"
+            }
             variant="contained"
             onClick={handleSave}
             color="primary"
             disabled={savingTabIndex === selectedTab || !hasUnsavedChanges}
+            borderRadius="100px"
             startIcon={
               savingTabIndex === selectedTab ? (
                 <CircularProgress size={20} color="inherit" />
               ) : null
             }
-          >
-            {savingTabIndex === selectedTab
-              ? "Saving..."
-              : selectedTab === tabs.length - 1
-              ? "Save"
-              : "Save & Next"}
-          </Button>
+            p={"14px"}
+          />
         </Box>
       )}
 
       {/* Tab Change Confirmation Dialog */}
-      <Dialog open={showTabChangeDialog} onClose={handleDialogCancel}>
-        <DialogTitle>Unsaved Changes</DialogTitle>
-        <DialogContent>
+      <Dialog
+        open={showTabChangeDialog}
+        onClose={handleDialogCancel}
+        sx={{
+          "& .MuiPaper-root": {
+            borderRadius: "16px",
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: "6px", ml: "-12px" }}>
+          Unsaved Changes
+        </DialogTitle>
+        <DialogContent sx={{ p: "16px", mt: "0px" }}>
           You have unsaved changes. Are you sure you want to switch tabs?
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogCancel}>Cancel</Button>
-          <Button onClick={handleDialogContinue} color="primary">
-            Continue Without Saving
-          </Button>
+          <ButtonComponent 
+            text="Cancel" 
+            onClick={handleDialogCancel} 
+            color="white"
+            textColor="#0E0E0E"
+            borderRadius="100px"
+            border="1px solid #E5E5E5"
+            p={"14px"}
+          
+          />
+          <ButtonComponent 
+          text="Continue Without Saving"
+          onClick={handleDialogContinue} 
+          color="#0073B7"
+          borderRadius="100px"
+          p={"14px"}
+          />
         </DialogActions>
       </Dialog>
     </Box>

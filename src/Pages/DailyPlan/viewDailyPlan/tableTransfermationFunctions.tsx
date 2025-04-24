@@ -199,12 +199,14 @@ type TensionApiResponse = {
         value: formatDate(data.jobStartingTime),
         editable: makeEditable,
         keyName: "jobStartingTime",
+        type: "date",
       },
       {
         label: "Completion Time",
         value: formatDate(data.completionTime),
         editable: makeEditable,
         keyName: "completionTime",
+        type: "date",
       },
       {
         label: "Total Printing Time",
