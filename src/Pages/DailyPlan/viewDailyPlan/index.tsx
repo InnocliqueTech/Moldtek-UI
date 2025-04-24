@@ -181,11 +181,11 @@ const ViewDailyPlan: React.FC = () => {
         saveMakeReadyDetails,
       );
   
-      if (selectedTab < tabs.length - 1) {
-        dispatch(setSelectedTab(selectedTab + 1));
-      }
+      // if (selectedTab < tabs.length - 1) {
+      //   dispatch(setSelectedTab(selectedTab + 1));
+      // }
   
-      dispatch(setIsEditing(false));
+      //dispatch(setIsEditing(false));
       setHasUnsavedChanges(false);
     } catch (error) {
       toast.error("Failed to save data. Please try again.");
@@ -297,9 +297,11 @@ const ViewDailyPlan: React.FC = () => {
             padding: "16px",
             display: "flex",
             justifyContent: "flex-end",
+            gap: 1,
             zIndex: 1000,
           }}
         >
+          {/* Cancel */}
           <ButtonComponent
             color="white"
             text="Cancel"
@@ -308,30 +310,42 @@ const ViewDailyPlan: React.FC = () => {
             textColor="#0E0E0E"
             borderRadius="100px"
             border="1px solid #E5E5E5"
-            p={"14px"}
-            styles={{ mr: 1 }}
-            disabled={isSaving}
+            p="14px"
+            disabled={isSaving} // Disable during saving
           />
 
+          {/* Save */}
           <ButtonComponent
-            text={
-              savingTabIndex === selectedTab
-                ? "Saving..."
-                : selectedTab === tabs.length - 1
-                ? "Save"
-                : "Save & Next"
-            }
+            text={savingTabIndex === selectedTab ? "Saving..." : "Save"}
             variant="contained"
             onClick={handleSave}
             color="primary"
-            disabled={savingTabIndex === selectedTab || !hasUnsavedChanges}
+            disabled={savingTabIndex === selectedTab}
             borderRadius="100px"
             startIcon={
               savingTabIndex === selectedTab ? (
                 <CircularProgress size={20} color="inherit" />
               ) : null
             }
-            p={"14px"}
+            p="14px"
+          />
+
+          {/* Next */}
+          <ButtonComponent
+            text="Next"
+            variant="contained"
+            onClick={() => {
+              if (hasUnsavedChanges) {
+                setNextTab(selectedTab + 1);
+                setShowTabChangeDialog(true); // show popup if unsaved changes
+              } else {
+                dispatch(setSelectedTab(selectedTab + 1));
+              }
+            }}
+            color="primary"
+            disabled={selectedTab === tabs.length - 1}
+            borderRadius="100px"
+            p="14px"
           />
         </Box>
       )}
@@ -353,22 +367,22 @@ const ViewDailyPlan: React.FC = () => {
           You have unsaved changes. Are you sure you want to switch tabs?
         </DialogContent>
         <DialogActions>
-          <ButtonComponent 
-            text="Cancel" 
-            onClick={handleDialogCancel} 
+          <ButtonComponent
+            text="Cancel"
+            onClick={handleDialogCancel}
             color="white"
             textColor="#0E0E0E"
             borderRadius="100px"
             border="1px solid #E5E5E5"
-            p={"14px"}
-          
+            p="14px"
+            disabled={isSaving} // disable cancel during saving
           />
-          <ButtonComponent 
-          text="Continue Without Saving"
-          onClick={handleDialogContinue} 
-          color="#0073B7"
-          borderRadius="100px"
-          p={"14px"}
+          <ButtonComponent
+            text="Continue Without Saving"
+            onClick={handleDialogContinue}
+            color="#0073B7"
+            borderRadius="100px"
+            p="14px"
           />
         </DialogActions>
       </Dialog>
