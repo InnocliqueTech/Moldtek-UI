@@ -267,7 +267,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
           title="Printing Run Metrics"
           columns={[
             { id: "particular", label: "", edit: false },
-            { id: "target", label: "Target", edit: false },
+            // { id: "target", label: "Target", edit: false },
             { id: "roll1", label: "Roll-1", edit: isEditing },
             { id: "roll2", label: "Roll-2", edit: isEditing },
           ]}

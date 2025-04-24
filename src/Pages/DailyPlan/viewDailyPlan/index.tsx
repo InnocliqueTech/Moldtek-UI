@@ -163,7 +163,6 @@ const ViewDailyPlan: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      console.log(updateDailyPlanPayload,updateCommonCard,"inside save");
       const commonPayload = {
         ...updateDailyPlanPayload,
         ...updateCommonCard,

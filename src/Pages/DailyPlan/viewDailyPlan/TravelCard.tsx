@@ -131,15 +131,20 @@ const TravelCard: React.FC<TravelCardProps> = ({
           title="Printing Machine"
           columns={printingColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.edit,
+            edit: isEditing && col.id === "target", // only apply editable for 'target'
           }))}
           data={editableData.printingMachine.categories}
-          setData={(newData: any[]) => handleDataUpdate("printingMachine", newData)}
+          setData={(newData: any[]) =>
+            handleDataUpdate("printingMachine", newData)
+          }
           firstRow
           infoItems={printingInfo}
-          setInfoItems={(updatedItems) => handleInfoUpdate("printingMachine", updatedItems)}
+          setInfoItems={(updatedItems) =>
+            handleInfoUpdate("printingMachine", updatedItems)
+          }
           isEditing={isEditing}
           showInfoSection
+          rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
 
@@ -148,15 +153,20 @@ const TravelCard: React.FC<TravelCardProps> = ({
           title="Lamination Machine"
           columns={laminationColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.edit,
+            edit: isEditing && col.id === "target", // only apply editable for 'target'
           }))}
           data={editableData.laminationMachine.categories}
-          setData={(newData: any[]) => handleDataUpdate("laminationMachine", newData)}
+          setData={(newData: any[]) =>
+            handleDataUpdate("laminationMachine", newData)
+          }
           firstRow
           infoItems={laminationInfo}
-          setInfoItems={(updatedItems) => handleInfoUpdate("laminationMachine", updatedItems)}
+          setInfoItems={(updatedItems) =>
+            handleInfoUpdate("laminationMachine", updatedItems)
+          }
           isEditing={isEditing}
           showInfoSection
+          rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
 
@@ -168,10 +178,14 @@ const TravelCard: React.FC<TravelCardProps> = ({
             edit: isEditing && col.edit,
           }))}
           data={editableData.labelCuttingMachine.categories}
-          setData={(newData: any[]) => handleDataUpdate("labelCuttingMachine", newData)}
+          setData={(newData: any[]) =>
+            handleDataUpdate("labelCuttingMachine", newData)
+          }
           firstRow
           infoItems={cuttingInfo}
-          setInfoItems={(updatedItems) => handleInfoUpdate("labelCuttingMachine", updatedItems)}
+          setInfoItems={(updatedItems) =>
+            handleInfoUpdate("labelCuttingMachine", updatedItems)
+          }
           isEditing={isEditing}
           showInfoSection
         />
@@ -185,7 +199,9 @@ const TravelCard: React.FC<TravelCardProps> = ({
             edit: isEditing && col.edit,
           }))}
           data={[editableData.labelDispatchSummary]}
-          setData={(newData: any[]) => handleDataUpdate("labelDispatchSummary", newData)}
+          setData={(newData: any[]) =>
+            handleDataUpdate("labelDispatchSummary", newData)
+          }
         />
       </Box>
     </>

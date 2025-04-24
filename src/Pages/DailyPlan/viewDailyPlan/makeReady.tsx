@@ -30,7 +30,7 @@ const generateAnaloxColumns = (specs: any[]) => {
 };
 
 const transformAnaloxData = (specs: any[]) => {
-  const parameters = ["lpcm", "vol"];
+  const parameters = ["lpcm", "vol" , "stationSpec"];
   return parameters.map((param) => {
     const row: Record<string, string | number> = { parameter: param };
     specs.forEach((station) => {
@@ -181,14 +181,14 @@ const MakeReady: React.FC<MakeReadyProps> = ({
         />
       </Box>
 
-      <Box sx={{ borderRadius: "0px", p: 1 }}>
+      {/* <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Mounting Tape Specifications"
           columns={tapeColumns}
           data={mountingTapeSpecifications || []}
           firstRow
         />
-      </Box>
+      </Box> */}
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
