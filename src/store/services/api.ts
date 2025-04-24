@@ -214,7 +214,7 @@ query:(newItem)=>({
     
     saveLaminationReportDetails: builder.mutation<any, any>({
       query: (laminationReportData) => ({
-        url: '/dailyplan/dailyplan/saveLaminationReport',
+        url: '/dailyplan/saveLaminationReport',
         method: 'POST',
         body: laminationReportData,
       }),
