@@ -22,33 +22,37 @@ interface DyeCuttingProps {
 
 const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   const [errors, setErrors] = useState<DyeCuttingFormErrors>({
-    job_master_id:"",
-    dye_cutting_id:"",
+    job_master_id: "",
+    dye_cutting_id: "",
     machine_type: "",
     machine_name: "",
     dye_code: "",
     run_speed: "",
   });
-  const { dyeCuttingFormData, dyeCuttingErrors ,dyeCuttingDataTouched,dyeCuttingDetails} = useSelector(
-    (state: RootState) => state.masterData
-  );
+
+  const {
+    dyeCuttingFormData,
+    dyeCuttingErrors,
+    dyeCuttingDataTouched,
+    dyeCuttingDetails,
+  } = useSelector((state: RootState) => state.masterData);
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const dispatch = useDispatch<AppDispatch>();
+  const { id } = useParams();
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
-      job_master_id:data?.job_master_id||0,
-      dye_cutting_id:data?.dye_cutting_id||0,
+      job_master_id: data?.job_master_id || 0,
+      dye_cutting_id: data?.dye_cutting_id || 0,
       machine_type: data?.machine_type || "",
       machine_name: data?.machine_name || "",
       dye_code: data?.dye_code || "",
-      run_speed: data?.run_speed!==undefined ? String(data.run_speed) : "",
+      run_speed:
+        data?.run_speed !== undefined ? String(data.run_speed) : "",
     };
   }
-
-  const { id } = useParams();
 
   function extractValue(
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -58,124 +62,115 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     }
     return value;
   }
-  
+
   const handleChange = (
     key: keyof DyeCuttingFormData,
     rawValue: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    if(id){
-    dispatch(setDyeCuttingDataTouched(true));
+    if (id) {
+      dispatch(setDyeCuttingDataTouched(true));
     }
+  
     const newValue = extractValue(rawValue);
-    let finalValue: string | string[] | number = "";
+    let finalValue: string | number | string[] = "";
     let errorMessage = "";
   
     const numberFields = ["run_speed"];
+    const charOnlyFields = ["machine_name", "dye_code"];
+  
     const isNumberField = numberFields.includes(key);
-    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
+    const isCharOnlyField = charOnlyFields.includes(key);
   
     if (isNumberField) {
       if (typeof newValue === "string") {
-        finalValue = newValue; // always store the user input as string first for display
+        const trimmed = newValue.trim().replace("%", "");
+        finalValue = newValue; // Always show the typed value
   
-        const trimmed = newValue.trim();
-        if (trimmed === "" || trimmed === "0") {
-          errorMessage = `${key.replace(/_/g, " ")} cannot be empty or 0`;
+        if (trimmed === "") {
+          errorMessage = ""; // Optional field, allow empty
         } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
-          errorMessage = "Please enter a valid number";
+          errorMessage = "Please enter a valid number or percentage";
         } else {
-          // Valid number -> convert & store as number
-          finalValue = Number(trimmed);
+          // Valid number or percentage
+          finalValue = newValue.includes("%")
+            ? `${parseFloat(trimmed)}%`
+            : Number(trimmed);
+          errorMessage = "";
         }
       } else {
-        finalValue = "";
-        errorMessage = "Invalid input type";
+        finalValue = newValue;
+        errorMessage = "Invalid input";
       }
     } else {
       if (typeof newValue === "string") {
         const trimmedValue = newValue.trim();
+        finalValue = newValue; // Preserve raw input
   
         if (trimmedValue === "") {
-          errorMessage = `${key.replace(/_/g, " ")} is required`;
-        } else if (!alphaNumericRegex.test(trimmedValue)) {
+          errorMessage = ""; // Optional field
+        } else if (
+          isCharOnlyField &&
+          !/^[a-zA-Z\s]+$/.test(trimmedValue)
+        ) {
+          errorMessage = "Only letters and spaces are allowed";
+        } else if (
+          !isCharOnlyField &&
+          !/^[a-zA-Z0-9\s]+$/.test(trimmedValue)
+        ) {
           errorMessage = "Special characters are not allowed";
         } else {
+          errorMessage = "";
           finalValue = trimmedValue;
         }
       } else if (Array.isArray(newValue)) {
         finalValue = newValue;
       } else {
-        finalValue = "";
+        finalValue = newValue;
         errorMessage = "Invalid input";
       }
     }
   
-    // Always store the current user input for display
-    const updated = {
+    const updatedFormData = {
       ...formData,
-      [key]: isNumberField ? newValue : finalValue,  // if number field, store as string until valid
+      [key]: finalValue,
     };
   
-    setFormData(updated);
-  
-    const updatedErrors: DyeCuttingFormErrors = {
+    const updatedErrors = {
       ...errors,
       [key]: errorMessage,
     };
   
+    setFormData(updatedFormData);
     setErrors(updatedErrors);
+  
+    dispatch(setDyeCuttingFormData(updatedFormData));
     dispatch(setDyeCuttingFormErros(updatedErrors));
-  
-    // Save number only if valid, else save raw user input
-    const toSave = {
-      ...formData,
-      [key]:
-        isNumberField && errorMessage === ""
-          ? Number(newValue) // valid: save number
-          : newValue,        // invalid: save raw input
-    };
-  
-    dispatch(setDyeCuttingFormData(toSave));
   };
   
-  
-  
-  
+
+  // Button control: Only if errors exist
+  useEffect(() => {
+    const hasAnyErrors = Object.values(errors).some((e) => e !== "");
+    dispatch(setSubmitAndPublishButtonDyeCutting(hasAnyErrors));
+  }, [errors]);
 
   useEffect(() => {
-    const importantFields = [
-      "machine_type",
-      "machine_name",
-      "dye_code",
-      "run_speed",
-    ] as (keyof DyeCuttingFormData)[];
-
-    const hasErrors = importantFields.some(
-      (field) =>
-        errors[field] !== "" ||
-        formData[field] === "" ||
-        formData[field] === null ||
-        formData[field] === undefined
-    );
-
-    dispatch(setSubmitAndPublishButtonDyeCutting(hasErrors));
-  }, [formData, errors]);
-     useEffect(()=>{
-        if(id&&location.pathname.includes('/updateMasterData')){
-          setFormData(dyeCuttingDetails)
-        }},[]);
+    if (id && location.pathname.includes("/updateMasterData")) {
+      setFormData(dyeCuttingDetails);
+    }
+  }, []);
 
   useEffect(() => {
     if (!id && dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
     }
-    if ( dyeCuttingErrors) {
+    if (dyeCuttingErrors) {
       setErrors(dyeCuttingErrors);
     }
-  }, [dyeCuttingFormData,dyeCuttingErrors,id]);
+  }, [dyeCuttingFormData, dyeCuttingErrors, id]);
 
   useEffect(() => {
-    if (id && dyeCuttingSettings&&!dyeCuttingDataTouched) {
+    if (id && dyeCuttingSettings && !dyeCuttingDataTouched) {
       const sanitized = sanitizeDyeCuttingData(dyeCuttingSettings);
       setFormData(sanitized);
     }
@@ -197,27 +192,27 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
           </Box>
 
           <Grid container spacing={2} pt={1}>
-             <Grid size={{ xs: 12, md: 4 }}>
-               <DropdownComponent
-                              label="Dye Cutting Machine Type"
-                              options={["Packers","Poly" ,"Rhyguan","Scober","Sysco"]}
-                              value={formData.machine_type}
-                              onChange={(value) =>
-                                handleChange("machine_type", value)
-                              }
-                              isMultiSelect={false}
-                              checkbox={false}
-                            />
-                            </Grid>
+            <Grid size={{xs:12,md:4}}>
+              <DropdownComponent
+                label="Dye Cutting Machine Type"
+                options={["Packers", "Poly", "Rhyguan", "Scober", "Sysco"]}
+                value={formData.machine_type}
+                onChange={(value) => handleChange("machine_type", value)}
+                isMultiSelect={false}
+                checkbox={false}
+              />
+            </Grid>
             {[
               { label: "Machine", key: "machine_name" },
               { label: "Dye Code", key: "dye_code" },
               { label: "Run Speed (m/min)", key: "run_speed" },
             ].map(({ label, key }) => (
-              <Grid size={{ xs: 12, md: 4 }} key={key}>
+              <Grid size={{xs:12,md:4}} key={key}>
                 <ReusableInput
                   label={label}
-                  value={formData[key as keyof DyeCuttingFormData]}
+                  value={
+                    formData[key as keyof DyeCuttingFormData] || ""
+                  }
                   onChange={(e) =>
                     handleChange(
                       key as keyof DyeCuttingFormErrors,
