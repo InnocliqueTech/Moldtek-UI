@@ -49,8 +49,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
       machine_type: data?.machine_type || "",
       machine_name: data?.machine_name || "",
       dye_code: data?.dye_code || "",
-      run_speed:
-        data?.run_speed !== undefined ? String(data.run_speed) : "",
+      run_speed: data?.run_speed !== undefined ? String(data.run_speed) : "",
     };
   }
 
@@ -70,85 +69,69 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     if (id) {
       dispatch(setDyeCuttingDataTouched(true));
     }
-  
+
     const newValue = extractValue(rawValue);
-    let finalValue: string | number | string[] = "";
+    let finalValue: string | string[] | number = "";
     let errorMessage = "";
-  
+
     const numberFields = ["run_speed"];
-    const charOnlyFields = ["machine_name", "dye_code"];
-  
     const isNumberField = numberFields.includes(key);
-    const isCharOnlyField = charOnlyFields.includes(key);
-  
+    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/;
+
     if (isNumberField) {
       if (typeof newValue === "string") {
         const trimmed = newValue.trim().replace("%", "");
-        finalValue = newValue; // Always show the typed value
-  
+        finalValue = newValue;
+
         if (trimmed === "") {
-          errorMessage = ""; // Optional field, allow empty
+          errorMessage = "";
         } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
           errorMessage = "Please enter a valid number or percentage";
         } else {
-          // Valid number or percentage
           finalValue = newValue.includes("%")
             ? `${parseFloat(trimmed)}%`
             : Number(trimmed);
           errorMessage = "";
         }
       } else {
-        finalValue = newValue;
+        finalValue = "";
         errorMessage = "Invalid input";
       }
     } else {
       if (typeof newValue === "string") {
         const trimmedValue = newValue.trim();
-        finalValue = newValue; // Preserve raw input
-  
+        finalValue = newValue;
+
         if (trimmedValue === "") {
-          errorMessage = ""; // Optional field
-        } else if (
-          isCharOnlyField &&
-          !/^[a-zA-Z\s]+$/.test(trimmedValue)
-        ) {
-          errorMessage = "Only letters and spaces are allowed";
-        } else if (
-          !isCharOnlyField &&
-          !/^[a-zA-Z0-9\s]+$/.test(trimmedValue)
-        ) {
-          errorMessage = "Special characters are not allowed";
-        } else {
           errorMessage = "";
-          finalValue = trimmedValue;
+        } else if (!alphaNumericRegex.test(trimmedValue)) {
+          errorMessage = "Special characters are not allowed";
         }
       } else if (Array.isArray(newValue)) {
         finalValue = newValue;
       } else {
-        finalValue = newValue;
+        finalValue = "";
         errorMessage = "Invalid input";
       }
     }
-  
-    const updatedFormData = {
+
+    const updated = {
       ...formData,
       [key]: finalValue,
     };
-  
-    const updatedErrors = {
+
+    setFormData(updated);
+
+    const updatedErrors: DyeCuttingFormErrors = {
       ...errors,
       [key]: errorMessage,
     };
-  
-    setFormData(updatedFormData);
-    setErrors(updatedErrors);
-  
-    dispatch(setDyeCuttingFormData(updatedFormData));
-    dispatch(setDyeCuttingFormErros(updatedErrors));
-  };
-  
 
-  // Button control: Only if errors exist
+    setErrors(updatedErrors);
+    dispatch(setDyeCuttingFormErros(updatedErrors));
+    dispatch(setDyeCuttingFormData(updated));
+  };
+
   useEffect(() => {
     const hasAnyErrors = Object.values(errors).some((e) => e !== "");
     dispatch(setSubmitAndPublishButtonDyeCutting(hasAnyErrors));
@@ -192,7 +175,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
           </Box>
 
           <Grid container spacing={2} pt={1}>
-            <Grid size={{xs:12,md:4}}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <DropdownComponent
                 label="Dye Cutting Machine Type"
                 options={["Packers", "Poly", "Rhyguan", "Scober", "Sysco"]}
@@ -207,12 +190,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
               { label: "Dye Code", key: "dye_code" },
               { label: "Run Speed (m/min)", key: "run_speed" },
             ].map(({ label, key }) => (
-              <Grid size={{xs:12,md:4}} key={key}>
+              <Grid size={{ xs: 12, md: 4 }} key={key}>
                 <ReusableInput
                   label={label}
-                  value={
-                    formData[key as keyof DyeCuttingFormData] || ""
-                  }
+                  value={formData[key as keyof DyeCuttingFormData] || ""}
                   onChange={(e) =>
                     handleChange(
                       key as keyof DyeCuttingFormErrors,

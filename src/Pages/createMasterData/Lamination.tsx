@@ -48,21 +48,22 @@ const Lamination: React.FC<LaminationProps> = ({
     {
       id: "code",
       label: "Code",
-      editable: true, // Enable editing
+      editable: true,
       isDropdown: true,
       options: ["1009N"],
     },
     {
       id: "brand",
       label: "Brand",
-      editable: true, // Enable editing
+      editable: true,
       isDropdown: true,
       options: ["BOISTIK"],
     },
     {
       id: "ratio",
       label: "Ratio",
-      editable: true, // Enable editing
+      editable: true,
+      required: true,
     },
   ];
 
@@ -106,14 +107,14 @@ const Lamination: React.FC<LaminationProps> = ({
         substrate_type: data?.substrate_type || "",
         supplier: data?.supplier || "",
         dyne_level: data?.dyne_level || "",
-        width: data?.width || 0,
-        thickness: data?.thickness || 0,
-        density: data?.density || 0,
+        width: data?.width || "",
+        thickness: data?.thickness || "",
+        density: data?.density || "",
       },
       bondingMaterials: data || [
         { type: "Adhesive", code: "", brand: "", ratio: 0 },
         { type: "Hardener", code: "", brand: "", ratio: 0 },
-        { type: "Ethyl Acetate", code: "", brand: "", ratio: 0 },
+        { type: "Ethyl", code: "", brand: "", ratio: 0 },
       ],
     };
   }
@@ -146,6 +147,8 @@ const Lamination: React.FC<LaminationProps> = ({
     if (id) {
       dispatch(setLaminationDataTouched(true));
     }
+
+    // Extract value from the input
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
@@ -163,6 +166,7 @@ const Lamination: React.FC<LaminationProps> = ({
 
       if (trimmed === "") {
         errorMessage = "Thickness cannot be empty.";
+        finalValue = ""; // Clear the field (set to empty string)
       } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
         errorMessage = "Thickness must be a valid number.";
       } else {
@@ -197,34 +201,54 @@ const Lamination: React.FC<LaminationProps> = ({
 
       if (trimmed === "") {
         errorMessage = "Viscosity Range cannot be empty.";
+        finalValue = ""; // Set to empty string if blank
       } else if (!onlyLettersAndSpaces.test(trimmed)) {
         errorMessage =
           "Only letters and spaces are allowed in Viscosity Range.";
       } else {
+        finalValue = trimmed;
         errorMessage = "";
       }
-
-      finalValue = trimmed;
     } else if (numericFields.has(field)) {
-      if (!isNaN(Number(newValue)) && newValue !== "") {
-        finalValue = Number(newValue); // Save valid numbers
-        errorMessage = "";
+      const originalValue = newValue; // Log the original value
+      const trimmed = (newValue as string).trim();
+      console.log("Original Value:", originalValue); // Log the value before trimming
+      console.log("Trimmed Value:", trimmed); // Log the trimmed value
+
+      const percentageMatch = trimmed.match(/^(\d+(\.\d+)?)(%)?$/); // e.g., 12, 12.5, 12%, 12.5%
+
+      if (trimmed === "" || trimmed === "0") {
+        finalValue = ""; // Set to empty string when cleared or zero
+        errorMessage = `${field.replace(/_/g, " ")} cannot be empty.`; // Show error if empty
+      } else if (!percentageMatch) {
+        // If non-numeric, retain the string value
+        finalValue = trimmed;
+        errorMessage = `${field.replace(
+          /_/g,
+          " "
+        )} must be a valid number or percentage.`; // Error for invalid input
       } else {
-        finalValue = newValue;
-        errorMessage = "Please enter a valid number.";
+        const numericPart = parseFloat(percentageMatch[1]); // Get numeric part, ignoring percentage sign
+        if (isNaN(numericPart)) {
+          finalValue = trimmed; // If it's still NaN after parsing, keep as a string
+          errorMessage = `${field.replace(/_/g, " ")} must be a valid number.`; // Error for invalid number
+        } else {
+          finalValue = numericPart; // Otherwise, save the valid numeric value
+          errorMessage = ""; // Clear the error if the input is valid
+        }
       }
     } else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
 
       if (trimmed === "") {
         errorMessage = "This field cannot be empty.";
+        finalValue = ""; // Clear the field (set to empty string)
       } else if (!onlyAlphanumericRegex.test(trimmed)) {
         errorMessage = "Only letters, numbers, and spaces are allowed.";
       } else {
+        finalValue = newValue; // Keep the string as entered
         errorMessage = "";
       }
-
-      finalValue = newValue;
     }
 
     // Dispatch the errors to Redux
@@ -235,22 +259,34 @@ const Lamination: React.FC<LaminationProps> = ({
     setErrors(updatedErrors);
     dispatch(setLaminationFormErros(updatedErrors));
 
-    // Save to the form data and dispatch to Redux with strings for the tension fields
+    // Save to the form data and dispatch to Redux
     const updatedFormData = {
       ...formData,
       [section]: {
         ...(formData as any)[section],
         [field]:
           field === "thickness" && errorMessage === ""
-            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number // Save these fields as strings
-            : numericFields.has(field) // Ensure numeric fields are saved as numbers
-            ? Number(newValue)
-            : finalValue,
+            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
+            : numericFields.has(field)
+            ? newValue // Save numeric fields as numbers
+            : finalValue, // Otherwise, save the string value
+      },
+    };
+    const updatedFinalFormData = {
+      ...formData,
+      [section]: {
+        ...(formData as any)[section],
+        [field]:
+          field === "thickness" && errorMessage === ""
+            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
+            : numericFields.has(field)
+            ? Number(newValue) // Save numeric fields as numbers
+            : finalValue, // Otherwise, save the string value
       },
     };
 
     setFormData(updatedFormData);
-    dispatch(setLaminationFormData(updatedFormData));
+    dispatch(setLaminationFormData(updatedFinalFormData));
   };
 
   useEffect(() => {
@@ -258,16 +294,63 @@ const Lamination: React.FC<LaminationProps> = ({
     const hasAnyError = errorValues.some((err) => err !== "");
     let isAnyFieldFilled = false; // For Save button
     let areAllFieldsFilled = true; // For Submit & Publish button
+    let hasInvalidRatio = false;
+
+    const bondingMaterials = formData?.bondingMaterials || [];
+    let allValid = false;
+
+    if (bondingMaterials.length > 0) {
+      const hasEmptyRatio = bondingMaterials.some(
+        (item) =>
+          item.ratio === "" || item.ratio === null || item.ratio === undefined
+      );
+
+      const firstTwoInvalid = bondingMaterials
+        .slice(0, 2)
+        .some(
+          (item) =>
+            !item.code ||
+            !item.brand ||
+            item.ratio === "" ||
+            item.ratio === null ||
+            item.ratio === undefined
+        );
+
+      const thirdItem = bondingMaterials[2];
+      let thirdInvalid = false;
+
+      if (thirdItem) {
+        // It's only valid to trigger "true" if ONLY ratio is missing
+        const isOnlyRatioMissing =
+          (!thirdItem.ratio && !thirdItem.code && !thirdItem.brand) || // all missing
+          (!thirdItem.ratio && !!thirdItem.code && !!thirdItem.brand); // only ratio missing
+
+        thirdInvalid = isOnlyRatioMissing;
+      }
+
+      allValid = hasEmptyRatio || firstTwoInvalid || thirdInvalid;
+    }
 
     for (const sectionKey in formData) {
       const section = (formData as any)[sectionKey];
       if (section && typeof section === "object") {
         for (const fieldKey in section) {
           const field = section[fieldKey];
+
           const value =
             typeof field === "object" && field !== null && "value" in field
               ? field.value
               : field;
+
+          if (field.ratio) {
+            const ratioValue = value.ratio;
+
+            if (isNaN(Number(ratioValue))) {
+              hasInvalidRatio = true;
+            } else {
+              hasInvalidRatio = false;
+            }
+          }
 
           if (typeof value === "object" && value !== null) {
             for (const innerKey in value) {
@@ -283,6 +366,7 @@ const Lamination: React.FC<LaminationProps> = ({
 
                 if (!isEmptyForSave) isAnyFieldFilled = true;
               }
+
               const isEmptyForSubmit =
                 innerValue === "" ||
                 innerValue === null ||
@@ -292,7 +376,6 @@ const Lamination: React.FC<LaminationProps> = ({
               if (isEmptyForSubmit) areAllFieldsFilled = false;
             }
           } else {
-            // ---- Save button condition ----
             let isEmptyForSave = true;
             if (fieldKey !== "type") {
               isEmptyForSave =
@@ -304,21 +387,23 @@ const Lamination: React.FC<LaminationProps> = ({
 
               if (!isEmptyForSave) isAnyFieldFilled = true;
             }
+
             const isEmptyForSubmit =
               value === "" ||
               value === null ||
               value === undefined ||
               (Array.isArray(value) && value.length === 0);
 
-            if (isEmptyForSubmit) areAllFieldsFilled = false;
+            if (isEmptyForSubmit) areAllFieldsFilled = true;
           }
         }
       }
     }
 
-    const shouldEnableSave = isAnyFieldFilled && !hasAnyError;
-    const shouldEnableSubmitAndPublish = areAllFieldsFilled && !hasAnyError;
-
+    const shouldEnableSave =
+      isAnyFieldFilled && !hasAnyError && !hasInvalidRatio;
+    const shouldEnableSubmitAndPublish =
+      !areAllFieldsFilled && !hasAnyError && !hasInvalidRatio && !allValid;
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
       setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish)
@@ -361,8 +446,6 @@ const Lamination: React.FC<LaminationProps> = ({
       const adhesiveDetails: LaminatingTableRow[] =
         sanitizedBondingMaterials?.bondingMaterials;
       setTableData(adhesiveDetails);
-  
-
     }
   }, [id, laminationSettings, laminatingSubstrateSettings, laminationAdhesive]);
   const fields = [
@@ -402,6 +485,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={Boolean(errors.zone1_temp)}
                 helperText={errors.zone1_temp}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -421,6 +505,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={!!errors.zone2_temp}
                 helperText={errors.zone2_temp}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -440,6 +525,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={Boolean(errors.nip_pressure_bar)}
                 helperText={errors.nip_pressure_bar}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -455,44 +541,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={!!errors.speed}
                 helperText={errors.speed}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Lami Set Tension"
-                value={
-                  formData?.laminationConditions?.lami_set_tension
-                    ? formData.laminationConditions.lami_set_tension
-                    : ""
-                }
-                onChange={(e) =>
-                  handleChange(
-                    "laminationConditions",
-                    "lami_set_tension",
-                    e.target.value
-                  )
-                }
-                error={!!errors.lami_set_tension}
-                helperText={errors.lami_set_tension}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <ReusableInput
-                label="Rewinder Tension"
-                value={
-                  formData.laminationConditions?.rewinder_tension
-                    ? formData.laminationConditions.rewinder_tension
-                    : ""
-                }
-                onChange={(e) =>
-                  handleChange(
-                    "laminationConditions",
-                    "rewinder_tension",
-                    e.target.value
-                  )
-                }
-                error={!!errors.rewinder_tension}
-                helperText={errors.rewinder_tension}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -512,6 +561,7 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={!!errors.printed_film_tension}
                 helperText={errors.printed_film_tension}
+                required
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -527,6 +577,47 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={!!errors.laminate_film_tension}
                 helperText={errors.laminate_film_tension}
+                required
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <ReusableInput
+                label="Lami Set Tension"
+                value={
+                  formData?.laminationConditions?.lami_set_tension
+                    ? formData.laminationConditions.lami_set_tension
+                    : ""
+                }
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "lami_set_tension",
+                    e.target.value
+                  )
+                }
+                error={!!errors.lami_set_tension}
+                helperText={errors.lami_set_tension}
+                required
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <ReusableInput
+                label="Rewinder Tension"
+                value={
+                  formData.laminationConditions?.rewinder_tension
+                    ? formData.laminationConditions.rewinder_tension
+                    : ""
+                }
+                onChange={(e) =>
+                  handleChange(
+                    "laminationConditions",
+                    "rewinder_tension",
+                    e.target.value
+                  )
+                }
+                error={!!errors.rewinder_tension}
+                helperText={errors.rewinder_tension}
+                required
               />
             </Grid>
           </Grid>
@@ -556,6 +647,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
+                  required
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -573,7 +665,11 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <ReusableInput
                   label="Dyne Level"
-                  value={formData.laminationSubstrate?.dyne_level}
+                  value={
+                    formData.laminationSubstrate?.dyne_level
+                      ? formData.laminationSubstrate.dyne_level
+                      : ""
+                  }
                   onChange={(e) =>
                     handleChange(
                       "laminationSubstrate",
@@ -583,6 +679,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   error={!!errors.dyne_level}
                   helperText={errors.dyne_level}
+                  required
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -598,6 +695,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   error={!!errors.width}
                   helperText={errors.width}
+                  required
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -617,6 +715,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   error={!!errors.thickness}
                   helperText={errors.thickness}
+                  required
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -636,6 +735,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   error={!!errors.density}
                   helperText={errors.density}
+                  required
                 />
               </Grid>
             </Grid>
@@ -714,12 +814,11 @@ const Lamination: React.FC<LaminationProps> = ({
                 }
                 error={!!errors[key]}
                 helperText={errors[key]}
+                required
               />
             </Grid>
           ))}
         </Grid>
-
-
       </Box>
     </Box>
   );

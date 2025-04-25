@@ -656,7 +656,7 @@ const initialState: MasterDataState = {
       },
       {
         bonding_id:0, lamination_id:0,
-        type: "Ethyl Acetate",
+        type: "Ethyl",
         code: "",
         brand: "",
         ratio: "",
@@ -1189,7 +1189,7 @@ const masterDataSlice = createSlice({
           },
           {
             bonding_id:0, lamination_id:0,
-            type: "Ethyl Acetate",
+            type: "Ethyl",
             code: "",
             brand: "",
             ratio: "",

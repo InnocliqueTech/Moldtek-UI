@@ -139,7 +139,7 @@ const CreateMasterData: React.FC = () => {
     bondingMaterials: [
       { bonding_id: 0, lamination_id: 0, type: "Adhesive", code: "", brand: "", ratio: "" },
       { bonding_id: 0, lamination_id: 0, type: "Hardener", code: "", brand: "", ratio: "" },
-      { bonding_id: 0, lamination_id: 0, type: "Ethyl Acetate", code: "", brand: "", ratio: "" },
+      { bonding_id: 0, lamination_id: 0, type: "Ethyl", code: "", brand: "", ratio: "" },
     ],
   });
 

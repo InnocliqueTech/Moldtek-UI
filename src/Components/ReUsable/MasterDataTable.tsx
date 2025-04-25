@@ -33,6 +33,7 @@ interface Column {
   options?: string[];
   edit?: boolean;
   editSelect?: boolean;
+  required?:boolean;
 }
 
 interface DataTableProps<T> {
@@ -62,23 +63,23 @@ const DataTable = <T extends Record<string, any>>({
     [key: string]: boolean;
   }>({});
   const validateInput = (columnId: string, value: string): boolean => {
-    const numericFields = ["volume", "uv_led_intensity", "lf_value","mptl_code","mixing_on_gec"];
-    const lpcmFields = ["lpcm"];
-    const laminationFileds =  ["code","ratio","brand"]
+    const numericFields = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec","uv_led_intensity","volume"];
+    const laminationFileds =  ["code","brand"]
 
     if (value === "") return true;
 
     if (numericFields.includes(columnId)) {
-      return /^\d+$/.test(value) && value !== "0";
+      const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)$/.test(value); 
+      const isValidPercentage = /^(\d+(\.\d*)?|\.\d+)%$/.test(value); 
+    
+      return (isValidDecimal || isValidPercentage) && value !== "0";
     }
-    if (id==='printing' && lpcmFields.includes(columnId)) {
-      return /^[a-zA-Z0-9\s]*$/.test(value);
-    }
+    
     if (id==='lamination' && laminationFileds.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
-    return true
-    // return /^[A-Za-z\s]*$/.test(value);
+
+     return /^[A-Za-z\s]*$/.test(value);
   };
 
   const handleChange = <K extends keyof T>(
@@ -185,25 +186,31 @@ const DataTable = <T extends Record<string, any>>({
           >
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
               {columns.map((column, index) => (
-                <TableCell
-                  key={column.id}
-                  align="center"
-                  sx={{
-                    fontWeight: 500,
-                    border: "1px solid #ccc",
-                    color: "#656565",
-                    maxWidth: 180,
-                    backgroundColor: "#F5F5F5",
-                    borderRight:
-                      index === columns.length - 1 && !tableTitle
-                        ? "1px solid #ccc"
-                        : "none",
-                    borderBottom: "none",
-                    borderLeft: "1px solid #ccc",
-                  }}
-                >
-                  {column.label}
-                </TableCell>
+             <TableCell
+             key={column.id}
+             align="center"
+             sx={{
+               fontWeight: 500,
+               border: "1px solid #ccc",
+               color: "#656565",
+               maxWidth: 180,
+               backgroundColor: "#F5F5F5",
+               borderRight:
+                 index === columns.length - 1 && !tableTitle
+                   ? "1px solid #ccc"
+                   : "none",
+               borderBottom: "none",
+               borderLeft: "1px solid #ccc",
+             }}
+           >
+             {column.label}
+             {column.required && (
+               <Box component="span" sx={{ color: "#D32F2F", ml: 0.5 }}>
+                 *
+               </Box>
+             )}
+           </TableCell>
+           
               ))}
             </TableRow>
           </TableHead>
@@ -244,46 +251,67 @@ const DataTable = <T extends Record<string, any>>({
                       }}
                     >
              {
-              (row?.type === 'Ethyl Acetate' && ["code", "brand","ratio"].includes(column.id))||row?.type === 'Adhesive' && ["ratio"].includes(column.id)||row?.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
+              (row?.type === 'Ethyl' && ["code", "brand","ratio"].includes(column.id))||row?.type === 'Adhesive' && ["ratio"].includes(column.id)||row?.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
+
+              <Box sx={{ position: "relative", width: "80%" }}>
               <TextField
-              variant="standard"
-              value={row[column.id]}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                const isValid = validateInput(
-                  column.id,
-                  inputValue
-                );
-                const key = `${rowIndex}_${column.id}`;
-                const updatedInvalidFileds = {
-                  ...invalidFields,
-                  [key]: !isValid,
-                };
-                setInvalidFields(updatedInvalidFileds);
-                dispatch(setInvalidFieldsTable(updatedInvalidFileds))
-                handleChange(
-                  rowIndex,
-                  column.id as keyof T,
-                  inputValue as T[keyof T]
-                );
-              }}
-              fullWidth
-              InputProps={{
-                disableUnderline: true,
-                sx: {
-                  fontSize: "14px",
-                  color: "#2F2F2F",
-                  height: "32px",
-                  padding: "0px",
-                  input: {
-                    textAlign: "center",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                variant="standard"
+                value={row[column.id]} // only the number
+                onChange={(e) => {
+                  let inputValue = e.target.value;
+                  const isValid = validateInput(column.id, inputValue);
+            
+                  const key = `${rowIndex}_${column.id}`;
+                  const updatedInvalidFileds = {
+                    ...invalidFields,
+                    [key]: !isValid,
+                  };
+                  setInvalidFields(updatedInvalidFileds);
+                  dispatch(setInvalidFieldsTable(updatedInvalidFileds));
+            
+                  handleChange(
+                    rowIndex,
+                    column.id as keyof T,
+                    inputValue as T[keyof T]
+                  );
+                }}
+                fullWidth
+                InputProps={{
+                  disableUnderline: true,
+                  sx: {
+                    fontSize: "14px",
+                    color: "#2F2F2F",
+                    height: "32px",
+                    padding: "0px",
+                    input: {
+                      textAlign: "left", // or center
+                      paddingRight: "30px", // reserve space for 'kg'
+                    },
                   },
-                },
-              }}
-            /> :
+                }}
+                inputProps={{
+                  inputMode: column.id === "ratio" ? "numeric" : "text",
+                }}
+              />
+            
+              {column.id === "ratio" && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    right: "8px",
+                    pointerEvents: "none",
+                    color: "#666",
+                    fontSize: "14px",
+                  }}
+                >
+                  kg
+                </Box>
+              )}
+            </Box>
+            
+              :
             column.isDropdown  && row.type === 'Hardener' && column.id === 'code' ? (
               <Select
                 value={row[column.id] || ""}
@@ -428,22 +456,22 @@ const DataTable = <T extends Record<string, any>>({
                           }
                         />
                       ) : (column.edit && (!rowEditable || rowEditable(row))) ? (                  
+                        <Box sx={{ position: "relative", width: "80%" }}>
                         <TextField
                           variant="standard"
-                          value={row[column.id]}
+                          value={row[column.id]} // only the number
                           onChange={(e) => {
-                            const inputValue = e.target.value;
-                            const isValid = validateInput(
-                              column.id,
-                              inputValue
-                            );
+                            let inputValue = e.target.value;
+                            const isValid = validateInput(column.id, inputValue);
+                      
                             const key = `${rowIndex}_${column.id}`;
                             const updatedInvalidFileds = {
                               ...invalidFields,
                               [key]: !isValid,
                             };
                             setInvalidFields(updatedInvalidFileds);
-                            dispatch(setInvalidFieldsTable(updatedInvalidFileds))
+                            dispatch(setInvalidFieldsTable(updatedInvalidFileds));
+                      
                             handleChange(
                               rowIndex,
                               column.id as keyof T,
@@ -459,33 +487,63 @@ const DataTable = <T extends Record<string, any>>({
                               height: "32px",
                               padding: "0px",
                               input: {
-                                textAlign: "center",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
+                                textAlign: "left", // or center
+                                paddingRight: "30px", // reserve space for 'kg'
                               },
                             },
                           }}
+                          inputProps={{
+                            inputMode: column.id === "ratio" ? "numeric" : "text",
+                          }}
                         />
-                      ) : (
-                        <Tooltip title={String(row ? row[column?.id] : "")} arrow>
+                      
+                        {column.id === "ratio" && (
                           <Box
                             sx={{
-                              maxWidth: "100%",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              textOverflow: "ellipsis",
+                              position: "absolute",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              right: "8px",
+                              pointerEvents: "none",
+                              color: "#666",
                               fontSize: "14px",
-                              color: "#2F2F2F",
-                              height: "32px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
                             }}
                           >
-                            {row ? row[column?.id] : "N/A"}
+                            kg
                           </Box>
-                        </Tooltip>
+                        )}
+                      </Box>
+                      ) : (
+                        <Tooltip title={String(row ? row[column?.id] : "")} arrow>
+                        <Box
+                          sx={{
+                            maxWidth: "100%",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                            fontSize: "14px",
+                            color: "#2F2F2F",
+                            height: "32px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {row ? (
+                            <>
+                              {row[column?.id]}
+                              {(row.type === "Hardener" || row.type === "Adhesive") && (
+                                <Box component="span" sx={{ color: "#D32F2F", ml: 0.3 }}>
+                                  *
+                                </Box>
+                              )}
+                            </>
+                          ) : (
+                            "N/A"
+                          )}
+                        </Box>
+                      </Tooltip>
+                      
                       )}
                     </TableCell>
                   ))}
