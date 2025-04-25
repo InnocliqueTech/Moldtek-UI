@@ -33,11 +33,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const buttonText = [
-    "Next: Master Data - Printing",
-    "Next: Master Data - Lamination",
-    "Next: Master Data - Dye Cutting",
-  ];
+  const { id } = useParams();
+
   const {
     submitPopup,
     submitPopupConfirm,
@@ -50,18 +47,22 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     masterDataDetailsSave,
     printingDataSave,
     laminationDataSave,
-    submitTrue
-    
+    submitTrue,
+    saveFormData,
   } = useSelector((store: RootState) => store.masterData);
+  const skipLamination = saveFormData.label_type === "Thin Wall";
+  const buttonText = [
+    "Next: Master Data - Printing",
+    skipLamination ?"Next: Master Data - Dye Cutting" : "Next: Master Data - Lamination",
+    "Next: Master Data - Dye Cutting",
+  ];
+
+  const [createMasterData, { isLoading }] = useCreateMasterDataMutation();
+
   const handleNextClick = () => {
-    if (selectedTab < 3) {
-      dispatch(setSelectedTab(selectedTab + 1));
-    }
+    if (selectedTab < 3) dispatch(setSelectedTab(selectedTab + 1));
   };
 
-  const handleSubmitPopupClose = () => {
-    dispatch(setSubmitPopup(false));
-  };
   const handleSubmitAndPublishPopupOpen = () => {
     if (selectedTab === 3) {
       dispatch(setSubmitAndPublishPopup(true));
@@ -69,44 +70,44 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     }
   };
 
-  const [createMasterData, { isLoading }] =
-    useCreateMasterDataMutation();
+  const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
 
-    const handleSubmitPopupConfirmOpen = () => {
-      if(!submitTrue){
+  const handleSubmitPopupConfirmOpen = () => {
+    if (!submitTrue) {
       createMasterData(requestPayload)
-        .then((response) => {  
+        .then((response) => {
           if (response?.data.statusCode === 200) {
             dispatch(setSubmitAndPublishPopup(false));
             dispatch(setSubmitPopupConfirm(true));
+
             dispatch(clearDyeCuttingFormData());
             dispatch(clearDyeCuttingFormErrors());
-    
+
             dispatch(clearLaminatingFormData());
             dispatch(clearLaminationFormErrors());
-    
+
             dispatch(clearPrintingFormData());
             dispatch(clearPrintingFormErrors());
-    
+
             dispatch(clearMasterDetaisData());
             dispatch(clearMasterDataFormErrors());
           } else {
             toast.error("Error Fetching Data");
           }
         })
-        .catch(() => {
-          toast.error("Error Fetching Data");
-        });
-      }
-      dispatch(setSubmitAndPublishPopup(false));
-      dispatch(setSubmitPopupConfirm(true));
-    };
-    
+        .catch(() => toast.error("Error Fetching Data"));
+    }
+
+    dispatch(setSubmitAndPublishPopup(false));
+    dispatch(setSubmitPopupConfirm(true));
+  };
+
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
   };
+
   const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
@@ -114,25 +115,27 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     navigate("/masterData");
   };
 
-  const { id } = useParams();
-  const UEN = localStorage.getItem("selectedUEN");
-  let selectedUEN: any;
-  if (UEN) {
-    selectedUEN = UEN;
-  }
-  const version = localStorage.getItem("selectedVersionNo");
-
-  let versionNo = version ? parseInt(version) : 0;
-  let displayVersion = id ? versionNo + 1 : versionNo;
+  const UEN = localStorage.getItem("selectedUEN") ?? "";
+  const version = parseInt(localStorage.getItem("selectedVersionNo") || "0");
+  const displayVersion = id ? version + 1 : version;
 
   const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
   const confirmPublishTitle = id
-    ? `Are you sure you want to update and publish? This version is ${selectedUEN} V${displayVersion}.`
+    ? `Are you sure you want to update and publish? This version is ${UEN} V${displayVersion}.`
     : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const successTitle = id
-    ? `You have successfully updated master data. Your version is ${selectedUEN} V${displayVersion}.`
+    ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+
+  const isSubmitDisabled = () => {
+    return (
+      submitAndPublishButtonMasterData ||
+      submitAndPublishButtonDyeCutting ||
+      submitAndPublishButtonPrinting ||
+      (!skipLamination && submitAndPublishButtonLamination)
+    );
+  };
 
   return (
     <Box
@@ -141,7 +144,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       justifyContent="center"
       alignItems="center"
       gap={2}
-      // p={2}
       flexWrap="wrap"
     >
       {selectedTab === 3 ? (
@@ -153,16 +155,11 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={
-           submitAndPublishButtonPrinting||submitAndPublishButtonDyeCutting||submitAndPublishButtonLamination||submitAndPublishButtonMasterData
-              ? true
-              : false
-          }
+          disabled={isSubmitDisabled()}
         />
       ) : (
         <>
-        {selectedTab == 0?
-          (<ReusableButton
+          <ReusableButton
             text="Save"
             color=""
             borderRadius="100px"
@@ -170,28 +167,12 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             textColor="#0073B7"
             p={2}
             onClick={handleSave}
-            disabled={(selectedTab===0&&masterDataDetailsSave)}
-          />):(selectedTab == 1?
-            (<ReusableButton
-              text="Save"
-              color=""
-              borderRadius="100px"
-              border="1px solid #0073B7"
-              textColor="#0073B7"
-              p={2}
-              onClick={handleSave}
-              disabled={(selectedTab===1&&printingDataSave)}
-            />):selectedTab == 2 &&
-            <ReusableButton
-              text="Save"
-              color=""
-              borderRadius="100px"
-              border="1px solid #0073B7"
-              textColor="#0073B7"
-              p={2}
-              onClick={handleSave}
-              disabled={(selectedTab===2&&laminationDataSave)}
-            />)}
+            disabled={
+              (selectedTab === 0 && masterDataDetailsSave) ||
+              (selectedTab === 1 && printingDataSave) ||
+              (selectedTab === 2 && laminationDataSave)
+            }
+          />
           <ReusableButton
             text={buttonText[selectedTab] || "Next: Master Data - Printing"}
             color=""
@@ -219,12 +200,13 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         title={confirmTitle}
         message=""
         buttonText="No"
-        buttonText2="Yes,Save it!"
+        buttonText2="Yes, Save it!"
         gifSrc=""
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading}
       />
+
       <SuccessPopup
         open={submitPopupConfirm}
         message={successTitle}

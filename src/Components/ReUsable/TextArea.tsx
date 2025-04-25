@@ -5,7 +5,9 @@ import { Box, Typography } from "@mui/material";
 interface TextAreaProps {
   label?: string;
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  onChange: (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => void;
   placeholder?: string;
   rows?: number;
   fullWidth?: boolean;
@@ -13,6 +15,7 @@ interface TextAreaProps {
   error?: boolean;
   helperText?: string;
   className?: string;
+  required?: boolean;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -26,35 +29,46 @@ const TextArea: React.FC<TextAreaProps> = ({
   error = false,
   helperText = "",
   className = "",
+  required = false,
 }) => {
   return (
     <Box display="flex" flexDirection="column">
-    {/* Grey Heading */}
-    <Typography variant="body2" sx={{ fontWeight:500,marginBottom:'4px'}} color="#656565">
-      {label}
-    </Typography>
-    <TextField
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-    multiline
-      rows={rows}
-      fullWidth={fullWidth}
-      disabled={disabled}
-      error={error}
-      helperText={helperText}
-      className={className}
-      variant="outlined"
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "8px",
-          padding: "10px",
-          "& input": {
-            color: "black",
+      <Box display="flex" alignItems="center" gap={0.5}>
+        <Typography
+          variant="body2"
+          sx={{ fontWeight: 500, marginBottom: "4px" }}
+          color="#656565"
+        >
+          {label}
+        </Typography>
+        {required && (
+          <Typography component="span" color="error">
+            *
+          </Typography>
+        )}
+      </Box>
+      <TextField
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        multiline
+        rows={rows}
+        fullWidth={fullWidth}
+        disabled={disabled}
+        error={error}
+        helperText={helperText}
+        className={className}
+        variant="outlined"
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "8px",
+            padding: "10px",
+            "& input": {
+              color: "black",
+            },
           },
-        },
-      }}
-    />
+        }}
+      />
     </Box>
   );
 };

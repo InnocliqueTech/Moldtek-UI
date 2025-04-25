@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { TextField, Box, InputAdornment, IconButton } from "@mui/material";
+import {
+  TextField,
+  Box,
+  InputAdornment,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
 
@@ -11,8 +17,9 @@ interface ReusableInputProps {
   type?: string;
   error?: boolean;
   helperText?: string;
-  icon?: React.ReactNode; // Left-side icon
+  icon?: React.ReactNode;
   disabled?: boolean;
+  required?: boolean;
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -24,60 +31,69 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   error = false,
   helperText = "",
   icon,
-  disabled
+  disabled,
+  required = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Box display="flex" flexDirection="column">
-      <AutoTooltipText
-        content={label}
-        maxLength={30}
-        variant="body2"
-        sx={{ color: "#656565" }}
-        tooltipPlacement="bottom"
-        TooltipProps={{ arrow: false }}
-      />
+      <Box display="flex" alignItems="center" gap={0.5}>
+        <AutoTooltipText
+          content={label}
+          maxLength={30}
+          variant="body2"
+          sx={{ color: "#656565" }}
+          tooltipPlacement="bottom"
+          TooltipProps={{ arrow: false }}
+        />
+        {required && (
+          <Typography component="span" color="error">
+            *
+          </Typography>
+        )}
+      </Box>
 
       <TextField
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        type={showPassword && type === "password" ? "text" : type} 
+        type={showPassword && type === "password" ? "text" : type}
         fullWidth
         variant="outlined"
         error={error}
         helperText={helperText}
         disabled={disabled}
         InputProps={{
-          startAdornment: icon ? <InputAdornment position="start">{icon}</InputAdornment> : null,
-          endAdornment: type === "password" ? (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword
-                edge="end"
-                disableRipple
-                disableFocusRipple
-                sx={{
-                  pointerEvents: "auto", // Allows clicking without focusing the input
-                  "&:focus": { outline: "none" }, // Removes any focus outline
-                }}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
+          startAdornment: icon ? (
+            <InputAdornment position="start">{icon}</InputAdornment>
           ) : null,
+          endAdornment:
+            type === "password" ? (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                  disableRipple
+                  disableFocusRipple
+                  sx={{
+                    pointerEvents: "auto",
+                    "&:focus": { outline: "none" },
+                  }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : null,
         }}
         inputProps={{
           autoComplete: "new-password",
           style: {
-            // Make sure Edge won't add its native icon
             appearance: "none",
             MozAppearance: "textfield",
             WebkitAppearance: "none",
-          }
+          },
         }}
-      
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: "8px",
@@ -85,11 +101,11 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
               padding: "6px 12px",
               color: "black",
               "&::-ms-reveal": {
-                display: "none"
+                display: "none",
               },
               "&::-ms-clear": {
-                display: "none"
-              }
+                display: "none",
+              },
             },
           },
         }}

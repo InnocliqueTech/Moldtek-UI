@@ -1,4 +1,11 @@
-import { Box, Grid, IconButton, Modal, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Modal,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
@@ -20,8 +27,20 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useLocation, useParams } from "react-router-dom";
-import { useGetLabelTypesQuery, useViewMasterDataQuery } from "../../store/services/api";
-import { setDyeCuttingSettings, setLaminatingSubstrate, setLaminationAdhesiveDetails, setLaminationSettings, setPrintingInkStationData, setPrintingMachineSettingsData, setPrintingSubstrate, setViewMasterDataDetails } from "../../store/slices/viewMasterDataSlice";
+import {
+  useGetLabelTypesQuery,
+  useViewMasterDataQuery,
+} from "../../store/services/api";
+import {
+  setDyeCuttingSettings,
+  setLaminatingSubstrate,
+  setLaminationAdhesiveDetails,
+  setLaminationSettings,
+  setPrintingInkStationData,
+  setPrintingMachineSettingsData,
+  setPrintingSubstrate,
+  setViewMasterDataDetails,
+} from "../../store/slices/viewMasterDataSlice";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -36,73 +55,77 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const { id } = useParams();
   const location = useLocation();
-    const UEN = localStorage.getItem("selectedUEN");
-    let selectedUEN: any;
-    if (UEN) {
-      selectedUEN = UEN;
-    }
-    const version = localStorage.getItem("selectedVersionNo");
-    let versionNo: any;
-    if (version) {
-      versionNo = version;
-    }
-  
-  
-    const { data} = useViewMasterDataQuery({
+  const UEN = localStorage.getItem("selectedUEN");
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
+  }
+  const version = localStorage.getItem("selectedVersionNo");
+  let versionNo: any;
+  if (version) {
+    versionNo = version;
+  }
+
+  const { data } = useViewMasterDataQuery(
+    {
       ueNumber: selectedUEN,
       versionNo: versionNo,
-    },    {
+    },
+    {
       skip: !id,
       refetchOnMountOrArgChange: true,
-    });
-
-
-    
-    useEffect(()=>{
-      if(id&&location.pathname.includes('/updateMasterData')){
-     dispatch(setViewMasterDataDetails(data?.data?.masterDataDetails));
-     dispatch(setPrintingDetails(data?.data.masterDataPrinting));
-     dispatch(setLaminatingDetails(data?.data.masterDataLamination));
-     dispatch(setDyeCuttingDetails(data?.data.masterDataDyeCutting));
-         dispatch(
-           setPrintingMachineSettingsData(
-             data?.data.masterDataPrinting.printingDetails
-           )
-         );
-         dispatch(
-           setPrintingSubstrate(
-             data?.data.masterDataPrinting.printingSubstrateSettings
-           )
-         );
-         dispatch(
-           setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics)
-         );
-         dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
-         dispatch(
-           setLaminationSettings(data?.data.masterDataLamination.laminationConditions)
-         );
-         dispatch(
-           setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate)
-         );
-         dispatch(
-           setLaminationAdhesiveDetails(
-             data?.data.masterDataLamination.bondingMaterials
-           )
-         );
-         setFormData(data?.data?.masterDataDetails)
-      }
-
-    },[id])
-
-  const { saveFormData, masterDataFormErrors,masterDataDataTouched } = useSelector(
-    (state: RootState) => state.masterData
+    }
   );
+
+  useEffect(() => {
+    if (id && location.pathname.includes("/updateMasterData")) {
+      dispatch(setViewMasterDataDetails(data?.data?.masterDataDetails));
+      dispatch(setPrintingDetails(data?.data.masterDataPrinting));
+      dispatch(setLaminatingDetails(data?.data.masterDataLamination));
+      dispatch(setDyeCuttingDetails(data?.data.masterDataDyeCutting));
+      dispatch(
+        setPrintingMachineSettingsData(
+          data?.data.masterDataPrinting.printingDetails
+        )
+      );
+      dispatch(
+        setPrintingSubstrate(
+          data?.data.masterDataPrinting.printingSubstrateSettings
+        )
+      );
+      dispatch(
+        setPrintingInkStationData(
+          data?.data.masterDataPrinting.stationWiseMetrics
+        )
+      );
+      dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
+      dispatch(
+        setLaminationSettings(
+          data?.data.masterDataLamination.laminationConditions
+        )
+      );
+      dispatch(
+        setLaminatingSubstrate(
+          data?.data.masterDataLamination.laminationSubstrate
+        )
+      );
+      dispatch(
+        setLaminationAdhesiveDetails(
+          data?.data.masterDataLamination.bondingMaterials
+        )
+      );
+      setFormData(data?.data?.masterDataDetails);
+    }
+  }, [id]);
+
+  const { saveFormData, masterDataFormErrors, masterDataDataTouched } =
+    useSelector((state: RootState) => state.masterData);
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [errors, setErrors] = useState<MasterDataFormErrors>({
-    job_master_id:"",
+    job_master_id: "",
     repeat_length: "",
     ups: "",
     tracks: "",
@@ -116,87 +139,73 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     label_type: "",
   });
 
+  const numericFields: (keyof MasterFormData)[] = [
+    "repeat_length",
+    "ups",
+    "tracks",
+    "unit_effectivity_number",
+  ];
+  
+  const importantFields: (keyof MasterFormData)[] = [
+    "unit_effectivity_number",
+    "customer_name",
+    "brand_description",
+    "label_type",
+    "jar_cap",
+    "repeat_length",
+    "ups",
+  ];
+  const characterFields: (keyof MasterFormData)[] = ["customer_name"];
+  const freeTextFields: (keyof MasterFormData)[] = [
+    "brand_description",
+    "item_code",
+  ];
+
   const handleChange = (
     field: keyof MasterFormData,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    if(id){
-    dispatch(setMasterDataDataTouched(true));
+    if (id) {
+      dispatch(setMasterDataDataTouched(true));
     }
-    let newValue: string | string[] = Array.isArray(value)
-      ? value
-      : typeof value === "string"
-      ? value
-      : value.target.value;
   
-    let finalValue: string | number = newValue as string;  // store user input directly
+    let newValue: string | string[] =
+      Array.isArray(value) ? value : typeof value === "string" ? value : value.target.value;
+  
+    let finalValue: string | number = newValue as string;
     let errorMessage = "";
   
-    const numericFields: (keyof MasterFormData)[] = [
-      "repeat_length",
-      "ups",
-      "tracks",
-      "unit_effectivity_number",
-    ];
-    const characterFields: (keyof MasterFormData)[] = ["customer_name"];
-    const alphanumericFields: (keyof MasterFormData)[] = ["item_code"];
-    const freeTextFields: (keyof MasterFormData)[] = ["brand_description"];
+    const trimmed = (newValue as string).trim();
+    const isImportant = importantFields.includes(field);
   
     if (numericFields.includes(field)) {
-      if ((newValue as string).trim() === "") {
-        errorMessage = "This field cannot be empty.";
-      } else if (isNaN(Number(newValue))) {
-        errorMessage = "Please enter a valid number.";
-      } else {
-        // valid numeric input
-        finalValue = Number(newValue);
-        errorMessage = "";
-      }
+      const numericValue = trimmed.replace('%', '');
   
+      if (isImportant && trimmed === "") {
+        errorMessage = "This field cannot be empty.";
+      } else if (trimmed !== "" && isNaN(Number(numericValue))) {
+        errorMessage = "Please enter a valid number or percentage.";
+      } else {
+        finalValue =
+          trimmed === ""
+            ? "" // empty input stays empty
+            : trimmed.includes('%')
+            ? `${parseFloat(numericValue)}%`
+            : Number(numericValue); // only convert to number if not empty
+      }
     } else if (characterFields.includes(field)) {
-      const trimmed = (newValue as string).trim();
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
-  
-      if (trimmed === "") {
+      if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
-      } else if (!onlyLettersRegex.test(trimmed)) {
-        errorMessage = "Only characters and spaces are allowed.";
-      } else {
-        errorMessage = "";
+      } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
+        errorMessage = "Only letters and spaces are allowed.";
       }
-  
-    } else if (alphanumericFields.includes(field)) {
-      const trimmed = (newValue as string).trim();
-      const alphanumericRegex = /^[A-Za-z0-9\s]+$/;
-  
-      if (trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      } else if (!alphanumericRegex.test(trimmed)) {
-        errorMessage = "Only letters, numbers, and spaces are allowed.";
-      } else {
-        errorMessage = "";
-      }
-  
     } else if (freeTextFields.includes(field)) {
-      const trimmed = (newValue as string).trim();
-  
-      if (trimmed === "") {
+      if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
-      } else {
-        errorMessage = "";
       }
-  
-    } else if (
-      field === "label_type" ||
-      field === "jar_cap" ||
-      field === "structure"
-    ) {
-      if (Array.isArray(newValue)) {
-        finalValue = newValue[0];
-      } else {
-        finalValue = newValue as string;
-      }
-      errorMessage = "";
+    } else if (field === "label_type" || field === "jar_cap" || field === "structure") {
+      finalValue = Array.isArray(newValue) ? newValue[0] : newValue;
     }
   
     const updatedErrors = {
@@ -206,7 +215,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   
     const updatedFormData = {
       ...formData,
-      [field]: finalValue,  // always store the current user-typed value
+      [field]: finalValue,
     };
   
     setFormData(updatedFormData);
@@ -216,8 +225,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setMasterDataDataTouched(true))
-    const file = e.target.files?.[0];  // Get the file from the event
+    dispatch(setMasterDataDataTouched(true));
+    const file = e.target.files?.[0]; // Get the file from the event
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -226,28 +235,27 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
           ...formData,
           customer_logo: base64Image, // <-- Set image
         };
-  
+
         setFormData(updatedFormData);
         dispatch(setSaveFormData(updatedFormData));
       };
-  
+
       reader.readAsDataURL(file); // Read the file as DataURL
     }
   };
 
-
   useEffect(() => {
-    if ( !id && saveFormData) {
+    if (!id && saveFormData) {
       setFormData(saveFormData);
     }
     if (masterDataFormErrors) {
       setErrors(masterDataFormErrors);
     }
-  }, [saveFormData, masterDataFormErrors,id]);
+  }, [saveFormData, masterDataFormErrors, id]);
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {
-      job_master_id:data?.job_master_id||0,
+      job_master_id: data?.job_master_id || 0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",
@@ -263,22 +271,15 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   }
 
   useEffect(() => {
-    if (id && viewMasterDataDetails&&!masterDataDataTouched) {
+    if (id && viewMasterDataDetails && !masterDataDataTouched) {
       setFormData(sanitizeMasterData(viewMasterDataDetails));
     }
   }, [id, viewMasterDataDetails]);
-  const {data:LabelTyepsData} = useGetLabelTypesQuery();
-  const dropdownOptions = LabelTyepsData && LabelTyepsData?.map((option:any) => option.labelTypeName);
+  const { data: LabelTyepsData } = useGetLabelTypesQuery();
+  const dropdownOptions =
+    LabelTyepsData &&
+    LabelTyepsData?.map((option: any) => option.labelTypeName);
   useEffect(() => {
-    const importantFields = [
-      "unit_effectivity_number",
-      "customer_name",
-      "brand_description",
-      "label_type",
-      "jar_cap",
-      "repeat_length",
-      "ups",
-    ] as (keyof MasterFormData)[];
 
     const hasErrors = importantFields.some(
       (field) =>
@@ -291,48 +292,43 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
   }, [formData, errors]);
 
-
   useEffect(() => {
     const importantFields: (keyof MasterFormData)[] = [
       "unit_effectivity_number",
       "customer_name",
-      "customer_logo",
       "brand_description",
       "label_type",
       "jar_cap",
       "repeat_length",
       "ups",
-      "item_code",
-      "structure",
-      "tracks"
     ];
-  
+
     const anyValuePresent = importantFields.some(
       (field) =>
         formData[field] !== "" &&
         formData[field] !== null &&
         formData[field] !== undefined
     );
-  
+
     const anyErrors = importantFields.some((field) => errors[field] !== "");
-  
+
     // Enable only if any value is present and there are no errors
     const canSubmit = anyValuePresent && !anyErrors;
-  
-    dispatch(setMasterDataDetailsSave(!canSubmit)); 
+
+    dispatch(setMasterDataDetailsSave(!canSubmit));
     // I assume your slice uses: true = disable, false = enable
   }, [formData, errors, dispatch]);
-  
-
 
   const handleRemoveImage = () => {
     // clear the uploaded image from formData
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      customer_logo: ''
+      customer_logo: "",
     }));
   };
-
+  const row1HasError =
+  !!errors.unit_effectivity_number || !!errors.customer_name;
+  const row2HasError = !!errors.item_code 
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -354,25 +350,29 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               error={!!errors.unit_effectivity_number}
               helperText={errors.unit_effectivity_number}
               disabled={id ? true : false}
+              required
             />
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ minHeight: row1HasError && !errors.unit_effectivity_number ? 8 : 0 }} />
+            <Box sx={{ mt: (row1HasError&&!!errors.unit_effectivity_number) ? 0 : 2 }}>
               <DropdownComponent
                 label="Type of Label"
-                options={dropdownOptions?dropdownOptions:[]}
+                options={dropdownOptions ? dropdownOptions : []}
                 value={formData.label_type}
                 onChange={(e) => handleChange("label_type", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
+                required
               />
             </Box>
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Jar/Cap"
-                options={[ "JAR", "CAP"]}
+                options={["JAR", "CAP"]}
                 value={formData.jar_cap}
                 onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
+                required
               />
             </Box>
           </Grid>
@@ -384,8 +384,10 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               onChange={(e) => handleChange("customer_name", e.target.value)}
               error={!!errors.customer_name}
               helperText={errors.customer_name}
+              required
             />
-            <Box sx={{ mt: 2 }} />
+           <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
+           <Box sx={{ mt: (row1HasError&&!!errors.customer_name) ? 0 : 2 }}/>
             <ReusableInput
               label="ITEM Code"
               value={formData.item_code}
@@ -393,7 +395,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               error={!!errors.item_code}
               helperText={errors.item_code}
             />
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }} />
+            <Box sx={{ mt: (row2HasError&&!!errors.item_code) ? 0 : 2 }}>
               <DropdownComponent
                 label="Structure"
                 options={["PET"]}
@@ -406,153 +409,159 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-          <Box display="flex" flexDirection="column" alignItems="flex-start">
-  <Typography variant="body2" sx={{ fontWeight: 500 }} color="#656565">
-    Customer Picture
-  </Typography>
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 500 }}
+                color="#656565"
+              >
+                Customer Picture
+              </Typography>
 
-  <Box display="flex" alignItems="center" gap={2} mt={0}>
-      {formData.customer_logo ? (
-        <>
-          {/* Uploaded Image Preview */}
-          <Box
-            component="img"
-            src={formData.customer_logo}
-            alt="Uploaded"
-            sx={{
-              width: 150,
-              height: 35,
-              borderRadius: "8px",
-              objectFit: "cover",
-              flexShrink: 0,
-            }}
-          />
+              <Box display="flex" alignItems="center" gap={2} mt={0.4}>
+                {formData.customer_logo ? (
+                  <>
+                    {/* Uploaded Image Preview */}
+                    <Box
+                      component="img"
+                      src={formData.customer_logo}
+                      alt="Uploaded"
+                      sx={{
+                        width: 150,
+                        height: 35,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                        flexShrink: 0,
+                      }}
+                    />
 
-          {/* Action Icons */}
-          <Box display="flex" gap={1} alignItems="center">
-            {/* Eye Icon */}
-            <Tooltip title="View">
-              <IconButton onClick={() => setIsPreviewOpen(true)} color="primary">
-                <Visibility />
-              </IconButton>
-            </Tooltip>
+                    {/* Action Icons */}
+                    <Box display="flex" gap={1} alignItems="center">
+                      {/* Eye Icon */}
+                      <Tooltip title="View">
+                        <IconButton
+                          onClick={() => setIsPreviewOpen(true)}
+                          color="primary"
+                        >
+                          <Visibility />
+                        </IconButton>
+                      </Tooltip>
 
-            {/* Edit Icon (re-upload) */}
-            <label htmlFor="reupload-image">
-              <input
-                accept="image/*"
-                type="file"
-                id="reupload-image"
-                style={{ display: "none" }}
-                onChange={handleImageUpload}
-              />
-              <Tooltip title="Edit">
-                <IconButton component="span" color="warning">
-                  <Edit />
-                </IconButton>
-              </Tooltip>
-            </label>
+                      {/* Edit Icon (re-upload) */}
+                      <label htmlFor="reupload-image">
+                        <input
+                          accept="image/*"
+                          type="file"
+                          id="reupload-image"
+                          style={{ display: "none" }}
+                          onChange={handleImageUpload}
+                        />
+                        <Tooltip title="Edit">
+                          <IconButton component="span" color="warning">
+                            <Edit />
+                          </IconButton>
+                        </Tooltip>
+                      </label>
 
-            {/* Delete Icon */}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleRemoveImage} color="error">
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
+                      {/* Delete Icon */}
+                      <Tooltip title="Delete">
+                        <IconButton onClick={handleRemoveImage} color="error">
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
 
-          {/* Image Preview Modal */}
-          <Modal
-  open={isPreviewOpen}
-  onClose={() => setIsPreviewOpen(false)}
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  <Box
-    sx={{
-      bgcolor: "background.paper",
-      borderRadius: 2,
-      boxShadow: 24,
-      p: 2,
-      outline: "none",
-      maxWidth: "90%",
-      maxHeight: "90%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    }}
-  >
-    {/* Modal Header */}
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      width="100%"
-      mb={2}
-    >
-      <Typography variant="h6" component="h2">
-        Preview of Image
-      </Typography>
-      <IconButton onClick={() => setIsPreviewOpen(false)}>
-        <Close />
-      </IconButton>
-    </Box>
+                    {/* Image Preview Modal */}
+                    <Modal
+                      open={isPreviewOpen}
+                      onClose={() => setIsPreviewOpen(false)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          bgcolor: "background.paper",
+                          borderRadius: 2,
+                          boxShadow: 24,
+                          p: 2,
+                          outline: "none",
+                          maxWidth: "90%",
+                          maxHeight: "90%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Modal Header */}
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          width="100%"
+                          mb={2}
+                        >
+                          <Typography variant="h6" component="h2">
+                            Preview of Image
+                          </Typography>
+                          <IconButton onClick={() => setIsPreviewOpen(false)}>
+                            <Close />
+                          </IconButton>
+                        </Box>
 
-    {/* Image Preview */}
-    <Box
-      component="img"
-      src={formData.customer_logo}
-      alt="Full Image"
-      sx={{
-        maxWidth: "100%",
-        maxHeight: "75vh",
-        borderRadius: "8px",
-        objectFit: "contain",
-      }}
-    />
-  </Box>
-</Modal>
+                        {/* Image Preview */}
+                        <Box
+                          component="img"
+                          src={formData.customer_logo}
+                          alt="Full Image"
+                          sx={{
+                            maxWidth: "100%",
+                            maxHeight: "75vh",
+                            borderRadius: "8px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </Box>
+                    </Modal>
 
-        </>
-      ) : (
-        // Upload button when no image
-        <label htmlFor="upload-image">
-          <Box
-            component="span"
-            sx={{
-              background: "#1976d2",
-              color: "#fff",
-              px: 2,
-              py: 0.7,
-              borderRadius: "6px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 150,
-              height: 35,
-              textAlign: "center",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Upload Image
-          </Box>
-          <input
-            accept="image/*"
-            type="file"
-            id="upload-image"
-            style={{ display: "none" }}
-            onChange={handleImageUpload}
-          />
-        </label>
-      )}
-    </Box>
-</Box>
-
-
+                  </>
+                ) : (
+                  // Upload button when no image
+                  <label htmlFor="upload-image">
+                    <Box
+                      component="span"
+                      sx={{
+                        background: "#1976d2",
+                        color: "#fff",
+                        px: 2,
+                        py: 0.7,
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 150,
+                        height: 35,
+                        textAlign: "center",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Upload Image
+                    </Box>
+                    <input
+                      accept="image/*"
+                      type="file"
+                      id="upload-image"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                )}
+              </Box>
+            </Box>
+            <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
 
             <Box sx={{ mt: 2 }}>
               <TextArea
@@ -565,6 +574,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 rows={4}
                 error={!!errors.brand_description}
                 helperText={errors.brand_description}
+                required
               />
             </Box>
           </Grid>
@@ -588,6 +598,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               onChange={(e) => handleChange("repeat_length", e.target.value)}
               error={!!errors.repeat_length}
               helperText={errors.repeat_length}
+              required
             />
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
@@ -597,6 +608,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               onChange={(e) => handleChange("ups", e.target.value)}
               error={!!errors.ups}
               helperText={errors.ups}
+              required
             />
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>

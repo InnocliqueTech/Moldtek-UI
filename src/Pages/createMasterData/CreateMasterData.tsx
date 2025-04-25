@@ -7,23 +7,6 @@ import {
   setSelectedTab,
   setSaveFormData,
   setIsMasterDetailsDataSave,
-} from "../../store/slices/masterDataSlice";
-import MasterDataDetails from "./MasterDataDetails";
-import DyeCutting from "./DyeCutting";
-import Printing from "./Printing";
-import Lamination from "./Lamination";
-import {
-  setDyeCuttingSettings,
-  setLaminatingSubstrate,
-  setLaminationAdhesiveDetails,
-  setLaminationSettings,
-  setPrintingInkStationData,
-  setPrintingMachineSettingsData,
-  setPrintingSubstrate,
-  setViewMasterDataDetails,
-} from "../../store/slices/viewMasterDataSlice";
-import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
-import {
   MasterFormData,
   PrintingFormValues,
   PrintingTableRow,
@@ -35,18 +18,26 @@ import {
   setLaminationFormData,
   DyeCuttingFormData,
   setRequestPayload,
-} from "./../../store/slices/masterDataSlice";
+} from "../../store/slices/masterDataSlice";
+import {
+  setDyeCuttingSettings,
+  setLaminatingSubstrate,
+  setLaminationAdhesiveDetails,
+  setLaminationSettings,
+  setPrintingInkStationData,
+  setPrintingMachineSettingsData,
+  setPrintingSubstrate,
+  setViewMasterDataDetails,
+} from "../../store/slices/viewMasterDataSlice";
+import MasterDataDetails from "./MasterDataDetails";
+import DyeCutting from "./DyeCutting";
+import Printing from "./Printing";
+import Lamination from "./Lamination";
+import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 import { useParams } from "react-router-dom";
-
-const tabs = [
-  "Master Data Details",
-  "Master Data - Printing",
-  "Master Data - Lamination",
-  "Master Data - Dye Cutting",
-];
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -62,6 +53,7 @@ const CreateMasterData: React.FC = () => {
     dyeCuttingDataTouched,
     masterDataDataTouched,
   } = useSelector((state: RootState) => state.masterData);
+
   const [formData, setFormData] = useState<MasterFormData>({
     job_master_id: 0,
     unit_effectivity_number: "",
@@ -118,9 +110,7 @@ const CreateMasterData: React.FC = () => {
     })),
   });
 
-  const [LaminationTableData, setLaminationTableData] = useState<
-    LaminatingTableRow[]
-  >([]);
+  const [LaminationTableData, setLaminationTableData] = useState<LaminatingTableRow[]>([]);
   const [lamiFormData, setLamiFormData] = useState<LaminationFormData>({
     laminationConditions: {
       lamination_id: 0,
@@ -147,30 +137,9 @@ const CreateMasterData: React.FC = () => {
       density: "",
     },
     bondingMaterials: [
-      {
-        bonding_id: 0,
-        lamination_id: 0,
-        type: "Adhesive",
-        code: "",
-        brand: "",
-        ratio: "",
-      },
-      {
-        bonding_id: 0,
-        lamination_id: 0,
-        type: "Hardener",
-        code: "",
-        brand: "",
-        ratio: "",
-      },
-      {
-        bonding_id: 0,
-        lamination_id: 0,
-        type: "Ethyl Acetate",
-        code: "",
-        brand: "",
-        ratio: "",
-      },
+      { bonding_id: 0, lamination_id: 0, type: "Adhesive", code: "", brand: "", ratio: "" },
+      { bonding_id: 0, lamination_id: 0, type: "Hardener", code: "", brand: "", ratio: "" },
+      { bonding_id: 0, lamination_id: 0, type: "Ethyl Acetate", code: "", brand: "", ratio: "" },
     ],
   });
 
@@ -186,71 +155,29 @@ const CreateMasterData: React.FC = () => {
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
     dispatch(setIsMasterDetailsDataSave(true));
-    toast.success(
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
-    );
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
 
   const handleSavePrinting = () => {
-    const finalSaveData = {
-      ...formValues,
-      stationWiseMetrics: tableData,
-    };
+    const finalSaveData = { ...formValues, stationWiseMetrics: tableData };
     dispatch(setSavePrintingFormData(finalSaveData));
     dispatch(setIsPrintingDataSave(true));
-    toast.success(
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
-    );
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
 
   const handleSaveLamination = () => {
-    const finalSaveData = {
-      ...lamiFormData,
-      bondingMaterials: LaminationTableData,
-    };
+    const finalSaveData = { ...lamiFormData, bondingMaterials: LaminationTableData };
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
-    toast.success(
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
-    );
+    toast.success("Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently.");
   };
-  const UEN = localStorage.getItem("selectedUEN");
-  let selectedUEN: any;
-  if (UEN) {
-    selectedUEN = UEN;
-  }
-  const version = localStorage.getItem("selectedVersionNo");
-  let versionNo: any;
-  if (version) {
-    versionNo = version;
-  }
-
-  const { id } = useParams();
-  const { data, isLoading } = useViewMasterDataQuery(
-    {
-      ueNumber: selectedUEN,
-      versionNo: versionNo,
-    },
-    { skip: !id }
-  );
 
   const handleSaveDyeCutting = () => {
-    const finalMasterDataDetails =
-      data?.data.masterDataDetails && !masterDataDataTouched
-        ? data?.data.masterDataDetails
-        : saveFormData;
-    const finalPrintingData =
-      data?.data.masterDataPrinting && !printingDataTouched
-        ? data?.data.masterDataPrinting
-        : printingSaveFormData;
-    const finalLaminationData =
-      data?.data.masterDataLamination && !laminationDataTouched
-        ? data?.data.masterDataLamination
-        : laminaionFormData;
-    const finalDyeCuttingData =
-      data?.data.masterDataDyeCutting && !dyeCuttingDataTouched
-        ? data?.data.masterDataDyeCutting
-        : dyeCuttingFormData;
+    const finalMasterDataDetails = data?.data.masterDataDetails && !masterDataDataTouched ? data?.data.masterDataDetails : saveFormData;
+    const finalPrintingData = data?.data.masterDataPrinting && !printingDataTouched ? data?.data.masterDataPrinting : printingSaveFormData;
+    const finalLaminationData = data?.data.masterDataLamination && !laminationDataTouched ? data?.data.masterDataLamination : laminaionFormData;
+    const finalDyeCuttingData = data?.data.masterDataDyeCutting && !dyeCuttingDataTouched ? data?.data.masterDataDyeCutting : dyeCuttingFormData;
+
     const updatedPayload = {
       ...requestPayload,
       masterDataDetails: finalMasterDataDetails,
@@ -262,29 +189,39 @@ const CreateMasterData: React.FC = () => {
     dispatch(setRequestPayload(updatedPayload));
   };
 
+  const UEN = localStorage.getItem("selectedUEN");
+  const version = localStorage.getItem("selectedVersionNo");
+  const { id } = useParams();
+  const { data, isLoading } = useViewMasterDataQuery(
+    { ueNumber: UEN || "", versionNo: version || "" },
+    { skip: !id }
+  );
+
+  const tabs = [
+    "Master Data Details",
+    "Master Data - Printing",
+    ...(saveFormData.label_type !== "Thin Wall" ? ["Master Data - Lamination"] : []),
+    "Master Data - Dye Cutting",
+  ];
+  useEffect(() => {
+    if (saveFormData.label_type === "Thin Wall" && selectedTab === 2) {
+      dispatch(setSelectedTab(3));
+    }
+  }, [saveFormData.label_type, selectedTab, dispatch]);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
   };
 
   useEffect(() => {
     if (id && data) {
-      dispatch(
-        setRequestPayload({
-          ...requestPayload,
-          masterDataLamination: !laminationDataTouched
-            ? data?.data.masterDataLamination
-            : laminaionFormData,
-          masterDataDyeCutting: !dyeCuttingDataTouched
-            ? data?.data.masterDataDyeCutting
-            : dyeCuttingFormData,
-          masterDataDetails: !masterDataDataTouched
-            ? data?.data.masterDataDetails
-            : saveFormData,
-          masterDataPrinting: !printingDataTouched
-            ? data?.data.masterDataPrinting
-            : printingSaveFormData,
-        })
-      );
+      dispatch(setRequestPayload({
+        ...requestPayload,
+        masterDataLamination: !laminationDataTouched ? data?.data.masterDataLamination : laminaionFormData,
+        masterDataDyeCutting: !dyeCuttingDataTouched ? data?.data.masterDataDyeCutting : dyeCuttingFormData,
+        masterDataDetails: !masterDataDataTouched ? data?.data.masterDataDetails : saveFormData,
+        masterDataPrinting: !printingDataTouched ? data?.data.masterDataPrinting : printingSaveFormData,
+      }));
     }
   }, [
     id,
@@ -296,109 +233,34 @@ const CreateMasterData: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (id) {
+    if (id && data) {
       dispatch(setViewMasterDataDetails(data?.data.masterDataDetails));
-      dispatch(
-        setPrintingMachineSettingsData(
-          data?.data.masterDataPrinting.printingDetails
-        )
-      );
-      dispatch(
-        setPrintingSubstrate(
-          data?.data.masterDataPrinting.printingSubstrateSettings
-        )
-      );
-      dispatch(
-        setPrintingInkStationData(
-          data?.data.masterDataPrinting.stationWiseMetrics
-        )
-      );
+      dispatch(setPrintingMachineSettingsData(data?.data.masterDataPrinting.printingDetails));
+      dispatch(setPrintingSubstrate(data?.data.masterDataPrinting.printingSubstrateSettings));
+      dispatch(setPrintingInkStationData(data?.data.masterDataPrinting.stationWiseMetrics));
       dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
-      dispatch(
-        setLaminationSettings(
-          data?.data.masterDataLamination.laminationConditions
-        )
-      );
-      dispatch(
-        setLaminatingSubstrate(
-          data?.data.masterDataLamination.laminationSubstrate
-        )
-      );
-      dispatch(
-        setLaminationAdhesiveDetails(
-          data?.data.masterDataLamination.bondingMaterials
-        )
-      );
+      dispatch(setLaminationSettings(data?.data.masterDataLamination.laminationConditions));
+      dispatch(setLaminatingSubstrate(data?.data.masterDataLamination.laminationSubstrate));
+      dispatch(setLaminationAdhesiveDetails(data?.data.masterDataLamination.bondingMaterials));
     }
-  }, [id]);
+  }, [id, data, dispatch]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: selectedTab !== 3 ? "calc(100vh - 74px)" : "auto", // or 100% if wrapped by a parent with set height
-        width: "100%",
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", height: selectedTab !== 3 ? "calc(100vh - 74px)" : "auto", width: "100%" }}>
       {id && isLoading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
           <Loader />
         </Box>
       ) : (
         <>
-          <Box
-            sx={{
-              position: "sticky",
-              top: {
-                xs: "96.5px", // for small screens and below
-                sm: "52.5px",
-                md: "50.9px", // for medium screens and up
-              },
-              zIndex: 100,
-              backgroundColor: "white",
-            }}
-          >
-            <TabsComponent
-              tabs={tabs}
-              value={selectedTab}
-              onChange={handleTabChange}
-            />
+          <Box sx={{ position: "sticky", top: { xs: "96.5px", sm: "52.5px", md: "50.9px" }, zIndex: 100, backgroundColor: "white" }}>
+            <TabsComponent tabs={tabs} value={selectedTab} onChange={handleTabChange} />
           </Box>
 
-          {/* Scrollable content */}
-          <Box
-            sx={{
-              flexGrow: 1,
-              overflowY: "auto",
-              backgroundColor: "white",
-              padding: 2,
-              borderBottomLeftRadius: "10px",
-              borderBottomRightRadius: "10px",
-            }}
-          >
-            {selectedTab === 0 && (
-              <MasterDataDetails
-                formData={formData}
-                setFormData={setFormData}
-              />
-            )}
-            {selectedTab === 1 && (
-              <Printing
-                tableData={tableData}
-                setTableData={setTableData}
-                formValues={formValues}
-                setFormValues={setFormValues}
-              />
-            )}
-            {selectedTab === 2 && (
+          <Box sx={{ flexGrow: 1, overflowY: "auto", backgroundColor: "white", padding: 2, borderBottomLeftRadius: "10px", borderBottomRightRadius: "10px" }}>
+            {selectedTab === 0 && <MasterDataDetails formData={formData} setFormData={setFormData} />}
+            {selectedTab === 1 && <Printing tableData={tableData} setTableData={setTableData} formValues={formValues} setFormValues={setFormValues} />}
+            {selectedTab === 2 && saveFormData.label_type !== "Thin Wall" && (
               <Lamination
                 tableData={LaminationTableData}
                 setTableData={setLaminationTableData}
@@ -406,28 +268,19 @@ const CreateMasterData: React.FC = () => {
                 setFormData={setLamiFormData}
               />
             )}
-            {selectedTab === 3 && (
-              <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />
-            )}
+            {selectedTab === 3 && <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />}
           </Box>
-          <Box
-            sx={{
-              flexShrink: 0,
-              backgroundColor: "white",
-              padding: 1,
-              borderTop: "1px solid #e0e0e0",
-              boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          >
+
+          <Box sx={{ flexShrink: 0, backgroundColor: "white", padding: 1, borderTop: "1px solid #e0e0e0", boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.1)" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <MasterDataFooter
                 selectedTab={selectedTab}
                 handleSave={
-                  selectedTab == 0
+                  selectedTab === 0
                     ? handleSaveMasterData
-                    : selectedTab == 1
+                    : selectedTab === 1
                     ? handleSavePrinting
-                    : selectedTab == 2
+                    : selectedTab === 2
                     ? handleSaveLamination
                     : handleSaveDyeCutting
                 }

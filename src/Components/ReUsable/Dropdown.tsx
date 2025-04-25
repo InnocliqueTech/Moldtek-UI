@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Select,
   MenuItem,
@@ -10,8 +10,9 @@ import {
   Tooltip,
   IconButton,
   FormHelperText,
-} from '@mui/material';
-import { Done } from '@mui/icons-material';
+  Box,
+} from "@mui/material";
+import { Done } from "@mui/icons-material";
 
 interface DropdownProps {
   options: string[];
@@ -23,6 +24,7 @@ interface DropdownProps {
   checkbox?: boolean;
   error?: boolean;
   helperText?: string;
+  required?: boolean;
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -34,13 +36,14 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   showAllOption = true,
   checkbox = true,
   error = false,
-  helperText = '',
+  helperText = "",
+  required = false,
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   useEffect(() => {
     if (Array.isArray(value)) {
-      setSelectedOptions(value.filter((v) => v !== ''));
+      setSelectedOptions(value.filter((v) => v !== ""));
     } else if (value) {
       setSelectedOptions(Array.isArray(value) ? value : [value]);
     } else {
@@ -51,7 +54,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     let selectedValues = event.target.value as string[];
 
-    if (showAllOption && selectedValues.includes('All')) {
+    if (showAllOption && selectedValues.includes("All")) {
       selectedValues = options;
     }
 
@@ -61,9 +64,20 @@ const DropdownComponent: React.FC<DropdownProps> = ({
 
   return (
     <>
-      <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: '4px' }} color="#656565">
-        {label}
-      </Typography>
+      <Box display="flex" alignItems="center" gap={0.5}>
+        <Typography
+          variant="body2"
+          sx={{ fontWeight: 500, marginBottom: "4px" }}
+          color="#656565"
+        >
+          {label}
+        </Typography>
+        {required && (
+          <Typography component="span" color="error">
+            *
+          </Typography>
+        )}
+      </Box>
 
       <FormControl fullWidth error={error}>
         <Select
@@ -79,14 +93,16 @@ const DropdownComponent: React.FC<DropdownProps> = ({
                 </Typography>
               );
             }
-            const displayText = Array.isArray(selected) ? selected.join(', ') : selected;
+            const displayText = Array.isArray(selected)
+              ? selected.join(", ")
+              : selected;
             return (
               <Tooltip title={displayText} arrow>
                 <div
                   style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {displayText}
@@ -96,27 +112,27 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           }}
           MenuProps={{
             anchorOrigin: {
-              vertical: 'bottom',
-              horizontal: 'left',
+              vertical: "bottom",
+              horizontal: "left",
             },
             transformOrigin: {
-              vertical: 'top',
-              horizontal: 'left',
+              vertical: "top",
+              horizontal: "left",
             },
             PaperProps: {
               style: {
                 maxHeight: 200,
                 width: 250,
-                overflowY: 'auto',
+                overflowY: "auto",
               },
             },
           }}
           sx={{
-            borderRadius: '8px',
-            backgroundColor: 'white',
-            '& .MuiSelect-select': {
-              padding: '6px 12px',
-              color: 'black',
+            borderRadius: "8px",
+            backgroundColor: "white",
+            "& .MuiSelect-select": {
+              padding: "6px 12px",
+              color: "black",
             },
           }}
         >
@@ -125,7 +141,8 @@ const DropdownComponent: React.FC<DropdownProps> = ({
               <Checkbox
                 checked={selectedOptions.length === options.length}
                 indeterminate={
-                  selectedOptions.length > 0 && selectedOptions.length < options.length
+                  selectedOptions.length > 0 &&
+                  selectedOptions.length < options.length
                 }
               />
               <ListItemText primary="All" />
@@ -137,29 +154,33 @@ const DropdownComponent: React.FC<DropdownProps> = ({
               key={option}
               value={option}
               sx={{
-                backgroundColor: selectedOptions.includes(option) ? '#e3f2fd' : 'inherit',
-                display: 'flex',
-                alignItems: 'center',
+                backgroundColor: selectedOptions.includes(option)
+                  ? "#e3f2fd"
+                  : "inherit",
+                display: "flex",
+                alignItems: "center",
                 gap: 1,
               }}
             >
-              {checkbox && <Checkbox checked={selectedOptions.includes(option)} />}
+              {checkbox && (
+                <Checkbox checked={selectedOptions.includes(option)} />
+              )}
               <Tooltip title={option} arrow>
                 <div
                   style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '300px',
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "300px",
                     flexGrow: 1,
-                    color: '#2F2F2F',
+                    color: "#2F2F2F",
                   }}
                 >
                   {option}
                 </div>
               </Tooltip>
               {!checkbox && selectedOptions.includes(option) && (
-                <IconButton sx={{ color: '#0073B7' }}>
+                <IconButton sx={{ color: "#0073B7" }}>
                   <Done />
                 </IconButton>
               )}
