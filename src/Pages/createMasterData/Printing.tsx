@@ -72,15 +72,15 @@ const Printing: React.FC<PrintingProps> = ({
 
   const columns = [
     { id: "station_no", label: "Station No" },
-    { id: "color_pantone", label: "Color Pantone Code", edit: true },
-    { id: "lf_value", label: "LF Value", edit: true },
+    { id: "color_pantone", label: "Color Pantone Code", edit: true,required:true },
+    { id: "lf_value", label: "LF Value", edit: true,required:true },
     {
       id: "ink_supplier",
       label: "Ink Supplier",
       editSelect: true,
       options: ["Siegwerk", "Flint Group"],
     },
-    { id: "lpcm", label: "LPCM", edit: true },
+    { id: "lpcm", label: "LPCM", edit: true,required:true },
     { id: "volume", label: "Volume", edit: true },
     { id: "uv_led", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
@@ -198,18 +198,32 @@ const Printing: React.FC<PrintingProps> = ({
   
     let errorMsg = "";
     let finalValue: string | number | string[] = newValue;
-  
     // Validate number fields
     if (isNumberField) {
+      // Check for empty or zero value
       if (newValue === "0" || newValue === "") {
         errorMsg = "Value cannot be 0 or empty";
-      } else if (!isNaN(Number(newValue))) {
-        errorMsg = ""; // valid number
-        finalValue = Number(newValue); // Convert to number
-      } else {
-        errorMsg = `Invalid number`;
       }
-    } else if (field === "thickness") {
+      // Ensure newValue is a string before calling match
+      else if (typeof newValue === 'string') {
+        const regex = /^(\d+(\.\d+)?)(%)?$/;
+        const match = newValue.match(regex);
+    
+        if (match) {
+          // No conversion to decimal, just keep the value as-is
+          finalValue = newValue; // Keep it as a string with or without percentage
+    
+          errorMsg = ""; // Valid number or percentage
+        } else {
+          errorMsg = "Invalid number or percentage";
+        }
+      } else {
+        errorMsg = "Invalid input: Expected a string, but got an array.";
+      }
+    }
+    
+    
+     else if (field === "thickness") {
       // Validate thickness field (assumed to be string with no special characters)
       if (typeof newValue === "string") {
         const trimmed = newValue.trim();
@@ -286,6 +300,7 @@ const Printing: React.FC<PrintingProps> = ({
           options={field.options}
           isMultiSelect={false}
           checkbox={false}
+          required={field.label==='Supplier'?false:true}
         />
       );
     }
@@ -298,6 +313,7 @@ const Printing: React.FC<PrintingProps> = ({
         onChange={(val) => handleChange(field.id, val)}
         error={!!error}
         helperText={error}
+        required={field.label==='Static Charge' ||field.label==='Format Correct' ?false:true}
       />
     );
   };
@@ -341,14 +357,23 @@ const Printing: React.FC<PrintingProps> = ({
 
 
   const importantFields = [
-    "static_charge",
-    "format_correct",
+    "printing_machine_name",
+    "cylinder_teeth",
+    "tension",
+    "unwinder",
+    "rewinder",
+    "infeed",
+    "outfeed",
     "substrate_type",
-    "supplier",
+    "dyne_level",
+    "width",
+    "thickness",
+    "density",
     "color_pantone",
-    "lpcm",
     "lf_value",
+    "lpcm",
   ];
+  
   
   useEffect(() => {
     let isInvalid = false;
@@ -372,7 +397,8 @@ const Printing: React.FC<PrintingProps> = ({
           break;
         }
   
-      } else if (["color_pantone", "lpcm", "lf_value"].includes(field)) {
+      } 
+      else if (["color_pantone", "lpcm", "lf_value"].includes(field)) {
         const hasEmpty = formValues.stationWiseMetrics.some((station: any) => {
           const value = station?.[field];
           return value === "" || value === null || value === undefined;
@@ -383,7 +409,9 @@ const Printing: React.FC<PrintingProps> = ({
           break;
         }
       }
+
     }
+    
   
     // 2️⃣ Check if any field inside errors has any value (deep check)
     const hasErrors =
@@ -391,16 +419,14 @@ const Printing: React.FC<PrintingProps> = ({
   console.log(errors,"ERRORS")
     // 3️⃣ Set button state
     if (isInvalid && hasErrors) {
-      dispatch(setSubmitAndPublishButtonPrinting(true)); // ❌ Disable
+      dispatch(setSubmitAndPublishButtonPrinting(true));
     } else {
-      dispatch(setSubmitAndPublishButtonPrinting(false));  // ✅ Enable
+      dispatch(setSubmitAndPublishButtonPrinting(false));  
     }
   }, [formValues, errors]);
   
   
   
-  
-
   useEffect(() => {
     const importantFields = [
       "static_charge",
@@ -418,7 +444,16 @@ const Printing: React.FC<PrintingProps> = ({
       "width",
       "thickness",
       "density",
-      "color_pantone", "lpcm", "lf_value", "ink_supplier", "volume", "uv_led", "uv_led_intensity", "mixing_on_gec", "mptl_code", "mounting_tape"
+      "color_pantone", 
+      "lpcm", 
+      "lf_value", 
+      "ink_supplier", 
+      "volume", 
+      "uv_led", 
+      "uv_led_intensity", 
+      "mixing_on_gec", 
+      "mptl_code", 
+      "mounting_tape"
     ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
@@ -454,7 +489,7 @@ const Printing: React.FC<PrintingProps> = ({
     console.log(isSaveEnabled,isAnyFieldFilled,hasErrors,"HASERRORS1")
     dispatch(setPrintingSave(!isSaveEnabled));
   }, [formValues, errors, dispatch]);
-  
+
   
   
   

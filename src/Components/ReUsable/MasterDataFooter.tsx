@@ -134,7 +134,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       submitAndPublishButtonDyeCutting ||
       submitAndPublishButtonPrinting ||
       (!skipLamination && submitAndPublishButtonLamination)
-    );
+);
   };
 
   return (
