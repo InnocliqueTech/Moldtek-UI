@@ -16,7 +16,7 @@ interface DailyPlan {
   jobMasterId: number;
 }
 
-interface InkCoatingSpecification {
+export interface InkCoatingSpecification {
   stationNo: number;
   colorPantone: string;
   mixingOnGec: string | null;

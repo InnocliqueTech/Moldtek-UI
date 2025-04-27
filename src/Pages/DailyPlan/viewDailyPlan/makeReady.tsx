@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { tapeColumns, materialColumns } from "../data";
+import {  materialColumns } from "../data";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store";
 import Loader from "../../../Loader";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import { InkCoatingSpecification } from "../../../store/slices/viewDailyPlanSlice";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -14,7 +15,7 @@ const inkCoatingColumns = [
   { id: "mixingOnGec", label: "Mixing on GEC" },
   { id: "mtplCode", label: "MTPL Code" },
   { id: "lfValue", label: "LF Value" },
-  { id: "supplierBatchNo", label: "Supplier Batch No" },
+  { id: "supplierBatchNo", label: "Supplier Batch No" , edit: true},
 ];
 
 
@@ -30,9 +31,18 @@ const generateAnaloxColumns = (specs: any[]) => {
 };
 
 const transformAnaloxData = (specs: any[]) => {
-  const parameters = ["lpcm", "vol" , "stationSpec"];
+  const parameterLabels: Record<string, string> = {
+    lpcm: "LPCM",
+    vol: "Volume",
+    stationSpec: "Mounting Tape",
+  };
+
+  const parameters = ["lpcm", "vol", "stationSpec"];
+
   return parameters.map((param) => {
-    const row: Record<string, string | number> = { parameter: param };
+    const row: Record<string, string | number> = { 
+      parameter: parameterLabels[param] || param  
+    };
     specs.forEach((station) => {
       row[`station${station.stationNo}`] = station[param];
     });
@@ -65,8 +75,17 @@ const MakeReady: React.FC<MakeReadyProps> = ({
 
   const [editableMaterialSpec, setEditableMaterialSpec] = useState(materialSpecification || {});
   const [plateReportItems, setPlateReportItems] = useState<InfoItem[]>([]);
+  const [editableInkCoatingSpecifications, setEditableInkCoatingSpecifications] = useState(inkCoatingSpecifications || []);
 
   useEffect(() => {
+    if (inkCoatingSpecifications && inkCoatingSpecifications.length > 0) {
+      setEditableInkCoatingSpecifications(inkCoatingSpecifications);
+    }
+  
+    if (materialSpecification) {
+      setEditableMaterialSpec(materialSpecification);
+    }
+  
     if (plateMountingSupervisorReport) {
       const report: InfoItem[] = [
         {
@@ -108,39 +127,98 @@ const MakeReady: React.FC<MakeReadyProps> = ({
       ];
       setPlateReportItems(report);
     }
-  }, [plateMountingSupervisorReport]);
+  }, [inkCoatingSpecifications, materialSpecification, plateMountingSupervisorReport]);
 
-  const handleShiftReportUpdate = (items: InfoItem[]) => {
-    setPlateReportItems(items);
-    const updatedReport: any = {};
-    items.forEach((item) => {
-      updatedReport[item.keyName!] = item.value;
-    });
-    dispatch(setUpdateDailyPlanPayload({
-    plateMountingSupervisorReport: updatedReport,
-    materialSpecification: editableMaterialSpec,
-    inkCoatingSpecifications,
-    analoxSpecifications,
-    mountingTapeSpecifications,
-    // Optionally include other sections (inkCoatingSpecifications etc.)
-  }));
-    onDataChange();
-  };
+  // const handleShiftReportUpdate = (items: InfoItem[]) => {
+  //   setPlateReportItems(items);
+  //   const updatedReport: any = {};
+  //   items.forEach((item) => {
+  //     updatedReport[item.keyName!] = item.value;
+  //   });
+  //   dispatch(setUpdateDailyPlanPayload({
+  //   plateMountingSupervisorReport: updatedReport,
+  //   materialSpecification: editableMaterialSpec,
+  //   inkCoatingSpecifications,
+  //   analoxSpecifications,
+  //   mountingTapeSpecifications,
+  //   // Optionally include other sections (inkCoatingSpecifications etc.)
+  // }));
+  //   onDataChange();
+  // };
 
-  const handleMaterialSpecChange = (newData: any[]) => {
-    if (newData.length > 0) {
-      const updated = newData[0];
-      setEditableMaterialSpec(updated);
-      dispatch(setUpdateDailyPlanPayload({
-        plateMountingSupervisorReport: Object.fromEntries(plateReportItems.map(item => [item.keyName!, item.value])),
-        materialSpecification: updated,
-        inkCoatingSpecifications,
-        analoxSpecifications,
-        mountingTapeSpecifications,
-        // Add others here if you want a complete payload
-      }));
-      onDataChange();
+  // const handleMaterialSpecChange = (newData: any[]) => {
+  //   if (newData.length > 0) {
+  //     const updated = newData[0];
+  //     setEditableMaterialSpec(updated);
+  //     dispatch(setUpdateDailyPlanPayload({
+  //       plateMountingSupervisorReport: Object.fromEntries(plateReportItems.map(item => [item.keyName!, item.value])),
+  //       materialSpecification: updated,
+  //       inkCoatingSpecifications,
+  //       analoxSpecifications,
+  //       mountingTapeSpecifications,
+  //       // Add others here if you want a complete payload
+  //     }));
+  //     onDataChange();
+  //   }
+  // };
+
+  // const handleInkCoatingChange = (newData: any[]) => {
+  //   console.log(newData,"inside change");
+  //   dispatch(setUpdateDailyPlanPayload({
+  //     plateMountingSupervisorReport: Object.fromEntries(plateReportItems.map(item => [item.keyName!, item.value])),
+  //     materialSpecification: editableMaterialSpec,
+  //     inkCoatingSpecifications: newData,
+  //     analoxSpecifications,
+  //     mountingTapeSpecifications,
+  //   }));
+  //   onDataChange();
+  // };
+
+  const handleDataUpdate = (
+    section: 'materialSpecification' | 'plateMountingSupervisorReport' | 'inkCoatingSpecifications',
+    newData: any[] | InfoItem[]
+  ) => {
+    let updatedPayload: any = {
+      analoxSpecifications,
+      mountingTapeSpecifications,
+    };
+  
+    switch (section) {
+      case 'materialSpecification':
+        setEditableMaterialSpec(newData[0]);
+        updatedPayload.materialSpecification = newData[0];
+        updatedPayload.plateMountingSupervisorReport = Object.fromEntries(
+          plateReportItems.map(item => [item.keyName!, item.value])
+        );
+        updatedPayload.inkCoatingSpecifications = inkCoatingSpecifications;
+        break;
+  
+      case 'plateMountingSupervisorReport':
+        const updatedReport: any = {};
+        (newData as InfoItem[]).forEach((item) => {
+          updatedReport[item.keyName!] = item.value;
+        });
+        setPlateReportItems(newData as InfoItem[]);
+        updatedPayload.plateMountingSupervisorReport = updatedReport;
+        updatedPayload.materialSpecification = editableMaterialSpec;
+        updatedPayload.inkCoatingSpecifications = inkCoatingSpecifications;
+        break;
+  
+        case 'inkCoatingSpecifications':
+          setEditableInkCoatingSpecifications(newData as InkCoatingSpecification[]);
+          updatedPayload.inkCoatingSpecifications = newData;
+          updatedPayload.materialSpecification = editableMaterialSpec;
+          updatedPayload.plateMountingSupervisorReport = Object.fromEntries(
+            plateReportItems.map(item => [item.keyName!, item.value])
+          );
+          break;
+  
+      default:
+        return;
     }
+  
+    dispatch(setUpdateDailyPlanPayload(updatedPayload));
+    onDataChange();
   };
 
   const analoxCols = generateAnaloxColumns(analoxSpecifications);
@@ -166,8 +244,14 @@ const MakeReady: React.FC<MakeReadyProps> = ({
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Ink & Coating Specifications"
-          columns={inkCoatingColumns}
-          data={inkCoatingSpecifications || []}
+          columns={inkCoatingColumns.map((col) => ({
+            ...col,
+            edit: isEditing && col.edit,
+          }))}
+          data={editableInkCoatingSpecifications || []}
+          setData={(newData: any[]) =>
+            handleDataUpdate("inkCoatingSpecifications", newData)
+          }
           firstRow
         />
       </Box>
@@ -195,20 +279,24 @@ const MakeReady: React.FC<MakeReadyProps> = ({
           title="Material Specifications"
           columns={materialColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.id === "gsm", // ✅ Only GSM editable
+            edit: isEditing && col.id === "gsm",
           }))}
           data={[editableMaterialSpec]}
-          setData={handleMaterialSpecChange}
+          setData={(newData: any[]) =>
+            handleDataUpdate("materialSpecification", newData)
+          }
         />
       </Box>
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Shift Supervisor Report"
-          showInfoSection={true}
+          showInfoSection
           showTableSection={false}
           infoItems={plateReportItems}
-          setInfoItems={handleShiftReportUpdate}
+          setInfoItems={(updatedItems) =>
+            handleDataUpdate("plateMountingSupervisorReport", updatedItems)
+          }
           isEditing={isEditing}
         />
       </Box>
