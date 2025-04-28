@@ -331,7 +331,7 @@ const ViewDailyPlan: React.FC = () => {
           />
 
           {/* Next */}
-          <ButtonComponent
+          {selectedTab != 4 && <ButtonComponent
             text="Next"
             variant="contained"
             onClick={() => {
@@ -346,7 +346,7 @@ const ViewDailyPlan: React.FC = () => {
             disabled={selectedTab === tabs.length - 1}
             borderRadius="100px"
             p="14px"
-          />
+          />}
         </Box>
       )}
 

@@ -122,7 +122,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error loading details: {JSON.stringify(error)}</div>;
-  if (!editableData) return <div>No data found</div>;
+  if (!editableData) return <div>data Loading...</div>;
 
   return (
     <>
@@ -131,7 +131,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           title="Printing Machine"
           columns={printingColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.id === "target", // only apply editable for 'target'
+            edit: isEditing && col.edit,
           }))}
           data={editableData.printingMachine.categories}
           setData={(newData: any[]) =>
@@ -144,7 +144,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }
           isEditing={isEditing}
           showInfoSection
-          rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
+         rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
 
@@ -153,7 +153,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           title="Lamination Machine"
           columns={laminationColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.id === "target", // only apply editable for 'target'
+            edit: isEditing && col.edit, // only apply editable for 'target'
           }))}
           data={editableData.laminationMachine.categories}
           setData={(newData: any[]) =>
@@ -166,7 +166,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }
           isEditing={isEditing}
           showInfoSection
-          rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
+          //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
 

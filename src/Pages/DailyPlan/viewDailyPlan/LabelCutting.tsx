@@ -73,7 +73,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error loading details: {JSON.stringify(error)}</div>;
-  if (!labelCuttingData || !editableData) return <div>No data found</div>;
+  if (!labelCuttingData || !editableData) return <div>data Loading....</div>;
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
