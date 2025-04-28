@@ -198,10 +198,6 @@ export interface DyeCuttingFormErrors {
 export interface PrintingFormErrors {
   cylinder_teeth: string;
   tension: string;
-  unwinder: string;
-  infeed: string;
-  outfeed: string;
-  rewinder: string;
   static_charge: string;
   format_correct: string;
   dyne_level: string;
@@ -382,10 +378,6 @@ const initialState: MasterDataState = {
   printingFormErrors: {
     cylinder_teeth: "",
     tension: "",
-    unwinder: "",
-    infeed: "",
-    outfeed: "",
-    rewinder: "",
     static_charge: "",
     format_correct: "",
     dyne_level: "",
@@ -925,10 +917,6 @@ const masterDataSlice = createSlice({
       state.printingFormErrors = {
         cylinder_teeth: "",
         tension: "",
-        unwinder: "",
-        infeed: "",
-        outfeed: "",
-        rewinder: "",
         static_charge: "",
         format_correct: "",
         dyne_level: "",
