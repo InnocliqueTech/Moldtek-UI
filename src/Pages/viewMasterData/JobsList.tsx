@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, SelectChangeEvent, Skeleton, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
@@ -19,7 +19,17 @@ const JobsList: React.FC = () => {
     selectedUEN =  UEN;
  }
   type StatusType = "Inprogress" | "On hold" | "Inactive" | "Completed"|"Active";
+  const rowsPerPageStorageKey = "jobsDataRowsPerPage"
+  const [rowsPerPage, setRowsPerPage] = useState(()=>{
+    const savedPage = localStorage.getItem(rowsPerPageStorageKey);
+    return savedPage !==null ? Number(savedPage):10;
+  }); 
 
+   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+    };
+    
   const colorMap: Record<StatusType, string> = {
     "Inprogress": "#FAECD8",
     "On hold": "#F7DDDA",
@@ -183,6 +193,10 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
       return value ? value : "N/A";
     };
 
+      useEffect(() => {
+        localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+      }, [rowsPerPage]);
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
@@ -292,6 +306,8 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
               searchSize={true}
               isLoading={isLoading}
               id={"jobListData"}
+              handleRowsPerPageChange={handleRowsPerPageChange}
+              rowsPerPage={rowsPerPage}
             />
           </Box>
         </Box>

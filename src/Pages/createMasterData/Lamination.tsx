@@ -393,7 +393,7 @@ const Lamination: React.FC<LaminationProps> = ({
     const shouldEnableSave =
       isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
     const shouldEnableSubmitAndPublish =
-      !areAllFieldsFilled && !hasAnyError && !laminationTableValueVaidation && !allValid;
+      areAllFieldsFilled && !hasAnyError && !allValid  && !laminationTableValueVaidation;;
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
       setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish)

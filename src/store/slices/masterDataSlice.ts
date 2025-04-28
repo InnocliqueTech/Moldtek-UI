@@ -303,6 +303,9 @@ interface MasterDataState {
   isMasterDetaisDataSave: boolean;
   isPrintingDataSave: boolean;
   isLaminationDataSave: boolean;
+  isMasterDetaisData: boolean;
+  isPrintingData: boolean;
+  isLaminationData: boolean;
   requestPayload: RequestPayload;
   selectedUEN: string;
   submitAndPublishButtonMasterData: boolean;
@@ -674,6 +677,9 @@ const initialState: MasterDataState = {
   isMasterDetaisDataSave: false,
   isLaminationDataSave: false,
   isPrintingDataSave: false,
+  isMasterDetaisData: false,
+  isLaminationData: false,
+  isPrintingData: false,
   requestPayload: {
     masterDataDetails: {
       job_master_id: 0,
@@ -872,6 +878,15 @@ const masterDataSlice = createSlice({
     },
     setIsPrintingDataSave: (state, action: PayloadAction<boolean>) => {
       state.isPrintingDataSave = action.payload;
+    },
+    setIsMasterDetailsData: (state, action: PayloadAction<boolean>) => {
+      state.isMasterDetaisData = action.payload;
+    },
+    setIsLaminatingData: (state, action: PayloadAction<boolean>) => {
+      state.isLaminationData = action.payload;
+    },
+    setIsPrintingData: (state, action: PayloadAction<boolean>) => {
+      state.isPrintingData = action.payload;
     },
     setMasterDataFormErros: (
       state,
@@ -1369,6 +1384,9 @@ export const {
   setLaminationTableValueVaidation,
   setPrintingTableValueVaidation,
   setPrintingTab,
-  setLaminationTab
+  setLaminationTab,
+  setIsLaminatingData,
+  setIsPrintingData,
+  setIsMasterDetailsData
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

@@ -139,8 +139,9 @@ if(submitTrue){
           (!skipLamination && submitAndPublishButtonLamination)
         );
       }
-      
+      else{
       return true;
+      }
     };
     
 
@@ -162,7 +163,7 @@ if(submitTrue){
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={isSubmitDisabled()}
+           disabled={isSubmitDisabled()}
         />
       ) : (
         <>

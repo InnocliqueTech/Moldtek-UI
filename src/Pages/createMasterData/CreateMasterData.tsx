@@ -20,6 +20,9 @@ import {
   setRequestPayload,
   setPrintingTab,
   setLaminationTab,
+  setIsMasterDetailsData,
+  setIsPrintingData,
+  setIsLaminatingData,
 } from "../../store/slices/masterDataSlice";
 import {
   setDyeCuttingSettings,
@@ -180,7 +183,13 @@ const CreateMasterData: React.FC = () => {
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
     dispatch(setIsMasterDetailsDataSave(true));
-    toast.success(
+    if(id){
+      dispatch(setIsMasterDetailsData(true));
+    }
+    else{
+      dispatch(setIsMasterDetailsData(false));
+    }
+    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
       "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
@@ -189,7 +198,13 @@ const CreateMasterData: React.FC = () => {
     const finalSaveData = { ...formValues, stationWiseMetrics: tableData };
     dispatch(setSavePrintingFormData(finalSaveData));
     dispatch(setIsPrintingDataSave(true));
-    toast.success(
+    if(id){
+      dispatch(setIsPrintingData(true));
+    }
+    else{
+      dispatch(setIsPrintingData(false));
+    }
+    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
       "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
@@ -201,7 +216,13 @@ const CreateMasterData: React.FC = () => {
     };
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
-    toast.success(
+    if(id){
+      dispatch(setIsLaminatingData(true));
+    }
+    else{
+      dispatch(setIsLaminatingData(false));
+    }
+    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
       "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
@@ -283,15 +304,15 @@ const CreateMasterData: React.FC = () => {
         ...finalLaminationData,
         laminationConditions: {
           ...finalLaminationData.laminationConditions,
-          zone1_temp: Number( finalLaminationData.zone1_temp),
-          zone2_temp: Number( finalLaminationData.zone2_temp),
-          nip_pressure_bar: Number( finalLaminationData.nip_pressure_bar),
-          speed: Number( finalLaminationData.speed),
-          lami_set_tension: Number( finalLaminationData.lami_set_tension),
-          rewinder_tension: Number( finalLaminationData.rewinder_tension),
-          printed_film_tension: Number( finalLaminationData.printed_film_tension),
-          laminate_film_tension: Number( finalLaminationData.laminate_film_tension),
-          adhesive_gsm: Number( finalLaminationData.adhesive_gsm),
+          zone1_temp: Number( finalLaminationData.laminationConditions.zone1_temp),
+          zone2_temp: Number( finalLaminationData.laminationConditions.zone2_temp),
+          nip_pressure_bar: Number( finalLaminationData.laminationConditions.nip_pressure_bar),
+          speed: Number( finalLaminationData.laminationConditions.speed),
+          lami_set_tension: Number( finalLaminationData.laminationConditions.lami_set_tension),
+          rewinder_tension: Number( finalLaminationData.laminationConditions.rewinder_tension),
+          printed_film_tension: Number( finalLaminationData.laminationConditions.printed_film_tension),
+          laminate_film_tension: Number( finalLaminationData.laminationConditions.laminate_film_tension),
+          adhesive_gsm: Number( finalLaminationData.laminationConditions.adhesive_gsm),
         },
         laminationSubstrate: {
           ...finalLaminationData.laminationSubstrate,

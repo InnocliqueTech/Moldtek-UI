@@ -33,6 +33,9 @@ import {
   Button,
   SxProps,
   Theme,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -95,6 +98,7 @@ interface TableProps<T> {
   totalLength?: number;
   pageRange?: boolean;
   pageNumber?: number;
+  handleRowsPerPageChange?: (event: SelectChangeEvent<string>) => void;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -119,6 +123,7 @@ function ReusableTable<T extends Record<string, any>>({
   totalLength = 0,
   pageRange = false,
   pageNumber = 0,
+  handleRowsPerPageChange
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -468,7 +473,7 @@ function ReusableTable<T extends Record<string, any>>({
     >
       <>
         {loaderDownload ? (
-          <Loader />
+          <Loader text="Please wait, the downloading of your files takes some time." />
         ) : (
           <>
             <Toolbar
@@ -911,6 +916,37 @@ function ReusableTable<T extends Record<string, any>>({
                       filteredData.length / rowsPerPage
                     )}`}
               </Typography>
+              <Box display={"flex"} flexDirection={"row"}>
+        <Typography sx={{marginRight:'4px',marginTop:'6px'}}>Rows per page:</Typography>
+        <Select
+          value={rowsPerPage.toString()}
+          onChange={handleRowsPerPageChange}
+          label="Rows per page"
+          variant="standard"
+          sx={{
+            height: "32px",
+            fontSize: "14px",
+            marginTop:'4px',
+            borderBottom: "none",
+            "&:before": { borderBottom: "none" },
+            "&:after": { borderBottom: "none" },
+            "&:hover:not(.Mui-disabled):before": {
+              borderBottom: "none !important",
+            },
+            "& .MuiSelect-select": {
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+          }}
+        >
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={25}>25</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+          <MenuItem value={100}>100</MenuItem>
+        </Select>
               <Stack spacing={2}>
                 <Pagination
                   count={
@@ -998,6 +1034,7 @@ function ReusableTable<T extends Record<string, any>>({
                   }}
                 />
               </Stack>
+              </Box>
             </Box>
             {showSelectionBar && (
               <Fade in={showSelectionBar}>

@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import { Avatar, Box, Grid, Typography,Skeleton, Tooltip } from "@mui/material";
+import { Avatar, Box, Grid, Typography,Skeleton, Tooltip, SelectChangeEvent } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards'
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from '../../Components/ReUsable/Table';
@@ -100,7 +100,11 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const rowsPerPage = 10;
+  const rowsPerPageStorageKey = "dailyPlanDataRowsPerPage"
+  const [rowsPerPage, setRowsPerPage] = useState(()=>{
+    const savedPage = localStorage.getItem(rowsPerPageStorageKey);
+    return savedPage !==null ? Number(savedPage):10;
+  }); 
   const { 
     data: metricsData, 
     isLoading: isMetricsLoading, 
@@ -108,7 +112,10 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     // error: metricsError 
   } = useGetDailyJobMetricsQuery();
 
-  
+    const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+    };
   // Jobs list API call
   // const { 
   //   data: dailyJobsList, 
@@ -134,7 +141,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     if (!openSliderDaily|| dropDown) {
       dailyPlanFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page, openSliderDaily, filtersPayload, dropDown]);
+  }, [page, openSliderDaily, filtersPayload, dropDown,rowsPerPage]);
   
 
 const dispatch = useDispatch()
@@ -237,7 +244,8 @@ const dispatch = useDispatch()
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
-  }, [page]);
+    localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+  }, [page,rowsPerPage]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -301,6 +309,7 @@ const dispatch = useDispatch()
               }
               pageRange={true}
               onPageChange={handlePageChange}
+              handleRowsPerPageChange={handleRowsPerPageChange}
               // actions={[
               //   {
               //     label: "Download",
