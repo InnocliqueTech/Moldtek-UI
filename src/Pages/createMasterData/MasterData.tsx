@@ -37,6 +37,7 @@ const MasterData: React.FC = () => {
 
 
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };

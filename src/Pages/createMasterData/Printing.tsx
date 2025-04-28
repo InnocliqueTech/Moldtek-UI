@@ -86,7 +86,7 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
     { id: "mixing_on_gec", label: "Mixing On GEC", edit: true },
     { id: "mptl_code", label: "MPTL Code", edit: true },
-    { id: "mounting_tape", label: "Mounting Tape", isDropdown: true, options: ["Soft", "Medium","Hard"] },
+    { id: "mounting_tape", label: "Mounting Tape", editSelect: true, options: ["Soft", "Medium","Hard"] },
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({

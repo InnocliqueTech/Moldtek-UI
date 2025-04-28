@@ -9,6 +9,7 @@ import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
+import { jobsList } from "./data";
 
 
 const JobsList: React.FC = () => {
@@ -26,6 +27,7 @@ const JobsList: React.FC = () => {
   }); 
 
    const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+    setPage(0);
       setRowsPerPage(parseInt(event.target.value, 10));
       localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
     };
@@ -161,7 +163,15 @@ const JobsList: React.FC = () => {
     // },
   ];
 
-
+  const storageKey = "jobListDataPage";
+  const [page, setPage] = useState(() => {
+    const savedPage = localStorage.getItem(storageKey);
+    return savedPage !== null ? Number(savedPage) : 0;
+  });
+    useEffect(() => {
+      localStorage.setItem(storageKey, page.toString());
+      localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+    }, [page,rowsPerPage]);
 
 
   const dispatch = useDispatch<AppDispatch>();
@@ -193,9 +203,10 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
       return value ? value : "N/A";
     };
 
-      useEffect(() => {
-        localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
-      }, [rowsPerPage]);
+    const handlePageChange = (newPage: number) => {
+      setPage(newPage);
+      localStorage.setItem(storageKey, newPage.toString());
+    };
 
   return (
     <Box sx={{ p: 0 }}>
@@ -295,7 +306,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
           >
             <ReusableTable
               columns={columns}
-              data={jobListData?jobListData:[]}
+              data={jobsList.data?jobsList.data:[]}
               selectable={false}
               label={`${data?.totalRecords?data.totalRecords:0} Versions`}
               title="List of executed jobs"
@@ -308,6 +319,8 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
               id={"jobListData"}
               handleRowsPerPageChange={handleRowsPerPageChange}
               rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              pageNumber={page}
             />
           </Box>
         </Box>
