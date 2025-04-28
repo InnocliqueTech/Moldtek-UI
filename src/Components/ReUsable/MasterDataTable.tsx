@@ -352,8 +352,8 @@ const DataTable = <T extends Record<string, any>>({
                                 height: "32px",
                                 padding: "0px",
                                 input: {
-                                  textAlign: "left", // or center
-                                  paddingRight: "30px", // reserve space for 'kg'
+                                  textAlign: "left", 
+                                  paddingRight: "30px", 
                                 },
                               },
                             }}
@@ -525,7 +525,6 @@ const DataTable = <T extends Record<string, any>>({
                           }
                         />
                       ) : column.edit && (!rowEditable || rowEditable(row)) ? (
-                        <Box sx={{ position: "relative", width: "80%" }}>
                           <TextField
                             variant="standard"
                             value={row[column.id]} // only the number
@@ -588,34 +587,9 @@ const DataTable = <T extends Record<string, any>>({
                                 color: "#2F2F2F",
                                 height: "32px",
                                 padding: "0px",
-                                input: {
-                                  textAlign: "left", // or center
-                                  paddingRight: "30px", // reserve space for 'kg'
-                                },
                               },
                             }}
-                            inputProps={{
-                              inputMode:
-                                column.id === "ratio" ? "numeric" : "text",
-                            }}
                           />
-
-                          {column.id === "ratio" && (
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                right: "8px",
-                                pointerEvents: "none",
-                                color: "#666",
-                                fontSize: "14px",
-                              }}
-                            >
-                              kg
-                            </Box>
-                          )}
-                        </Box>
                       ) : (
                         <Tooltip
                           title={String(row ? row[column?.id] : "")}
