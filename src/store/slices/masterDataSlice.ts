@@ -330,6 +330,8 @@ interface MasterDataState {
   laminatingDetails: any;
   rememberMe: boolean;
   submitTrue:boolean;
+  laminationTableValueVaidation:boolean;
+  printingTableValueVaidation:boolean;
 }
 
 const initialState: MasterDataState = {
@@ -343,6 +345,8 @@ const initialState: MasterDataState = {
   printingDataSave: false,
   laminationDataSave: false,
   printingDetails: "",
+  printingTableValueVaidation:false,
+  laminationTableValueVaidation:false,
   laminationFormErrors: {
     zone1_temp: "",
     zone2_temp: "",
@@ -882,6 +886,12 @@ const masterDataSlice = createSlice({
     setRememberMe: (state, action: PayloadAction<boolean>) => {
       state.rememberMe = action.payload;
     },
+    setLaminationTableValueVaidation:(state,action:PayloadAction<boolean>)=>{
+    state.laminationTableValueVaidation = action.payload
+    },
+    setPrintingTableValueVaidation:(state,action:PayloadAction<boolean>)=>{
+      state.printingTableValueVaidation = action.payload
+      },
     clearMasterDetaisData: (state) => {
       state.saveFormData = {
         job_master_id:0,
@@ -1358,5 +1368,7 @@ export const {
   setPrintingSave,
   setLaminationSave,
   setIsSearchTriggered,
+  setLaminationTableValueVaidation,
+  setPrintingTableValueVaidation
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

@@ -36,6 +36,7 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationFormErrors,
     laminationDataTouched,
     laminatingDetails,
+    laminationTableValueVaidation
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -294,7 +295,6 @@ const Lamination: React.FC<LaminationProps> = ({
     const hasAnyError = errorValues.some((err) => err !== "");
     let isAnyFieldFilled = false; // For Save button
     let areAllFieldsFilled = true; // For Submit & Publish button
-    let hasInvalidRatio = false;
 
     const bondingMaterials = formData?.bondingMaterials || [];
     let allValid = false;
@@ -342,15 +342,6 @@ const Lamination: React.FC<LaminationProps> = ({
               ? field.value
               : field;
 
-          if (field.ratio) {
-            const ratioValue = value.ratio;
-
-            if (isNaN(Number(ratioValue))) {
-              hasInvalidRatio = true;
-            } else {
-              hasInvalidRatio = false;
-            }
-          }
 
           if (typeof value === "object" && value !== null) {
             for (const innerKey in value) {
@@ -401,9 +392,9 @@ const Lamination: React.FC<LaminationProps> = ({
     }
 
     const shouldEnableSave =
-      isAnyFieldFilled && !hasAnyError && !hasInvalidRatio;
+      isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
     const shouldEnableSubmitAndPublish =
-      !areAllFieldsFilled && !hasAnyError && !hasInvalidRatio && !allValid;
+      !areAllFieldsFilled && !hasAnyError && !laminationTableValueVaidation && !allValid;
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
       setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish)
