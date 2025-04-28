@@ -293,6 +293,8 @@ interface MasterDataState {
   dyeCuttingErrors: DyeCuttingFormErrors;
   selectedTab: number;
   openSider: boolean;
+  printingTab:boolean;
+  laminationTab:boolean;
   updatePopup: boolean;
   submitPopupConfirm: boolean;
   submitPopup: boolean;
@@ -341,6 +343,8 @@ const initialState: MasterDataState = {
   dyeCuttingDetails: "",
   laminatingDetails: "",
   searchButton: false,
+  printingTab:false,
+  laminationTab:false,
   masterDataDetailsSave: false,
   printingDataSave: false,
   laminationDataSave: false,
@@ -792,6 +796,12 @@ const masterDataSlice = createSlice({
     },
     setUploadPopup: (state, action: PayloadAction<boolean>) => {
       state.updatePopup = action.payload;
+    },
+    setPrintingTab: (state, action: PayloadAction<boolean>) => {
+      state.printingTab = action.payload;
+    },
+    setLaminationTab: (state, action: PayloadAction<boolean>) => {
+      state.laminationTab = action.payload;
     },
     setSubmitPopupConfirm: (state, action: PayloadAction<boolean>) => {
       state.submitPopupConfirm = action.payload;
@@ -1369,6 +1379,8 @@ export const {
   setLaminationSave,
   setIsSearchTriggered,
   setLaminationTableValueVaidation,
-  setPrintingTableValueVaidation
+  setPrintingTableValueVaidation,
+  setPrintingTab,
+  setLaminationTab
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

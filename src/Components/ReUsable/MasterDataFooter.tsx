@@ -49,6 +49,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     laminationDataSave,
     submitTrue,
     saveFormData,
+    laminationTab,
+    printingTab
   } = useSelector((store: RootState) => store.masterData);
   const skipLamination = saveFormData.label_type === "Thin Wall";
   const buttonText = [
@@ -71,7 +73,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   };
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
-
   const handleSubmitPopupConfirmOpen = () => {
     if (!submitTrue) {
       createMasterData(requestPayload)
@@ -97,9 +98,10 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         })
         .catch(() => toast.error("Error Fetching Data"));
     }
-
+if(submitTrue){
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(true));
+}
   };
 
   const handleSubmitPopupConfirmClose = () => {
@@ -128,14 +130,19 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
-  const isSubmitDisabled = () => {
-    return (
-      submitAndPublishButtonMasterData ||
-      submitAndPublishButtonDyeCutting ||
-      submitAndPublishButtonPrinting ||
-      (!skipLamination && submitAndPublishButtonLamination)
-);
-  };
+    const isSubmitDisabled = () => {
+      if (printingTab && laminationTab) {
+        return (
+          submitAndPublishButtonMasterData ||
+          submitAndPublishButtonDyeCutting ||
+          submitAndPublishButtonPrinting ||
+          (!skipLamination && submitAndPublishButtonLamination)
+        );
+      }
+      
+      return true;
+    };
+    
 
   return (
     <Box

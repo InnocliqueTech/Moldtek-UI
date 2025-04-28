@@ -18,6 +18,8 @@ import {
   setLaminationFormData,
   DyeCuttingFormData,
   setRequestPayload,
+  setPrintingTab,
+  setLaminationTab,
 } from "../../store/slices/masterDataSlice";
 import {
   setDyeCuttingSettings,
@@ -182,9 +184,16 @@ const CreateMasterData: React.FC = () => {
       ...requestPayload,
       masterDataDetails: finalMasterDataDetails,
       masterDataPrinting: finalPrintingData,
-      masterDataLamination: finalLaminationData,
+      masterDataLamination: {
+        ...finalLaminationData, 
+        laminationSubstrate: {
+          ...finalLaminationData.laminationSubstrate,
+          dyne_level: Number(finalLaminationData.laminationSubstrate.dyne_level)
+        }
+      },
       masterDataDyeCutting: finalDyeCuttingData,
     };
+    
 
     dispatch(setRequestPayload(updatedPayload));
   };
@@ -210,6 +219,12 @@ const CreateMasterData: React.FC = () => {
   }, [saveFormData.label_type, selectedTab, dispatch]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    if(newValue===1){
+      dispatch(setPrintingTab(true))
+    }
+    else if(newValue===2){
+      dispatch(setLaminationTab(true))
+    }
     dispatch(setSelectedTab(newValue));
   };
 

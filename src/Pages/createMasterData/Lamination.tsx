@@ -281,7 +281,7 @@ const Lamination: React.FC<LaminationProps> = ({
           field === "thickness" && errorMessage === ""
             ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
             : numericFields.has(field)
-            ? Number(newValue) // Save numeric fields as numbers
+            ? newValue// Save numeric fields as numbers
             : finalValue, // Otherwise, save the string value
       },
     };
@@ -289,7 +289,6 @@ const Lamination: React.FC<LaminationProps> = ({
     setFormData(updatedFormData);
     dispatch(setLaminationFormData(updatedFinalFormData));
   };
-
   useEffect(() => {
     const errorValues = Object.values(errors);
     const hasAnyError = errorValues.some((err) => err !== "");
