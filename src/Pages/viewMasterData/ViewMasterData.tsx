@@ -20,7 +20,7 @@ import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect } from "react";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
-import { useParams } from "react-router-dom";
+
 
 const tabs = [
   "Master Data - Printing",

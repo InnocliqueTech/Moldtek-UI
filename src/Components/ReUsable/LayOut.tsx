@@ -372,6 +372,8 @@ const formattedDate = today
   }
   const onClosePopup = () => setMasterDataCreatePopup(false);
 
+const hideSideBar = location.pathname.includes('/versionDetails')
+
   return (
     <Box
       sx={{
@@ -382,7 +384,10 @@ const formattedDate = today
       }}
     >
       {/* Sidebar */}
+      {!hideSideBar && (
       <Sidebar open={sidebarOpen} toggleMobileSidebar={toggleSidebar} />
+    )}
+  
 
       {/* Main Content */}
       <Box
