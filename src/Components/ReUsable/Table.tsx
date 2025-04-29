@@ -33,6 +33,9 @@ import {
   Button,
   SxProps,
   Theme,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -95,6 +98,7 @@ interface TableProps<T> {
   totalLength?: number;
   pageRange?: boolean;
   pageNumber?: number;
+  handleRowsPerPageChange?: (event: SelectChangeEvent<string>) => void;
 }
 
 function ReusableTable<T extends Record<string, any>>({
@@ -119,10 +123,11 @@ function ReusableTable<T extends Record<string, any>>({
   totalLength = 0,
   pageRange = false,
   pageNumber = 0,
+  handleRowsPerPageChange
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
-  const [page, setPage] = useState<number>(pageRange ? pageNumber : 0);
+  // const [page, setPage] = useState<number>(pageRange ? pageNumber : 0);
   const [search, setSearch] = useState<string>("");
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600px
@@ -278,11 +283,11 @@ function ReusableTable<T extends Record<string, any>>({
     return filteredData.every((row) => isSelected(row)); // Check if all rows are selected in the entire filtered data
   };
 
-  useEffect(() => {
-    if (!pageRange) {
-      setPage(0);
-    }
-  }, [pageRange]);
+  // useEffect(() => {
+  //   if (!pageRange) {
+  //     setPage(0);
+  //   }
+  // }, [pageRange]);
 
   const handleClearSelection = () => {
     setSelected([]);
@@ -324,17 +329,17 @@ function ReusableTable<T extends Record<string, any>>({
       setLoading(false);
     }
   };
-  const storageKey = `${id}-page`;
-  useEffect(() => {
-    const savedPage = localStorage.getItem(storageKey);
-    if (savedPage !== null) {
-      setPage(Number(savedPage));
-    }
-  }, []);
+  // const storageKey = `${id}-page`;
+  // useEffect(() => {
+  //   const savedPage = localStorage.getItem(storageKey);
+  //   if (savedPage !== null) {
+  //     setPage(Number(savedPage));
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem(storageKey, page.toString());
-  }, [page]);
+  // useEffect(() => {
+  //   localStorage.setItem(storageKey, page.toString());
+  // }, [page]);
 
   const [downloadSummary, setDownloadSummary] = useState<null | {
     total: number;
@@ -468,7 +473,7 @@ function ReusableTable<T extends Record<string, any>>({
     >
       <>
         {loaderDownload ? (
-          <Loader />
+          <Loader text="Please wait, the downloading of your files takes some time." />
         ) : (
           <>
             <Toolbar
@@ -635,7 +640,7 @@ function ReusableTable<T extends Record<string, any>>({
                             selected.length <
                               Math.min(
                                 rowsPerPage,
-                                filteredData.length - page * rowsPerPage
+                                filteredData.length - pageNumber * rowsPerPage
                               )
                           }
                         />
@@ -759,8 +764,8 @@ function ReusableTable<T extends Record<string, any>>({
                     (pageRange
                       ? filteredData
                       : filteredData.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
+                          pageNumber * rowsPerPage,
+                          pageNumber * rowsPerPage + rowsPerPage
                         )
                     ).map((row, index) => {
                       const isItemSelected = isSelected(row);
@@ -904,13 +909,44 @@ function ReusableTable<T extends Record<string, any>>({
                 sx={{ color: "#2F2F2F", fontWeight: 500, fontSize: "14px" }}
               >
                 {pageRange
-                  ? `Page ${page + 1} of ${Math.ceil(
+                  ? `Page ${pageNumber + 1} of ${Math.ceil(
                       totalLength / rowsPerPage
                     )}`
-                  : `Page ${page + 1} of ${Math.ceil(
+                  : `Page ${pageNumber + 1} of ${Math.ceil(
                       filteredData.length / rowsPerPage
                     )}`}
               </Typography>
+              <Box display={"flex"} flexDirection={"row"}>
+        <Typography sx={{marginRight:'4px',marginTop:'6px'}}>Rows per page:</Typography>
+        <Select
+          value={rowsPerPage.toString()}
+          onChange={handleRowsPerPageChange}
+          label="Rows per page"
+          variant="standard"
+          sx={{
+            height: "32px",
+            fontSize: "14px",
+            marginTop:'4px',
+            borderBottom: "none",
+            "&:before": { borderBottom: "none" },
+            "&:after": { borderBottom: "none" },
+            "&:hover:not(.Mui-disabled):before": {
+              borderBottom: "none !important",
+            },
+            "& .MuiSelect-select": {
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+          }}
+        >
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={25}>25</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+          <MenuItem value={100}>100</MenuItem>
+        </Select>
               <Stack spacing={2}>
                 <Pagination
                   count={
@@ -918,14 +954,13 @@ function ReusableTable<T extends Record<string, any>>({
                       ? Math.ceil(totalLength / rowsPerPage)
                       : Math.ceil(filteredData.length / rowsPerPage)
                   }
-                  page={page + 1}
+                  page={pageNumber + 1}
                   onChange={
-                    pageRange
-                      ? (_, newPage) => {
+                   (_, newPage) => {
                           onPageChange?.(newPage - 1);
-                          setPage(newPage - 1);
+                          // setPage(newPage - 1);
                         }
-                      : (_, newPage) => setPage(newPage - 1)
+                  
                   }
                   shape="rounded"
                   variant="outlined"
@@ -936,8 +971,8 @@ function ReusableTable<T extends Record<string, any>>({
                   renderItem={(item) => {
                     if (pageRange) {
                       const hasNextPage =
-                        (page + 1) * rowsPerPage < totalLength;
-                      const hasPrevPage = page > 0;
+                        (pageNumber + 1) * rowsPerPage < totalLength;
+                      const hasPrevPage = pageNumber > 0;
 
                       const disabled =
                         (item.type === "previous" && !hasPrevPage) ||
@@ -998,6 +1033,7 @@ function ReusableTable<T extends Record<string, any>>({
                   }}
                 />
               </Stack>
+              </Box>
             </Box>
             {showSelectionBar && (
               <Fade in={showSelectionBar}>

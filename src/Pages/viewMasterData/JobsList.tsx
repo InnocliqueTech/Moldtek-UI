@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, SelectChangeEvent, Skeleton, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
@@ -9,6 +9,7 @@ import {
   setJobsListData,
 } from "../../store/slices/viewMasterDataSlice";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
+import { jobsList } from "./data";
 
 
 const JobsList: React.FC = () => {
@@ -19,7 +20,18 @@ const JobsList: React.FC = () => {
     selectedUEN =  UEN;
  }
   type StatusType = "Inprogress" | "On hold" | "Inactive" | "Completed"|"Active";
+  const rowsPerPageStorageKey = "jobsDataRowsPerPage"
+  const [rowsPerPage, setRowsPerPage] = useState(()=>{
+    const savedPage = localStorage.getItem(rowsPerPageStorageKey);
+    return savedPage !==null ? Number(savedPage):10;
+  }); 
 
+   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+    setPage(0);
+      setRowsPerPage(parseInt(event.target.value, 10));
+      localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+    };
+    
   const colorMap: Record<StatusType, string> = {
     "Inprogress": "#FAECD8",
     "On hold": "#F7DDDA",
@@ -151,7 +163,15 @@ const JobsList: React.FC = () => {
     // },
   ];
 
-
+  const storageKey = "jobListDataPage";
+  const [page, setPage] = useState(() => {
+    const savedPage = localStorage.getItem(storageKey);
+    return savedPage !== null ? Number(savedPage) : 0;
+  });
+    useEffect(() => {
+      localStorage.setItem(storageKey, page.toString());
+      localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+    }, [page,rowsPerPage]);
 
 
   const dispatch = useDispatch<AppDispatch>();
@@ -183,6 +203,16 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
       return value ? value : "N/A";
     };
 
+    const handlePageChange = (newPage: number) => {
+      setPage(newPage);
+      localStorage.setItem(storageKey, newPage.toString());
+    };
+    const maxCharsLabel= 20;
+      const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
+      const displayTextLabel = isLongLabel
+        ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
+        : viewMasterDataDetails?.label_type;
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
@@ -203,7 +233,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
   <Grid container spacing={2} pt={1}>
     <Grid size={{xs:12,md:4}}>
       <Typography variant="body2" color="text.secondary" fontWeight={500}>
-        Unit Effectivity Number
+        Unit Effective Nmber
       </Typography>
       <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
         {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
@@ -238,9 +268,22 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
 
         <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 500 }} color="#656565">Type Of Label</Typography>
-          <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
-            {renderValue(viewMasterDataDetails?.label_type)}
-          </Typography>
+                       <Tooltip
+                         title={isLongLabel ? viewMasterDataDetails?.label_type : ""}
+                         placement="top"
+                         arrow
+                       >
+                         <Typography
+                           variant="body1"
+                           sx={{
+                             mt: 0.5,
+                             wordBreak: "break-word",
+                             whiteSpace: "pre-line",
+                           }}
+                         >
+                           {renderValue(displayTextLabel)}
+                         </Typography>
+                       </Tooltip>
         </Box>
       </Box>
     </Grid>
@@ -292,6 +335,10 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
               searchSize={true}
               isLoading={isLoading}
               id={"jobListData"}
+              handleRowsPerPageChange={handleRowsPerPageChange}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              pageNumber={page}
             />
           </Box>
         </Box>

@@ -23,8 +23,8 @@ import {
   setSelectedTab,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import { useDispatch} from "react-redux";
-import { AppDispatch} from "../../store";
+import { useDispatch, useSelector} from "react-redux";
+import { AppDispatch, RootState} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 import { setOpenSliderDaily,setIsEditing } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
@@ -38,6 +38,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
+  const {isMasterDetaisData,isPrintingData,isLaminationData} = useSelector((state:RootState)=>state.masterData)
   const UEN = localStorage.getItem("selectedUEN");
    let selectedUEN :any;
    if(UEN){
@@ -197,12 +198,18 @@ const clearRequestPayoad ={
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());
     dispatch(clearDyeCuttingFormErrors());
+    if(isLaminationData){
     dispatch(clearLaminatingFormData());
     dispatch(clearLaminationFormErrors());
+    }
+    if(isPrintingData){
     dispatch(clearPrintingFormData());
     dispatch(clearPrintingFormErrors());
+    }
+    if(isMasterDetaisData){
     dispatch(clearMasterDetaisData());
     dispatch(clearMasterDataFormErrors());
+    }
     navigate("/createMasterData");
   };
   
@@ -372,6 +379,8 @@ const formattedDate = today
   }
   const onClosePopup = () => setMasterDataCreatePopup(false);
 
+const hideSideBar = location.pathname.includes('/versionDetails')
+
   return (
     <Box
       sx={{
@@ -382,7 +391,10 @@ const formattedDate = today
       }}
     >
       {/* Sidebar */}
+      {!hideSideBar && (
       <Sidebar open={sidebarOpen} toggleMobileSidebar={toggleSidebar} />
+    )}
+  
 
       {/* Main Content */}
       <Box

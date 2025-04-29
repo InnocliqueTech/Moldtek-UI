@@ -26,10 +26,10 @@ const machineFields = [
   },
   { id: "cylinder_teeth", label: "Cylinder Teeth" },
   { id: "tension", label: "Tension" },
-  { id: "unwinder", label: "Unwinder" },
-  { id: "infeed", label: "Infeed" },
-  { id: "outfeed", label: "Outfeed" },
-  { id: "rewinder", label: "Rewinder" },
+  { id: "unwinder", label: "Unwinder",options:["1","2"] },
+  { id: "infeed", label: "Infeed",options:["1","2"] },
+  { id: "outfeed", label: "Outfeed" ,options:["1","2"]},
+  { id: "rewinder", label: "Rewinder",options:["1","2"] },
   { id: "static_charge", label: "Static Charge" },
   { id: "format_correct", label: "Format Correct" },
 ];
@@ -60,7 +60,7 @@ const Printing: React.FC<PrintingProps> = ({
   setTableData,
   setFormValues,
 }) => {
-  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails } = useSelector(
+  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation,saveButtonPrintingData,savePrintingData } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -86,16 +86,12 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
     { id: "mixing_on_gec", label: "Mixing On GEC", edit: true },
     { id: "mptl_code", label: "MPTL Code", edit: true },
-    { id: "mounting_tape", label: "Mounting Tape", isDropdown: true, options: ["Soft", "Medium","Hard"] },
+    { id: "mounting_tape", label: "Mounting Tape", editSelect: true, options: ["Soft", "Medium","Hard"] },
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({
     cylinder_teeth: "",
     tension: "",
-    unwinder: "",
-    infeed: "",
-    outfeed: "",
-    rewinder: "",
     static_charge: "",
     format_correct: "",
     dyne_level: "",
@@ -332,7 +328,10 @@ const Printing: React.FC<PrintingProps> = ({
     if( printingFormErrors){
       setErrors(printingFormErrors)
     }
-  }, [printingSaveFormData,printingFormErrors,id]);
+    if(!id && saveButtonPrintingData && savePrintingData ){
+      setFormValues(savePrintingData)
+    }
+  }, [printingSaveFormData,printingFormErrors,id,savePrintingData,saveButtonPrintingData]);
 
   useEffect(() => {
     if (id&&!printingDataTouched) {
@@ -416,9 +415,9 @@ const Printing: React.FC<PrintingProps> = ({
     // 2️⃣ Check if any field inside errors has any value (deep check)
     const hasErrors =
     Object.values(errors).some(error => error) ;
-  console.log(errors,"ERRORS")
+
     // 3️⃣ Set button state
-    if (isInvalid && hasErrors) {
+    if (isInvalid && hasErrors && printingTableValueVaidation) {
       dispatch(setSubmitAndPublishButtonPrinting(true));
     } else {
       dispatch(setSubmitAndPublishButtonPrinting(false));  
@@ -444,16 +443,16 @@ const Printing: React.FC<PrintingProps> = ({
       "width",
       "thickness",
       "density",
-      "color_pantone", 
-      "lpcm", 
-      "lf_value", 
-      "ink_supplier", 
-      "volume", 
-      "uv_led", 
-      "uv_led_intensity", 
-      "mixing_on_gec", 
-      "mptl_code", 
-      "mounting_tape"
+      "color_pantone",
+      "lpcm",
+      "lf_value",
+      "ink_supplier",
+      "volume",
+      "uv_led",
+      "uv_led_intensity",
+      "mixing_on_gec",
+      "mptl_code",
+      "mounting_tape",
     ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
@@ -461,34 +460,42 @@ const Printing: React.FC<PrintingProps> = ({
     )[];
   
     const isAnyFieldFilled = importantFields.some((field) => {
-      // Check in printingDetails
       if (field in formValues.printingDetails) {
         const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
-        return value !== "" && value !== null && value !== undefined;
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
       }
   
-      // Check in printingSubstrateSettings
       if (field in formValues.printingSubstrateSettings) {
         const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
-        return value !== "" && value !== null && value !== undefined;
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
       }
   
-      // Check in stationWiseMetrics array
-      return formValues.stationWiseMetrics.some(
-        (station) =>
-          field in station &&
-          station[field as keyof typeof station] !== "" &&
-          station[field as keyof typeof station] !== null &&
-          station[field as keyof typeof station] !== undefined
-      );
+      const stationResult = formValues.stationWiseMetrics.some((station) => {
+        if (field in station) {
+          const value = station[field as keyof typeof station];
+
+          if (typeof value === "string") return value.trim() !== "";
+          return value !== null && value !== undefined;
+        }
+        return false;
+      });
+  
+      return stationResult;
     });
   
     const hasErrors = Object.values(errors).some((error) => error);
   
-    const isSaveEnabled = isAnyFieldFilled || hasErrors;
-    console.log(isSaveEnabled,isAnyFieldFilled,hasErrors,"HASERRORS1")
-    dispatch(setPrintingSave(!isSaveEnabled));
+    const isSaveEnabled = !(isAnyFieldFilled || hasErrors )|| printingTableValueVaidation;
+    
+    dispatch(setPrintingSave(isSaveEnabled));
+    
   }, [formValues, errors, dispatch]);
+  
+  
 
   
   

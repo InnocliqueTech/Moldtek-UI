@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Box, Grid, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Grid, SelectChangeEvent, Tooltip, Typography } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
@@ -23,7 +23,11 @@ const MasterData: React.FC = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const rowsPerPage = 10;
+    const rowsPerPageStorageKey = "masterDataRowsPerPage"
+    const [rowsPerPage, setRowsPerPage] = useState(()=>{
+      const savedPage = localStorage.getItem(rowsPerPageStorageKey);
+      return savedPage !==null ? Number(savedPage):10;
+    }); 
   const stats = [
     { title: "Total Jobs", value: data?.data.totalJobs },
     { title: "Lamination Jobs", value: data?.data.laminationJobs },
@@ -31,18 +35,24 @@ const MasterData: React.FC = () => {
     { title: "Total Customers", value: data?.data.totalCustomers },
   ];
 
+
+  const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+  };
+  
   const columns = [
     {
       id: "unit_effectivity_number",
-      label: "Unit Effectivity Number",
+      label: "Unit Effective Nmber",
       align: false,
       format: (value: string, row: any) => (
         <UENCell
           value={value}
           onClick={() => {
-            // Store both UEN and version_no in localStorage
             localStorage.setItem("selectedUEN", value);
-            localStorage.setItem("selectedVersionNo", row.version_no); // Store version number
+            localStorage.setItem("selectedVersionNo", row.version_no);
             dispatch(setSelectedTab(0));
             navigate(`/viewMasterData/${value}`);
           }}
@@ -148,7 +158,7 @@ const MasterData: React.FC = () => {
     if (!openSider) {
       masterFilters({ ...filtersPayload, page: page, size: rowsPerPage });
     }
-  }, [page, openSider,filtersPayload]);
+  }, [page, openSider,filtersPayload,rowsPerPage]);
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,
@@ -160,7 +170,8 @@ const MasterData: React.FC = () => {
   
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
-  }, [page]);
+    localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
+  }, [page,rowsPerPage]);
   
 
   if (isError || companiesError) {
@@ -249,6 +260,7 @@ const MasterData: React.FC = () => {
               : 0
           }
           pageRange={true}
+          handleRowsPerPageChange={handleRowsPerPageChange}
         />
       </Box>
     </Box>

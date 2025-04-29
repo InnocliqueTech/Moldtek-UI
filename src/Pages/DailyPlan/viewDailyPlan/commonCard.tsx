@@ -46,7 +46,7 @@ const CommenCard: React.FC<Props> = ({
   useEffect(() => {
     dispatch(setUpdateCommonCard(editValues));
   }, [editValues]);
-  
+
   useEffect(() => {
     setEditValues({
       shift: dailyPlan?.shift || "",
@@ -92,7 +92,7 @@ const CommenCard: React.FC<Props> = ({
                 color="text.secondary"
                 fontWeight={500}
               >
-                Effectivity Unit Number
+                Unit Effective Nmber{" "}
               </Typography>
               <Typography variant="body1" mt={0.5}>
                 {renderValue(dailyPlan?.unitEffectivityNumber || "N/A")}

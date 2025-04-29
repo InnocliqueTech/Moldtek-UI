@@ -23,6 +23,7 @@ import {
   setMasterDataFormErros,
   setPrintingDetails,
   setSaveFormData,
+  setSaveMasterDataDetailsData,
   setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
 import { MasterFormData } from "./../../store/slices/masterDataSlice";
@@ -118,7 +119,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   }, [id]);
 
-  const { saveFormData, masterDataFormErrors, masterDataDataTouched } =
+  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData } =
     useSelector((state: RootState) => state.masterData);
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -188,10 +189,10 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       } else {
         finalValue =
           trimmed === ""
-            ? "" // empty input stays empty
+            ? ""
             : trimmed.includes('%')
             ? `${parseFloat(numericValue)}%`
-            : Number(numericValue); // only convert to number if not empty
+            : Number(numericValue); 
       }
     } else if (characterFields.includes(field)) {
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
@@ -221,6 +222,9 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
     dispatch(setMasterDataFormErros(updatedErrors));
+    if(!id){
+      dispatch(setSaveMasterDataDetailsData(updatedFormData));
+    }
   };
   
 
@@ -245,13 +249,16 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   };
 
   useEffect(() => {
-    if (!id && saveFormData) {
+    if (!id && saveFormData && !saveButtonMasterData) {
       setFormData(saveFormData);
     }
     if (masterDataFormErrors) {
       setErrors(masterDataFormErrors);
     }
-  }, [saveFormData, masterDataFormErrors, id]);
+    if(!id && saveButtonMasterData && saveMasterDataDetailsData ){
+      setFormData(saveMasterDataDetailsData)
+    }
+  }, [saveFormData, masterDataFormErrors, id,saveButtonMasterData,saveMasterDataDetailsData]);
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {
@@ -342,7 +349,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
-              label="Unit Effectivity Number"
+              label="Unit Effective Nmber"
               value={formData.unit_effectivity_number}
               onChange={(e) =>
                 handleChange("unit_effectivity_number", e.target.value)

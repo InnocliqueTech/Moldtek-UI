@@ -2,12 +2,16 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import Logo from "./assets/Images/Logo.svg"
 
-const Loader: React.FC = () => {
+interface LoaderProps {
+  text?: string; 
+}
+
+const Loader: React.FC<LoaderProps> = ({ text }) => {
     return (
     <Box className="loader-container">
     <img src={Logo} alt="Logo" className="logo" />
     <Typography variant="h6" fontWeight={500} className="loader-text">
-      Loading<span className="dot-flash" />
+     {text?text:"Loading"} <span className="dot-flash" />
     </Typography>
 
     <style>
