@@ -36,7 +36,9 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationFormErrors,
     laminationDataTouched,
     laminatingDetails,
-    laminationTableValueVaidation
+    laminationTableValueVaidation,
+    saveButtonLaminatingData,
+    saveLaminatingData
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -413,10 +415,13 @@ const Lamination: React.FC<LaminationProps> = ({
         setTableData(laminaionFormData?.bondingMaterials);
       }
     }
+    if(!id && saveButtonLaminatingData && saveLaminatingData ){
+      setFormData(saveLaminatingData)
+    }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
     }
-  }, [laminaionFormData, laminationFormErrors, id]);
+  }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData]);
 
   useEffect(() => {
     if (id && !laminationDataTouched) {

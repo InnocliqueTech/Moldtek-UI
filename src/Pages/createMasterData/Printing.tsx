@@ -60,7 +60,7 @@ const Printing: React.FC<PrintingProps> = ({
   setTableData,
   setFormValues,
 }) => {
-  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation } = useSelector(
+  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation,saveButtonPrintingData,savePrintingData } = useSelector(
     (state: RootState) => state.masterData
   );
   const {
@@ -328,7 +328,10 @@ const Printing: React.FC<PrintingProps> = ({
     if( printingFormErrors){
       setErrors(printingFormErrors)
     }
-  }, [printingSaveFormData,printingFormErrors,id]);
+    if(!id && saveButtonPrintingData && savePrintingData ){
+      setFormValues(savePrintingData)
+    }
+  }, [printingSaveFormData,printingFormErrors,id,savePrintingData,saveButtonPrintingData]);
 
   useEffect(() => {
     if (id&&!printingDataTouched) {

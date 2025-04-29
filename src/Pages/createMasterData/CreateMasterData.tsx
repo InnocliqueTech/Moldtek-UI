@@ -23,6 +23,7 @@ import {
   setIsMasterDetailsData,
   setIsPrintingData,
   setIsLaminatingData,
+  setSaveButtonMasterData,
 } from "../../store/slices/masterDataSlice";
 import {
   setDyeCuttingSettings,
@@ -57,6 +58,12 @@ const CreateMasterData: React.FC = () => {
     printingDataTouched,
     dyeCuttingDataTouched,
     masterDataDataTouched,
+    saveMasterDataDetailsData,
+    saveButtonMasterData,
+    saveButtonPrintingData,
+    saveButtonLaminatingData,
+    saveLaminatingData,
+    savePrintingData,
   } = useSelector((state: RootState) => state.masterData);
 
   const [formData, setFormData] = useState<MasterFormData>({
@@ -183,14 +190,17 @@ const CreateMasterData: React.FC = () => {
   const handleSaveMasterData = () => {
     dispatch(setSaveFormData(formData));
     dispatch(setIsMasterDetailsDataSave(true));
-    if(id){
+    if (id) {
       dispatch(setIsMasterDetailsData(true));
-    }
-    else{
+      dispatch(setSaveButtonMasterData(true));
+    } else {
       dispatch(setIsMasterDetailsData(false));
+      dispatch(setSaveButtonMasterData(false));
     }
-    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
+    toast.success(
+      id
+        ? "Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently."
+        : "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
 
@@ -198,14 +208,15 @@ const CreateMasterData: React.FC = () => {
     const finalSaveData = { ...formValues, stationWiseMetrics: tableData };
     dispatch(setSavePrintingFormData(finalSaveData));
     dispatch(setIsPrintingDataSave(true));
-    if(id){
+    if (id) {
       dispatch(setIsPrintingData(true));
-    }
-    else{
+    } else {
       dispatch(setIsPrintingData(false));
     }
-    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
+    toast.success(
+      id
+        ? "Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently."
+        : "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
 
@@ -216,14 +227,15 @@ const CreateMasterData: React.FC = () => {
     };
     dispatch(setLaminationFormData(finalSaveData));
     dispatch(setIsLaminatingDataSave(true));
-    if(id){
+    if (id) {
       dispatch(setIsLaminatingData(true));
-    }
-    else{
+    } else {
       dispatch(setIsLaminatingData(false));
     }
-    toast.success(id ?"Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently.":
-      "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
+    toast.success(
+      id
+        ? "Your data has been temporarily saved. Please click 'Update And Pubish' at the end to save permanently."
+        : "Your data has been temporarily saved. Please click 'Submit And Pubish' at the end to save permanently."
     );
   };
 
@@ -231,14 +243,20 @@ const CreateMasterData: React.FC = () => {
     const finalMasterDataDetails =
       data?.data.masterDataDetails && !masterDataDataTouched
         ? data?.data.masterDataDetails
+        : !id && saveButtonMasterData
+        ? saveMasterDataDetailsData
         : saveFormData;
     const finalPrintingData =
       data?.data.masterDataPrinting && !printingDataTouched
         ? data?.data.masterDataPrinting
+        : !id && savePrintingData
+        ? saveButtonPrintingData
         : printingSaveFormData;
     const finalLaminationData =
       data?.data.masterDataLamination && !laminationDataTouched
         ? data?.data.masterDataLamination
+        : !id && saveLaminatingData
+        ? saveLaminatingData
         : laminaionFormData;
     const finalDyeCuttingData =
       data?.data.masterDataDyeCutting && !dyeCuttingDataTouched
@@ -304,24 +322,40 @@ const CreateMasterData: React.FC = () => {
         ...finalLaminationData,
         laminationConditions: {
           ...finalLaminationData.laminationConditions,
-          zone1_temp: Number( finalLaminationData.laminationConditions.zone1_temp),
-          zone2_temp: Number( finalLaminationData.laminationConditions.zone2_temp),
-          nip_pressure_bar: Number( finalLaminationData.laminationConditions.nip_pressure_bar),
-          speed: Number( finalLaminationData.laminationConditions.speed),
-          lami_set_tension: Number( finalLaminationData.laminationConditions.lami_set_tension),
-          rewinder_tension: Number( finalLaminationData.laminationConditions.rewinder_tension),
-          printed_film_tension: Number( finalLaminationData.laminationConditions.printed_film_tension),
-          laminate_film_tension: Number( finalLaminationData.laminationConditions.laminate_film_tension),
-          adhesive_gsm: Number( finalLaminationData.laminationConditions.adhesive_gsm),
+          zone1_temp: Number(
+            finalLaminationData.laminationConditions.zone1_temp
+          ),
+          zone2_temp: Number(
+            finalLaminationData.laminationConditions.zone2_temp
+          ),
+          nip_pressure_bar: Number(
+            finalLaminationData.laminationConditions.nip_pressure_bar
+          ),
+          speed: Number(finalLaminationData.laminationConditions.speed),
+          lami_set_tension: Number(
+            finalLaminationData.laminationConditions.lami_set_tension
+          ),
+          rewinder_tension: Number(
+            finalLaminationData.laminationConditions.rewinder_tension
+          ),
+          printed_film_tension: Number(
+            finalLaminationData.laminationConditions.printed_film_tension
+          ),
+          laminate_film_tension: Number(
+            finalLaminationData.laminationConditions.laminate_film_tension
+          ),
+          adhesive_gsm: Number(
+            finalLaminationData.laminationConditions.adhesive_gsm
+          ),
         },
         laminationSubstrate: {
           ...finalLaminationData.laminationSubstrate,
           dyne_level: Number(
             finalLaminationData.laminationSubstrate.dyne_level
           ),
-          thickness:Number(finalLaminationData.laminationSubstrate.thickness),
-          width:Number(finalLaminationData.laminationSubstrate.width),
-          density:Number(finalLaminationData.laminationSubstrate.density),
+          thickness: Number(finalLaminationData.laminationSubstrate.thickness),
+          width: Number(finalLaminationData.laminationSubstrate.width),
+          density: Number(finalLaminationData.laminationSubstrate.density),
         },
       };
     }
