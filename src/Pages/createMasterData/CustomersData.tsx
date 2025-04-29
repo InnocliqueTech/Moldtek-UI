@@ -113,7 +113,7 @@ const CustomerSelect = () => {
 
         {customersData.length > 6 && (
           <IconButton onClick={handleOpen}>
-            <Avatar sx={{ bgcolor: 'gray', width: 36, height: 36, fontSize: 14 }}>
+            <Avatar sx={{ bgcolor: 'gray', width: 36, height: 36, fontSize: 14,mt:-1 }}>
               <MoreHorizIcon />
             </Avatar>
           </IconButton>
