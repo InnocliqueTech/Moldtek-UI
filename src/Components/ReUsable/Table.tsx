@@ -414,7 +414,7 @@ function ReusableTable<T extends Record<string, any>>({
         .map((r) => r.indentNumber);
       const failed = results
         .filter((r) => r.status === "error")
-        .map((r) => `${r.indentNumber}: ${r.message}`);
+        .map((r) => `${r.message}`);
 
       if (failed.length > 0) {
         setDownloadSummary({

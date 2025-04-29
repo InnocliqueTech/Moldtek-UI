@@ -50,14 +50,16 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     submitTrue,
     saveFormData,
     laminationTab,
-    printingTab
+    printingTab,
   } = useSelector((store: RootState) => store.masterData);
   const skipLamination =
-  saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
+    saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
 
   const buttonText = [
     "Next: Master Data - Printing",
-    skipLamination ?"Next: Master Data - Dye Cutting" : "Next: Master Data - Lamination",
+    skipLamination
+      ? "Next: Master Data - Dye Cutting"
+      : "Next: Master Data - Lamination",
     "Next: Master Data - Dye Cutting",
   ];
 
@@ -79,7 +81,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     if (!submitTrue) {
       createMasterData(requestPayload)
         .then((response) => {
-          if (response?.data.statusCode === 200) {
+          console.log(response, "RESPONSEOFTHEDATA");
+          if (response && response.data && response.data.statusCode === 200) {
             dispatch(setSubmitAndPublishPopup(false));
             dispatch(setSubmitPopupConfirm(true));
 
@@ -95,15 +98,36 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             dispatch(clearMasterDetaisData());
             dispatch(clearMasterDataFormErrors());
           } else {
-            toast.error("Error Fetching Data");
+            const errorData = (response as any)?.error?.data;
+            const message = errorData?.message
+              ? errorData?.message
+              : response.data.message
+              ? response.data.message
+              : "Error saving master data";
+
+            toast.error(message);
           }
         })
-        .catch(() => toast.error("Error Fetching Data"));
+        .catch((err) => {
+          console.error("Error in createMasterData:", err);
+
+          let message = "An unexpected error occurred while saving master data";
+
+          if ("data" in err && err.data) {
+            // Check if the error has a "data" field
+            message = err.data?.message || message;
+          } else if ("message" in err && err.message) {
+            // If the error is a SerializedError type, use its message
+            message = err.message;
+          }
+
+          toast.error(message);
+        });
     }
-if(submitTrue){
-    dispatch(setSubmitAndPublishPopup(false));
-    dispatch(setSubmitPopupConfirm(true));
-}
+    if (submitTrue) {
+      dispatch(setSubmitAndPublishPopup(false));
+      dispatch(setSubmitPopupConfirm(true));
+    }
   };
 
   const handleSubmitPopupConfirmClose = () => {
@@ -132,20 +156,18 @@ if(submitTrue){
     ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
-    const isSubmitDisabled = () => {
-      if (printingTab && laminationTab) {
-        return (
-          submitAndPublishButtonMasterData ||
-          submitAndPublishButtonDyeCutting ||
-          submitAndPublishButtonPrinting ||
-          (!skipLamination && submitAndPublishButtonLamination)
-        );
-      }
-      else{
+  const isSubmitDisabled = () => {
+    if (printingTab && laminationTab) {
+      return (
+        submitAndPublishButtonMasterData ||
+        submitAndPublishButtonDyeCutting ||
+        submitAndPublishButtonPrinting ||
+        (!skipLamination && submitAndPublishButtonLamination)
+      );
+    } else {
       return true;
-      }
-    };
-    
+    }
+  };
 
   return (
     <Box
@@ -165,7 +187,7 @@ if(submitTrue){
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-           disabled={isSubmitDisabled()}
+          //  disabled={isSubmitDisabled()}
         />
       ) : (
         <>
