@@ -43,7 +43,8 @@ interface DataTableProps<T> {
   tableTitle?: boolean;
   firstRow?: boolean;
   id?: string;
-  rowEditable?: (row: T) => boolean;
+  rowEditable?: (row: T, columnId: string) => boolean;
+  // rowEditable?: (row: T) => boolean;
 }
 
 const DataTable = <T extends Record<string, any>>({
@@ -78,8 +79,8 @@ const DataTable = <T extends Record<string, any>>({
     if (id==='lamination' && laminationFileds.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
-
-     return /^[A-Za-z\s]*$/.test(value);
+    return true;
+    //  return /^[A-Za-z\s]*$/.test(value);
   };
 
   const handleChange = <K extends keyof T>(
@@ -455,7 +456,7 @@ const DataTable = <T extends Record<string, any>>({
                             )
                           }
                         />
-                      ) : (column.edit && (!rowEditable || rowEditable(row))) ? (                  
+                      ) :  (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (                  
                         <Box sx={{ position: "relative", width: "80%" }}>
                         <TextField
                           variant="standard"

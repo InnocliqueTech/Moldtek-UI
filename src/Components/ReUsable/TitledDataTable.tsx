@@ -28,7 +28,8 @@ interface TitledDataTableProps<T> {
   showTableSection?:boolean;
   isEditing?: boolean;
   setInfoItems?: (items: InfoItem[]) => void;
-  rowEditable?: (row: T) => boolean;
+  // rowEditable?: (row: T) => boolean;
+  rowEditable?: (row: T, columnId: string) => boolean;
 }
 
 const TitledDataTable = <T extends Record<string, any>>({

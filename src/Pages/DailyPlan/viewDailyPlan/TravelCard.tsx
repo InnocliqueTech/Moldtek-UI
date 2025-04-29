@@ -129,10 +129,22 @@ const TravelCard: React.FC<TravelCardProps> = ({
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Printing Machine"
-          columns={printingColumns.map((col) => ({
-            ...col,
-            edit: isEditing && col.edit,
-          }))}
+          columns={printingColumns.map((col) => {
+            if (col.id === "actuals") {
+              return { ...col, edit: isEditing }; // actual column always editable
+            }
+          
+            if (col.id === "target") {
+              return {
+                ...col,
+                edit: isEditing,
+                rowEditable: (row:any) => row.category === "Inspection Wastage",
+              }; // target column editable only for Inspection Wastage
+            }
+          
+            return { ...col, edit: false };
+          })}
+          
           data={editableData.printingMachine.categories}
           setData={(newData: any[]) =>
             handleDataUpdate("printingMachine", newData)
@@ -144,17 +156,33 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }
           isEditing={isEditing}
           showInfoSection
-         rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
+          rowEditable={(row, columnId) => {
+            if (columnId === "actuals") return true;
+            if (columnId === "target") return row.category === "Inspection Wastage";
+            return false;
+          }}
         />
       </Box>
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Lamination Machine"
-          columns={laminationColumns.map((col) => ({
-            ...col,
-            edit: isEditing && col.edit, // only apply editable for 'target'
-          }))}
+          columns={laminationColumns.map((col) => {
+            if (col.id === "actuals") {
+              return { ...col, edit: isEditing };
+            }
+          
+            if (col.id === "target") {
+              return {
+                ...col,
+                edit: isEditing,
+                rowEditable: (row:any) => row.category === "Inspection Wastage",
+              };
+            }
+          
+            return { ...col, edit: false };
+          })}
+          
           data={editableData.laminationMachine.categories}
           setData={(newData: any[]) =>
             handleDataUpdate("laminationMachine", newData)
@@ -166,6 +194,11 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }
           isEditing={isEditing}
           showInfoSection
+          rowEditable={(row, columnId) => {
+            if (columnId === "actuals") return true;
+            if (columnId === "target") return row.category === "Inspection Wastage";
+            return false;
+          }}
           //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
