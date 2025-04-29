@@ -387,8 +387,13 @@ const CreateMasterData: React.FC = () => {
         width: Number(finalPrintingData.printingSubstrateSettings.width),
         density: Number(finalPrintingData.printingSubstrateSettings.density),
       },
+      stationWiseMetrics:{
+        ...finalPrintingData.stationWiseMetrics,
+        volume:Number(finalPrintingData.stationWiseMetrics.volume),
+        uv_led_intensity:Number(finalPrintingData.stationWiseMetrics.uv_led_intensity)
+      }
     };
-const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:String(finalMasterDataDetails.unit_effectivity_number)}
+const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number)}
     const updatedPayload = {
       ...requestPayload,
        masterDataDetails,
