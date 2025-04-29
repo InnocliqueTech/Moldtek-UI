@@ -164,7 +164,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
             <>
               <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
                 <ReusableInput
-                  label="Unit Effective Nmber"
+                  label="Unit Effective Number"
                   placeholder="Enter Customer Name"
                   value={"UEN-20240801"}
                   onChange={() => {}}

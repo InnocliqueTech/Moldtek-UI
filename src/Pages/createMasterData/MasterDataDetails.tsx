@@ -349,7 +349,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
-              label="Unit Effective Nmber"
+              label="Unit Effective Number"
               value={formData.unit_effectivity_number}
               onChange={(e) =>
                 handleChange("unit_effectivity_number", e.target.value)

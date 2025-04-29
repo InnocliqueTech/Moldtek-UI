@@ -92,7 +92,7 @@ const CommenCard: React.FC<Props> = ({
                 color="text.secondary"
                 fontWeight={500}
               >
-                Unit Effective Nmber{" "}
+                Unit Effective Number{" "}
               </Typography>
               <Typography variant="body1" mt={0.5}>
                 {renderValue(dailyPlan?.unitEffectivityNumber || "N/A")}

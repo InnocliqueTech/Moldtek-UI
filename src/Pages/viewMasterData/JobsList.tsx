@@ -233,7 +233,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
   <Grid container spacing={2} pt={1}>
     <Grid size={{xs:12,md:4}}>
       <Typography variant="body2" color="text.secondary" fontWeight={500}>
-        Unit Effective Nmber
+        Unit Effective Number
       </Typography>
       <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
         {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
