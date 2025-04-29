@@ -115,6 +115,7 @@ export interface ViewMasterDataDetails {
   ups: number;
   tracks: number;
   label_type: string;
+  segment:string;
   labels_per_meter:number;
 }
 
@@ -216,6 +217,7 @@ const initialState: ViewMasterDataState = {
     job_master_id: 0,
     unit_effectivity_number: "--",
     customer_name: "--",
+    segment:"--",
     customer_logo: "--",
     item_code: "--",
     brand_description: "--",

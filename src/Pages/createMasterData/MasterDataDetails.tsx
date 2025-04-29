@@ -138,6 +138,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     structure: "",
     brand_description: "",
     label_type: "",
+    segment:"",
   });
 
   const numericFields: (keyof MasterFormData)[] = [
@@ -274,6 +275,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       repeat_length: data?.repeat_length || 0,
       ups: data?.ups || 0,
       tracks: data?.tracks || 0,
+      segment:data?.segment || "",
     };
   }
 
@@ -335,7 +337,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   };
   const row1HasError =
   !!errors.unit_effectivity_number || !!errors.customer_name;
-  const row2HasError = !!errors.item_code 
+  const row2HasError = !!errors.item_code  || !!errors.brand_description
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -578,10 +580,20 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                   handleChange("brand_description", e.target.value)
                 }
                 placeholder="Enter your text..."
-                rows={4}
+                rows={0}
                 error={!!errors.brand_description}
                 helperText={errors.brand_description}
                 required
+              />
+            </Box>
+            <Box sx={{ mt: (row2HasError&&!!errors.brand_description) ? 0 : 2 }}>
+              <DropdownComponent
+                label="Segment"
+                options={["LB","PB","QP","TW"]}
+                value={formData.segment}
+                onChange={(e) => handleChange("segment", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
               />
             </Box>
           </Grid>

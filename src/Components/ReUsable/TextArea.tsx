@@ -62,7 +62,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: "8px",
-            padding: "10px",
+            padding: "6px",
             "& input": {
               color: "black",
             },

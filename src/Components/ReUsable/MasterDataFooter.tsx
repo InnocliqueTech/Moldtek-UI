@@ -52,7 +52,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     laminationTab,
     printingTab
   } = useSelector((store: RootState) => store.masterData);
-  const skipLamination = saveFormData.label_type === "Thin Wall";
+  const skipLamination =
+  saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
+
   const buttonText = [
     "Next: Master Data - Printing",
     skipLamination ?"Next: Master Data - Dye Cutting" : "Next: Master Data - Lamination",

@@ -190,6 +190,25 @@ const OrderCard: React.FC = () => {
                 </Typography>
               </Tooltip>
             </Box>
+            <Box sx={{mt:2}}>
+            <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                Segment
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {renderValue(viewMasterDataDetails?.segment)}
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </Box>

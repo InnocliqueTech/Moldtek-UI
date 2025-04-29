@@ -79,6 +79,7 @@ const CreateMasterData: React.FC = () => {
     repeat_length: "",
     ups: "",
     tracks: "",
+    segment: "",
   });
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
@@ -240,7 +241,6 @@ const CreateMasterData: React.FC = () => {
   };
 
   const handleSaveDyeCutting = () => {
-    
     const finalMasterDataDetails =
       data?.data.masterDataDetails && !masterDataDataTouched
         ? data?.data.masterDataDetails
@@ -263,7 +263,10 @@ const CreateMasterData: React.FC = () => {
       data?.data.masterDataDyeCutting && !dyeCuttingDataTouched
         ? data?.data.masterDataDyeCutting
         : dyeCuttingFormData;
-    const skipLamination = finalMasterDataDetails.label_type === "Thin Wall";
+    const skipLamination =
+      finalMasterDataDetails.label_type === "Thin Wall" ||
+      finalMasterDataDetails.segment === "TW";
+
     let masterDataLamination;
     if (skipLamination) {
       masterDataLamination = {
@@ -364,7 +367,9 @@ const CreateMasterData: React.FC = () => {
       ...finalPrintingData,
       printingDetails: {
         ...finalPrintingData.printingDetails,
-        cylinder_teeth: Number(finalPrintingData.printingDetails.cylinder_teeth),
+        cylinder_teeth: Number(
+          finalPrintingData.printingDetails.cylinder_teeth
+        ),
         tension: Number(finalPrintingData.printingDetails.tension),
         infeed: Number(finalPrintingData.printingDetails.infeed),
         outfeed: Number(finalPrintingData.printingDetails.outfeed),
@@ -373,13 +378,17 @@ const CreateMasterData: React.FC = () => {
       },
       printingSubstrateSettings: {
         ...finalPrintingData.printingSubstrateSettings,
-        dyne_level: Number(finalPrintingData.printingSubstrateSettings.dyne_level),
-        thickness: Number(finalPrintingData.printingSubstrateSettings.thickness),
+        dyne_level: Number(
+          finalPrintingData.printingSubstrateSettings.dyne_level
+        ),
+        thickness: Number(
+          finalPrintingData.printingSubstrateSettings.thickness
+        ),
         width: Number(finalPrintingData.printingSubstrateSettings.width),
         density: Number(finalPrintingData.printingSubstrateSettings.density),
       },
     };
-    
+
     console.log(finalMasterDataDetails, "FINALMASTERDETAILS");
     const updatedPayload = {
       ...requestPayload,
@@ -403,16 +412,21 @@ const CreateMasterData: React.FC = () => {
   const tabs = [
     "Master Data Details",
     "Master Data - Printing",
-    ...(saveFormData.label_type !== "Thin Wall"
-      ? ["Master Data - Lamination"]
-      : []),
+    ...(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW"
+      ? []
+      : ["Master Data - Lamination"]),
     "Master Data - Dye Cutting",
   ];
+
   useEffect(() => {
-    if (saveFormData.label_type === "Thin Wall" && selectedTab === 2) {
+    if (
+      (saveFormData.label_type === "Thin Wall" ||
+        saveFormData.segment === "TW") &&
+      selectedTab === 2
+    ) {
       dispatch(setSelectedTab(3));
     }
-  }, [saveFormData.label_type, selectedTab, dispatch]);
+  }, [saveFormData.label_type, saveFormData.segment, selectedTab, dispatch]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     if (newValue === 1) {
@@ -550,14 +564,19 @@ const CreateMasterData: React.FC = () => {
                 setFormValues={setFormValues}
               />
             )}
-            {selectedTab === 2 && saveFormData.label_type !== "Thin Wall" && (
-              <Lamination
-                tableData={LaminationTableData}
-                setTableData={setLaminationTableData}
-                formData={lamiFormData}
-                setFormData={setLamiFormData}
-              />
-            )}
+            {selectedTab === 2 &&
+              !(
+                saveFormData.label_type === "Thin Wall" ||
+                saveFormData.segment === "TW"
+              ) && (
+                <Lamination
+                  tableData={LaminationTableData}
+                  setTableData={setLaminationTableData}
+                  formData={lamiFormData}
+                  setFormData={setLamiFormData}
+                />
+              )}
+
             {selectedTab === 3 && (
               <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />
             )}

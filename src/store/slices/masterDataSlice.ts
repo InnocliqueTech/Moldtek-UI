@@ -31,6 +31,7 @@ export interface RequestPayload {
     item_code: string;
     brand_description: string;
     jar_cap: string;
+    segment:string;
     structure: string;
     label_type: string;
     repeat_length: number;
@@ -155,6 +156,7 @@ export interface MasterFormData {
   customer_name: string;
   customer_logo: string;
   jar_cap: string;
+  segment:string;
   item_code: string;
   structure: string;
   brand_description: string;
@@ -181,6 +183,7 @@ export interface MasterDataFormErrors {
   customer_name: string;
   customer_logo: string;
   jar_cap: string;
+  segment:string;
   item_code: string;
   structure: string;
   brand_description: string;
@@ -635,6 +638,7 @@ const initialState: MasterDataState = {
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
+    segment:"",
     item_code: "",
     structure: "",
     brand_description: "",
@@ -673,6 +677,7 @@ const initialState: MasterDataState = {
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
+    segment:"",
     item_code: "",
     structure: "",
     brand_description: "",
@@ -687,6 +692,7 @@ const initialState: MasterDataState = {
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
+    segment:"",
     item_code: "",
     structure: "",
     brand_description: "",
@@ -938,6 +944,7 @@ const initialState: MasterDataState = {
       item_code: "",
       brand_description: "",
       jar_cap: "",
+      segment:"",
       structure: "",
       label_type: "",
       repeat_length: 0,
@@ -1206,6 +1213,7 @@ const masterDataSlice = createSlice({
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
+        segment:"",
         item_code: "",
         structure: "",
         brand_description: "",
@@ -1222,6 +1230,7 @@ const masterDataSlice = createSlice({
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
+        segment:"",
         item_code: "",
         structure: "",
         brand_description: "",
@@ -1292,6 +1301,7 @@ const masterDataSlice = createSlice({
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
+        segment:"",
         item_code: "",
         structure: "",
         brand_description: "",
