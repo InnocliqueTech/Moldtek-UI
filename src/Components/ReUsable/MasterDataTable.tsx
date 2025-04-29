@@ -23,6 +23,8 @@ import {
   PrintingTableRow,
   setInvalidFieldsTable,
   setLaminationFormData,
+  setLaminationTableValueVaidation,
+  setPrintingTableValueVaidation,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
 
@@ -64,8 +66,18 @@ const DataTable = <T extends Record<string, any>>({
     [key: string]: boolean;
   }>({});
   const validateInput = (columnId: string, value: string): boolean => {
-    const numericFields = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec","uv_led_intensity","volume"];
-    const laminationFileds =  ["code","brand"]
+    const numericFields = [
+      "lf_value",
+      "lpcm",
+      "station_no",
+      "ratio",
+      "mptl_code",
+      "mixing_on_gec",
+      "uv_led_intensity",
+      "volume",
+    ];
+    const laminationFileds = ["code", "brand"];
+    const printingField = ["color_pantone"];
 
     if (value === "") return true;
 
@@ -79,8 +91,10 @@ const DataTable = <T extends Record<string, any>>({
     if (id==='lamination' && laminationFileds.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
+    if (id === "printing" && printingField.includes(columnId)) {
+      return /^[A-Za-z\s]*$/.test(value);
+    }
     return true;
-    //  return /^[A-Za-z\s]*$/.test(value);
   };
 
   const handleChange = <K extends keyof T>(
@@ -89,7 +103,16 @@ const DataTable = <T extends Record<string, any>>({
     value: T[K] | string
   ) => {
     const updated = [...data];
-    const numberKeys = ["lf_value", "lpcm", "station_no", "ratio","mptl_code","mixing_on_gec","uv_led_intensity","volume"];
+    const numberKeys = [
+      "lf_value",
+      "lpcm",
+      "station_no",
+      "ratio",
+      "mptl_code",
+      "mixing_on_gec",
+      "uv_led_intensity",
+      "volume",
+    ];
     let updatedValue: any = value;
 
     if (numberKeys.includes(columnId as string)) {
@@ -130,7 +153,17 @@ const DataTable = <T extends Record<string, any>>({
   }, [invalidFieldsTable]);
 
   const hardenerCodeOptions = ["KN75"];
-
+  const laminationFields = ["ratio", "code", "brand"];
+  const printingFields = [
+    "lf_value",
+    "lpcm",
+    "station_no",
+    "mptl_code",
+    "mixing_on_gec",
+    "uv_led_intensity",
+    "volume",
+    "color_pantone"
+  ];
 
   return (
     <>
@@ -187,31 +220,30 @@ const DataTable = <T extends Record<string, any>>({
           >
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
               {columns.map((column, index) => (
-             <TableCell
-             key={column.id}
-             align="center"
-             sx={{
-               fontWeight: 500,
-               border: "1px solid #ccc",
-               color: "#656565",
-               maxWidth: 180,
-               backgroundColor: "#F5F5F5",
-               borderRight:
-                 index === columns.length - 1 && !tableTitle
-                   ? "1px solid #ccc"
-                   : "none",
-               borderBottom: "none",
-               borderLeft: "1px solid #ccc",
-             }}
-           >
-             {column.label}
-             {column.required && (
-               <Box component="span" sx={{ color: "#D32F2F", ml: 0.5 }}>
-                 *
-               </Box>
-             )}
-           </TableCell>
-           
+                <TableCell
+                  key={column.id}
+                  align="center"
+                  sx={{
+                    fontWeight: 500,
+                    border: "1px solid #ccc",
+                    color: "#656565",
+                    maxWidth: 180,
+                    backgroundColor: "#F5F5F5",
+                    borderRight:
+                      index === columns.length - 1 && !tableTitle
+                        ? "1px solid #ccc"
+                        : "none",
+                    borderBottom: "none",
+                    borderLeft: "1px solid #ccc",
+                  }}
+                >
+                  {column.label}
+                  {column.required && (
+                    <Box component="span" sx={{ color: "#D32F2F", ml: 0.5 }}>
+                      *
+                    </Box>
+                  )}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -251,134 +283,171 @@ const DataTable = <T extends Record<string, any>>({
                           : "1px solid #ccc",
                       }}
                     >
-             {
-              (row?.type === 'Ethyl' && ["code", "brand","ratio"].includes(column.id))||row?.type === 'Adhesive' && ["ratio"].includes(column.id)||row?.type === 'Hardener' && [ "ratio"].includes(column.id) ? 
+                      {(row?.type === "Ethyl" &&
+                        ["code", "brand", "ratio"].includes(column.id)) ||
+                      (row?.type === "Adhesive" &&
+                        ["ratio"].includes(column.id)) ||
+                      (row?.type === "Hardener" &&
+                        ["ratio"].includes(column.id)) ? (
+                        <Box sx={{ position: "relative", width: "80%" }}>
+                          <TextField
+                            variant="standard"
+                            value={row[column.id]} // only the number
+                            onChange={(e) => {
+                              let inputValue = e.target.value;
+                              const isValid = validateInput(
+                                column.id,
+                                inputValue
+                              );
 
-              <Box sx={{ position: "relative", width: "80%" }}>
-              <TextField
-                variant="standard"
-                value={row[column.id]} // only the number
-                onChange={(e) => {
-                  let inputValue = e.target.value;
-                  const isValid = validateInput(column.id, inputValue);
-            
-                  const key = `${rowIndex}_${column.id}`;
-                  const updatedInvalidFileds = {
-                    ...invalidFields,
-                    [key]: !isValid,
-                  };
-                  setInvalidFields(updatedInvalidFileds);
-                  dispatch(setInvalidFieldsTable(updatedInvalidFileds));
-            
-                  handleChange(
-                    rowIndex,
-                    column.id as keyof T,
-                    inputValue as T[keyof T]
-                  );
-                }}
-                fullWidth
-                InputProps={{
-                  disableUnderline: true,
-                  sx: {
-                    fontSize: "14px",
-                    color: "#2F2F2F",
-                    height: "32px",
-                    padding: "0px",
-                    input: {
-                      textAlign: "left", // or center
-                      paddingRight: "30px", // reserve space for 'kg'
-                    },
-                  },
-                }}
-                inputProps={{
-                  inputMode: column.id === "ratio" ? "numeric" : "text",
-                }}
-              />
-            
-              {column.id === "ratio" && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    right: "8px",
-                    pointerEvents: "none",
-                    color: "#666",
-                    fontSize: "14px",
-                  }}
-                >
-                  kg
-                </Box>
-              )}
-            </Box>
-            
-              :
-            column.isDropdown  && row.type === 'Hardener' && column.id === 'code' ? (
-              <Select
-                value={row[column.id] || ""}
-                onChange={(e) =>
-                  handleChange(
-                    rowIndex,
-                    column.id as keyof T,
-                    e.target.value as T[keyof T]
-                  )
-                }
-                variant="standard"
-                fullWidth
-                renderValue={(selected) => (
-                  <Tooltip title={selected} arrow>
-                    <Box
-                      sx={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {selected}
-                    </Box>
-                  </Tooltip>
-                )}
-                sx={{
-                  height: "32px",
-                  fontSize: "14px",
-                  borderBottom: "none",
-                  "&:before": { borderBottom: "none" },
-                  "&:after": { borderBottom: "none" },
-                  "&:hover:not(.Mui-disabled):before": {
-                    borderBottom: "none !important",
-                  },
-                  "& .MuiSelect-select": {
-                    display: "flex",
-                    alignItems: "center",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  },
-                }}
-              >
-                {hardenerCodeOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    <Tooltip title={option} arrow>
-                      <ListItemText
-                        primary={option}
-                        sx={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          maxWidth: "180px",
-                          color: "#2F2F2F",
-                        }}
-                      />
-                    </Tooltip>
-                    {row[column.id] === option && (
-                      <IconButton sx={{ color: "#0073B7" }}>
-                        <Done />
-                      </IconButton>
-                    )}
-                  </MenuItem>
-                ))}
-              </Select>
-            ):column.isDropdown ? (
+                              const key = `${rowIndex}_${column.id}`;
+                              const updatedInvalidFileds = {
+                                ...invalidFields,
+                                [key]: !isValid,
+                              };
+                              setInvalidFields(updatedInvalidFileds);
+                              dispatch(
+                                setInvalidFieldsTable(updatedInvalidFileds)
+                              );
+                              const isLaminationField = laminationFields.some(
+                                (field) =>
+                                  column.id
+                                    .toLowerCase()
+                                    .includes(field.toLowerCase())
+                              );
+
+                              if (isLaminationField && !isValid) {
+                                dispatch(
+                                  setLaminationTableValueVaidation(true)
+                                );
+                              } else if (isLaminationField && isValid) {
+                                dispatch(
+                                  setLaminationTableValueVaidation(false)
+                                );
+                              }
+                              const isPrintingField = printingFields.some(
+                                (field) =>
+                                  column.id
+                                    .toLowerCase()
+                                    .includes(field.toLowerCase())
+                              );
+
+                              if (isPrintingField && !isValid) {
+                                dispatch(setPrintingTableValueVaidation(true));
+                              } else if (isPrintingField && isValid) {
+                                dispatch(setPrintingTableValueVaidation(false));
+                              }
+
+                              handleChange(
+                                rowIndex,
+                                column.id as keyof T,
+                                inputValue as T[keyof T]
+                              );
+                            }}
+                            fullWidth
+                            InputProps={{
+                              disableUnderline: true,
+                              sx: {
+                                fontSize: "14px",
+                                color: "#2F2F2F",
+                                height: "32px",
+                                padding: "0px",
+                                input: {
+                                  textAlign: "left", 
+                                  paddingRight: "30px", 
+                                },
+                              },
+                            }}
+                            inputProps={{
+                              inputMode:
+                                column.id === "ratio" ? "numeric" : "text",
+                            }}
+                          />
+
+                          {column.id === "ratio" && (
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                right: "8px",
+                                pointerEvents: "none",
+                                color: "#666",
+                                fontSize: "14px",
+                              }}
+                            >
+                              kg
+                            </Box>
+                          )}
+                        </Box>
+                      ) : column.isDropdown &&
+                        row.type === "Hardener" &&
+                        column.id === "code" ? (
+                        <Select
+                          value={row[column.id] || ""}
+                          onChange={(e) =>
+                            handleChange(
+                              rowIndex,
+                              column.id as keyof T,
+                              e.target.value as T[keyof T]
+                            )
+                          }
+                          variant="standard"
+                          fullWidth
+                          renderValue={(selected) => (
+                            <Tooltip title={selected} arrow>
+                              <Box
+                                sx={{
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {selected}
+                              </Box>
+                            </Tooltip>
+                          )}
+                          sx={{
+                            height: "32px",
+                            fontSize: "14px",
+                            borderBottom: "none",
+                            "&:before": { borderBottom: "none" },
+                            "&:after": { borderBottom: "none" },
+                            "&:hover:not(.Mui-disabled):before": {
+                              borderBottom: "none !important",
+                            },
+                            "& .MuiSelect-select": {
+                              display: "flex",
+                              alignItems: "center",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            },
+                          }}
+                        >
+                          {hardenerCodeOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Tooltip title={option} arrow>
+                                <ListItemText
+                                  primary={option}
+                                  sx={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    maxWidth: "180px",
+                                    color: "#2F2F2F",
+                                  }}
+                                />
+                              </Tooltip>
+                              {row[column.id] === option && (
+                                <IconButton sx={{ color: "#0073B7" }}>
+                                  <Done />
+                                </IconButton>
+                              )}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      ) : column.isDropdown ? (
                         <Select
                           value={row[column.id] || ""}
                           onChange={(e) =>
@@ -456,95 +525,109 @@ const DataTable = <T extends Record<string, any>>({
                             )
                           }
                         />
-                      ) :  (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (                  
-                        <Box sx={{ position: "relative", width: "80%" }}>
-                        <TextField
-                          variant="standard"
-                          value={row[column.id]} // only the number
-                          onChange={(e) => {
-                            let inputValue = e.target.value;
-                            const isValid = validateInput(column.id, inputValue);
-                      
-                            const key = `${rowIndex}_${column.id}`;
-                            const updatedInvalidFileds = {
-                              ...invalidFields,
-                              [key]: !isValid,
-                            };
-                            setInvalidFields(updatedInvalidFileds);
-                            dispatch(setInvalidFieldsTable(updatedInvalidFileds));
-                      
-                            handleChange(
-                              rowIndex,
-                              column.id as keyof T,
-                              inputValue as T[keyof T]
-                            );
-                          }}
-                          fullWidth
-                          InputProps={{
-                            disableUnderline: true,
-                            sx: {
+                      ) : (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
+                          <TextField
+                            variant="standard"
+                            value={row[column.id]} // only the number
+                            onChange={(e) => {
+                              let inputValue = e.target.value;
+                              const isValid = validateInput(
+                                column.id,
+                                inputValue
+                              );
+                              const isLaminationField = laminationFields.some(
+                                (field) =>
+                                  column.id
+                                    .toLowerCase()
+                                    .includes(field.toLowerCase())
+                              );
+
+                              if (isLaminationField && !isValid) {
+                                dispatch(
+                                  setLaminationTableValueVaidation(true)
+                                );
+                              } else if (isLaminationField && isValid) {
+                                dispatch(
+                                  setLaminationTableValueVaidation(false)
+                                );
+                              }
+                              const isPrintingField = printingFields.some(
+                                (field) =>
+                                  column.id
+                                    .toLowerCase()
+                                    .includes(field.toLowerCase())
+                              );
+
+                              if (isPrintingField && !isValid) {
+                                dispatch(setPrintingTableValueVaidation(true));
+                              } else if (isPrintingField && isValid) {
+                                dispatch(setPrintingTableValueVaidation(false));
+                              }
+
+                              const key = `${rowIndex}_${column.id}`;
+                              const updatedInvalidFileds = {
+                                ...invalidFields,
+                                [key]: !isValid,
+                              };
+                              setInvalidFields(updatedInvalidFileds);
+                              dispatch(
+                                setInvalidFieldsTable(updatedInvalidFileds)
+                              );
+
+                              handleChange(
+                                rowIndex,
+                                column.id as keyof T,
+                                inputValue as T[keyof T]
+                              );
+                            }}
+                            fullWidth
+                            InputProps={{
+                              disableUnderline: true,
+                              sx: {
+                                fontSize: "14px",
+                                color: "#2F2F2F",
+                                height: "32px",
+                                padding: "0px",
+                              },
+                            }}
+                          />
+                      ) : (
+                        <Tooltip
+                          title={String(row ? row[column?.id] : "")}
+                          arrow
+                        >
+                          <Box
+                            sx={{
+                              maxWidth: "100%",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
                               fontSize: "14px",
                               color: "#2F2F2F",
                               height: "32px",
-                              padding: "0px",
-                              input: {
-                                textAlign: "left", // or center
-                                paddingRight: "30px", // reserve space for 'kg'
-                              },
-                            },
-                          }}
-                          inputProps={{
-                            inputMode: column.id === "ratio" ? "numeric" : "text",
-                          }}
-                        />
-                      
-                        {column.id === "ratio" && (
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              right: "8px",
-                              pointerEvents: "none",
-                              color: "#666",
-                              fontSize: "14px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
-                            kg
+                            {row ? (
+                              <>
+                                {row[column?.id]}
+                                {(row.type === "Hardener" ||
+                                  row.type === "Adhesive") && (
+                                  <Box
+                                    component="span"
+                                    sx={{ color: "#D32F2F", ml: 0.3 }}
+                                  >
+                                    *
+                                  </Box>
+                                )}
+                              </>
+                            ) : (
+                              "N/A"
+                            )}
                           </Box>
-                        )}
-                      </Box>
-                      ) : (
-                        <Tooltip title={String(row ? row[column?.id] : "")} arrow>
-                        <Box
-                          sx={{
-                            maxWidth: "100%",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                            fontSize: "14px",
-                            color: "#2F2F2F",
-                            height: "32px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {row ? (
-                            <>
-                              {row[column?.id]}
-                              {(row.type === "Hardener" || row.type === "Adhesive") && (
-                                <Box component="span" sx={{ color: "#D32F2F", ml: 0.3 }}>
-                                  *
-                                </Box>
-                              )}
-                            </>
-                          ) : (
-                            "N/A"
-                          )}
-                        </Box>
-                      </Tooltip>
-                      
+                        </Tooltip>
                       )}
                     </TableCell>
                   ))}
