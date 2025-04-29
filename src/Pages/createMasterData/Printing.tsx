@@ -72,15 +72,15 @@ const Printing: React.FC<PrintingProps> = ({
 
   const columns = [
     { id: "station_no", label: "Station No" },
-    { id: "color_pantone", label: "Color Pantone Code", edit: true,required:true },
-    { id: "lf_value", label: "LF Value", edit: true,required:true },
+    { id: "color_pantone", label: "Color Pantone Code", edit: true },
+    { id: "lf_value", label: "LF Value", edit: true },
     {
       id: "ink_supplier",
       label: "Ink Supplier",
       editSelect: true,
       options: ["Siegwerk", "Flint Group"],
     },
-    { id: "lpcm", label: "LPCM", edit: true,required:true },
+    { id: "lpcm", label: "LPCM", edit: true },
     { id: "volume", label: "Volume", edit: true },
     { id: "uv_led", label: "UV/LED", isDropdown: true, options: ["LED", "UV"] },
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
@@ -158,16 +158,16 @@ const Printing: React.FC<PrintingProps> = ({
     field: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    if(id){
-    dispatch(setPrintingDataTouched(true));
+    if (id) {
+      dispatch(setPrintingDataTouched(true));
     }
+  
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
   
-    // Fields that should be saved as numbers
     const isNumberField = [
       "thickness",
       "width",
@@ -184,7 +184,6 @@ const Printing: React.FC<PrintingProps> = ({
 
     ].includes(field);
   
-    // Machine and substrate field checks
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
   
@@ -204,7 +203,7 @@ const Printing: React.FC<PrintingProps> = ({
       else if (typeof newValue === 'string') {
         const regex = /^(\d+(\.\d+)?)(%)?$/;
         const match = newValue.match(regex);
-    
+  
         if (match) {
           // No conversion to decimal, just keep the value as-is
           finalValue = newValue; // Keep it as a string with or without percentage
@@ -240,16 +239,17 @@ const Printing: React.FC<PrintingProps> = ({
       }
     }
   
-    // Set the error message for the field
-    const updatedErros = {
-      ...errors,
-      [field]: errorMsg,
-    };
+    const updatedErrors = { ...errors };
+
+    if (field !== "printing_machine_name") {
+      updatedErrors[field] = errorMsg;
+    } else {
+      delete updatedErrors[field]; 
+    }
+    
+    setErrors(updatedErrors);
+    dispatch(setPrintngFormErros(updatedErrors));
   
-    setErrors(updatedErros);
-    dispatch(setPrintngFormErros(updatedErros));
-  
-    // Update form data with new value (whether number or string)
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
@@ -260,7 +260,6 @@ const Printing: React.FC<PrintingProps> = ({
         : formValues.printingSubstrateSettings,
     };
   
-    // Save the updated form data
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
@@ -355,74 +354,63 @@ const Printing: React.FC<PrintingProps> = ({
   ]);
 
 
-  const importantFields = [
-    "printing_machine_name",
-    "cylinder_teeth",
-    "tension",
-    "unwinder",
-    "rewinder",
-    "infeed",
-    "outfeed",
-    "substrate_type",
-    "dyne_level",
-    "width",
-    "thickness",
-    "density",
-    "color_pantone",
-    "lf_value",
-    "lpcm",
-  ];
+
   
   
   useEffect(() => {
-    let isInvalid = false;
-  
-    // 1️⃣ Loop through importantFields only for empty or missing values
-    for (const field of importantFields) {
-  
-      if (["static_charge", "format_correct", "cylinder_teeth"].includes(field)) {
-        const value = formValues.printingDetails[field as keyof typeof formValues.printingDetails];
-  
-        if (value === "" || value === null || value === undefined) {
-          isInvalid = true;
-          break;
-        }
-  
-      } else if (["substrate_type", "supplier"].includes(field)) {
-        const value = formValues.printingSubstrateSettings[field as keyof typeof formValues.printingSubstrateSettings];
-  
-        if (value === "" || value === null || value === undefined) {
-          isInvalid = true;
-          break;
-        }
-  
-      } 
-      else if (["color_pantone", "lpcm", "lf_value"].includes(field)) {
-        const hasEmpty = formValues.stationWiseMetrics.some((station: any) => {
-          const value = station?.[field];
-          return value === "" || value === null || value === undefined;
-        });
-  
-        if (hasEmpty) {
-          isInvalid = true;
-          break;
-        }
+    const importantFields = [
+      "printing_machine_name",
+      "cylinder_teeth",
+      "tension",
+      "unwinder",
+      "rewinder",
+      "infeed",
+      "outfeed",
+      "substrate_type",
+      "dyne_level",
+      "width",
+      "thickness",
+      "density"
+     ] as (
+      | keyof PrintingFormValues["printingDetails"]
+      | keyof PrintingFormValues["printingSubstrateSettings"]
+      | keyof PrintingFormValues["stationWiseMetrics"][number]
+    )[];
+    const isAllFieldFilled = importantFields.every((field) => {
+      if (field in formValues.printingDetails) {
+        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
       }
-
-    }
-    
   
-    // 2️⃣ Check if any field inside errors has any value (deep check)
-    const hasErrors =
-    Object.values(errors).some(error => error) ;
+      if (field in formValues.printingSubstrateSettings) {
+        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
 
-    // 3️⃣ Set button state
-    if (isInvalid && hasErrors && printingTableValueVaidation) {
-      dispatch(setSubmitAndPublishButtonPrinting(true));
-    } else {
-      dispatch(setSubmitAndPublishButtonPrinting(false));  
-    }
-  }, [formValues, errors]);
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
+      }
+  
+      const stationResult = formValues.stationWiseMetrics.some((station) => {
+        if (field in station) {
+          const value = station[field as keyof typeof station];
+
+          if (typeof value === "string") return value.trim() !== "";
+          return value !== null && value !== undefined;
+        }
+        return false;
+      });
+  
+      return stationResult;
+    });
+  
+    const hasErrors = Object.values(errors).some((error) => error);
+    const shouldDisableButton = !(isAllFieldFilled || hasErrors )|| printingTableValueVaidation;
+  console.log(shouldDisableButton,isAllFieldFilled,hasErrors,printingTableValueVaidation,errors,"PRINTINGTABLEVALIDATION1")
+    dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
+  }, [formValues, errors, printingTableValueVaidation]);
+  
+  
   
   
   

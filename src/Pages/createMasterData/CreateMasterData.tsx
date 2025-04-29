@@ -240,6 +240,7 @@ const CreateMasterData: React.FC = () => {
   };
 
   const handleSaveDyeCutting = () => {
+    
     const finalMasterDataDetails =
       data?.data.masterDataDetails && !masterDataDataTouched
         ? data?.data.masterDataDetails
@@ -249,13 +250,13 @@ const CreateMasterData: React.FC = () => {
     const finalPrintingData =
       data?.data.masterDataPrinting && !printingDataTouched
         ? data?.data.masterDataPrinting
-        : !id && savePrintingData
-        ? saveButtonPrintingData
+        : !id && saveButtonPrintingData
+        ? savePrintingData
         : printingSaveFormData;
     const finalLaminationData =
       data?.data.masterDataLamination && !laminationDataTouched
         ? data?.data.masterDataLamination
-        : !id && saveLaminatingData
+        : !id && saveButtonLaminatingData
         ? saveLaminatingData
         : laminaionFormData;
     const finalDyeCuttingData =
@@ -359,11 +360,31 @@ const CreateMasterData: React.FC = () => {
         },
       };
     }
+    const convertedMasterDataPrinting = {
+      ...finalPrintingData,
+      printingDetails: {
+        ...finalPrintingData.printingDetails,
+        cylinder_teeth: Number(finalPrintingData.printingDetails.cylinder_teeth),
+        tension: Number(finalPrintingData.printingDetails.tension),
+        infeed: Number(finalPrintingData.printingDetails.infeed),
+        outfeed: Number(finalPrintingData.printingDetails.outfeed),
+        rewinder: Number(finalPrintingData.printingDetails.rewinder),
+        unwinder: Number(finalPrintingData.printingDetails.unwinder),
+      },
+      printingSubstrateSettings: {
+        ...finalPrintingData.printingSubstrateSettings,
+        dyne_level: Number(finalPrintingData.printingSubstrateSettings.dyne_level),
+        thickness: Number(finalPrintingData.printingSubstrateSettings.thickness),
+        width: Number(finalPrintingData.printingSubstrateSettings.width),
+        density: Number(finalPrintingData.printingSubstrateSettings.density),
+      },
+    };
+    
     console.log(finalMasterDataDetails, "FINALMASTERDETAILS");
     const updatedPayload = {
       ...requestPayload,
       masterDataDetails: finalMasterDataDetails,
-      masterDataPrinting: finalPrintingData,
+      masterDataPrinting: convertedMasterDataPrinting,
       masterDataLamination,
       masterDataDyeCutting: finalDyeCuttingData,
     };
