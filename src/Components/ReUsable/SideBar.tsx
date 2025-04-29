@@ -23,7 +23,19 @@ import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
 import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
-import { clearDyeCuttingFormData, clearDyeCuttingFormErrors, clearLaminatingFormData, clearLaminationFormErrors, clearMasterDataFormErrors, clearMasterDetaisData, clearPrintingFormData, clearPrintingFormErrors } from "../../store/slices/masterDataSlice";
+import {
+  clearDyeCuttingFormData,
+  clearDyeCuttingFormErrors,
+  clearLaminatingFormData,
+  clearLaminationFormErrors,
+  clearMasterDataFormErrors,
+  clearMasterDetaisData,
+  clearPrintingFormData,
+  clearPrintingFormErrors,
+  clearSaveLaminatingFormData,
+  clearSaveMasterDetailsData,
+  clearSavePrintingFormData,
+} from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 
@@ -46,7 +58,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const currentText = dynamicTexts[0];
 
   const navigate = useNavigate();
-  const {isDyeCuttingDataSave,isMasterDetaisDataSave,isLaminationDataSave,isPrintingDataSave} = useSelector((state:RootState)=>state.masterData)
+  const {
+    isDyeCuttingDataSave,
+    isMasterDetaisDataSave,
+    isLaminationDataSave,
+    isPrintingDataSave,
+  } = useSelector((state: RootState) => state.masterData);
 
   // const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
   //   setDropdownAnchor(event.currentTarget);
@@ -139,47 +156,52 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     localStorage.removeItem("role");
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
-    localStorage.setItem("masterData-page",(0).toString())
-    localStorage.setItem("dailyPlan-page",(0).toString());
-    localStorage.setItem("dailyPlanDataPage",(0).toString())
-
-    if(!isDyeCuttingDataSave){
+    localStorage.setItem("masterData-page", (0).toString());
+    localStorage.setItem("dailyPlan-page", (0).toString());
+    localStorage.setItem("dailyPlanDataPage", (0).toString());
+    localStorage.setItem("dailyPlanDataRowsPerPage", (10).toString());
+    localStorage.setItem("jobsDataRowsPerPage", (10).toString());
+    localStorage.setItem("masterDataRowsPerPage", (10).toString());
+    dispatch(clearSaveLaminatingFormData());
+    dispatch(clearSaveMasterDetailsData());
+    dispatch(clearSavePrintingFormData());
+    if (!isDyeCuttingDataSave) {
       dispatch(clearDyeCuttingFormData());
-      dispatch(clearDyeCuttingFormErrors())
+      dispatch(clearDyeCuttingFormErrors());
     }
-    if(!isLaminationDataSave){
+    if (!isLaminationDataSave) {
       dispatch(clearLaminatingFormData());
       dispatch(clearLaminationFormErrors());
     }
-    if(!isPrintingDataSave){
+    if (!isPrintingDataSave) {
       dispatch(clearPrintingFormData());
-      dispatch(clearPrintingFormErrors())
+      dispatch(clearPrintingFormErrors());
     }
-    if(!isMasterDetaisDataSave){
+    if (!isMasterDetaisDataSave) {
       dispatch(clearMasterDetaisData());
-      dispatch(clearMasterDataFormErrors())
+      dispatch(clearMasterDataFormErrors());
     }
   };
   const dispatch = useDispatch<AppDispatch>();
 
-  const itemClick = ()=>{
-    if(!isDyeCuttingDataSave){
+  const itemClick = () => {
+    if (!isDyeCuttingDataSave) {
       dispatch(clearDyeCuttingFormData());
-      dispatch(clearDyeCuttingFormErrors())
+      dispatch(clearDyeCuttingFormErrors());
     }
-    if(!isLaminationDataSave){
+    if (!isLaminationDataSave) {
       dispatch(clearLaminatingFormData());
       dispatch(clearLaminationFormErrors());
     }
-    if(!isPrintingDataSave){
+    if (!isPrintingDataSave) {
       dispatch(clearPrintingFormData());
-      dispatch(clearPrintingFormErrors())
+      dispatch(clearPrintingFormErrors());
     }
-    if(!isMasterDetaisDataSave){
+    if (!isMasterDetaisDataSave) {
       dispatch(clearMasterDetaisData());
-      dispatch(clearMasterDataFormErrors())
+      dispatch(clearMasterDataFormErrors());
     }
-  } 
+  };
 
   return (
     <>
@@ -285,7 +307,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
-                   onClick={() => itemClick()}
+                  onClick={() => itemClick()}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || hoveredIndex === index
@@ -296,7 +318,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     primary={item.text}
                     primaryTypographyProps={{
                       fontSize: "14px",
-                      fontWeight: 400, 
+                      fontWeight: 400,
                     }}
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
@@ -349,7 +371,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     primary={item.text}
                     primaryTypographyProps={{
                       fontSize: "14px",
-                      fontWeight: 400, 
+                      fontWeight: 400,
                     }}
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
@@ -405,8 +427,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
           },
         }}
       >
-         <Box>
-         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
             <img src={Logo} alt="Logo" />
           </Box>
 
@@ -460,7 +482,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             ))}
           </Menu> */}
           </Box>
-        <Typography
+          <Typography
             variant="subtitle2"
             sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
           >
@@ -501,10 +523,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     primary={item.text}
                     primaryTypographyProps={{
                       fontSize: "14px",
-                      fontWeight: 400, 
+                      fontWeight: 400,
                     }}
                     sx={{
-                      fontSize:'16px',
+                      fontSize: "16px",
                       color: isSelected ? "#0073B7" : "#737373",
                       whiteSpace: "nowrap",
                     }}
@@ -555,7 +577,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     primary={item.text}
                     primaryTypographyProps={{
                       fontSize: "14px",
-                      fontWeight: 400, 
+                      fontWeight: 400,
                     }}
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
@@ -566,7 +588,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               );
             })}
           </List>
-          </Box>
+        </Box>
         <Box sx={{ borderTop: "1px solid #ECECEC" }}>
           <ListItem
             sx={{

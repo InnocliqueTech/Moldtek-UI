@@ -16,10 +16,15 @@ const OrderCard: React.FC = () => {
   ];
 
   const maxChars = 120;
+  const maxCharsLabel= 20;
   const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
   const displayText = isLong
     ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
     : viewMasterDataDetails?.brand_description;
+    const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
+    const displayTextLabel = isLongLabel
+      ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
+      : viewMasterDataDetails?.label_type;
   const renderValue = (value: string | undefined | null) => {
     return value ? value : "N/A";
   };
@@ -30,7 +35,7 @@ const OrderCard: React.FC = () => {
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Unit Effectivity Number
+              Unit Effective Nmber
             </Typography>
             <Typography
               variant="body1"
@@ -128,16 +133,22 @@ const OrderCard: React.FC = () => {
               >
                 Type Of Label
               </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
+              <Tooltip
+                title={isLongLabel ? viewMasterDataDetails?.label_type : ""}
+                placement="top"
+                arrow
               >
-                {renderValue(viewMasterDataDetails?.label_type)}
-              </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    mt: 0.5,
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {renderValue(displayTextLabel)}
+                </Typography>
+              </Tooltip>
             </Box>
           </Grid>
 

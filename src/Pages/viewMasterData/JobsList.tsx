@@ -207,6 +207,11 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
       setPage(newPage);
       localStorage.setItem(storageKey, newPage.toString());
     };
+    const maxCharsLabel= 20;
+      const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
+      const displayTextLabel = isLongLabel
+        ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
+        : viewMasterDataDetails?.label_type;
 
   return (
     <Box sx={{ p: 0 }}>
@@ -228,7 +233,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
   <Grid container spacing={2} pt={1}>
     <Grid size={{xs:12,md:4}}>
       <Typography variant="body2" color="text.secondary" fontWeight={500}>
-        Unit Effectivity Number
+        Unit Effective Nmber
       </Typography>
       <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
         {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
@@ -263,9 +268,22 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
 
         <Box display="flex" flexDirection="column" alignItems="flex-start" sx={{ mt: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 500 }} color="#656565">Type Of Label</Typography>
-          <Typography variant="body1" sx={{ mt: 0.5, wordBreak: "break-word", whiteSpace: "pre-line" }}>
-            {renderValue(viewMasterDataDetails?.label_type)}
-          </Typography>
+                       <Tooltip
+                         title={isLongLabel ? viewMasterDataDetails?.label_type : ""}
+                         placement="top"
+                         arrow
+                       >
+                         <Typography
+                           variant="body1"
+                           sx={{
+                             mt: 0.5,
+                             wordBreak: "break-word",
+                             whiteSpace: "pre-line",
+                           }}
+                         >
+                           {renderValue(displayTextLabel)}
+                         </Typography>
+                       </Tooltip>
         </Box>
       </Box>
     </Grid>
@@ -306,7 +324,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
           >
             <ReusableTable
               columns={columns}
-              data={jobsList.data?jobsList.data:[]}
+              data={jobListData?jobListData:[]}
               selectable={false}
               label={`${data?.totalRecords?data.totalRecords:0} Versions`}
               title="List of executed jobs"

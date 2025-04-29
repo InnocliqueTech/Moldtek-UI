@@ -45,7 +45,7 @@ const MasterData: React.FC = () => {
   const columns = [
     {
       id: "unit_effectivity_number",
-      label: "Unit Effectivity Number",
+      label: "Unit Effective Nmber",
       align: false,
       format: (value: string, row: any) => (
         <UENCell

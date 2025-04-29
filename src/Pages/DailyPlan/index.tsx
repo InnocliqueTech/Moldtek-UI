@@ -159,7 +159,7 @@ const dispatch = useDispatch()
     }} />, },
       {
         id: "unitEffectivityNumber",
-        label: "Effective Unit Number",
+        label: "Unit Effective Nmber",
         align: false,
       },
       {
