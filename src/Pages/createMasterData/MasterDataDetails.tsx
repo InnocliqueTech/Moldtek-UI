@@ -144,7 +144,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const numericFields: (keyof MasterFormData)[] = [
     "repeat_length",
     "ups",
-    "tracks",
     "unit_effectivity_number",
   ];
   

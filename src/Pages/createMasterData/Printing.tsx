@@ -169,26 +169,16 @@ const Printing: React.FC<PrintingProps> = ({
       : value.target.value;
   
     const isNumberField = [
-      "thickness",
       "width",
       "density",
-      "tension",
       "unwinder",
       "infeed",
       "outfeed",
-      "rewinder",
-      "static_charge",
-      "format_correct",
-      "cylinder_teeth",
       "dyne_level"
-
     ].includes(field);
   
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
-  
-    // Regex for validation
-    const alphaNumericRegex = /^[a-zA-Z0-9\s]+$/; // letters, numbers, spaces
     const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
   
     let errorMsg = "";
@@ -219,21 +209,23 @@ const Printing: React.FC<PrintingProps> = ({
     
     
      else if (field === "thickness") {
-      // Validate thickness field (assumed to be string with no special characters)
-      if (typeof newValue === "string") {
-        const trimmed = newValue.trim();
-        if (trimmed === "") {
-          errorMsg = "Thickness is required";
-        } else if (!alphaNumericRegex.test(trimmed)) {
-          errorMsg = "Thickness cannot contain special characters";
-        }
+      const trimmed = (newValue as string).trim();
+    
+      if (trimmed === "") {
+        errorMsg = "Thickness cannot be empty.";
+        finalValue = "";
+      } else if (!/^[a-zA-Z0-9.\- ]+$/.test(trimmed)) {
+        errorMsg = "Thickness must be alphanumeric.";
+      } else {
+        errorMsg = "";
+        finalValue = trimmed;
       }
     } else if (typeof newValue === "string") {
       // For other string-based fields
       const trimmed = newValue.trim();
       if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (!onlyLettersRegex.test(trimmed)) {
+      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge") {
         errorMsg =
           "Only alphabets are allowed — no numbers or special characters";
       }
@@ -242,6 +234,11 @@ const Printing: React.FC<PrintingProps> = ({
     const updatedErrors = { ...errors };
 
     if (field !== "printing_machine_name") {
+      updatedErrors[field] = errorMsg;
+    } else {
+      delete updatedErrors[field]; 
+    }
+    if (field !== "supplier") {
       updatedErrors[field] = errorMsg;
     } else {
       delete updatedErrors[field]; 
@@ -405,8 +402,8 @@ const Printing: React.FC<PrintingProps> = ({
     });
   
     const hasErrors = Object.values(errors).some((error) => error);
-    const shouldDisableButton = !(isAllFieldFilled || hasErrors )|| printingTableValueVaidation;
-  console.log(shouldDisableButton,isAllFieldFilled,hasErrors,printingTableValueVaidation,errors,"PRINTINGTABLEVALIDATION1")
+    const shouldDisableButton = !isAllFieldFilled || hasErrors || printingTableValueVaidation;
+  console.log(shouldDisableButton,errors,"PRINTINGTABLEVALIDATION1")
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
   }, [formValues, errors, printingTableValueVaidation]);
   
@@ -477,7 +474,7 @@ const Printing: React.FC<PrintingProps> = ({
   
     const hasErrors = Object.values(errors).some((error) => error);
   
-    const isSaveEnabled = !(isAnyFieldFilled || hasErrors )|| printingTableValueVaidation;
+    const isSaveEnabled = !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
     
     dispatch(setPrintingSave(isSaveEnabled));
     

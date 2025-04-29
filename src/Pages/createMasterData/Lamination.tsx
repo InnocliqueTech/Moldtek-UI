@@ -136,7 +136,6 @@ const Lamination: React.FC<LaminationProps> = ({
     "laminate_film_tension",
     "lami_set_tension",
     "rewinder_tension",
-    "dyne_level",
     "adhesive_gsm",
   ]);
 
@@ -166,25 +165,23 @@ const Lamination: React.FC<LaminationProps> = ({
     // Handle specific fields
     if (field === "thickness") {
       const trimmed = (newValue as string).trim();
-
+    
       if (trimmed === "") {
         errorMessage = "Thickness cannot be empty.";
-        finalValue = ""; // Clear the field (set to empty string)
-      } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
-        errorMessage = "Thickness must be a valid number.";
+        finalValue = "";
+      } else if (!/^[a-zA-Z0-9.\- ]+$/.test(trimmed)) {
+        errorMessage = "Thickness must be alphanumeric.";
       } else {
         errorMessage = "";
+        finalValue = trimmed;
       }
-
-      finalValue =
-        trimmed !== "" && errorMessage === "" ? Number(trimmed) : finalValue;
-    } else if (
+    }
+     else if (
       [
         "lami_set_tension",
         "rewinder_tension",
         "printed_film_tension",
         "laminate_film_tension",
-        "dyne_level",
         "adhesive_gsm",
       ].includes(field)
     ) {
@@ -198,21 +195,7 @@ const Lamination: React.FC<LaminationProps> = ({
         finalValue = Number(trimmed); // Save as number
         errorMessage = "";
       }
-    } else if (field === "viscosity_range") {
-      const trimmed = (newValue as string).trim();
-      const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
-
-      if (trimmed === "") {
-        errorMessage = "Viscosity Range cannot be empty.";
-        finalValue = ""; // Set to empty string if blank
-      } else if (!onlyLettersAndSpaces.test(trimmed)) {
-        errorMessage =
-          "Only letters and spaces are allowed in Viscosity Range.";
-      } else {
-        finalValue = trimmed;
-        errorMessage = "";
-      }
-    } else if (numericFields.has(field)) {
+    }  else if (numericFields.has(field)) {
       const originalValue = newValue; // Log the original value
       const trimmed = (newValue as string).trim();
       console.log("Original Value:", originalValue); // Log the value before trimming
@@ -240,19 +223,21 @@ const Lamination: React.FC<LaminationProps> = ({
           errorMessage = ""; // Clear the error if the input is valid
         }
       }
-    } else if (characterFields.has(field)) {
+    }
+    else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
-
+    
       if (trimmed === "") {
         errorMessage = "This field cannot be empty.";
-        finalValue = ""; // Clear the field (set to empty string)
+        finalValue = "";
       } else if (!onlyAlphanumericRegex.test(trimmed)) {
-        errorMessage = "Only letters, numbers, and spaces are allowed.";
+        errorMessage = "Only letters, numbers, spaces, dots, hyphens, and underscores are allowed.";
       } else {
-        finalValue = newValue; // Keep the string as entered
+        finalValue = newValue;
         errorMessage = "";
       }
     }
+    
 
     // Dispatch the errors to Redux
     const updatedErrors = {
@@ -267,10 +252,7 @@ const Lamination: React.FC<LaminationProps> = ({
       ...formData,
       [section]: {
         ...(formData as any)[section],
-        [field]:
-          field === "thickness" && errorMessage === ""
-            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
-            : numericFields.has(field)
+        [field]: numericFields.has(field)
             ? newValue // Save numeric fields as numbers
             : finalValue, // Otherwise, save the string value
       },
@@ -279,10 +261,7 @@ const Lamination: React.FC<LaminationProps> = ({
       ...formData,
       [section]: {
         ...(formData as any)[section],
-        [field]:
-          field === "thickness" && errorMessage === ""
-            ? Number((newValue as string).trim()) // Ensure thickness is saved as a number
-            : numericFields.has(field)
+        [field]: numericFields.has(field)
             ? newValue// Save numeric fields as numbers
             : finalValue, // Otherwise, save the string value
       },

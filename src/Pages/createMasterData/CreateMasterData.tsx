@@ -354,10 +354,10 @@ const CreateMasterData: React.FC = () => {
         },
         laminationSubstrate: {
           ...finalLaminationData.laminationSubstrate,
-          dyne_level: Number(
+          dyne_level: String(
             finalLaminationData.laminationSubstrate.dyne_level
           ),
-          thickness: Number(finalLaminationData.laminationSubstrate.thickness),
+          thickness: String(finalLaminationData.laminationSubstrate.thickness),
           width: Number(finalLaminationData.laminationSubstrate.width),
           density: Number(finalLaminationData.laminationSubstrate.density),
         },
@@ -367,13 +367,13 @@ const CreateMasterData: React.FC = () => {
       ...finalPrintingData,
       printingDetails: {
         ...finalPrintingData.printingDetails,
-        cylinder_teeth: Number(
+        cylinder_teeth: String(
           finalPrintingData.printingDetails.cylinder_teeth
         ),
-        tension: Number(finalPrintingData.printingDetails.tension),
+        tension: String(finalPrintingData.printingDetails.tension),
         infeed: Number(finalPrintingData.printingDetails.infeed),
         outfeed: Number(finalPrintingData.printingDetails.outfeed),
-        rewinder: Number(finalPrintingData.printingDetails.rewinder),
+        rewinder: String(finalPrintingData.printingDetails.rewinder),
         unwinder: Number(finalPrintingData.printingDetails.unwinder),
       },
       printingSubstrateSettings: {
@@ -381,18 +381,17 @@ const CreateMasterData: React.FC = () => {
         dyne_level: Number(
           finalPrintingData.printingSubstrateSettings.dyne_level
         ),
-        thickness: Number(
+        thickness: String(
           finalPrintingData.printingSubstrateSettings.thickness
         ),
         width: Number(finalPrintingData.printingSubstrateSettings.width),
         density: Number(finalPrintingData.printingSubstrateSettings.density),
       },
     };
-
-    console.log(finalMasterDataDetails, "FINALMASTERDETAILS");
+const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:String(finalMasterDataDetails.unit_effectivity_number)}
     const updatedPayload = {
       ...requestPayload,
-      masterDataDetails: finalMasterDataDetails,
+       masterDataDetails,
       masterDataPrinting: convertedMasterDataPrinting,
       masterDataLamination,
       masterDataDyeCutting: finalDyeCuttingData,
