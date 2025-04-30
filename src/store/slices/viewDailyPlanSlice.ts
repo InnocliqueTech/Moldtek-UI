@@ -61,7 +61,8 @@ export interface FiltersPayload {
   toDate: string,
   customerName: string[],
   labelType: string[],
-  searchTerm:string
+  searchTerm:string,
+  searchType:string
 }
 export interface viewDailyPlan {
   customers: Customer[];
@@ -96,7 +97,8 @@ const initialState: viewDailyPlan = {
     toDate: "",
     customerName: [],
     labelType: [],
-    searchTerm:''
+    searchTerm:'',
+    searchType:''
   },
   customers: [],
   labelTypes: [],

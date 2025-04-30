@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
@@ -15,7 +15,14 @@ import { toast } from "react-toastify";
 
 import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
 import { RootState } from "../../../store";
-import { FiltersPayload, setFiltersPayload, setIsSearchTriggered, setOpenSliderDaily, setSelectedCustomers, setSelectedLabelTypeIds } from "../../../store/slices/viewDailyPlanSlice";
+import {
+  FiltersPayload,
+  setFiltersPayload,
+  setIsSearchTriggered,
+  setOpenSliderDaily,
+  setSelectedCustomers,
+  setSelectedLabelTypeIds
+} from "../../../store/slices/viewDailyPlanSlice";
 import LabelTypeSelector from "./LabelTypes";
 import CustomerSelect from "./CustomersData";
 import ButtonComponent from "../../../Components/ReUsable/Button";
@@ -28,18 +35,44 @@ interface LocalDatePayload {
 
 const FilterForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSliderDaily,isSearchTriggered } = useSelector(
+  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSliderDaily, isSearchTriggered } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
 
   const [openFrom, setOpenFrom] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(filtersPayload.searchTerm || '');
   const [openTo, setOpenTo] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState(filtersPayload.searchTerm || '');
+  const [searchType, setSearchType] = useState(filtersPayload.searchType || '');
+
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
     fromDate: filtersPayload.fromDate ? new Date(filtersPayload.fromDate.split("-").reverse().join("-")) : null,
     toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate.split("-").reverse().join("-")) : null,
   });
-  
+
+  const hasInitialized = useRef(false);
+
+  useEffect(() => {
+    if (openSliderDaily && !hasInitialized.current) {
+      hasInitialized.current = true;
+
+      if (!isSearchTriggered) {
+        dispatch(setFiltersPayload({
+          customerName: [],
+          fromDate: '',
+          toDate: '',
+          labelType: [],
+          searchTerm: '',
+          searchType: ''
+        }));
+        dispatch(setSelectedCustomers([]));
+        dispatch(setSelectedLabelTypeIds([]));
+        setLocalDates({ fromDate: null, toDate: null });
+        setSearchTerm('');
+        setSearchType('');
+      }
+    }
+  }, [openSliderDaily, dispatch, isSearchTriggered]);
 
   const handleDateChange = (date: Date | null, field: keyof LocalDatePayload) => {
     setLocalDates((prev) => ({ ...prev, [field]: date }));
@@ -49,8 +82,8 @@ const FilterForm: React.FC = () => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
     const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchTerm.trim();
-  }, [selectedCustomers, localDates, selectedLabelTypeIds]);
+    return hasCustomer || hasValidDates || hasLabelTypes || searchTerm.trim() !== '' || searchType !== '';
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchTerm, searchType]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -66,8 +99,9 @@ const FilterForm: React.FC = () => {
       fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "yyyy-MM-dd") : '',
       toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
       labelType,
-      searchTerm: searchTerm.trim()
-    };    
+      searchTerm: searchTerm.trim(),
+      searchType
+    };
 
     dispatch(setFiltersPayload(finalSearchPayload));
     dispatch(setIsSearchTriggered(true));
@@ -77,13 +111,16 @@ const FilterForm: React.FC = () => {
 
   const handleClear = () => {
     setLocalDates({ fromDate: null, toDate: null });
+    setSearchTerm('');
+    setSearchType('');
 
     dispatch(setFiltersPayload({
       customerName: [],
       fromDate: '',
       toDate: '',
       labelType: [],
-      searchTerm:''
+      searchTerm: '',
+      searchType: ''
     }));
 
     dispatch(setSelectedCustomers([]));
@@ -92,25 +129,6 @@ const FilterForm: React.FC = () => {
     dispatch(setOpenSliderDaily(false));
     toast.success("Filters cleared!");
   };
-
-  useEffect(() => {
-    if (openSliderDaily) {
-
-      if (!isSearchTriggered) {
-        // If slider is closed without a search, reset all
-        dispatch(setFiltersPayload({
-          customerName: [],
-          fromDate: '',
-          toDate: '',
-          labelType: [],
-          searchTerm:''
-        }));
-        dispatch(setSelectedCustomers([]));
-        dispatch(setSelectedLabelTypeIds([]));
-        setLocalDates({ fromDate: null, toDate: null });
-      }
-    }
-  }, [openSliderDaily, dispatch, isSearchTriggered]);
 
   return (
     <>
@@ -143,12 +161,7 @@ const FilterForm: React.FC = () => {
                       endAdornment: (
                         <InputAdornment position="end">
                           {localDates.fromDate ? (
-                            <IconButton
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                setLocalDates(prev => ({ ...prev, fromDate: null }));
-                              }}
-                            >
+                            <IconButton onClick={(e) => { e.stopPropagation(); setLocalDates(prev => ({ ...prev, fromDate: null })); }}>
                               <ClearIcon />
                             </IconButton>
                           ) : (
@@ -177,9 +190,7 @@ const FilterForm: React.FC = () => {
                 format="dd/MM/yyyy"
                 shouldDisableDate={(date) => {
                   if (!localDates.fromDate) return false;
-                  const from = new Date(localDates.fromDate);
-                  const check = new Date(date);
-                  return check.setHours(0, 0, 0, 0) < from.setHours(0, 0, 0, 0);
+                  return new Date(date).setHours(0, 0, 0, 0) < new Date(localDates.fromDate).setHours(0, 0, 0, 0);
                 }}
                 minDate={localDates.fromDate || undefined}
                 slotProps={{
@@ -199,12 +210,7 @@ const FilterForm: React.FC = () => {
                       endAdornment: (
                         <InputAdornment position="end">
                           {localDates.toDate ? (
-                            <IconButton
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                setLocalDates(prev => ({ ...prev, toDate: null }));
-                              }}
-                            >
+                            <IconButton onClick={(e) => { e.stopPropagation(); setLocalDates(prev => ({ ...prev, toDate: null })); }}>
                               <ClearIcon />
                             </IconButton>
                           ) : (
@@ -230,56 +236,72 @@ const FilterForm: React.FC = () => {
       <Grid size={{ xs: 12 }}>
         <LabelTypeSelector />
       </Grid>
-      <Grid size={{ xs: 12 }} display="flex" flexDirection="row" gap={2} sx={{mb:2}}>
-        <Typography sx={{mt:1}}>Search Term</Typography>
-                        <TextField
-                          size="small"
-                          variant="outlined"
-                          placeholder={ "Search"}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                                <SearchIcon fontSize="small" />
-                              </InputAdornment>
-                            ),
-                            sx: {
-                              borderRadius: "50px",
-                              pl: 1.2,
-                              pr: 1,
-                              py: 0.5,
-                              fontSize: "0.875rem",
-                            },
-                          }}
-                          // fullWidth
-                          sx={{
-                            minWidth: {
-                              xs: "100%",
-                              sm: "100%",
-                              md: "240px",
-                            },
-                            "& .MuiOutlinedInput-root": {
-                              borderRadius: "50px",
-                              px: 1,
-                            },
-                            "& .MuiInputBase-input": {
-                              padding:  "4px 0",
-                              fontSize: "0.875rem",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                            },
-                            "& input": {
-                              padding:  "6px 8px",
-                              fontSize: "0.875rem",
-                            },
-                          }}
-                        />
-                        </Grid>
+
+      <Grid container spacing={4} sx={{ mb: 2 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+          <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Type</Typography>
+          <TextField
+            select
+            size="small"
+            fullWidth
+            variant="outlined"
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            SelectProps={{ native: true }}
+          >
+            <option value="">Select Type</option>
+            <option value="UEN">UEN</option>
+            <option value="Indent No">Indent No</option>
+          </TextField>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Term</Typography>
+          <TextField
+            size="small"
+            fullWidth
+            variant="outlined"
+            placeholder="UEN or Indent No"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+              sx: {
+                borderRadius: "50px",
+                pl: 1.2,
+                pr: 1,
+                py: 0.5,
+                fontSize: "0.875rem"
+              }
+            }}
+            sx={{
+              minWidth: { xs: "100%", sm: "100%", md: "200px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "50px",
+                px: 1
+              },
+              "& .MuiInputBase-input": {
+                padding: "4px 0",
+                fontSize: "0.875rem",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden"
+              },
+              "& input": {
+                padding: "6px 8px",
+                fontSize: "0.875rem"
+              }
+            }}
+          />
+        </Grid>
+      </Grid>
 
       <Grid size={{ xs: 12 }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-
           <ButtonComponent
             text="Search"
             borderRadius="100px"
@@ -289,7 +311,7 @@ const FilterForm: React.FC = () => {
             p={2}
             disabled={!isSearchEnabled}
           />
-                    <ButtonComponent
+          <ButtonComponent
             text="Clear"
             borderRadius="100px"
             onClick={handleClear}
