@@ -1,5 +1,5 @@
-import { Box, Typography, Grid, SelectChangeEvent } from '@mui/material';
-import React, { useState , useEffect} from 'react';
+import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
@@ -28,67 +28,68 @@ const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
 
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
+  { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
   { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
+  { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: ['New','Repeat'] },
+  { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: typeOfLabelOptions },
   { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
+
   { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
   { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
   { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
-  { id: 'labelType', label: 'Type of Label', value: '',component: 'dropdown',
-    options: typeOfLabelOptions, },
-  // { id: 'colorMatching', label: 'Colour Matching', value: '' },
-  // { id: 'shadeMatching', label: 'Shade Matchings', value: '' },
+  { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
+  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
+  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
+  { id: 'packSize', label: 'Brand Name & Pack size', type: 'text', value: '' },
+  { id: 'jarCap', label: 'Jar/Cap', type: 'text', value: '' },
+  { id: 'width', label: 'Width', value: '' },
+  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
+  { id: 'subStrateType', label: 'Substrate Type', type: 'text', value: '' },
+  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
   { id: 'repeatLength', label: 'Repeat Length', value: '' },
   { id: 'ups', label: 'UPS', value: '' },
-  { id: 'width', label: 'Width', value: '' },
-  { id: 'substrate', label: 'Substrate', value: '' },
+  { id: 'substrate', label: 'Printing Substrate', value: '' },
   { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
-  {
-    id: 'numberOfRolls',
-    label: 'No of Rolls',
-    component: 'dropdown',
-    options: ['1','2','3','4','5','6'],
-    value: ''
-  },
-  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
-  // { id: 'dieCutWastage', label: 'Die-Cut Wastage', value: '' },
-  // { id: 'laminationWastage', label: 'Lamination Wastage', value: '' },
-  {
-    id: 'jobType',
-    label: 'Job Type',
-    component: 'dropdown',
-    options: ['New','Repeat'],
-    value: ''
-  },
-  { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
-  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-  { id: 'packSize', label: 'Pack Size', type: 'text', value: '' },
-  { id: 'subStrateType', label: 'Substarte type', type: 'text', value: '' },
-  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
-  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
-  { id: 'dyne', label: 'Dyne', type: 'text', value: '' },
-  { id: 'segment', label: 'Segment', component: 'dropdown',value: '',options: ['New','Repeat'], },
 ];
+
+const fieldsToSkipForRepeat = [
+  'customerName',
+  'packSize',
+  'jarCap',
+  'width',
+  'thickness',
+  'subStrateType',
+  'gsm',
+  'repeatLength',
+  'ups',
+  'substrate',
+  'lamSubstrate'
+];
+
 
 const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [saveDailyJob, { isLoading }] =
-    useSaveDailyJobMutation();
+  const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
+  const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
+
+  const shouldShowField = (fieldId: string): boolean => {
+    if (jobType === 'Repeat') {
+      return !fieldsToSkipForRepeat.includes(fieldId);
+    }
+    return true;
+  };
+
   const handleInputChange = (
     fieldId: string,
-    value: string | string[] | SelectChangeEvent<string | string[]>
+    value: string | string[]
   ) => {
-    const extractedValue =
-      typeof value === 'object' && 'target' in value ? value.target.value : value;
-
     setFormFields(prevFields =>
       prevFields.map(field =>
-        field.id === fieldId ? { ...field, value: extractedValue } : field
+        field.id === fieldId ? { ...field, value } : field
       )
     );
-
-  // Clear error when user starts typing
     if (errors[fieldId]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -112,7 +113,6 @@ const CreatePlan: React.FC = () => {
     const formData: any = {};
     
     formFields.forEach(field => {
-      // Convert numeric fields
       if ([
         'ppcIndentQtyNos',
         'balanceIndentQtyPlanned',
@@ -130,10 +130,11 @@ const CreatePlan: React.FC = () => {
       }
     });
 
-    // Ensure jobRunDate is properly formatted
     if (formData.jobRunDate) {
       formData.jobRunDate = new Date(formData.jobRunDate).toISOString().split('T')[0];
     }
+
+    formData.jobType = jobType;
 
     return formData as SaveDailyJobRequest;
   };
@@ -194,39 +195,63 @@ const CreatePlan: React.FC = () => {
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
-        <Typography sx={{ fontSize: '1rem', fontWeight: '600' }} className="mb-3">
-          Add New Job
-        </Typography>
+        <Box sx={{}}>
+          <Typography
+            sx={{ fontSize: "1rem", fontWeight: "600" }}
+            className="mb-3"
+          >
+            Add New Job
+          </Typography>
+          <Box sx={{ mb: 3 }}>
+            <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
+            <RadioGroup
+              row
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
+            >
+              <FormControlLabel value="New" control={<Radio />} label="New" />
+              <FormControlLabel
+                value="Repeat"
+                control={<Radio />}
+                label="Repeat"
+              />
+            </RadioGroup>
+          </Box>
+        </Box>
         <Grid container spacing={2} pt={1}>
-          {formFields.map(field => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-              {field.component === 'dropdown' ? (
-                <DropdownComponent
-                  label={field.label}
-                  options={field.options || []}
-                  value={field.value}
-                  onChange={(value) => handleInputChange(field.id, value)}
-                  isMultiSelect={false}
-                  checkbox={false}
-                  error={!!errors[field.id]}
-                  helperText={errors[field.id]}
-                />
-              ) : (
-                <ReusableInput
-                  label={field.label}
-                  value={field.value}
-                  type={field.type || 'text'}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    handleInputChange(field.id, e.target.value)
-                  }
-                  error={!!errors[field.id]}
-                  helperText={errors[field.id]}
-                />
-              )}
-            </Grid>
-          ))}
+          {formFields
+            .filter((f) => shouldShowField(f.id))
+            .map((field) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
+                {field.component === "dropdown" ? (
+                  <DropdownComponent
+                    label={field.label}
+                    options={field.options || []}
+                    value={field.value}
+                    onChange={(value) => handleInputChange(field.id, value)}
+                    isMultiSelect={false}
+                    checkbox={false}
+                    error={!!errors[field.id]}
+                    helperText={errors[field.id]}
+                  />
+                ) : (
+                  <ReusableInput
+                    label={field.label}
+                    value={field.value}
+                    type={field.type || "text"}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(field.id, e.target.value)
+                    }
+                    error={!!errors[field.id]}
+                    helperText={errors[field.id]}
+                  />
+                )}
+              </Grid>
+            ))}
         </Grid>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 2, }}>
+        <Typography
+          sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
+        >
           * All fields are mandatory
         </Typography>
         <Box className="flex justify-end">
@@ -251,7 +276,7 @@ const CreatePlan: React.FC = () => {
           />
         </Box>
       </Box>
-      <SubmitPopups onSubmit={submitFormData} isLoading={isLoading}/>
+      <SubmitPopups onSubmit={submitFormData} isLoading={isLoading} />
     </Box>
   );
 };
