@@ -60,6 +60,13 @@ const initialFormFields: FormField[] = [
     value: ''
   },
   { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
+  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
+  { id: 'packSize', label: 'Pack Size', type: 'text', value: '' },
+  { id: 'subStrateType', label: 'Substarte type', type: 'text', value: '' },
+  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
+  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
+  { id: 'dyne', label: 'Dyne', type: 'text', value: '' },
+  { id: 'segment', label: 'Segment', component: 'dropdown',value: '',options: ['New','Repeat'], },
 ];
 
 const CreatePlan: React.FC = () => {
