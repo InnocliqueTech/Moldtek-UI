@@ -137,6 +137,7 @@ const Lamination: React.FC<LaminationProps> = ({
     "lami_set_tension",
     "rewinder_tension",
     "adhesive_gsm",
+    "dyne_level"
   ]);
 
   const characterFields = new Set(["viscosity_range", "type", "code", "brand"]);

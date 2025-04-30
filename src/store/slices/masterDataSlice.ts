@@ -280,7 +280,7 @@ export interface FiltersPayload {
   toDate: string;
   customerName: string[];
   labelType: string[];
-  searchTerm:string;
+  searchField :string;
 }
 interface MasterDataState {
   customers: Customer[];
@@ -605,7 +605,7 @@ const initialState: MasterDataState = {
     toDate: "",
     customerName: [],
     labelType: [],
-    searchTerm:''
+    searchField :''
   },
   laminationDataTouched: false,
   printingDataTouched: false,

@@ -354,7 +354,7 @@ const CreateMasterData: React.FC = () => {
         },
         laminationSubstrate: {
           ...finalLaminationData.laminationSubstrate,
-          dyne_level: String(
+          dyne_level: Number(
             finalLaminationData.laminationSubstrate.dyne_level
           ),
           thickness: String(finalLaminationData.laminationSubstrate.thickness),
@@ -367,10 +367,8 @@ const CreateMasterData: React.FC = () => {
       ...finalPrintingData,
       printingDetails: {
         ...finalPrintingData.printingDetails,
-        cylinder_teeth: String(
-          finalPrintingData.printingDetails.cylinder_teeth
-        ),
-        tension: String(finalPrintingData.printingDetails.tension),
+        cylinder_teeth: String(finalPrintingData.printingDetails.cylinder_teeth),
+        tension: Number(finalPrintingData.printingDetails.tension),
         infeed: Number(finalPrintingData.printingDetails.infeed),
         outfeed: Number(finalPrintingData.printingDetails.outfeed),
         rewinder: String(finalPrintingData.printingDetails.rewinder),
@@ -378,21 +376,19 @@ const CreateMasterData: React.FC = () => {
       },
       printingSubstrateSettings: {
         ...finalPrintingData.printingSubstrateSettings,
-        dyne_level: Number(
-          finalPrintingData.printingSubstrateSettings.dyne_level
-        ),
-        thickness: String(
-          finalPrintingData.printingSubstrateSettings.thickness
-        ),
+        dyne_level: Number(finalPrintingData.printingSubstrateSettings.dyne_level),
+        thickness: String(finalPrintingData.printingSubstrateSettings.thickness),
         width: Number(finalPrintingData.printingSubstrateSettings.width),
         density: Number(finalPrintingData.printingSubstrateSettings.density),
       },
-      stationWiseMetrics:{
-        ...finalPrintingData.stationWiseMetrics,
-        volume:Number(finalPrintingData.stationWiseMetrics.volume),
-        uv_led_intensity:Number(finalPrintingData.stationWiseMetrics.uv_led_intensity)
-      }
+      stationWiseMetrics: finalPrintingData.stationWiseMetrics.map((station:any) => ({
+        ...station,
+        volume: Number(station.volume) || 0,
+        uv_led_intensity: Number(station.uv_led_intensity) || 0,
+        lf_value: Number(station.lf_value) || 0,
+      })),
     };
+    
 const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number)}
     const updatedPayload = {
       ...requestPayload,

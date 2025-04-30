@@ -32,7 +32,7 @@ const FilterForm: React.FC = () => {
   );
 
   const [openFrom, setOpenFrom] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(filtersPayload.searchTerm || '');
+  const [searchField , setSearchField ] = useState(filtersPayload.searchField  || '');
   const [openTo, setOpenTo] = useState(false);
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
     fromDate: filtersPayload.fromDate ? new Date(filtersPayload.fromDate.split("-").reverse().join("-")) : null,
@@ -51,12 +51,12 @@ const FilterForm: React.FC = () => {
           fromDate: '',
           toDate: '',
           labelType: [],
-          searchTerm: '',
+          searchField : '',
         }));
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
         setLocalDates({ fromDate: null, toDate: null });
-        setSearchTerm('');
+        setSearchField ('');
       }
     }
   }, [openSider, dispatch, isSearchTriggered]);
@@ -69,8 +69,8 @@ const FilterForm: React.FC = () => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
     const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchTerm.trim() !== '';
-  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchTerm]);
+    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '';
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField ]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -86,7 +86,7 @@ const FilterForm: React.FC = () => {
       fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "yyyy-MM-dd") : '',
       toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
       labelType,
-      searchTerm: searchTerm.trim(),
+      searchField : searchField .trim(),
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -97,14 +97,14 @@ const FilterForm: React.FC = () => {
 
   const handleClear = () => {
     setLocalDates({ fromDate: null, toDate: null });
-    setSearchTerm('');
+    setSearchField ('');
 
     dispatch(setFiltersPayload({
       customerName: [],
       fromDate: '',
       toDate: '',
       labelType: [],
-      searchTerm: '',
+      searchField : '',
     }));
 
     dispatch(setSelectedCustomers([]));
@@ -240,8 +240,8 @@ const FilterForm: React.FC = () => {
             fullWidth
             variant="outlined"
             placeholder="Search For UEN"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchField }
+            onChange={(e) => setSearchField (e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start" sx={{ ml: 0.5 }}>
@@ -257,7 +257,7 @@ const FilterForm: React.FC = () => {
               }
             }}
             sx={{
-              minWidth: { xs: "100%", sm: "100%", md: "240px" },
+              minWidth: { xs: "235%", sm: "235%", md: "370px" },
               "& .MuiOutlinedInput-root": {
                 borderRadius: "50px",
                 px: 1

@@ -42,7 +42,7 @@ const FilterForm: React.FC = () => {
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState(filtersPayload.searchTerm || '');
+  const [searchField , setSearchField ] = useState(filtersPayload.searchField  || '');
   const [searchType, setSearchType] = useState(filtersPayload.searchType || '');
 
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
@@ -62,13 +62,13 @@ const FilterForm: React.FC = () => {
           fromDate: '',
           toDate: '',
           labelType: [],
-          searchTerm: '',
+          searchField : '',
           searchType: ''
         }));
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
         setLocalDates({ fromDate: null, toDate: null });
-        setSearchTerm('');
+        setSearchField ('');
         setSearchType('');
       }
     }
@@ -82,8 +82,8 @@ const FilterForm: React.FC = () => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
     const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchTerm.trim() !== '' || searchType !== '';
-  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchTerm, searchType]);
+    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '' || searchType !== '';
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField , searchType]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -99,7 +99,7 @@ const FilterForm: React.FC = () => {
       fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "yyyy-MM-dd") : '',
       toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
       labelType,
-      searchTerm: searchTerm.trim(),
+      searchField : searchField .trim(),
       searchType
     };
 
@@ -111,7 +111,7 @@ const FilterForm: React.FC = () => {
 
   const handleClear = () => {
     setLocalDates({ fromDate: null, toDate: null });
-    setSearchTerm('');
+    setSearchField ('');
     setSearchType('');
 
     dispatch(setFiltersPayload({
@@ -119,7 +119,7 @@ const FilterForm: React.FC = () => {
       fromDate: '',
       toDate: '',
       labelType: [],
-      searchTerm: '',
+      searchField : '',
       searchType: ''
     }));
 
@@ -237,68 +237,78 @@ const FilterForm: React.FC = () => {
         <LabelTypeSelector />
       </Grid>
 
-      <Grid container spacing={4} sx={{ mb: 2 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-          <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Type</Typography>
-          <TextField
-            select
-            size="small"
-            fullWidth
-            variant="outlined"
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value)}
-            SelectProps={{ native: true }}
-          >
-            <option value="">Select Type</option>
-            <option value="UEN">UEN</option>
-            <option value="Indent No">Indent No</option>
-          </TextField>
-        </Grid>
+      <Grid container spacing={0} sx={{ mb: 2 }}>
+  <Grid size={{xs:12}}>
+    <Typography sx={{ mb: 1, fontWeight: 500 }}>Search</Typography>
+  </Grid>
 
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Term</Typography>
-          <TextField
-            size="small"
-            fullWidth
-            variant="outlined"
-            placeholder="UEN or Indent No"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-              sx: {
-                borderRadius: "50px",
-                pl: 1.2,
-                pr: 1,
-                py: 0.5,
-                fontSize: "0.875rem"
-              }
-            }}
-            sx={{
-              minWidth: { xs: "100%", sm: "100%", md: "200px" },
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "50px",
-                px: 1
-              },
-              "& .MuiInputBase-input": {
-                padding: "4px 0",
-                fontSize: "0.875rem",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                overflow: "hidden"
-              },
-              "& input": {
-                padding: "6px 8px",
-                fontSize: "0.875rem"
-              }
-            }}
-          />
-        </Grid>
-      </Grid>
+  <Grid size={{xs:12,sm:12,md:9}}>
+    <Box sx={{ display: 'flex', width: '100%' }}>
+      <TextField
+        select
+        size="small"
+        variant="outlined"
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value)}
+        SelectProps={{ native: true }}
+        sx={{
+          width: '280px',
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '50px 0 0 50px',
+            height: '40px',
+            fontSize: '0.875rem'
+          }
+        }}
+      >
+        <option value="">Select Type</option>
+        <option value="UEN">UEN</option>
+        <option value="Indent">Indent No</option>
+      </TextField>
+
+      <TextField
+        size="small"
+        fullWidth
+        variant="outlined"
+        placeholder="UEN or Indent No"
+        value={searchField }
+        onChange={(e) => setSearchField (e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start" sx={{ ml: 0.5 }}>
+              <SearchIcon fontSize="small" />
+            </InputAdornment>
+          ),
+          sx: {
+            minWidth:{ xs: "100%", sm: "100%", md: "230px" },
+            borderRadius: '0 50px 50px 0',
+            height: '40px',
+            pl: 1.2,
+            pr: 1,
+            fontSize: '0.875rem'
+          }
+        }}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '0 50px 50px 0',
+            px: 1,
+            height: '40px'
+          },
+          '& .MuiInputBase-input': {
+            padding: '4px 0',
+            fontSize: '0.875rem',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }
+        }}
+      />
+    </Box>
+  </Grid>
+</Grid>
+
+
 
       <Grid size={{ xs: 12 }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>

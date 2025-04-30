@@ -67,11 +67,11 @@ const DataTable = <T extends Record<string, any>>({
   }>({});
   const validateInput = (columnId: string, value: string): boolean => {
     const numericFields = [
-      "lf_value",
       "station_no",
       "ratio",
       "uv_led_intensity",
       "volume",
+      "lf_value"
     ];
     const laminationFileds = ["code", "brand"];
     const printingField = ["color_pantone"];
@@ -101,11 +101,11 @@ const DataTable = <T extends Record<string, any>>({
   ) => {
     const updated = [...data];
     const numberKeys = [
-      "lf_value",
       "station_no",
       "ratio",
       "uv_led_intensity",
       "volume",
+       "lf_value"
     ];
     let updatedValue: any = value;
 

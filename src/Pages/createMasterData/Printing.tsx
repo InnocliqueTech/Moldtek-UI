@@ -174,7 +174,9 @@ const Printing: React.FC<PrintingProps> = ({
       "unwinder",
       "infeed",
       "outfeed",
-      "dyne_level"
+      "dyne_level",
+      "tension",
+      "lf_value" 
     ].includes(field);
   
     const isMachineField = machineFields.some((f) => f.id === field);
@@ -225,7 +227,7 @@ const Printing: React.FC<PrintingProps> = ({
       const trimmed = newValue.trim();
       if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge") {
+      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge" &&field!=='printing_machine_name' && field!=='rewinder') {
         errorMsg =
           "Only alphabets are allowed — no numbers or special characters";
       }
@@ -475,7 +477,7 @@ const Printing: React.FC<PrintingProps> = ({
     const hasErrors = Object.values(errors).some((error) => error);
   
     const isSaveEnabled = !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
-    
+    console.log(errors,isAnyFieldFilled,hasErrors,printingTableValueVaidation,"VALIDATION")
     dispatch(setPrintingSave(isSaveEnabled));
     
   }, [formValues, errors, dispatch]);

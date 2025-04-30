@@ -145,6 +145,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     "repeat_length",
     "ups",
     "unit_effectivity_number",
+    "tracks"
   ];
   
   const importantFields: (keyof MasterFormData)[] = [
@@ -185,7 +186,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
       } else if (trimmed !== "" && isNaN(Number(numericValue))) {
-        errorMessage = "Please enter a valid number or percentage.";
+        errorMessage = "Please enter a valid number.";
       } else {
         finalValue =
           trimmed === ""
