@@ -293,7 +293,7 @@ const dispatch = useDispatch()
               title="List of Job Tracker"
               pageNumber={page}
               info={true}
-              searchVisible={true}
+              searchVisible={false}
               action={false}
               onSelectionChange={(selectedItems) => {
                 console.log('Selected items:', selectedItems);

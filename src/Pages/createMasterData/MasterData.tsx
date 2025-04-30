@@ -96,28 +96,29 @@ const MasterData: React.FC = () => {
       label: "Type Of Label",
       align: false,
       disableSorting: false,
-      format: (value: string) =>
-        value !== null ? (
+      format: (value: string | null) =>
+        value ? (
           <Tooltip title={value}>
             <Box
               sx={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "4px 8px",
-                display: "inline-block",
-                backgroundColor: "#F8F9FA",
+                border: '1px solid #ccc',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                display: 'inline-block',
+                backgroundColor: '#F8F9FA',
                 maxWidth: 150,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {value}
             </Box>
           </Tooltip>
         ) : (
-          "N/A"
-        ),
+          'N/A'
+        )
+      
     },
     {
       id: "created_at",
@@ -221,7 +222,7 @@ const MasterData: React.FC = () => {
           }
           title="List of Companies"
           info={true}
-          searchVisible={true}
+          searchVisible={false}
           action={true}
           actions={[
             {
