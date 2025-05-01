@@ -165,7 +165,15 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const isSubmitDisabled = () => {
-    if (printingTab && laminationTab) {
+    if (!id && printingTab && laminationTab) {
+      return (
+        submitAndPublishButtonMasterData ||
+        submitAndPublishButtonDyeCutting ||
+        submitAndPublishButtonPrinting ||
+        (!skipLamination && submitAndPublishButtonLamination)
+      );
+    }
+    else if (id){
       return (
         submitAndPublishButtonMasterData ||
         submitAndPublishButtonDyeCutting ||
