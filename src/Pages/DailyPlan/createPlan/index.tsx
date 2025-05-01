@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio ,SelectChangeEvent} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
@@ -83,13 +83,18 @@ const CreatePlan: React.FC = () => {
 
   const handleInputChange = (
     fieldId: string,
-    value: string | string[]
+    value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
+    const extractedValue =
+      typeof value === 'object' && 'target' in value ? value.target.value : value;
+
     setFormFields(prevFields =>
       prevFields.map(field =>
-        field.id === fieldId ? { ...field, value } : field
+        field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
+
+  // Clear error when user starts typing
     if (errors[fieldId]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -97,7 +102,7 @@ const CreatePlan: React.FC = () => {
         return newErrors;
       });
     }
-  };
+  }
 
   // const handleSave = () => {
   //   const formData = formFields.reduce((acc, field) => {
@@ -196,12 +201,12 @@ const CreatePlan: React.FC = () => {
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
         <Box sx={{}}>
-          <Typography
+          {/* <Typography
             sx={{ fontSize: "1rem", fontWeight: "600" }}
             className="mb-3"
           >
             Add New Job
-          </Typography>
+          </Typography> */}
           <Box sx={{ mb: 3 }}>
             <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
             <RadioGroup
