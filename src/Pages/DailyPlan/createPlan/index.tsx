@@ -146,7 +146,7 @@ const CreatePlan: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    const validation = validateFormFields(formFields);
+    const validation = validateFormFields(formFields.filter(f => shouldShowField(f.id)));
     if (!validation.isValid) {
       // Extract errors from validation object
       const { isValid, errorMessage, ...errorFields } = validation;
