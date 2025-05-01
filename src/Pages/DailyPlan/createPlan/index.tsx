@@ -130,7 +130,10 @@ const CreatePlan: React.FC = () => {
         'numberOfRolls',
         'ups',
         'repeatLength',
-        'width'
+        'width',
+        'dyne',
+        'gsm',
+        'thickness'
       ].includes(field.id)) {
         formData[field.id] = Number(field.value) || 0;
       } else {

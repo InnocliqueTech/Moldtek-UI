@@ -40,6 +40,8 @@ export const validateFormFields = (fields: FormField[]): FormValidation => {
         case 'ups':
         case 'width':
         case 'repeatLength':
+        case  'dyne':
+        case  'gsm' :
           if (typeof value === 'string' && !/^\d+$/.test(value)) {
             errors[field.id] = `${field.label} must be a number`;
           }
