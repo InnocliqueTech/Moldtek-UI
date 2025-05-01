@@ -33,14 +33,13 @@ const initialFormFields: FormField[] = [
   { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: ['New','Repeat'] },
   { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: typeOfLabelOptions },
   { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
-
   { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
   { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
   { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
   { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
   { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
   { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-  { id: 'packSize', label: 'Brand Name & Pack size', type: 'text', value: '' },
+  { id: 'brandName', label: 'Brand Name & Pack size', type: 'text', value: '' },
   { id: 'jarCap', label: 'Jar/Cap', type: 'text', value: '' },
   { id: 'width', label: 'Width', value: '' },
   { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
@@ -48,13 +47,14 @@ const initialFormFields: FormField[] = [
   { id: 'gsm', label: 'GSM', type: 'text', value: '' },
   { id: 'repeatLength', label: 'Repeat Length', value: '' },
   { id: 'ups', label: 'UPS', value: '' },
+  { id: 'dyne', label: 'Dyne', value: '' },
   { id: 'substrate', label: 'Printing Substrate', value: '' },
   { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
 ];
 
 const fieldsToSkipForRepeat = [
   'customerName',
-  'packSize',
+  'brandName',
   'jarCap',
   'width',
   'thickness',
@@ -63,7 +63,8 @@ const fieldsToSkipForRepeat = [
   'repeatLength',
   'ups',
   'substrate',
-  'lamSubstrate'
+  'lamSubstrate',
+  'dyne'
 ];
 
 
