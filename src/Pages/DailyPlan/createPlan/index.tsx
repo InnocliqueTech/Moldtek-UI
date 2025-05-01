@@ -66,7 +66,8 @@ const fieldsToSkipForRepeat = [
   'ups',
   'substrate',
   'lamSubstrate',
-  'dyne'
+  'dyne',
+  'substrateType'
 ];
 
 
