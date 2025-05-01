@@ -193,7 +193,7 @@ const JobsList: React.FC = () => {
 const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
   const viewMasterDataDetails = viewMasterDataDetailsData?.data?.masterDataDetails
 
-  const maxChars = 120;
+  const maxChars = 30;
   const isLong = viewMasterDataDetails?.brand_description?.length > maxChars;
   const displayText = isLong
     ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."

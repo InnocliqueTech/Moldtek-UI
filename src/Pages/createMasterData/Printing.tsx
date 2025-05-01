@@ -35,7 +35,11 @@ const machineFields = [
 ];
 
 const substrateFields = [
-  { id: "substrate_type", label: "Substrate Type", options: ["PET"] },
+  {
+    id: "substrate_type", label: "Substrate Type", options: ["ORANGE PEEL FILM (CHIRIPAL)",
+      "ORANGE PEEL FILM (GULF PACK)",
+      "WHITE HIGH DENSITY  FILM"]
+  },
   {
     id: "supplier",
     label: "Supplier",

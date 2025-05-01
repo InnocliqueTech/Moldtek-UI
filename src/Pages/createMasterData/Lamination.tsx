@@ -615,7 +615,9 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownComponent
                   label="Substrate Type"
-                  options={["PET"]}
+                  options={['60 hd+38 T',
+                    '40HD+38 T',
+                    '70 HD+12 T']}
                   value={formData.laminationSubstrate?.substrate_type}
                   onChange={(value) =>
                     handleChange("laminationSubstrate", "substrate_type", value)

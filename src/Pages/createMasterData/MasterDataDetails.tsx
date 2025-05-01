@@ -361,8 +361,17 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               disabled={id ? true : false}
               required
             />
-            <Box sx={{ minHeight: row1HasError && !errors.unit_effectivity_number ? 8 : 0 }} />
-            <Box sx={{ mt: (row1HasError&&!!errors.unit_effectivity_number) ? 0 : 2 }}>
+            <Box
+              sx={{
+                minHeight:
+                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+              }}
+            />
+            <Box
+              sx={{
+                mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
+              }}
+            >
               <DropdownComponent
                 label="Type of Label"
                 options={dropdownOptions ? dropdownOptions : []}
@@ -376,7 +385,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Jar/Cap"
-                options={["JAR", "CAP","JAR&CAP"]}
+                options={["JAR", "CAP", "JAR&CAP"]}
                 value={formData.jar_cap}
                 onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}
@@ -395,8 +404,10 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               helperText={errors.customer_name}
               required
             />
-           <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
-           <Box sx={{ mt: (row1HasError&&!!errors.customer_name) ? 0 : 2 }}/>
+            <Box
+              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
+            />
+            <Box sx={{ mt: row1HasError && !!errors.customer_name ? 0 : 2 }} />
             <ReusableInput
               label="ITEM Code"
               value={formData.item_code}
@@ -404,11 +415,20 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               error={!!errors.item_code}
               helperText={errors.item_code}
             />
-            <Box sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }} />
-            <Box sx={{ mt: (row2HasError&&!!errors.item_code) ? 0 : 2 }}>
+            <Box
+              sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
+            />
+            <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
               <DropdownComponent
                 label="Structure"
-                options={["PET"]}
+                options={[
+                  "60 hd+38 T",
+                  "60 hd EXTONE COATED",
+                  "40HD+38 T",
+                  "70 HD+12 T",
+                  "60mic",
+                  "70MIC",
+                ]}
                 value={formData.structure}
                 onChange={(e) => handleChange("structure", e.target.value)}
                 isMultiSelect={false}
@@ -534,7 +554,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                         />
                       </Box>
                     </Modal>
-
                   </>
                 ) : (
                   // Upload button when no image
@@ -570,9 +589,11 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 )}
               </Box>
             </Box>
-            <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
+            <Box
+              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
+            />
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1.5 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}
@@ -580,16 +601,18 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                   handleChange("brand_description", e.target.value)
                 }
                 placeholder="Enter your text..."
-                rows={0}
+                rows={1}
                 error={!!errors.brand_description}
                 helperText={errors.brand_description}
                 required
               />
             </Box>
-            <Box sx={{ mt: (row2HasError&&!!errors.brand_description) ? 0 : 2 }}>
+            <Box
+              sx={{ mt: row2HasError && !!errors.brand_description ? 0 : 2 }}
+            >
               <DropdownComponent
                 label="Segment"
-                options={["LB","PB","QP","TW"]}
+                options={["LB", "PB", "QP", "TW"]}
                 value={formData.segment}
                 onChange={(e) => handleChange("segment", e.target.value)}
                 isMultiSelect={false}
