@@ -163,7 +163,7 @@ const CreateMasterData: React.FC = () => {
       {
         bonding_id: 0,
         lamination_id: 0,
-        type: "Hardener",
+        type: "Hardner",
         code: "",
         brand: "",
         ratio: "",
@@ -306,7 +306,7 @@ const CreateMasterData: React.FC = () => {
           {
             bonding_id: 0,
             lamination_id: 0,
-            type: "Hardener",
+            type: "Hardner",
             code: "",
             brand: "",
             ratio: "",

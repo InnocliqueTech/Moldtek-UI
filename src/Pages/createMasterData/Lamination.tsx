@@ -116,7 +116,7 @@ const Lamination: React.FC<LaminationProps> = ({
       },
       bondingMaterials: data || [
         { type: "Adhesive", code: "", brand: "", ratio: 0 },
-        { type: "Hardener", code: "", brand: "", ratio: 0 },
+        { type: "Hardner", code: "", brand: "", ratio: 0 },
         { type: "Ethyl", code: "", brand: "", ratio: 0 },
       ],
     };
@@ -258,18 +258,10 @@ const Lamination: React.FC<LaminationProps> = ({
             : finalValue, // Otherwise, save the string value
       },
     };
-    const updatedFinalFormData = {
-      ...formData,
-      [section]: {
-        ...(formData as any)[section],
-        [field]: numericFields.has(field)
-            ? newValue// Save numeric fields as numbers
-            : finalValue, // Otherwise, save the string value
-      },
-    };
+
 
     setFormData(updatedFormData);
-    dispatch(setLaminationFormData(updatedFinalFormData));
+    dispatch(setLaminationFormData(updatedFormData));
   };
   useEffect(() => {
     const errorValues = Object.values(errors);
@@ -383,18 +375,19 @@ const Lamination: React.FC<LaminationProps> = ({
   }, [errors, formData]);
 
   useEffect(() => {
-    if (id && location.pathname.includes("/updateMasterData")) {
+    if (id && location.pathname.includes("/updateMasterData") && !laminationDataTouched) {
       setFormData(laminatingDetails);
+      setTableData(laminatingDetails.bondingMaterials);
     }
-  }, [id]);
+  }, [id,laminatingDetails]);
 
   useEffect(() => {
     if (!id && laminaionFormData) {
-      setFormData(laminaionFormData);
+        setFormData(laminaionFormData);
       if (!id && laminaionFormData?.bondingMaterials) {
         setTableData(laminaionFormData?.bondingMaterials);
+        }
       }
-    }
     if(!id && saveButtonLaminatingData && saveLaminatingData ){
       setFormData(saveLaminatingData)
     }
@@ -404,19 +397,19 @@ const Lamination: React.FC<LaminationProps> = ({
   }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData]);
 
   useEffect(() => {
-    if (id && !laminationDataTouched) {
+        if (id && !laminationDataTouched) {
       const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
       const sanitizedSubstrateData = sanitizeMasterData(
         laminatingSubstrateSettings
       );
-
+  
       const combinedValues: LaminationFormData = {
         ...sanitizedLaminationData,
         laminationSubstrate: sanitizedSubstrateData?.laminationSubstrate,
       };
       setFormData(combinedValues);
       dispatch(setLaminationFormData(combinedValues));
-
+  
       const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
       const adhesiveDetails: LaminatingTableRow[] =
         sanitizedBondingMaterials?.bondingMaterials;

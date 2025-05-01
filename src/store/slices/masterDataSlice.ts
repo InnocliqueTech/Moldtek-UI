@@ -383,7 +383,7 @@ const initialState: MasterDataState = {
       {
         bonding_id: 0,
         lamination_id: 0,
-        type: "Hardener",
+        type: "Hardner",
         code: "",
         brand: "",
         ratio: "",
@@ -907,7 +907,7 @@ const initialState: MasterDataState = {
       {
         bonding_id: 0,
         lamination_id: 0,
-        type: "Hardener",
+        type: "Hardner",
         code: "",
         brand: "",
         ratio: "",
@@ -1528,7 +1528,7 @@ const masterDataSlice = createSlice({
           {
             bonding_id: 0,
             lamination_id: 0,
-            type: "Hardener",
+            type: "Hardner",
             code: "",
             brand: "",
             ratio: "",
@@ -1752,7 +1752,7 @@ const masterDataSlice = createSlice({
           {
             bonding_id: 0,
             lamination_id: 0,
-            type: "Hardener",
+            type: "Hardner",
             code: "",
             brand: "",
             ratio: "",

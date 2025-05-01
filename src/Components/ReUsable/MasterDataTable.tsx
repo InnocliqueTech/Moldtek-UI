@@ -277,105 +277,76 @@ const DataTable = <T extends Record<string, any>>({
                           : "1px solid #ccc",
                       }}
                     >
-                      {(row?.type === "Ethyl" &&
-                        ["code", "brand", "ratio"].includes(column.id)) ||
-                      (row?.type === "Adhesive" &&
-                        ["ratio"].includes(column.id)) ||
-                      (row?.type === "Hardener" &&
-                        ["ratio"].includes(column.id)) ? (
-                        <Box sx={{ position: "relative", width: "80%" }}>
-                          <TextField
-                            variant="standard"
-                            value={row[column.id]} // only the number
-                            onChange={(e) => {
-                              let inputValue = e.target.value;
-                              const isValid = validateInput(
-                                column.id,
-                                inputValue
-                              );
+                  {
+  (row?.type === "Ethyl" && ["code", "brand", "ratio"].includes(column.id)) ||
+  (row?.type === "Adhesive" && ["ratio"].includes(column.id)) ||
+  (row?.type === "Hardner" && ["ratio"].includes(column.id)) ? (
+    location.pathname.includes("/viewMasterData") ? (
+      // View Mode: Just show value with "kg"
+      <Box sx={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#2F2F2F" }}>
+        {row[column.id]}&nbsp;kg
+      </Box>
+    ) : (
+      // Edit Mode: Show editable TextField + kg
+      <Box sx={{ position: "relative", width: "80%" }}>
+        <TextField
+          variant="standard"
+          value={row[column.id]}
+          onChange={(e) => {
+            const inputValue = e.target.value;
+            const isValid = validateInput(column.id, inputValue);
+            const key = `${rowIndex}_${column.id}`;
+            const updatedInvalidFields = { ...invalidFields, [key]: !isValid };
+            setInvalidFields(updatedInvalidFields);
+            dispatch(setInvalidFieldsTable(updatedInvalidFields));
 
-                              const key = `${rowIndex}_${column.id}`;
-                              const updatedInvalidFileds = {
-                                ...invalidFields,
-                                [key]: !isValid,
-                              };
-                              setInvalidFields(updatedInvalidFileds);
-                              dispatch(
-                                setInvalidFieldsTable(updatedInvalidFileds)
-                              );
-                              const isLaminationField = laminationFields.some(
-                                (field) =>
-                                  column.id
-                                    .toLowerCase()
-                                    .includes(field.toLowerCase())
-                              );
+            const isLaminationField = laminationFields.some((field) =>
+              column.id.toLowerCase().includes(field.toLowerCase())
+            );
+            dispatch(setLaminationTableValueVaidation(isLaminationField && !isValid ? true : false));
 
-                              if (isLaminationField && !isValid) {
-                                dispatch(
-                                  setLaminationTableValueVaidation(true)
-                                );
-                              } else if (isLaminationField && isValid) {
-                                dispatch(
-                                  setLaminationTableValueVaidation(false)
-                                );
-                              }
-                              const isPrintingField = printingFields.some(
-                                (field) =>
-                                  column.id
-                                    .toLowerCase()
-                                    .includes(field.toLowerCase())
-                              );
+            const isPrintingField = printingFields.some((field) =>
+              column.id.toLowerCase().includes(field.toLowerCase())
+            );
+            dispatch(setPrintingTableValueVaidation(isPrintingField && !isValid ? true : false));
 
-                              if (isPrintingField && !isValid) {
-                                dispatch(setPrintingTableValueVaidation(true));
-                              } else if (isPrintingField && isValid) {
-                                dispatch(setPrintingTableValueVaidation(false));
-                              }
-
-                              handleChange(
-                                rowIndex,
-                                column.id as keyof T,
-                                inputValue as T[keyof T]
-                              );
-                            }}
-                            fullWidth
-                            InputProps={{
-                              disableUnderline: true,
-                              sx: {
-                                fontSize: "14px",
-                                color: "#2F2F2F",
-                                height: "32px",
-                                padding: "0px",
-                                input: {
-                                  textAlign: "left", 
-                                  paddingRight: "30px", 
-                                },
-                              },
-                            }}
-                            inputProps={{
-                              inputMode:
-                                column.id === "ratio" ? "numeric" : "text",
-                            }}
-                          />
-
-                          {column.id === "ratio" && (
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                right: "8px",
-                                pointerEvents: "none",
-                                color: "#666",
-                                fontSize: "14px",
-                              }}
-                            >
-                              kg
-                            </Box>
-                          )}
-                        </Box>
-                      ) : column.isDropdown &&
-                        row.type === "Hardener" &&
+            handleChange(rowIndex, column.id as keyof T, inputValue as T[keyof T]);
+          }}
+          fullWidth
+          InputProps={{
+            disableUnderline: true,
+            sx: {
+              fontSize: "14px",
+              color: "#2F2F2F",
+              height: "32px",
+              padding: "0px",
+              input: { textAlign: "left", paddingRight: "30px" },
+            },
+          }}
+          inputProps={{
+            inputMode: column.id === "ratio" ? "numeric" : "text",
+          }}
+        />
+        {column.id === "ratio" && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              transform: "translateY(-50%)",
+              right: "8px",
+              pointerEvents: "none",
+              color: "#666",
+              fontSize: "14px",
+            }}
+          >
+            kg
+          </Box>
+        )}
+      </Box>
+    )
+  ) 
+ : column.isDropdown &&
+                        row.type === "Hardner" &&
                         column.id === "code" ? (
                         <Select
                           value={row[column.id] || ""}
@@ -607,8 +578,8 @@ const DataTable = <T extends Record<string, any>>({
                             {row ? (
                               <>
                                 {row[column?.id]}
-                                {(row.type === "Hardener" ||
-                                  row.type === "Adhesive") && (
+                                {(row.type === "Hardner"&& !location.pathname.includes('/viewMasterData')  ||
+                                  row.type === "Adhesive")&& !location.pathname.includes('/viewMasterData')  && (
                                   <Box
                                     component="span"
                                     sx={{ color: "#D32F2F", ml: 0.3 }}

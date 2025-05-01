@@ -138,10 +138,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   }, [errors]);
 
   useEffect(() => {
-    if (id && location.pathname.includes("/updateMasterData")) {
+    if (id && location.pathname.includes("/updateMasterData") && !dyeCuttingDataTouched) {
       setFormData(dyeCuttingDetails);
     }
-  }, []);
+  }, [id,dyeCuttingDetails]);
 
   useEffect(() => {
     if (!id && dyeCuttingFormData) {

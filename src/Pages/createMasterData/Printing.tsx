@@ -316,9 +316,10 @@ const Printing: React.FC<PrintingProps> = ({
     );
   };
   useEffect(()=>{
-    if(id&&location.pathname.includes('/updateMasterData')){
-      setFormValues(printingDetails)
-    }},[])
+    if(id&&location.pathname.includes('/updateMasterData') && !printingDataTouched){
+      setFormValues(printingDetails);
+      setTableData(printingDetails.stationWiseMetrics);
+    }},[id,printingDetails])
 
   useEffect(() => {
     if (!id && printingSaveFormData) {

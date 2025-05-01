@@ -11,6 +11,10 @@ import {
   clearMasterDetaisData,
   clearPrintingFormData,
   clearPrintingFormErrors,
+  setDyeCuttingDataTouched,
+  setLaminationDataTouched,
+  setMasterDataDataTouched,
+  setPrintingDataTouched,
   setSelectedTab,
   setSubmitAndPublishPopup,
   setSubmitPopup,
@@ -97,6 +101,10 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 
             dispatch(clearMasterDetaisData());
             dispatch(clearMasterDataFormErrors());
+            dispatch(setPrintingDataTouched(false));
+            dispatch(setDyeCuttingDataTouched(false));
+            dispatch(setLaminationDataTouched(false));
+            dispatch(setMasterDataDataTouched(false));
           } else {
             const errorData = (response as any)?.error?.data;
             const message = errorData?.message
