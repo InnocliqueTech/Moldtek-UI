@@ -482,15 +482,7 @@ const Printing: React.FC<PrintingProps> = ({
     
   }, [formValues, errors, dispatch]);
   
-  
 
-  
-  
-  
-  console.log(tableData,"TABLEDATA")
-  
-  
-  
   return (
     <Box sx={{ borderRadius: "0px" }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>

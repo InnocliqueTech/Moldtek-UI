@@ -246,7 +246,6 @@ function ReusableTable<T extends Record<string, any>>({
     if (onSelectionChange) onSelectionChange(newSelected);
   };
 
-  console.log(data, "TABLEDATA");
 
   const handleSelect = (row: T) => {
     const selectedIndex = selected.findIndex(

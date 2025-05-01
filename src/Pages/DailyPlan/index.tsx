@@ -64,17 +64,17 @@ const transformJobDataList = (apiData: DailyJob[] | undefined): TableDataModel[]
   if(!apiData){
    return [ {
       _id: generateId(),
-      unitEffectivityNumber: "N/A",
+      unitEffectivityNumber: "--",
       customer: { 
         image: "", 
-        customerName:  "N/A" 
+        customerName:  "--" 
       },
-      indentNumber: "N/A",
-      masterVersionNo:  "N/A",
-      labelType: "N/A",
-      createdAt: "N/A",
-      jobRunDate: "N/A",
-      status:"N/A"
+      indentNumber: "--",
+      masterVersionNo:  "--",
+      labelType: "--",
+      createdAt: "--",
+      jobRunDate: "--",
+      status:"--"
     }]
   }
 
@@ -232,15 +232,15 @@ const dispatch = useDispatch()
       // { id: "lastUpdated", label: "Last Updated", align: false },
       { id: "jobRunDate", label: "Scheduled On", align: false },
     ];
-      if ( companiesError) {
-        return (
-          <Box sx={{ textAlign: "center", color: "error.main" }}>
-            <Typography variant="h6">
-              There was an error fetching the data. Please try again later.
-            </Typography>
-          </Box>
-        );
-      }
+      // if ( companiesError) {
+      //   return (
+      //     <Box sx={{ textAlign: "center", color: "error.main" }}>
+      //       <Typography variant="h6">
+      //         There was an error fetching the data. Please try again later.
+      //       </Typography>
+      //     </Box>
+      //   );
+      // }
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
