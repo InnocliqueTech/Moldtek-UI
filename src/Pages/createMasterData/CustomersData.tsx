@@ -118,44 +118,57 @@ const CustomerSelect = () => {
               );
               return (
                 <Tooltip key={customer.customerId} title={customer.fullName}>
-                  <Avatar
-                    sx={{
-                      bgcolor:
-                        colorPalette[customer.customerId % colorPalette.length],
-                      color: "white",
-                      width: 36,
-                      height: 36,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      border: isSelected ? "2px solid #1677FF" : "none",
-                    }}
-                  >
-                    {customer.fullName
-                      .split(" ")
-                      .filter((n) => n)
-                      .slice(0, 2)
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
-                  </Avatar>
-                </Tooltip>
+                <Avatar
+                  onClick={() => handleCustomerClick(customer)}
+                  sx={{
+                    bgcolor: colorPalette[customer.customerId % colorPalette.length],
+                    color: 'white',
+                    width: 36,
+                    height: 36,
+                    fontSize: 14,
+                    cursor: 'pointer',
+                    border: isSelected ? '2px solid #1677FF' : 'none'
+                  }}
+                >
+                  {customer.fullName
+                          .split(" ")
+                          .filter((n) => n)
+                          .slice(0, 2)
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
+                </Avatar>
+              </Tooltip>
               );
             })}
 
         {customersData.length > 5 && (
-          <IconButton onClick={handleOpen}>
-            <Avatar
-              sx={{
-                bgcolor: "gray",
-                width: 36,
-                height: 36,
-                fontSize: 14,
-                mt: -1,
-              }}
-            >
-              <MoreHorizIcon />
-            </Avatar>
-          </IconButton>
+      <IconButton
+      onClick={handleOpen}
+      disableRipple
+      sx={{
+        p: 0,
+        '&:focus': {
+          outline: 'none',
+        },
+        '&:focus-visible': {
+          outline: 'none',
+        },
+      }}
+    >
+      <Avatar
+        sx={{
+          bgcolor: "gray",
+          width: 36,
+          height: 36,
+          fontSize: 14,
+          mt: -1,
+        }}
+      >
+        <MoreHorizIcon />
+      </Avatar>
+    </IconButton>
+    
         )}
       </Box>
 
