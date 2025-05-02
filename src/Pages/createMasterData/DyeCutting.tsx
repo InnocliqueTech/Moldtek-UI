@@ -179,7 +179,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
               <DropdownComponent
                 label="Dye Cutting Machine Type"
                 options={["Packers", "Poly", "Rhyguan", "Scober", "Sysco"]}
-                value={formData.machine_type}
+                value={formData?.machine_type}
                 onChange={(value) => handleChange("machine_type", value)}
                 isMultiSelect={false}
                 checkbox={false}

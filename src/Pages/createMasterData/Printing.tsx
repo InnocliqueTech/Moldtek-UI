@@ -231,7 +231,7 @@ const Printing: React.FC<PrintingProps> = ({
       const trimmed = newValue.trim();
       if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge" &&field!=='printing_machine_name' && field!=='rewinder') {
+      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge" &&field!=='printing_machine_name' && field!=='rewinder' && field!=='substrate_type') {
         errorMsg =
           "Only alphabets are allowed — no numbers or special characters";
       }
