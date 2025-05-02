@@ -80,24 +80,31 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
     if (isNumberField) {
       if (typeof newValue === "string") {
-        const trimmed = newValue.trim().replace("%", "");
-        finalValue = newValue;
-
+        const trimmed = newValue.trim().replace("%", ""); // Remove any percentage sign
+        finalValue = newValue; // Default final value is the original value
+    
+        // If the field is empty, set the final value to an empty string and clear the error message
         if (trimmed === "") {
           errorMessage = "";
-        } else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
+        } 
+        // If the value is invalid (non-numeric and not a valid percentage), show an error
+        else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
           errorMessage = "Please enter a valid number or percentage";
-        } else {
+        } 
+        else {
+          // If the value contains a percentage, keep it as a string with the percentage sign
           finalValue = newValue.includes("%")
             ? `${parseFloat(trimmed)}%`
-            : Number(trimmed);
-          errorMessage = "";
+            : Number(trimmed); // Otherwise, keep it as a number
+    
+          errorMessage = ""; // Clear the error message for valid input
         }
       } else {
         finalValue = "";
-        errorMessage = "Invalid input";
+        errorMessage = "Invalid input"; // Error for non-string values
       }
-    } else {
+    }
+    else {
       if (typeof newValue === "string") {
         const trimmedValue = newValue.trim();
         finalValue = newValue;

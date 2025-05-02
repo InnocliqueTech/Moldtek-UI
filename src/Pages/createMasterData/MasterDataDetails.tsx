@@ -181,21 +181,25 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     const isImportant = importantFields.includes(field);
   
     if (numericFields.includes(field)) {
-      const numericValue = trimmed.replace('%', '');
-  
+      const numericValue = trimmed.replace('%', ''); // Remove percentage sign if it exists
+    
+      // Handle empty fields with `isImportant`
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
-      } else if (trimmed !== "" && isNaN(Number(numericValue))) {
+      } 
+      // Ensure the value is a valid number or percentage, including `0` and decimals
+      else if (trimmed !== "" && isNaN(Number(numericValue))) {
         errorMessage = "Please enter a valid number.";
       } else {
-        finalValue =
-          trimmed === ""
-            ? ""
-            : trimmed.includes('%')
-            ? `${parseFloat(numericValue)}%`
-            : Number(numericValue); 
+        // If the field is empty, set finalValue to an empty string
+        finalValue = trimmed === ""
+          ? ""
+          : trimmed.includes('%') // If there's a '%' sign, keep it as percentage
+          ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
+          : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
       }
-    } else if (characterFields.includes(field)) {
+    }
+     else if (characterFields.includes(field)) {
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";

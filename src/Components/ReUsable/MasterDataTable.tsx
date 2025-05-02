@@ -73,26 +73,30 @@ const DataTable = <T extends Record<string, any>>({
       "volume",
       "lf_value"
     ];
-    const laminationFileds = ["code", "brand"];
-    const printingField = ["color_pantone"];
-
+    const laminationFields = ["code", "brand"];
+    const printingFields = ["color_pantone"];
+  
     if (value === "") return true;
-
+  
     if (numericFields.includes(columnId)) {
-      const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)$/.test(value); 
-      const isValidPercentage = /^(\d+(\.\d*)?|\.\d+)%$/.test(value); 
-    
-      return (isValidDecimal || isValidPercentage) && value !== "0";
+      // Allow any digits (including leading zeros) with optional decimal part
+      const isValidDecimal = /^\d+(\.\d+)?$/.test(value);
+      const isValidPercentage = /^\d+(\.\d+)?%$/.test(value);
+  
+      return isValidDecimal || isValidPercentage;
     }
-    
-    if (id==='lamination' && laminationFileds.includes(columnId)) {
+  
+    if (id === 'lamination' && laminationFields.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
-    if (id === "printing" && printingField.includes(columnId)) {
-      return /^[A-Za-z\s]*$/.test(value);
+  
+    if (id === "printing" && printingFields.includes(columnId)) {
+      return /^[\x20-\x7E]*$/.test(value);
     }
+  
     return true;
   };
+  
 
   const handleChange = <K extends keyof T>(
     rowIndex: number,
@@ -105,22 +109,36 @@ const DataTable = <T extends Record<string, any>>({
       "ratio",
       "uv_led_intensity",
       "volume",
-       "lf_value"
+      "lf_value"
     ];
+    
     let updatedValue: any = value;
-
+  
     if (numberKeys.includes(columnId as string)) {
-      updatedValue =
-        value === "" ? "" : isNaN(Number(value)) ? value : Number(value);
+      const stringValue = String(value); 
+    
+      const isValidDecimal = /^\d+(\.\d+)?$/.test(stringValue);
+      const isValidPercentage = /^\d+(\.\d+)?%$/.test(stringValue);
+    
+      if (stringValue === "") {
+        updatedValue = "";
+      } else if (isValidDecimal) {
+        updatedValue = Number(stringValue);
+      } else if (isValidPercentage) {
+        updatedValue = stringValue;
+      } else {
+        updatedValue = stringValue;
+      }
     }
-
+    
+  
     updated[rowIndex] = {
       ...updated[rowIndex],
       [columnId]: updatedValue,
     };
-
+  
     setData?.(updated);
-
+  
     if (id === "printing") {
       dispatch(
         setSavePrintingFormData({
@@ -129,7 +147,7 @@ const DataTable = <T extends Record<string, any>>({
         })
       );
     }
-
+  
     if (id === "lamination") {
       dispatch(
         setLaminationFormData({
@@ -139,6 +157,7 @@ const DataTable = <T extends Record<string, any>>({
       );
     }
   };
+  
 
   useEffect(() => {
     if (invalidFieldsTable) {

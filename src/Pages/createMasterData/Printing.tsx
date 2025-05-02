@@ -180,7 +180,7 @@ const Printing: React.FC<PrintingProps> = ({
       "outfeed",
       "dyne_level",
       "tension",
-      "lf_value" 
+      "lf_value"
     ].includes(field);
   
     const isMachineField = machineFields.some((f) => f.id === field);
@@ -189,34 +189,33 @@ const Printing: React.FC<PrintingProps> = ({
   
     let errorMsg = "";
     let finalValue: string | number | string[] = newValue;
+  
     // Validate number fields
     if (isNumberField) {
-      // Check for empty or zero value
-      if (newValue === "0" || newValue === "") {
-        errorMsg = "Value cannot be 0 or empty";
-      }
-      // Ensure newValue is a string before calling match
-      else if (typeof newValue === 'string') {
+      const stringValue = newValue.toString().trim();
+  
+      // Allow "0" or "0.0" or other decimal values
+      if (stringValue === "0" || stringValue === "0.0" || stringValue === "") {
+        finalValue = stringValue; // Allow 0 and empty
+        errorMsg = ""; // No error
+      } else {
+        // Regex to validate decimal or percentage with optional "%"
         const regex = /^(\d+(\.\d+)?)(%)?$/;
-        const match = newValue.match(regex);
+        const match = stringValue.match(regex);
   
         if (match) {
-          // No conversion to decimal, just keep the value as-is
-          finalValue = newValue; // Keep it as a string with or without percentage
-    
+          finalValue = stringValue; // Keep the value as a string with or without percentage
           errorMsg = ""; // Valid number or percentage
         } else {
           errorMsg = "Invalid number or percentage";
         }
-      } else {
-        errorMsg = "Invalid input: Expected a string, but got an array.";
       }
     }
-    
-    
-     else if (field === "thickness") {
+  
+    // Validate thickness field (alphanumeric check)
+    else if (field === "thickness") {
       const trimmed = (newValue as string).trim();
-    
+  
       if (trimmed === "") {
         errorMsg = "Thickness cannot be empty.";
         finalValue = "";
@@ -226,30 +225,41 @@ const Printing: React.FC<PrintingProps> = ({
         errorMsg = "";
         finalValue = trimmed;
       }
-    } else if (typeof newValue === "string") {
-      // For other string-based fields
+    } 
+    // For other string-based fields
+    else if (typeof newValue === "string") {
       const trimmed = newValue.trim();
       if (trimmed === "") {
         errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (!onlyLettersRegex.test(trimmed)&& field !=='cylinder_teeth' && field !=="tension" && field !=="format_correct" && field!=="static_charge" &&field!=='printing_machine_name' && field!=='rewinder' && field!=='substrate_type') {
-        errorMsg =
-          "Only alphabets are allowed — no numbers or special characters";
+      } else if (
+        !onlyLettersRegex.test(trimmed) &&
+        field !== "cylinder_teeth" &&
+        field !== "tension" &&
+        field !== "format_correct" &&
+        field !== "static_charge" &&
+        field !== "printing_machine_name" &&
+        field !== "rewinder" &&
+        field !== "substrate_type"
+      ) {
+        errorMsg = "Only alphabets are allowed — no numbers or special characters";
       }
     }
   
+    // Update errors
     const updatedErrors = { ...errors };
-
+  
     if (field !== "printing_machine_name") {
       updatedErrors[field] = errorMsg;
     } else {
-      delete updatedErrors[field]; 
+      delete updatedErrors[field]; // Remove error if no issues
     }
+  
     if (field !== "supplier") {
       updatedErrors[field] = errorMsg;
     } else {
-      delete updatedErrors[field]; 
+      delete updatedErrors[field]; // Remove error if no issues
     }
-    
+  
     setErrors(updatedErrors);
     dispatch(setPrintngFormErros(updatedErrors));
   
@@ -410,7 +420,6 @@ const Printing: React.FC<PrintingProps> = ({
   
     const hasErrors = Object.values(errors).some((error) => error);
     const shouldDisableButton = !isAllFieldFilled || hasErrors || printingTableValueVaidation;
-  console.log(shouldDisableButton,errors,"PRINTINGTABLEVALIDATION1")
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
   }, [formValues, errors, printingTableValueVaidation]);
   

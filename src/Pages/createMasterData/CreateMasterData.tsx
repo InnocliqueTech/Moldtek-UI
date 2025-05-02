@@ -568,10 +568,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
               />
             )}
             {selectedTab === 2 &&
-              !(
-                saveFormData.label_type === "Thin Wall" ||
-                saveFormData.segment === "TW"
-              ) || !(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && (
+              !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
+                viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && (
                 <Lamination
                   tableData={LaminationTableData}
                   setTableData={setLaminationTableData}

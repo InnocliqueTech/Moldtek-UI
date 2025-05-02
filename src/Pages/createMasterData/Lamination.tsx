@@ -196,35 +196,34 @@ const Lamination: React.FC<LaminationProps> = ({
         finalValue = Number(trimmed); // Save as number
         errorMessage = "";
       }
-    }  else if (numericFields.has(field)) {
-      const originalValue = newValue; // Log the original value
+    } 
+    else if (numericFields.has(field)) {
       const trimmed = (newValue as string).trim();
-      console.log("Original Value:", originalValue); // Log the value before trimming
-      console.log("Trimmed Value:", trimmed); // Log the trimmed value
-
-      const percentageMatch = trimmed.match(/^(\d+(\.\d+)?)(%)?$/); // e.g., 12, 12.5, 12%, 12.5%
-
-      if (trimmed === "" || trimmed === "0") {
-        finalValue = ""; // Set to empty string when cleared or zero
-        errorMessage = `${field.replace(/_/g, " ")} cannot be empty.`; // Show error if empty
+    
+      // Match for valid number or percentage (e.g., 12, 12.5, 12%, 12.5%, 0, 0.0)
+      const percentageMatch = trimmed.match(/^(\d+(\.\d+)?)(%)?$/); 
+    
+      // Allow empty, zero, or "0.0" as valid entries
+      if (trimmed === "" || trimmed === "0" || trimmed === "0.0") {
+        finalValue = trimmed === "0" || trimmed === "0.0" ? 0 : ""; // Set to 0 or empty when cleared, zero, or 0.0
       } else if (!percentageMatch) {
-        // If non-numeric, retain the string value
-        finalValue = trimmed;
-        errorMessage = `${field.replace(
-          /_/g,
-          " "
-        )} must be a valid number or percentage.`; // Error for invalid input
+        // If the value doesn't match the valid number or percentage pattern
+        finalValue = trimmed; // Keep the original string value (invalid input)
+        errorMessage = `${field.replace(/_/g, " ")} must be a valid number or percentage.`; // Invalid number error
       } else {
-        const numericPart = parseFloat(percentageMatch[1]); // Get numeric part, ignoring percentage sign
+        const numericPart = parseFloat(percentageMatch[1]); // Get numeric part (without the % sign)
+        
+        // If the parsed number is NaN, treat it as invalid
         if (isNaN(numericPart)) {
-          finalValue = trimmed; // If it's still NaN after parsing, keep as a string
+          finalValue = trimmed; // Retain as string
           errorMessage = `${field.replace(/_/g, " ")} must be a valid number.`; // Error for invalid number
         } else {
-          finalValue = numericPart; // Otherwise, save the valid numeric value
-          errorMessage = ""; // Clear the error if the input is valid
+          finalValue = numericPart; // Save as numeric value
+          errorMessage = ""; // Clear the error if input is valid
         }
       }
     }
+    
     else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
     
@@ -277,9 +276,9 @@ const Lamination: React.FC<LaminationProps> = ({
         (item) =>
           item.ratio === "" || item.ratio === null || item.ratio === undefined
       );
-
+    
       const firstTwoInvalid = bondingMaterials
-        .slice(0, 2)
+        .slice(0, 1)
         .some(
           (item) =>
             !item.code ||
@@ -288,21 +287,33 @@ const Lamination: React.FC<LaminationProps> = ({
             item.ratio === null ||
             item.ratio === undefined
         );
-
+    
       const thirdItem = bondingMaterials[2];
       let thirdInvalid = false;
-
+    console.log(thirdItem,"THIRDITEMOFTHEDATA")
       if (thirdItem) {
-        // It's only valid to trigger "true" if ONLY ratio is missing
-        const isOnlyRatioMissing =
-          (!thirdItem.ratio && !thirdItem.code && !thirdItem.brand) || // all missing
-          (!thirdItem.ratio && !!thirdItem.code && !!thirdItem.brand); // only ratio missing
-
-        thirdInvalid = isOnlyRatioMissing;
+        const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
+    
+        // Ethyl: ratio is required, code/brand are not
+        if (isEthyl) {
+          thirdInvalid =
+            thirdItem.ratio === "" ||
+            thirdItem.ratio === null ||
+            thirdItem.ratio === undefined;
+        } else {
+          // Other types: all three required
+          thirdInvalid =
+            !thirdItem.code ||
+            !thirdItem.brand ||
+            thirdItem.ratio === "" ||
+            thirdItem.ratio === null ||
+            thirdItem.ratio === undefined;
+        }
       }
-
+    console.log(hasEmptyRatio,firstTwoInvalid,thirdInvalid,"hasEmptyRatio")
       allValid = hasEmptyRatio || firstTwoInvalid || thirdInvalid;
     }
+    
 
     for (const sectionKey in formData) {
       const section = (formData as any)[sectionKey];
@@ -367,10 +378,11 @@ const Lamination: React.FC<LaminationProps> = ({
     const shouldEnableSave =
       isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
     const shouldEnableSubmitAndPublish =
-      areAllFieldsFilled && !hasAnyError && !allValid  && !laminationTableValueVaidation;;
+      areAllFieldsFilled || hasAnyError || allValid  || laminationTableValueVaidation;
+      console.log(areAllFieldsFilled,hasAnyError,allValid,laminationTableValueVaidation,"laminationTableValueVaidation")
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
-      setSubmitAndPublishButtonMasterLamination(!shouldEnableSubmitAndPublish)
+      setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish)
     );
   }, [errors, formData]);
 

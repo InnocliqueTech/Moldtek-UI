@@ -57,22 +57,22 @@ type StationData = {
 
 type TensionApiResponse = {
     std: {
-      unwinder: number;
+      unwinder: number| null;
       infeed: number;
       outfeed: number;
       rewinder: number;
     };
     actuals: {
-      unwinder: number;
-      infeed: number;
-      outfeed: number;
-      rewinder: number;
+      unwinder: number | null;
+      infeed: number | null;
+      outfeed: number | null;
+      rewinder: number | null;
     };
   };
   
   type TensionColumn = { id: string; label: string };
   type TensionRow = { label: string;  edit?: boolean;
-    [key: string]: string | number | boolean | undefined;  };
+    [key: string]: string | number | boolean | undefined | null;  };
 
   
   export const transformTensionData = (

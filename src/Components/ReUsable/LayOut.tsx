@@ -65,6 +65,7 @@ const clearRequestPayoad ={
     repeat_length: 0,
     ups: 0,
     tracks: 0,
+    segment:''
   },
   masterDataPrinting: {
     printingDetails: {
