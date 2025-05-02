@@ -53,12 +53,21 @@ const DropdownComponent: React.FC<DropdownProps> = ({
 
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     let selectedValues = event.target.value as string[];
-
     if (showAllOption && selectedValues.includes("All")) {
+      selectedValues = options;
+    }
+    // If placeholder is selected, reset to empty
+    if (selectedValues.includes("")) {
+      selectedValues = [];
+    }
+
+    // Handle "All" selection for multi-select
+    if (isMultiSelect && showAllOption && selectedValues.includes("All")) {
       selectedValues = options;
     }
 
     setSelectedOptions(selectedValues);
+    // Directly pass the event object back to the parent
     onChange(event);
   };
 
@@ -86,7 +95,10 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           onChange={handleSelectChange}
           displayEmpty
           renderValue={(selected) => {
-            if (selected.length === 0) {
+            if (
+              selected.length === 0 ||
+              (Array.isArray(selected) && selected.includes(""))
+            ) {
               return (
                 <Typography color="text.secondary" sx={{ opacity: 0.7 }}>
                   Select {label}
@@ -111,14 +123,8 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             );
           }}
           MenuProps={{
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "left",
-            },
-            transformOrigin: {
-              vertical: "top",
-              horizontal: "left",
-            },
+            anchorOrigin: { vertical: "bottom", horizontal: "left" },
+            transformOrigin: { vertical: "top", horizontal: "left" },
             PaperProps: {
               style: {
                 maxHeight: 200,
@@ -136,6 +142,12 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             },
           }}
         >
+          {/* Placeholder Option */}
+          <MenuItem value="">
+            <em>Select {label}</em>
+          </MenuItem>
+
+          {/* "All" Option for multi-select */}
           {isMultiSelect && showAllOption && (
             <MenuItem value="All">
               <Checkbox
@@ -149,6 +161,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             </MenuItem>
           )}
 
+          {/* Actual Options */}
           {options.map((option) => (
             <MenuItem
               key={option}

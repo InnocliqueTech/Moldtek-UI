@@ -48,27 +48,40 @@ const TextArea: React.FC<TextAreaProps> = ({
         )}
       </Box>
       <TextField
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        multiline
-        rows={rows}
-        fullWidth={fullWidth}
-        disabled={disabled}
-        error={error}
-        helperText={helperText}
-        className={className}
-        variant="outlined"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            padding: "6px",
-            "& input": {
-              color: "black",
-            },
-          },
-        }}
-      />
+  value={value}
+  onChange={onChange}
+  placeholder={placeholder}
+  multiline
+  rows={rows}
+  fullWidth={fullWidth}
+  disabled={disabled}
+  error={error}
+  helperText={helperText}
+  className={className}
+  variant="outlined"
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      padding: "6px",
+    },
+    "& .MuiInputBase-inputMultiline": {
+      overflow: "auto",
+      whiteSpace: "pre", // Prevent wrapping
+      wordBreak: "keep-all",
+    },
+    "& input": {
+      color: "black",
+      overflow: "auto",
+    },
+  }}
+  inputProps={{
+    style: {
+      overflow: "auto",
+      whiteSpace: "pre", // Prevent line wrapping
+    },
+  }}
+/>
+
     </Box>
   );
 };
