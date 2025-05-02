@@ -113,6 +113,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   } = useGetDailyJobMetricsQuery();
 
     const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
+      setPage(0);
       setRowsPerPage(parseInt(event.target.value, 10));
       localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
     };
@@ -124,7 +125,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   //   // error: jobsError
   // } = useGetDailyJobsListQuery(pagination);
 
-    const { filtersPayload,openSliderDaily,dropDown } = useSelector(
+    const { filtersPayload,openSliderDaily,dropDown,isSearchTriggered } = useSelector(
       (state: RootState) => state.viewDailyPlan
     );
   const [
@@ -132,14 +133,17 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     {
       data: listOfCompaniesData,
       isLoading: listOfCompaniesLoading,
-      isError: companiesError,
+      // isError: companiesError,
     },
   ] = useDailyPlanFiltersMutation();
   useEffect(() => {
 
   
     if (!openSliderDaily|| dropDown) {
-      dailyPlanFilters({ ...filtersPayload, page: page, size: rowsPerPage });
+      dailyPlanFilters({ ...filtersPayload, page: isSearchTriggered ?0:page, size: rowsPerPage });
+    }
+    if(isSearchTriggered){
+      setPage(0)
     }
   }, [page, openSliderDaily, filtersPayload, dropDown,rowsPerPage]);
   
@@ -290,7 +294,7 @@ const dispatch = useDispatch()
               data={data}
               selectable={true}
               label={`${listOfCompaniesData?.totalRecords? listOfCompaniesData.totalRecords:0} Jobs`}
-              title="List of Job Tracker"
+              title="Job OverView"
               pageNumber={page}
               info={true}
               searchVisible={false}

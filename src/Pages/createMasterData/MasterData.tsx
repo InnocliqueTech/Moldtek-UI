@@ -143,7 +143,7 @@ const MasterData: React.FC = () => {
   ];
 
 
-  const { filtersPayload, openSider } = useSelector(
+  const { filtersPayload, openSider,isSearchTriggered } = useSelector(
     (state: RootState) => state.masterData
   );
   const [
@@ -157,7 +157,10 @@ const MasterData: React.FC = () => {
 
   useEffect(() => {
     if (!openSider) {
-      masterFilters({ ...filtersPayload, page: page, size: rowsPerPage });
+      masterFilters({ ...filtersPayload, page: isSearchTriggered?0:page, size: rowsPerPage });
+    }
+    if(isSearchTriggered){
+      setPage(0)
     }
   }, [page, openSider,filtersPayload,rowsPerPage]);
 
@@ -217,10 +220,10 @@ const MasterData: React.FC = () => {
           selectable={false}
           label={
             listOfCompaniesData?.totalRecords
-              ? `${listOfCompaniesData?.totalRecords} Companies`
-              : "0 Companies"
+              ? `${listOfCompaniesData?.totalRecords} Jobs`
+              : "0 Job"
           }
-          title="List of Companies"
+          title="Overview"
           info={true}
           searchVisible={false}
           action={true}

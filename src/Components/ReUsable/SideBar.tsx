@@ -12,6 +12,7 @@ import {
 import { ExitToApp } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
+import LogoIcon from "../../assets/Images/logo.png";
 import profileImage from "../../assets/Images/profile.svg";
 import HomeIcon from "../../assets/Images/home.svg";
 import HomeSelectedIcon from "../../assets/Images/homeSelected.png";
@@ -238,9 +239,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
         {/* Top Section with Logo and User Info */}
 
         <Box>
-          {!collapsed && (
+          {!collapsed ? (
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <img src={Logo} alt="Logo" />
+            </Box>
+          ):(
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2,width:50 }}>
+              <img src={LogoIcon} alt="Logo" />
             </Box>
           )}
 
@@ -315,7 +320,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                     sx={{
-                      py: 0.5,
+                      py: !collapsed?0.5:1.3,
                       bgcolor:
                         isSelected && !collapsed
                           ? "white"
@@ -398,7 +403,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     onMouseEnter={() => setPreferenceHoveredIndex(index)}
                     onMouseLeave={() => setPreferenceHoveredIndex(null)}
                     sx={{
-                      py: 0.5,
+                      py: !collapsed?0.5:1.3,
                       bgcolor:
                         isSelected && !collapsed
                           ? "white"
@@ -465,7 +470,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 minWidth: 32,
               }}
             >
+                  <Tooltip
+                  title={"LogOut"}
+                  placement="right"
+                  arrow
+                
+                >
               <ExitToApp />
+              </Tooltip>
             </ListItemIcon>
             {!collapsed && (
               <ListItemText

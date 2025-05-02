@@ -45,7 +45,7 @@ const CustomerSelect = () => {
 
   const customersData = customers || [];
   const visibleCustomers = customersData?.slice(0, 5);
-  const hiddenCustomers = customersData?.slice(7);
+  const hiddenCustomers = customersData?.slice(5);
 
   const colorPalette = [
     "#FF8A80",
@@ -78,6 +78,8 @@ const CustomerSelect = () => {
   const handleClearSelection = () => {
     dispatch(setSelectedCustomers([]));
   };
+
+console.log(customersData,"CustomersData")
 
   return (
     <Box
@@ -162,7 +164,7 @@ const CustomerSelect = () => {
           width: 36,
           height: 36,
           fontSize: 14,
-          mt: -1,
+          mt: 0,
         }}
       >
         <MoreHorizIcon />
