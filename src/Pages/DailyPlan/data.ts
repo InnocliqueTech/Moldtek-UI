@@ -635,8 +635,8 @@ export const labelDispatchRows = [
 
 export const machineSpecsColumns = [
     { id: "machineName", label: "Machine Name" , edit: false},
-    { id: "dieToolCode", label: "Die tool Code", edit: true },
-    { id: "machineSpeed", label: "Machine Speed", edit: true },
+    { id: "dieToolCode", label: "Die tool Code", edit: false },
+    { id: "machineSpeed", label: "Machine Speed", edit: false },
 ]
 
 export const machineSpecsRows = [

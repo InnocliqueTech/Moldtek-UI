@@ -303,7 +303,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       </Box>
     );
   }
-
+console.log(zoneTempPressingData,"ZoneTempPressingData")
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>

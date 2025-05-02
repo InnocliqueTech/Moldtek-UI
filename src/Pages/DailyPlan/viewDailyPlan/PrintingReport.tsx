@@ -172,10 +172,10 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
         <TitledDataTable
           title="Print Repeat & Labelling Details"
           columns={[
-            { id: "repeatInMM", label: "Repeat in MM", edit: isEditing },
-            { id: "ups", label: "UPS", edit: isEditing },
-            { id: "jarCap", label: "JAR/CAP", edit: isEditing },
-            { id: "labelsPerMtrs", label: "Labels Per Mtrs", edit: isEditing },
+            { id: "repeatInMM", label: "Repeat in MM" },
+            { id: "ups", label: "UPS" },
+            { id: "jarCap", label: "JAR/CAP"},
+            { id: "labelsPerMtrs", label: "Labels Per Mtrs" },
           ]}
           data={printRepeatData}
           setData={(data: any) =>
@@ -243,12 +243,11 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
             {
               id: "roll1",
               label: "Roll-1",
-              edit: isEditing,
+             
             },
             {
               id: "roll2",
               label: "Roll-2",
-              edit: isEditing,
             },
           ]}
           data={printingProcessData}

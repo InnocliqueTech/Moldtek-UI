@@ -38,7 +38,7 @@ type StationData = {
       const row: TableRow = { stationNo: rowDef.id };
       apiData.forEach((station) => {
         const colKey = String(station.stationNo);
-        row[colKey] = station[rowDef.key] ?? "--";
+        row[colKey] = station[rowDef.key] ?? "";
       });
       return row;
     });
@@ -126,7 +126,7 @@ type TensionApiResponse = {
     return apiDataList.map((item) => {
       const row: PrintingProcessRow = {
         particular: item.particular,
-        target: item.target ?? "--"
+        target: item.target ?? ""
       };
       Object.entries(item.rollValues ?? {}).forEach(([rollKey, value]) => {
         // Convert keys like "Roll-1" to "roll1"
@@ -147,7 +147,7 @@ type TensionApiResponse = {
   
       return {
         particular,
-        target: target === "--" ? null : target, 
+        target: target === "" ? null : target, 
         rollValues,
       };
     });
@@ -171,7 +171,7 @@ type TensionApiResponse = {
     if(!apiData) return []
     return Object.entries(printingMCMapping).map(([key, label]) => ({
       label,
-      value: apiData[key] ?? "--" // fallback if value is null or undefined
+      value: apiData[key] ?? "" // fallback if value is null or undefined
     }));
   };
 
@@ -210,25 +210,25 @@ type TensionApiResponse = {
       },
       {
         label: "Total Printing Time",
-        value: data.totalPrintingTime || "--",
+        value: data.totalPrintingTime || "",
         editable: makeEditable,
         keyName: "totalPrintingTime",
       },
       {
         label: "Operator",
-        value: data.operator || "--",
+        value: data.operator || "",
         editable: makeEditable,
         keyName: "operator",
       },
       {
         label: "Supervisor",
-        value: data.supervisor || "--",
+        value: data.supervisor || "",
         editable: makeEditable,
         keyName: "supervisor",
       },
       {
         label: "HOD",
-        value: data.hod || "--",
+        value: data.hod || "",
         editable: makeEditable,
         keyName: "hod",
       },
@@ -257,7 +257,7 @@ type TensionApiResponse = {
   };
   
   export const transformZoneTempData = (data: ZoneTempApiResponse): ZoneTempPressingRow[] => {
-    const getValue = (value?: number): string => (value !== undefined && value !== null ? String(value) : '--');
+    const getValue = (value?: number): string => (value !== undefined && value !== null ? String(value) : '');
   
     return [
       {
@@ -299,7 +299,7 @@ type TensionApiResponse = {
   export const transformUnwindRewindData = (
     data: UnwindRewindApiResponse
   ): UnwindRewindRow[] => {
-    const getVal = (val?: string): string => (val !== undefined && val !== null ? val : '--');
+    const getVal = (val?: string): string => (val !== undefined && val !== null ? val : '');
   
     return [
       {
@@ -340,7 +340,7 @@ type TensionApiResponse = {
     data: LaminationFilmApiResponse
   ): LaminationFilmRow[] => {
     const getVal = (val?: string | number): string => 
-      val !== undefined && val !== null ? String(val) : '--';
+      val !== undefined && val !== null ? String(val) : '';
   
     return [
       {
@@ -382,7 +382,7 @@ type TensionApiResponse = {
     data: PlainFilmApiResponse
   ): PlainFilmInfoItem[] => {
     const getVal = (val?: string | number): string =>
-      val !== undefined && val !== null && val !== '' ? String(val) : '--';
+      val !== undefined && val !== null && val !== '' ? String(val) : '';
   
     return [
       {

@@ -108,7 +108,7 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
           }))}
           data={editableData.approvalRemarks}
           setData={(newData:any) => handleDataUpdate('approval', newData)}
-          firstRow={true}
+          firstRow={false}
         />
       </Box>
     </>
