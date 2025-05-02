@@ -7,6 +7,7 @@ import {
   ListItemText,
   Avatar,
   Typography,
+  Tooltip,
 } from "@mui/material";
 import { ExitToApp } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -56,6 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const dynamicTexts = ["Kristin Watson", "Text Two"];
   const currentText = dynamicTexts[0];
+  const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -185,6 +187,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const itemClick = () => {
+    toggleMobileSidebar();
     if (!isDyeCuttingDataSave) {
       dispatch(clearDyeCuttingFormData());
       dispatch(clearDyeCuttingFormErrors());
@@ -203,182 +206,245 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     }
   };
 
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+    itemClick();
+  };
+
   return (
     <>
       <Drawer
         variant="permanent"
-        open={open}
+        open
         sx={{
           display: { xs: "none", md: "block" },
-          width: 220,
+          width: collapsed ? 50 : 220,
+          flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: 220,
+            width: collapsed ? 50 : 220,
+            transition: "width 0.3s",
             boxSizing: "border-box",
             padding: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            alignItems: collapsed ? "center" : "flex-start",
+            overflowX: "hidden", // prevent horizontal scroll
+            overflowY: collapsed ? "hidden" : "auto", // disable vertical scroll when collapsed
+            height: "100vh",
           },
         }}
       >
+        {/* Top Section with Logo and User Info */}
+
         <Box>
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-            <img src={Logo} alt="Logo" />
-          </Box>
+          {!collapsed && (
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+              <img src={Logo} alt="Logo" />
+            </Box>
+          )}
 
           <Box
             sx={{
-              backgroundColor: "white",
-              boxShadow: 3,
+              backgroundColor: collapsed ? "transparent" : "white",
+              boxShadow: collapsed ? 0 : 3,
               px: 1,
               py: 0,
-              borderRadius: 2,
+              borderRadius: collapsed ? 0 : 2,
               mb: 2,
               display: "flex",
               alignItems: "center",
               gap: 1,
+              justifyContent: collapsed ? "center" : "flex-start",
             }}
           >
             <Avatar
               alt="User Avatar"
-              src={profileImage}
-              sx={{ width: 40, height: 40 }}
-            />
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: "#0073B7",
+                color: "white",
+                fontWeight: 600,
+              }}
+            >
+              {currentText?.charAt(0)?.toUpperCase()}
+            </Avatar>
 
-            <Box sx={{ flexGrow: 1, p: 1 }}>
-              <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
-                {currentText}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                creator
-              </Typography>
-            </Box>
-
-            {/* <IconButton onClick={handleDropdownOpen} sx={{ marginLeft: "-15px" }}>
-            <ExpandMore />
-          </IconButton>
-
-          <Menu
-            anchorEl={dropdownAnchor}
-            open={isDropdownOpen}
-            onClose={handleDropdownClose}
-          >
-            {dynamicTexts.map((text, index) => (
-              <MenuItem
-                key={index}
-                onClick={() => {
-                  setCurrentText(text);
-                  handleDropdownClose();
-                }}
-              >
-                {text}
-              </MenuItem>
-            ))}
-          </Menu> */}
+            {!collapsed && (
+              <Box sx={{ flexGrow: 1, p: 1 }}>
+                <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
+                  {currentText}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  creator
+                </Typography>
+              </Box>
+            )}
           </Box>
 
-          <Typography
-            variant="subtitle2"
-            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
-          >
-            Main Menu
-          </Typography>
+          {/* Main Menu */}
+          {!collapsed && (
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mt: 1,
+                mb: 0.5,
+                px: 1,
+                fontWeight: "500",
+                color: "#A3A3A3",
+              }}
+            >
+              Main Menu
+            </Typography>
+          )}
           <List sx={{ py: 0 }}>
             {menuItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
+
               return (
-                <ListItem
+                <Tooltip
+                  title={collapsed ? item.text : ""}
+                  placement="right"
+                  arrow
                   key={index}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  component={Link}
-                  to={item.path}
-                  sx={{
-                    py: 0.5,
-                    bgcolor: isSelected ? "white" : "transparent",
-                    boxShadow: isSelected ? 3 : 0,
-                    borderRadius: 2,
-                    "&:hover": {
-                      bgcolor: "transparent",
-                      "& .MuiListItemText-primary": {
-                        color: "#0073B7",
-                      },
-                    },
-                    pl: "8px",
-                    pr: 0,
-                  }}
-                  onClick={() => itemClick()}
                 >
-                  <ListItemIcon sx={{ minWidth: 30 }}>
-                    {isSelected || hoveredIndex === index
-                      ? item.selectedIcon
-                      : item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    primaryTypographyProps={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                    }}
+                  <ListItem
+                    component={Link}
+                    to={item.path}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
                     sx={{
-                      color: isSelected ? "#0073B7" : "#737373",
-                      whiteSpace: "nowrap",
+                      py: 0.5,
+                      bgcolor:
+                        isSelected && !collapsed
+                          ? "white"
+                          : collapsed && isSelected
+                          ? "transparent"
+                          : "transparent",
+                      boxShadow:
+                        isSelected && !collapsed
+                          ? 3
+                          : collapsed && isSelected
+                          ? 0
+                          : 0,
+                      borderRadius: collapsed && isSelected ? 0 : 2,
+                      "&:hover": {
+                        bgcolor: "transparent",
+                        "& .MuiListItemText-primary": {
+                          color: "#0073B7",
+                        },
+                      },
+                      pl: "8px",
+                      pr: 0,
+                      justifyContent: collapsed ? "center" : "flex-start",
                     }}
-                  />
-                </ListItem>
+                    onClick={() => toggleSidebar()}
+                  >
+                    <ListItemIcon sx={{ minWidth: 30 }}>
+                      {isSelected || hoveredIndex === index
+                        ? item.selectedIcon
+                        : item.icon}
+                    </ListItemIcon>
+
+                    {!collapsed && (
+                      <ListItemText
+                        primary={item.text}
+                        primaryTypographyProps={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                        }}
+                        sx={{
+                          color: isSelected ? "#0073B7" : "#737373",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
+                    )}
+                  </ListItem>
+                </Tooltip>
               );
             })}
           </List>
 
-          <Typography
-            variant="subtitle2"
-            sx={{ mt: 1, mb: 0.5, px: 1, fontWeight: "500", color: "#A3A3A3" }}
-          >
-            Preferences
-          </Typography>
+          {/* Preferences */}
+          {!collapsed && (
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mt: 1,
+                mb: 0.5,
+                px: 1,
+                fontWeight: "500",
+                color: "#A3A3A3",
+              }}
+            >
+              Preferences
+            </Typography>
+          )}
           <List sx={{ py: 0 }}>
             {preferenceItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
+
               return (
-                <ListItem
+                <Tooltip
+                  title={collapsed ? item.text : ""}
+                  placement="right"
+                  arrow
                   key={index}
-                  component={Link}
-                  onMouseEnter={() => setPreferenceHoveredIndex(index)}
-                  onMouseLeave={() => setPreferenceHoveredIndex(null)}
-                  to={item.path}
-                  sx={{
-                    py: 0.5,
-                    bgcolor: isSelected ? "white" : "transparent",
-                    boxShadow: isSelected ? 3 : 0,
-                    borderRadius: 2,
-                    "&:hover": {
-                      bgcolor: "transparent",
-                      "& .MuiListItemText-primary": {
-                        color: "#0073B7",
-                      },
-                    },
-                    pl: "8px",
-                    pr: 0,
-                  }}
-                  onClick={() => itemClick()}
                 >
-                  <ListItemIcon sx={{ minWidth: 30 }}>
-                    {isSelected || preferenceHoveredIndex === index
-                      ? item.selectedIcon
-                      : item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    primaryTypographyProps={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                    }}
+                  <ListItem
+                    component={Link}
+                    to={item.path}
+                    onMouseEnter={() => setPreferenceHoveredIndex(index)}
+                    onMouseLeave={() => setPreferenceHoveredIndex(null)}
                     sx={{
-                      color: isSelected ? "#0073B7" : "#737373",
-                      whiteSpace: "nowrap",
+                      py: 0.5,
+                      bgcolor:
+                        isSelected && !collapsed
+                          ? "white"
+                          : collapsed && isSelected
+                          ? "transparent"
+                          : "transparent",
+                      boxShadow:
+                        isSelected && !collapsed
+                          ? 3
+                          : collapsed && isSelected
+                          ? 0
+                          : 0,
+                      borderRadius: collapsed && isSelected ? 0 : 2,
+                      "&:hover": {
+                        bgcolor: "transparent",
+                        "& .MuiListItemText-primary": {
+                          color: "#0073B7",
+                        },
+                      },
+                      pl: "8px",
+                      pr: 0,
+                      justifyContent: collapsed ? "center" : "flex-start",
                     }}
-                  />
-                </ListItem>
+                    onClick={() => toggleSidebar()}
+                  >
+                    <ListItemIcon sx={{ minWidth: 30 }}>
+                      {isSelected || preferenceHoveredIndex === index
+                        ? item.selectedIcon
+                        : item.icon}
+                    </ListItemIcon>
+
+                    {!collapsed && (
+                      <ListItemText
+                        primary={item.text}
+                        primaryTypographyProps={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                        }}
+                        sx={{
+                          color: isSelected ? "#0073B7" : "#737373",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
+                    )}
+                  </ListItem>
+                </Tooltip>
               );
             })}
           </List>
@@ -401,10 +467,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             >
               <ExitToApp />
             </ListItemIcon>
-            <ListItemText
-              primary="Logout Account"
-              sx={{ whiteSpace: "nowrap" }}
-            />
+            {!collapsed && (
+              <ListItemText
+                primary="Logout Account"
+                sx={{ whiteSpace: "nowrap" }}
+              />
+            )}
           </ListItem>
         </Box>
       </Drawer>
