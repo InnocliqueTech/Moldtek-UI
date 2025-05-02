@@ -14,6 +14,8 @@ interface DailyPlan {
   shift: string;
   workOrderNumber: string;
   jobMasterId: number;
+  labelType:string;
+  // segment:string;
 }
 
 export interface InkCoatingSpecification {
@@ -121,6 +123,8 @@ const initialState: viewDailyPlan = {
     shift: "",
     workOrderNumber: "",
     jobMasterId: 0,
+    labelType:"",
+    // segment:""
   },
   inkCoatingSpecifications: [],
   analoxSpecifications: [],

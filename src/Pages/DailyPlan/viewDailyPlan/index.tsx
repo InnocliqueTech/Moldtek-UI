@@ -33,13 +33,6 @@ import {
 } from "../../../store/services/api";
 import ButtonComponent from "../../../Components/ReUsable/Button";
 
-const tabs = [
-  "Make Ready",
-  "Printing Report",
-  "Lamination Report",
-  "Label Cutting",
-  "Travel Card",
-];
 
 const ViewDailyPlan: React.FC = () => {
   const { indentNo } = useParams();
@@ -72,7 +65,7 @@ const ViewDailyPlan: React.FC = () => {
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-  const { updateDailyPlanPayload, updateCommonCard, isEditing } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { updateDailyPlanPayload, updateCommonCard, isEditing,dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // Initialize data when loaded
   useEffect(() => {
@@ -85,6 +78,7 @@ const ViewDailyPlan: React.FC = () => {
       dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisorReport));
     }
   }, [makeReady, dispatch]);
+
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     if (hasUnsavedChanges) {
@@ -215,6 +209,17 @@ const ViewDailyPlan: React.FC = () => {
     setShowTabChangeDialog(false);
     setNextTab(null);
   };
+  console.log(dailyPlan,"DAILYPLAN")
+  const tabs = [
+    "Make Ready",
+    "Printing Report",
+    ...(dailyPlan.labelType === "THINWALL"
+      ? []
+      : ["Lamination Report"]),
+    "Label Cutting",
+    "Travel Card",
+  ].filter(Boolean);
+  
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -222,11 +227,22 @@ const ViewDailyPlan: React.FC = () => {
         return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} error={isError} />;
       case 1:
         return <PrintingReport indentNO={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
-      case 2:
-        return <LaminationReport indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
+        case 2:
+          if (dailyPlan.labelType === "THINWALL") return <LabelCutting indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
+          console.log(dailyPlan.labelType,"LABELTYPE")
+          return (
+            <LaminationReport
+              indentNumber={decodedIndentNo}
+              isEditing={isEditing}
+              onDataChange={handleDataChange}
+            />
+          );
+        
       case 3:
+        if (dailyPlan.labelType === "THINWALL") return <TravelCard indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />
         return <LabelCutting indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
       case 4:
+        if (dailyPlan.labelType === "THINWALL") return null;
         return <TravelCard indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
       default:
         return null;

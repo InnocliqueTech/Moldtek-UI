@@ -22,11 +22,7 @@ import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 
 
-const tabs = [
-  "Master Data - Printing",
-  "Master Data - Lamination",
-  "Master Data - Dye Cutting",
-];
+
 
 const ViewMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,6 +55,12 @@ const path = location.pathname.includes("/versionDetails")
     ueNumber: path ? UnitEffectiveNumber : selectedUEN,
     versionNo: path ? versionNumber : versionNo,
   });
+console.log(data?.data.masterDataDetails,"MASTERDETAILSDATA")
+  const tabs = [
+    "Master Data - Printing",
+    ...(data?.data.masterDataDetails.label_type ==='Thin Wall'||data?.data.masterDataDetails.segment ==='TW' ? []:["Master Data - Lamination"]),
+    "Master Data - Dye Cutting",
+  ];
 
   useEffect(() => {
     if (data) {
@@ -166,7 +168,10 @@ const path = location.pathname.includes("/versionDetails")
 
             <Box sx={{ padding: 2 }}>
               {selectedTab === 0 && <ViewPrinting />}
-              {selectedTab === 1 && <ViewLamination />}
+              {selectedTab === 1 && !(
+               data?.data.masterDataDetails.label_type ==='Thin Wall'||
+               data?.data.masterDataDetails.label_type === "TW"
+              ) && <ViewLamination />}
               {selectedTab === 2 && <ViewDyeCutting />}
             </Box>
           </Box>

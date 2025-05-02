@@ -65,6 +65,9 @@ const CreateMasterData: React.FC = () => {
     saveLaminatingData,
     savePrintingData,
   } = useSelector((state: RootState) => state.masterData);
+  const {
+viewMasterDataDetails
+  } = useSelector((state: RootState) => state.viewMasterData);
 
   const [formData, setFormData] = useState<MasterFormData>({
     job_master_id: 0,
@@ -412,7 +415,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   const tabs = [
     "Master Data Details",
     "Master Data - Printing",
-    ...(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW"
+    ...((saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW") ||(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")
       ? []
       : ["Master Data - Lamination"]),
     "Master Data - Dye Cutting",
@@ -421,7 +424,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   useEffect(() => {
     if (
       (saveFormData.label_type === "Thin Wall" ||
-        saveFormData.segment === "TW") &&
+        saveFormData.segment === "TW") ||((viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) &&
       selectedTab === 2
     ) {
       dispatch(setSelectedTab(3));
@@ -568,7 +571,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
               !(
                 saveFormData.label_type === "Thin Wall" ||
                 saveFormData.segment === "TW"
-              ) && (
+              ) || !(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && (
                 <Lamination
                   tableData={LaminationTableData}
                   setTableData={setLaminationTableData}
