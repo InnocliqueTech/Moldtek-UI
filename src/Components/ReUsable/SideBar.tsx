@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import {East, ExitToApp, West } from "@mui/icons-material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
 import profileImage from "../../assets/Images/profile.svg";
