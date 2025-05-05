@@ -97,7 +97,7 @@ export interface PrintRepeatLabellingDetails {
 export interface MaterialSpecifications {
   widthMm: string
   thicknessMicrons: string
-  gsm: string
+  gsm: string  | null
   dyne: string
   staticCharge: number
   formatCorrection: number

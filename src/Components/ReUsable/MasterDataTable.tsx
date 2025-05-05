@@ -275,9 +275,9 @@ const DataTable = <T extends Record<string, any>>({
             }}
           >
             {Array.isArray(data) &&
-              data?.map((row, rowIndex) => (
+             data.filter((row) => row && typeof row === 'object').map((row, rowIndex) => (
                 <TableRow key={rowIndex}>
-                  {columns.map((column, index) => (
+                  {columns?.map((column, index) => (
                     <TableCell
                       key={column.id}
                       align="center"
@@ -512,7 +512,7 @@ const DataTable = <T extends Record<string, any>>({
                       ) : (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
                           <TextField
                             variant="standard"
-                            value={row[column.id]} // only the number
+                            value={row[column?.id]?row[column?.id]:''} // only the number
                             onChange={(e) => {
                               let inputValue = e.target.value;
                               const isValid = validateInput(

@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle,  CircularProgress  } from "@mui/material";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  CircularProgress,
+} from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
@@ -13,15 +20,17 @@ import LaminationReport from "./LaminationReport";
 import LabelCutting from "./LabelCutting";
 import TravelCard from "./TravelCard";
 import CommenCard from "./commonCard";
-import { 
-  setAnaloxSpecifications, 
-  setDailyPlan, 
-  setInkCoatingSpecifications, 
-  setMaterialSpecification, 
-  setMountingTapeSpecifications, 
+import {
+  setAnaloxSpecifications,
+  setDailyPlan,
+  setInkCoatingSpecifications,
+  setMaterialSpecification,
+  setMountingTapeSpecifications,
   setPlateMountingSupervisorReport,
   setIsEditing,
-  clearUpdateDailyPlanPayload
+  clearUpdateDailyPlanPayload,
+  setHasUnsavedChanges,
+  setShowTabChangeDialog,
 } from "../../../store/slices/viewDailyPlanSlice";
 import {
   useGetMakeReadyDetailsQuery,
@@ -33,25 +42,28 @@ import {
 } from "../../../store/services/api";
 import ButtonComponent from "../../../Components/ReUsable/Button";
 
-
 const ViewDailyPlan: React.FC = () => {
   const { indentNo } = useParams();
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [nextTab, setNextTab] = useState<number | null>(null);
-  const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
-  const [saveLabelCuttingDetails, { isLoading: isSaving }] = useSaveLabelCuttingDetailsMutation();
-  const [saveLaminationReportDetails] = useSaveLaminationReportDetailsMutation();
+  // const [showTabChangeDialog, setShowTabChangeDialog] = useState(false);
+  const [saveLabelCuttingDetails, { isLoading: isSaving }] =
+    useSaveLabelCuttingDetailsMutation();
+  const [saveLaminationReportDetails] =
+    useSaveLaminationReportDetailsMutation();
   const [saveTravelCardDetails] = useSaveTravelCardDetailsMutation();
   const [savePrintingReportDetails] = useSavePrintingReportDetailsMutation();
   const [saveMakeReadyDetails] = useSaveMakeReadyDetailsMutation();
   const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
+
+  const navigate = useNavigate();
+
   let unitEffectiveNumberDaily: number | undefined;
 
-  const uen = localStorage.getItem('unitEffectiveNumberDaily');
+  const uen = localStorage.getItem("unitEffectiveNumberDaily");
   if (uen !== null) {
     unitEffectiveNumberDaily = Number(uen);
   }
-  
+
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const {
     data: makeReady,
@@ -60,30 +72,48 @@ const ViewDailyPlan: React.FC = () => {
     // error,
   } = useGetMakeReadyDetailsQuery(decodedIndentNo);
 
-
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-  const { updateDailyPlanPayload, updateCommonCard, isEditing,dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { sideNavigationAllowed, backButtonNavigationAllowed } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
+
+  const navigationItem = localStorage.getItem("navigation");
+  const {
+    updateDailyPlanPayload,
+    updateCommonCard,
+    isEditing,
+    dailyPlan,
+    hasUnsavedChanges,
+    showTabChangeDialog,
+  } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // Initialize data when loaded
   useEffect(() => {
     if (makeReady) {
       dispatch(setDailyPlan(makeReady.data.dailyPlan));
       dispatch(setMaterialSpecification(makeReady.data.materialSpecification));
-      dispatch(setMountingTapeSpecifications(makeReady.data.mountingTapeSpecifications));
+      dispatch(
+        setMountingTapeSpecifications(makeReady.data.mountingTapeSpecifications)
+      );
       dispatch(setAnaloxSpecifications(makeReady.data.analoxSpecifications));
-      dispatch(setInkCoatingSpecifications(makeReady.data.inkCoatingSpecifications));
-      dispatch(setPlateMountingSupervisorReport(makeReady.data.plateMountingSupervisorReport));
+      dispatch(
+        setInkCoatingSpecifications(makeReady.data.inkCoatingSpecifications)
+      );
+      dispatch(
+        setPlateMountingSupervisorReport(
+          makeReady.data.plateMountingSupervisorReport
+        )
+      );
     }
   }, [makeReady, dispatch]);
-
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     if (hasUnsavedChanges) {
       setNextTab(newValue);
-      setShowTabChangeDialog(true);
+      dispatch(setShowTabChangeDialog(true));
     } else {
       dispatch(setSelectedTab(newValue));
       dispatch(clearUpdateDailyPlanPayload());
@@ -93,30 +123,38 @@ const ViewDailyPlan: React.FC = () => {
   const saveTabData = async (
     selectedTab: number,
     payload: any,
-    saveLabelCuttingDetails: ReturnType<typeof useSaveLabelCuttingDetailsMutation>[0],
-    saveTravelCardDetails: ReturnType<typeof useSaveTravelCardDetailsMutation>[0],
-    savePrintingReportDetails: ReturnType<typeof useSavePrintingReportDetailsMutation>[0],
+    saveLabelCuttingDetails: ReturnType<
+      typeof useSaveLabelCuttingDetailsMutation
+    >[0],
+    saveTravelCardDetails: ReturnType<
+      typeof useSaveTravelCardDetailsMutation
+    >[0],
+    savePrintingReportDetails: ReturnType<
+      typeof useSavePrintingReportDetailsMutation
+    >[0],
     setSavingTabIndex: React.Dispatch<React.SetStateAction<number | null>>,
-    saveLaminationReportDetails: ReturnType<typeof useSaveLaminationReportDetailsMutation>[0],
+    saveLaminationReportDetails: ReturnType<
+      typeof useSaveLaminationReportDetailsMutation
+    >[0],
     saveMakeReadyDetails: ReturnType<typeof useSaveMakeReadyDetailsMutation>[0]
   ) => {
     setSavingTabIndex(selectedTab); // show loader on current tab
     try {
       switch (selectedTab) {
-          case 0:
-            const makeReadyPayload = {
-              ...updateDailyPlanPayload,
-              dailyPlan: {
-                unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
-                indentNumber: decodedIndentNo,
-                shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
-                workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
-              },
-            };
+        case 0:
+          const makeReadyPayload = {
+            ...updateDailyPlanPayload,
+            dailyPlan: {
+              unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
+              indentNumber: decodedIndentNo,
+              shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
+              workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
+            },
+          };
           await saveMakeReadyDetails(makeReadyPayload).unwrap();
           toast.success("Make Ready details saved successfully!");
           break;
-            case 1: {
+        case 1: {
           const printingPayload = {
             ...updateDailyPlanPayload,
             dailyPlan: {
@@ -131,20 +169,19 @@ const ViewDailyPlan: React.FC = () => {
           break;
         }
         case 2:
-
-          await saveLaminationReportDetails(payload).unwrap()
+          await saveLaminationReportDetails(payload).unwrap();
           toast.success("Lamination details saved successfully!");
           break;
         case 3:
           await saveLabelCuttingDetails(payload).unwrap();
           toast.success("Label cutting details saved successfully!");
           break;
-  
+
         case 4:
           await saveTravelCardDetails(payload).unwrap();
           toast.success("Travel card details saved successfully!");
           break;
-  
+
         default:
           toast.info("No save action defined for this tab.");
           break;
@@ -153,8 +190,6 @@ const ViewDailyPlan: React.FC = () => {
       setSavingTabIndex(null); // hide loader
     }
   };
-  
-  
 
   const handleSave = async () => {
     try {
@@ -163,7 +198,7 @@ const ViewDailyPlan: React.FC = () => {
         ...updateCommonCard,
         indentNumber: decodedIndentNo,
       };
-  
+
       await saveTabData(
         selectedTab,
         commonPayload,
@@ -172,15 +207,15 @@ const ViewDailyPlan: React.FC = () => {
         savePrintingReportDetails,
         setSavingTabIndex,
         saveLaminationReportDetails,
-        saveMakeReadyDetails,
+        saveMakeReadyDetails
       );
-  
+
       // if (selectedTab < tabs.length - 1) {
       //   dispatch(setSelectedTab(selectedTab + 1));
       // }
-  
+
       //dispatch(setIsEditing(false));
-      setHasUnsavedChanges(false);
+      dispatch(setHasUnsavedChanges(false));
     } catch (error) {
       toast.error("Failed to save data. Please try again.");
       console.error("Save error:", error);
@@ -189,61 +224,103 @@ const ViewDailyPlan: React.FC = () => {
 
   const handleCancel = () => {
     dispatch(setIsEditing(false));
-    setHasUnsavedChanges(false);
+    dispatch(setHasUnsavedChanges(false));
   };
 
   const handleDataChange = () => {
-    setHasUnsavedChanges(true);
+    dispatch(setHasUnsavedChanges(true));
   };
 
   const handleDialogContinue = () => {
-    setShowTabChangeDialog(false);
+    dispatch(setShowTabChangeDialog(false));
     if (nextTab !== null) {
       dispatch(setSelectedTab(nextTab));
       setNextTab(null);
     }
-    setHasUnsavedChanges(false);
+    dispatch(setHasUnsavedChanges(false));
+    if (navigationItem && sideNavigationAllowed) {
+      navigate(navigationItem);
+      dispatch(setIsEditing(false));
+    } else if (backButtonNavigationAllowed) {
+      navigate("/dailyPlan");
+      dispatch(setIsEditing(false));
+    }
   };
 
   const handleDialogCancel = () => {
-    setShowTabChangeDialog(false);
+    dispatch(setShowTabChangeDialog(false));
     setNextTab(null);
   };
-  console.log(dailyPlan,"DAILYPLAN")
+
   const tabs = [
     "Make Ready",
     "Printing Report",
-    ...(dailyPlan.labelType === "THINWALL"
-      ? []
-      : ["Lamination Report"]),
+    ...(dailyPlan.labelType === "THINWALL" ? [] : ["Lamination Report"]),
     "Label Cutting",
     "Travel Card",
   ].filter(Boolean);
-  
 
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
-        return <MakeReady loading={isLoading} isEditing={isEditing} onDataChange={handleDataChange} error={isError} />;
+        return (
+          <MakeReady
+            loading={isLoading}
+            isEditing={isEditing}
+            onDataChange={handleDataChange}
+            error={isError}
+          />
+        );
       case 1:
-        return <PrintingReport indentNO={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
-        case 2:
-          if (dailyPlan.labelType === "THINWALL") return <LabelCutting indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
-          console.log(dailyPlan.labelType,"LABELTYPE")
+        return (
+          <PrintingReport
+            indentNO={decodedIndentNo}
+            isEditing={isEditing}
+            onDataChange={handleDataChange}
+          />
+        );
+      case 2:
+        if (dailyPlan.labelType === "THINWALL")
           return (
-            <LaminationReport
+            <LabelCutting
               indentNumber={decodedIndentNo}
               isEditing={isEditing}
               onDataChange={handleDataChange}
             />
           );
-        
+        return (
+          <LaminationReport
+            indentNumber={decodedIndentNo}
+            isEditing={isEditing}
+            onDataChange={handleDataChange}
+          />
+        );
+
       case 3:
-        if (dailyPlan.labelType === "THINWALL") return <TravelCard indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />
-        return <LabelCutting indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
+        if (dailyPlan.labelType === "THINWALL")
+          return (
+            <TravelCard
+              indentNumber={decodedIndentNo}
+              isEditing={isEditing}
+              onDataChange={handleDataChange}
+            />
+          );
+        return (
+          <LabelCutting
+            indentNumber={decodedIndentNo}
+            isEditing={isEditing}
+            onDataChange={handleDataChange}
+          />
+        );
       case 4:
         if (dailyPlan.labelType === "THINWALL") return null;
-        return <TravelCard indentNumber={decodedIndentNo} isEditing={isEditing} onDataChange={handleDataChange} />;
+        return (
+          <TravelCard
+            indentNumber={decodedIndentNo}
+            isEditing={isEditing}
+            onDataChange={handleDataChange}
+          />
+        );
       default:
         return null;
     }
@@ -251,7 +328,7 @@ const ViewDailyPlan: React.FC = () => {
 
   useEffect(() => {
     if (isEditing) {
-      setHasUnsavedChanges(false);
+      dispatch(setHasUnsavedChanges(false));
     }
   }, [isEditing]);
 
@@ -347,22 +424,26 @@ const ViewDailyPlan: React.FC = () => {
           />
 
           {/* Next */}
-          {selectedTab != 4 && <ButtonComponent
-            text="Next"
-            variant="contained"
-            onClick={() => {
-              if (hasUnsavedChanges) {
-                setNextTab(selectedTab + 1);
-                setShowTabChangeDialog(true); // show popup if unsaved changes
-              } else {
-                dispatch(setSelectedTab(selectedTab + 1));
-              }
-            }}
-            color="primary"
-            disabled={selectedTab === tabs.length - 1}
-            borderRadius="100px"
-            p="14px"
-          />}
+          {(dailyPlan.labelType === "THINWALL"
+            ? selectedTab != 3
+            : selectedTab != 4) && (
+            <ButtonComponent
+              text="Next"
+              variant="contained"
+              onClick={() => {
+                if (hasUnsavedChanges) {
+                  setNextTab(selectedTab + 1);
+                  dispatch(setShowTabChangeDialog(true)); // show popup if unsaved changes
+                } else {
+                  dispatch(setSelectedTab(selectedTab + 1));
+                }
+              }}
+              color="primary"
+              disabled={selectedTab === tabs.length - 1}
+              borderRadius="100px"
+              p="14px"
+            />
+          )}
         </Box>
       )}
 

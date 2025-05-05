@@ -16,6 +16,7 @@ import { generateId,formatDate } from '../../Components/helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { setSelectedTab } from '../../store/slices/viewMasterDataSlice';
+import { setBackButtonNavigationAllowed, setIsEditing, setSideNavigationAllowed } from '../../store/slices/viewDailyPlanSlice';
 
 interface DailyPlanProps {
   title?: string;
@@ -160,6 +161,9 @@ const dispatch = useDispatch()
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
       dispatch(setSelectedTab(0))
+       dispatch(setIsEditing(false));
+       dispatch(setSideNavigationAllowed(false));
+       dispatch(setBackButtonNavigationAllowed(false));
     }} />, },
       {
         id: "unitEffectivityNumber",

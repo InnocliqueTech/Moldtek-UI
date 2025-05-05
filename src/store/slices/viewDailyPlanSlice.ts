@@ -90,9 +90,17 @@ export interface viewDailyPlan {
   },
   dropDown:boolean;
   isEditing:boolean;
+  hasUnsavedChanges:boolean;
+  showTabChangeDialog:boolean;
+  sideNavigationAllowed:boolean;
+  backButtonNavigationAllowed:boolean;
 }
 
 const initialState: viewDailyPlan = {
+  sideNavigationAllowed:false,
+  backButtonNavigationAllowed:false,
+  hasUnsavedChanges:false,
+  showTabChangeDialog:false,
   dropDown:false,
   filtersPayload:{
     fromDate: "",
@@ -239,11 +247,25 @@ const ViewDailyPanSlice = createSlice({
     },
     setIsEditing : (state, action:PayloadAction<boolean>) => {
       state.isEditing = action.payload
-    }
-  },
+    },
+    setHasUnsavedChanges:(state,action:PayloadAction<boolean>)=>{
+      state.hasUnsavedChanges= action.payload
+    } ,
+    setShowTabChangeDialog:(state,action:PayloadAction<boolean>)=>{
+      state.showTabChangeDialog= action.payload
+    } ,
+    setSideNavigationAllowed:(state,action:PayloadAction<boolean>)=>{
+      state.sideNavigationAllowed = action.payload
+    },
+    setBackButtonNavigationAllowed:(state,action:PayloadAction<boolean>)=>{
+      state.backButtonNavigationAllowed = action.payload
+    },
+   },
 });
 
 export const {
+  setSideNavigationAllowed,
+  setBackButtonNavigationAllowed,
   setDailyPlan,
   setAnaloxSpecifications,
   setInkCoatingSpecifications,
@@ -263,6 +285,8 @@ export const {
   clearUpdateDailyPlanPayload,
   setUpdateCommonCard,
   setDropDown,
-  setIsEditing
+  setIsEditing,
+  setHasUnsavedChanges,
+  setShowTabChangeDialog
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

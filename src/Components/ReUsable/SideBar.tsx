@@ -41,6 +41,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
+import { setBackButtonNavigationAllowed, setIsEditing, setShowTabChangeDialog, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
 
 interface SidebarProps {
   open: boolean;
@@ -68,6 +69,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     isLaminationDataSave,
     isPrintingDataSave,
   } = useSelector((state: RootState) => state.masterData);
+  const {
+   hasUnsavedChanges
+  } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
   //   setDropdownAnchor(event.currentTarget);
@@ -322,8 +326,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   key={index}
                 >
                   <ListItem
-                    component={Link}
-                    to={item.path}
+                    // component={Link}
+                    // to={item.path}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                     sx={{
@@ -351,7 +355,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       pr: 0,
                       justifyContent: collapsed ? "center" : "flex-start",
                     }}
-                    onClick={() => itemClick()}
+                    onClick={ () => {
+                      if (hasUnsavedChanges) {
+                      dispatch(setShowTabChangeDialog(true));
+                      localStorage.setItem("navigation",item.path);
+                      dispatch(setSideNavigationAllowed(true));
+                      dispatch(setBackButtonNavigationAllowed(false))
+                    } else {
+                      itemClick(); 
+                      navigate(item.path);
+                       dispatch(setIsEditing(false));
+                       dispatch(setSideNavigationAllowed(false));
+                    }}}
                   >
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       {isSelected || hoveredIndex === index
@@ -405,8 +420,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   key={index}
                 >
                   <ListItem
-                    component={Link}
-                    to={item.path}
+                    // component={Link}
+                    // to={item.path}
                     onMouseEnter={() => setPreferenceHoveredIndex(index)}
                     onMouseLeave={() => setPreferenceHoveredIndex(null)}
                     sx={{
@@ -434,7 +449,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       pr: 0,
                       justifyContent: collapsed ? "center" : "flex-start",
                     }}
-                    onClick={() => itemClick()}
+                    onClick={ () => {
+                      if (hasUnsavedChanges) {
+                      dispatch(setShowTabChangeDialog(true));
+                      localStorage.setItem("navigation",item.path);
+                      dispatch(setSideNavigationAllowed(true));
+                      dispatch(setBackButtonNavigationAllowed(false))
+                    } else {
+                      itemClick(); 
+                      navigate(item.path);
+                       dispatch(setIsEditing(false));
+                       dispatch(setSideNavigationAllowed(false));
+                    }}}
                   >
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       {isSelected || preferenceHoveredIndex === index
@@ -590,8 +616,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   key={index}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  component={Link}
-                  to={item.path}
+                  // component={Link}
+                  // to={hasUnsavedChanges ? undefined :item.path}
                   sx={{
                     py: 0.5,
                     bgcolor: isSelected ? "white" : "transparent",
@@ -606,7 +632,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
-                  onClick={() => itemClick()}
+                  onClick={ () => {
+                    if (hasUnsavedChanges) {
+                    dispatch(setShowTabChangeDialog(true));
+                    localStorage.setItem("navigation",item.path);
+                    dispatch(setSideNavigationAllowed(true));
+                    dispatch(setBackButtonNavigationAllowed(false))
+                  } else {
+                    itemClick(); 
+                    navigate(item.path);
+                     dispatch(setIsEditing(false));
+                     dispatch(setSideNavigationAllowed(false));
+                  }}}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || hoveredIndex === index
@@ -642,10 +679,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               return (
                 <ListItem
                   key={index}
-                  component={Link}
+                  // component={Link}
                   onMouseEnter={() => setPreferenceHoveredIndex(index)}
                   onMouseLeave={() => setPreferenceHoveredIndex(null)}
-                  to={item.path}
+                  // to={item.path}
                   sx={{
                     py: 0.5,
                     bgcolor: isSelected ? "white" : "transparent",
@@ -660,7 +697,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
-                  onClick={() => itemClick()}
+                  onClick={ () => {
+                    if (hasUnsavedChanges) {
+                    dispatch(setShowTabChangeDialog(true));
+                    localStorage.setItem("navigation",item.path);
+                    dispatch(setSideNavigationAllowed(true));
+                    dispatch(setBackButtonNavigationAllowed(false))
+                  } else {
+                    itemClick(); 
+                    navigate(item.path);
+                     dispatch(setIsEditing(false));
+                     dispatch(setSideNavigationAllowed(false));
+                  }}}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || preferenceHoveredIndex === index

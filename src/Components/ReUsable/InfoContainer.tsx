@@ -7,6 +7,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { CalendarToday } from "@mui/icons-material";
+import { format } from "date-fns";
 export interface InfoItem {
   label: string;
   value: string;
@@ -62,11 +63,11 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
                     onChange={(newValue) =>
                       handleChange(
                         index,
-                        newValue ? newValue.toISOString() : ""
+                        newValue ? format(newValue, "yyyy-MM-dd'T'HH:mm") : ""
                       )
                     }
+                    
                     format="dd/MM/yyyy hh:mm a"
-                    minDateTime={new Date()}
                     slots={{
                       openPickerIcon: CalendarToday,
                       clearIcon: ClearIcon,

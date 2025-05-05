@@ -26,7 +26,7 @@ import {
 import { useDispatch, useSelector} from "react-redux";
 import { AppDispatch, RootState} from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-import { setOpenSliderDaily,setIsEditing } from "../../store/slices/viewDailyPlanSlice";
+import { setOpenSliderDaily,setIsEditing, setShowTabChangeDialog, setBackButtonNavigationAllowed, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from './../../api.config';
 
@@ -39,6 +39,7 @@ const Layout = () => {
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
   const {isMasterDetaisData,isPrintingData,isLaminationData} = useSelector((state:RootState)=>state.masterData)
+  const {hasUnsavedChanges} = useSelector((state:RootState)=>state.viewDailyPlan)
   const UEN = localStorage.getItem("selectedUEN");
    let selectedUEN :any;
    if(UEN){
@@ -341,7 +342,9 @@ const formattedDate = today
       },
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
-      onBack: () => navigate("/dailyPlan"),
+      onBack: hasUnsavedChanges 
+      ? () => {dispatch(setShowTabChangeDialog(true)),dispatch(setBackButtonNavigationAllowed(true)),dispatch(setSideNavigationAllowed(false))}
+      : () => navigate("/dailyPlan"),    
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "",
       dropDown:true,

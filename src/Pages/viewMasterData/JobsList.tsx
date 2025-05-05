@@ -10,6 +10,7 @@ import {
   setSelectedTab,
 } from "../../store/slices/viewMasterDataSlice";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
+import { setBackButtonNavigationAllowed, setIsEditing, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
 
 
 
@@ -62,7 +63,11 @@ const JobsList: React.FC = () => {
               localStorage.setItem("status",row.status);
               const encodedParam = encodeURIComponent(value);
               navigate(`/viewDailyPlan/${encodedParam}`)
-              dispatch(setSelectedTab(0))}} />
+              dispatch(setSelectedTab(0))
+              dispatch(setIsEditing(false));
+                   dispatch(setSideNavigationAllowed(false));
+                   dispatch(setBackButtonNavigationAllowed(false));
+            }} />
       ),
     },
     {

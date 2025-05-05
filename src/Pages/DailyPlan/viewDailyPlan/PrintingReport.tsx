@@ -132,8 +132,8 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
 
   const { columns: inkColumns, rows: inkRows } = transformInkCoatingData(editableData.inkCoatingSpecifications);
   const { columns: tensionColumns, rows: tensionRows } = transformTensionData(editableData.tensionControl);
-  const printRepeatData = [editableData.printRepeatLabellingDetails];
-  const materialSpecsData = [editableData.materialSpecifications];
+  const printRepeatData = [editableData?.printRepeatLabellingDetails];
+  const materialSpecsData = [editableData?.materialSpecifications];
   const foilConsumptionData = [editableData.foilRollConsumptionDetails];
   const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
   const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
@@ -199,7 +199,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
               edit: isEditing,
             },
           ]}
-          data={materialSpecsData}
+          data={materialSpecsData ?materialSpecsData:[]}
           setData={(data: any) =>
             handleDataUpdate("materialSpecifications", data)
           }
