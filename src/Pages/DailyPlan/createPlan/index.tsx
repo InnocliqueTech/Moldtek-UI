@@ -39,7 +39,7 @@ const initialFormFields: FormField[] = [
   { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
   { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
   { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-  { id: 'brandName', label: 'Brand Name & Pack size', type: 'text', value: '' },
+  { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
   { id: 'jarCap', label: 'Jar/Cap', type: 'text', value: '' },
   { id: 'width', label: 'Width', value: '' },
   { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
