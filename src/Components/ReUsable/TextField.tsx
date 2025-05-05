@@ -8,6 +8,8 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 interface ReusableInputProps {
   label: string;
@@ -53,63 +55,114 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
           </Typography>
         )}
       </Box>
+      {type === "date" ? (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            value={value ? new Date(value as string) : null}
+            onChange={(newValue) => {
+              if (newValue) {
+                const syntheticEvent = {
+                  target: {
+                    value: newValue.toISOString(),
+                  },
+                } as React.ChangeEvent<HTMLInputElement>;
+                onChange(syntheticEvent);
+              }
+            }}
+            format="dd/MM/yyyy"
+            minDate={new Date()}
+            shouldDisableDate={(date) => {
+              const currentDate = new Date();
 
-      <TextField
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        type={showPassword && type === "password" ? "text" : type}
-        fullWidth
-        variant="outlined"
-        error={error}
-        helperText={helperText}
-        disabled={disabled}
-        InputProps={{
-          startAdornment: icon ? (
-            <InputAdornment position="start">{icon}</InputAdornment>
-          ) : null,
-          endAdornment:
-            type === "password" ? (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                  disableRipple
-                  disableFocusRipple
-                  sx={{
-                    pointerEvents: "auto",
-                    "&:focus": { outline: "none" },
-                  }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-        }}
-        inputProps={{
-          autoComplete: "new-password",
-          style: {
-            appearance: "none",
-            MozAppearance: "textfield",
-            WebkitAppearance: "none",
-          },
-        }}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            "& input": {
-              padding: "6px 12px",
-              color: "black",
-              "&::-ms-reveal": {
-                display: "none",
+              // Disable all past dates, months, and years
+              return (
+                date.getFullYear() < currentDate.getFullYear() ||
+                (date.getFullYear() === currentDate.getFullYear() &&
+                  date.getMonth() < currentDate.getMonth()) ||
+                (date.getFullYear() === currentDate.getFullYear() &&
+                  date.getMonth() === currentDate.getMonth() &&
+                  date.getDate() < currentDate.getDate())
+              );
+            }}
+            slotProps={{
+              textField: {
+                placeholder,
+                fullWidth: true,
+                error,
+                helperText,
+                disabled,
+                variant: "outlined",
+                size: "small",
+                sx: {
+                  "& .MuiPickersInputBase-root": {
+                    borderRadius: "8px !important",
+                  },
+                  "& .MuiPickersSectionList-root": {
+                    padding: "6.5px 0 !important",
+                  },
+                },
               },
-              "&::-ms-clear": {
-                display: "none",
+            }}
+          />
+        </LocalizationProvider>
+      ) : (
+        <TextField
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          type={showPassword && type === "password" ? "text" : type}
+          fullWidth
+          variant="outlined"
+          error={error}
+          helperText={helperText}
+          disabled={disabled}
+          InputProps={{
+            startAdornment: icon ? (
+              <InputAdornment position="start">{icon}</InputAdornment>
+            ) : null,
+            endAdornment:
+              type === "password" ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    disableRipple
+                    disableFocusRipple
+                    sx={{
+                      pointerEvents: "auto",
+                      "&:focus": { outline: "none" },
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+          }}
+          inputProps={{
+            autoComplete: "new-password",
+            style: {
+              appearance: "none",
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "8px",
+              "& input": {
+                padding: "6px 12px",
+                color: "black",
+                "&::-ms-reveal": {
+                  display: "none",
+                },
+                "&::-ms-clear": {
+                  display: "none",
+                },
               },
             },
-          },
-        }}
-      />
+          }}
+        />
+      )}
     </Box>
   );
 };

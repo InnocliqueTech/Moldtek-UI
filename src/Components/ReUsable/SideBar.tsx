@@ -467,6 +467,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             justifyContent: collapsed ? "center" : "flex-end",
             px: 1,
             mb: 1,
+            ml:!collapsed ?'-20px':'0px'
           }}
         >
           <IconButton onClick={toggleSidebar}>

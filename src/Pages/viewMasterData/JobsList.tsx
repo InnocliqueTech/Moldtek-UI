@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setJobsListData,
+  setSelectedTab,
 } from "../../store/slices/viewMasterDataSlice";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
-import { jobsList } from "./data";
+
 
 
 const JobsList: React.FC = () => {
@@ -54,8 +55,14 @@ const JobsList: React.FC = () => {
       label: "Indent No.",
       align: true,
       disableSorting: false,
-      format: (value: string) => (
-        <UENCell value={value} onClick={() => navigate(`/viewMasterData/${selectedUEN}`)} />
+      format: (value: string,row:any) => (
+        <UENCell value={value} onClick={()=>{
+              const uniteffectiveNumber = selectedUEN
+              localStorage.setItem("unitEffectiveNumberDaily",uniteffectiveNumber);
+              localStorage.setItem("status",row.status);
+              const encodedParam = encodeURIComponent(value);
+              navigate(`/viewDailyPlan/${encodedParam}`)
+              dispatch(setSelectedTab(0))}} />
       ),
     },
     {

@@ -1,5 +1,12 @@
 import React from "react";
 import { Box, Typography, Grid, TextField } from "@mui/material";
+import {
+  ClearIcon,
+  DateTimePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { CalendarToday } from "@mui/icons-material";
 export interface InfoItem {
   label: string;
   value: string;
@@ -9,9 +16,9 @@ export interface InfoItem {
     md?: number;
     lg?: number;
   };
-  editable?: boolean; 
+  editable?: boolean;
   keyName?: string;
-  type?: string;   
+  type?: string;
 }
 interface InfoContainerProps {
   infoItems: InfoItem[];
@@ -37,21 +44,58 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
         {infoItems.map((item, index) => (
           <Grid
             key={`${item.keyName || item.label}-${item.label}`}
-            size={{ xs: item.gridSize?.xs || 12, sm: item.gridSize?.sm || 6, md: item.gridSize?.md || 4, lg: item.gridSize?.lg || 3 }}
+            size={{
+              xs: item.gridSize?.xs || 12,
+              sm: item.gridSize?.sm || 6,
+              md: item.gridSize?.md || 4,
+              lg: item.gridSize?.lg || 3,
+            }}
           >
             <Typography variant="body2" color="text.secondary" fontWeight={500}>
               {item.label}
             </Typography>
             {isEditing && item.editable ? (
-              <TextField
-                fullWidth
-                type={item?.type || "text"}
-                size="small"
-                variant="outlined"
-                value={item.value}
-                onChange={(e) => handleChange(index, e.target.value)}
-                sx={{ mt: 0.5 }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                {item.type === "date" ? (
+                  <DateTimePicker
+                    value={item.value ? new Date(item.value) : null}
+                    onChange={(newValue) =>
+                      handleChange(
+                        index,
+                        newValue ? newValue.toISOString() : ""
+                      )
+                    }
+                    format="dd/MM/yyyy hh:mm a"
+                    minDateTime={new Date()}
+                    slots={{
+                      openPickerIcon: CalendarToday,
+                      clearIcon: ClearIcon,
+                    }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        size: "small",
+                        variant: "outlined",
+                        placeholder: "dd/MM/yyyy hh:mm a",
+                        sx: { mt: 0.5 },
+                      },
+                      actionBar: {
+                        actions: ["clear", "cancel", "accept"],
+                      },
+                    }}
+                  />
+                ) : (
+                  <TextField
+                    fullWidth
+                    type={"text"}
+                    size="small"
+                    variant="outlined"
+                    value={item.value}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    sx={{ mt: 0.5 }}
+                  />
+                )}
+              </LocalizationProvider>
             ) : (
               <Typography
                 variant="body1"
