@@ -319,12 +319,25 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               const isSelected = location.pathname === item.path;
 
               return (
-                <Tooltip
-                  title={collapsed ? item.text : ""}
-                  placement="right"
-                  arrow
-                  key={index}
-                >
+<Tooltip
+  title={collapsed ? item.text : ""}
+  placement="right"
+  arrow
+  key={index}
+  sx={{
+    '.MuiTooltip-tooltip': {
+      backgroundColor: '#333',
+      color: '#fff',
+      fontSize: '0.875rem',
+      padding: '8px 12px',
+      borderRadius: '8px',
+      boxShadow: '0px 0px 10px rgba(0,0,0,0.2)',
+    },
+    '.MuiTooltip-arrow': {
+      color: '#333', // Arrow color
+    },
+  }}
+>
                   <ListItem
                     // component={Link}
                     // to={item.path}
@@ -354,6 +367,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       pl: "8px",
                       pr: 0,
                       justifyContent: collapsed ? "center" : "flex-start",
+                      cursor:'pointer'
                     }}
                     onClick={ () => {
                       if (hasUnsavedChanges) {
@@ -432,6 +446,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                           : collapsed && isSelected
                           ? "transparent"
                           : "transparent",
+                          cursor:'pointer',
                       boxShadow:
                         isSelected && !collapsed
                           ? 3
@@ -486,20 +501,21 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               );
             })}
           </List>
-        </Box>
-        <Box
+          <Box
           sx={{
             display: "flex",
             justifyContent: collapsed ? "center" : "flex-end",
             px: 1,
             mb: 1,
-            ml:!collapsed ?'-20px':'0px'
+            ml:!collapsed ?'165px':'0px'
           }}
         >
           <IconButton onClick={toggleSidebar}>
             {collapsed ? <East /> : <West />}
           </IconButton>
         </Box>
+        </Box>
+        
         {/* Bottom logout section */}
         <Box sx={{ borderTop: "1px solid #ECECEC" }}>
           <ListItem
@@ -623,6 +639,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
+                    cursor:'pointer',
                     "&:hover": {
                       bgcolor: "transparent",
                       "& .MuiListItemText-primary": {
@@ -685,6 +702,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   // to={item.path}
                   sx={{
                     py: 0.5,
+                    cursor:'pointer',
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
@@ -724,6 +742,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
                       whiteSpace: "nowrap",
+                      cursor:'pointer'
                     }}
                   />
                 </ListItem>

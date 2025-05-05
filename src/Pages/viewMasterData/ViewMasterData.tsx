@@ -171,7 +171,7 @@ console.log(data?.data.masterDataDetails,"MASTERDETAILSDATA")
               {selectedTab === 1 && !(
                data?.data.masterDataDetails.label_type ==='Thin Wall'||
                data?.data.masterDataDetails.label_type === "TW"
-              ) && <ViewLamination />}
+              ) ? <ViewLamination />:<ViewDyeCutting />}
               {selectedTab === 2 && <ViewDyeCutting />}
             </Box>
           </Box>

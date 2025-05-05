@@ -506,7 +506,7 @@ function ReusableTable<T extends Record<string, any>>({
                   {title}
                 </Typography>
                 {info && (
-                  <Tooltip title="Table Info">
+                  <Tooltip title="Displays master data entries with unit effective number, customer name, version, label/segment type, and creation date for audit and tracking purposes.">
                     <InfoOutline fontSize="small" sx={{ color: "#777" }} />
                   </Tooltip>
                 )}

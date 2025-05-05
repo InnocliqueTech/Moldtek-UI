@@ -415,7 +415,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   const tabs = [
     "Master Data Details",
     "Master Data - Printing",
-    ...((saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW") ||(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")
+    ...((saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW") ||(id &&viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")
       ? []
       : ["Master Data - Lamination"]),
     "Master Data - Dye Cutting",
@@ -424,7 +424,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   useEffect(() => {
     if (
       (saveFormData.label_type === "Thin Wall" ||
-        saveFormData.segment === "TW") ||((viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) &&
+        saveFormData.segment === "TW") ||((id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) &&
       selectedTab === 2
     ) {
       dispatch(setSelectedTab(3));
@@ -569,7 +569,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
             )}
             {selectedTab === 2 &&
               !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
-                viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && (
+                (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) && (
                 <Lamination
                   tableData={LaminationTableData}
                   setTableData={setLaminationTableData}
