@@ -272,6 +272,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 justifyContent: "center",
                 mb: 2,
                 width: 50,
+                ml:0.32
               }}
             >
               <img src={LogoIcon} alt="Logo" />

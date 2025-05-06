@@ -30,13 +30,22 @@ const NotFoundPage: React.FC = () => {
         The page you are looking for does not exist.
       </Typography>
       <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/")}
-        sx={{ mt: 2 }}
-      >
-        Go Back Home
-      </Button>
+  variant="contained"
+  color="primary"
+  onClick={() => navigate("/masterData")}
+  sx={{
+    mt: 2,
+    backgroundColor: '#1976d2', 
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#1976d2', 
+      color: '#fff',
+    },
+  }}
+>
+  Go Back Home
+</Button>
+
     </Container>
   );
 };
