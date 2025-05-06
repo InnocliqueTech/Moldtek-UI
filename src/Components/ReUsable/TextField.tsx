@@ -10,6 +10,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { format } from "date-fns";
 
 interface ReusableInputProps {
   label: string;
@@ -63,7 +64,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
               if (newValue) {
                 const syntheticEvent = {
                   target: {
-                    value: newValue.toISOString(),
+                    value:format(newValue, "yyyy-MM-dd")
                   },
                 } as React.ChangeEvent<HTMLInputElement>;
                 onChange(syntheticEvent);

@@ -22,6 +22,10 @@ export const validateFormFields = (fields: FormField[]): FormValidation => {
       // Field-specific validations
       switch (field.id) {
         case 'indentNumber':
+          if (typeof value === 'string' && !/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?`~ ]+$/.test(value)) {
+            errors[field.id] = `${field.label} can contain alphanumeric and special characters`;
+          }
+          break;
         case 'unitEffectivityNumber':
         case 'substrate':
         case 'lamSubstrate':
