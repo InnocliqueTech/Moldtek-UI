@@ -29,10 +29,10 @@ const MasterData: React.FC = () => {
       return savedPage !==null ? Number(savedPage):10;
     }); 
   const stats = [
-    { title: "Total Jobs", value: data?.data.totalJobs },
-    { title: "Lamination Jobs", value: data?.data.laminationJobs },
-    { title: "Non-Lamination Jobs", value: data?.data.nonLaminationJobs },
-    { title: "Total Customers", value: data?.data.totalCustomers },
+    { title: "Total Jobs", value: data?.data.totalJobs||0,infoText:'Displays the count of master data jobs with the latest version'},
+    { title: "Lamination Jobs", value: data?.data.laminationJobs||0 ,infoText:'Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW'},
+    { title: "Non-Lamination Jobs", value: data?.data.nonLaminationJobs||0,infoText:'Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW' },
+    { title: "Total Customers", value: data?.data.totalCustomers||0,infoText:'Displays the total count of customers' },
   ];
 
 
@@ -206,6 +206,7 @@ const MasterData: React.FC = () => {
                   />
                 }
                 isLoading={isLoading}
+                infoText={stat.infoText}
               />
             </Grid>
           ))}
@@ -213,6 +214,7 @@ const MasterData: React.FC = () => {
 
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
+        infoText={'Displays a list of master data entries with their associated SKU information.'}
           boxShadow={true}
           columns={columns}
           pageNumber={page}

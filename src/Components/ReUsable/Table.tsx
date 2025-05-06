@@ -81,6 +81,7 @@ interface TableProps<T> {
   title?: string;
   lastUpdate?: string;
   info?: boolean;
+  infoText?:string;
   searchVisible?: boolean;
   label?: string;
   actions?: TableAction<T>[];
@@ -121,6 +122,7 @@ function ReusableTable<T extends Record<string, any>>({
   totalLength = 0,
   pageRange = false,
   pageNumber = 0,
+  infoText='Table Info',
   handleRowsPerPageChange
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
@@ -506,7 +508,7 @@ function ReusableTable<T extends Record<string, any>>({
                   {title}
                 </Typography>
                 {info && (
-                  <Tooltip title="Displays master data entries with unit effective number, customer name, version, label/segment type, and creation date for audit and tracking purposes.">
+                  <Tooltip title={infoText}>
                     <InfoOutline fontSize="small" sx={{ color: "#777" }} />
                   </Tooltip>
                 )}

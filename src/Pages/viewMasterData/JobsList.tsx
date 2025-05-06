@@ -335,6 +335,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
             }}
           >
             <ReusableTable
+            infoText="List of all jobs associated with this unit's effective number."
               columns={columns}
               data={jobListData?jobListData:[]}
               selectable={false}

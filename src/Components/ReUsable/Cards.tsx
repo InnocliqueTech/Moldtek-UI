@@ -1,14 +1,15 @@
 import React from "react";
-import { Typography, Card, CardContent, Box, Skeleton } from "@mui/material";
+import { Typography, Card, CardContent, Box, Skeleton, Tooltip } from "@mui/material";
 
 interface StatsCardProps {
   title: string;
   value?: number;
-  icon?: React.ReactNode;
+  icon?: React.ReactElement;
   isLoading?: boolean;
+  infoText?:string
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, isLoading }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, isLoading,infoText='cardInfo' }) => {
   return (
     <Card sx={{ minWidth: 200, borderRadius: "16px", flex: 1 }}>
       <CardContent
@@ -37,7 +38,8 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, isLoading }) 
               >
                 {title}
               </Typography>
-              <Box>{icon}</Box>
+              {icon &&
+              <Box><Tooltip title={infoText}>{icon}</Tooltip></Box>}
             </>
           )}
         </Box>

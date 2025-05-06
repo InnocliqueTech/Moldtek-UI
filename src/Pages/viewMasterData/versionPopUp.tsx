@@ -12,13 +12,12 @@ import {
   TextField,
   Pagination,
   Chip,
-  Tooltip,
   InputAdornment,
   Stack,
   PaginationItem,
   TableContainer,
 } from "@mui/material";
-import { ChevronLeft, ChevronRight, InfoOutline } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 
 interface ColumnType {
@@ -110,9 +109,6 @@ const VersionPopup: React.FC<ReusablePopupProps> = ({
             <Typography fontWeight={600} fontSize={16}>
               {title}
             </Typography>
-            <Tooltip title="Table Info">
-              <InfoOutline fontSize="small" sx={{ color: "#777" }} />
-            </Tooltip>
             <Chip
               label={`${totalVersions} Versions`}
               size="small"
