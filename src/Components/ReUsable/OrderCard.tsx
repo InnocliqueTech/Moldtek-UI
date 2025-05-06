@@ -3,6 +3,7 @@ import { Typography, Grid, Box, Tooltip } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import AutoTooltipText from "./AutoTooltipText";
 
 const OrderCard: React.FC = () => {
   const { viewMasterDataDetails } = useSelector(
@@ -15,16 +16,16 @@ const OrderCard: React.FC = () => {
     { id: "labels", label: "# Labels/Meter" },
   ];
 
-  const maxChars = 120;
-  const maxCharsLabel= 20;
+  const maxChars = 20;
+  const maxCharsLabel = 20;
   const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
   const displayText = isLong
     ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
     : viewMasterDataDetails?.brand_description;
-    const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
-    const displayTextLabel = isLongLabel
-      ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
-      : viewMasterDataDetails?.label_type;
+  const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
+  const displayTextLabel = isLongLabel
+    ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
+    : viewMasterDataDetails?.label_type;
   const renderValue = (value: string | undefined | null) => {
     return value ? value : "N/A";
   };
@@ -166,13 +167,14 @@ const OrderCard: React.FC = () => {
               <Typography variant="body1">N/A</Typography>
             )}
             <Box sx={{ mt: 2 }}>
-              <Typography
+              <AutoTooltipText
+                content={"Brand Name & Pack-Description"}
+                maxLength={25}
                 variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                Brand Name & Pack-Description
-              </Typography>
+                sx={{ color: "#656565" }}
+                tooltipPlacement="bottom"
+                TooltipProps={{ arrow: false }}
+              />
               <Tooltip
                 title={isLong ? viewMasterDataDetails?.brand_description : ""}
                 placement="top"
@@ -190,8 +192,8 @@ const OrderCard: React.FC = () => {
                 </Typography>
               </Tooltip>
             </Box>
-            <Box sx={{mt:2}}>
-            <Typography
+            <Box sx={{ mt: 2 }}>
+              <Typography
                 variant="body2"
                 color="text.secondary"
                 fontWeight={500}

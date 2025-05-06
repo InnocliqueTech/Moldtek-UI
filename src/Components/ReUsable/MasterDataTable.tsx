@@ -297,16 +297,15 @@ const DataTable = <T extends Record<string, any>>({
                       }}
                     >
                   {
-  (row?.type === "Ethyl" && ["code", "brand", "ratio"].includes(column.id)) ||
+  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && [ "ratio"].includes(column.id)) ||  ( row?.type === "Ethyl" &&  ["code", "brand", "ratio"].includes(column.id)) ||
   (row?.type === "Adhesive" && ["ratio"].includes(column.id)) ||
   (row?.type === "Hardner" && ["ratio"].includes(column.id)) ? (
     location.pathname.includes("/viewMasterData") ? (
-      // View Mode: Just show value with "kg"
       <Box sx={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#2F2F2F" }}>
         {row[column.id]}&nbsp;kg
       </Box>
     ) : (
-      // Edit Mode: Show editable TextField + kg
+
       <Box sx={{ position: "relative", width: "80%" }}>
         <TextField
           variant="standard"
@@ -364,7 +363,7 @@ const DataTable = <T extends Record<string, any>>({
       </Box>
     )
   ) 
- : column.isDropdown &&
+ :   column.isDropdown &&
                         row.type === "Hardner" &&
                         column.id === "code" ? (
                         <Select

@@ -1,20 +1,22 @@
-
 import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   typography: {
-    fontFamily: `"Inter", sans-serif`, 
-    
+    fontFamily: `"Inter", sans-serif`,
   },
   components: {
     MuiButtonBase: {
       styleOverrides: {
         root: {
-          '&:focus': {
-            outline: 'none',
+          "&:focus, &:focus-visible": {
+            outline: "none",
+            backgroundColor: "transparent",
           },
-          '&:focus-visible': {
-            outline: 'none',
+          "&:hover": {
+            backgroundColor: "transparent",
+          },
+          "&:active": {
+            backgroundColor: "transparent",
           },
         },
       },
@@ -22,11 +24,15 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          '&:focus': {
-            outline: 'none',
+          "&:focus, &:focus-visible": {
+            outline: "none",
+            backgroundColor: "transparent",
           },
-          '&:focus-visible': {
-            outline: 'none',
+          "&:hover": {
+            backgroundColor: "transparent",
+          },
+          "&:active": {
+            backgroundColor: "transparent",
           },
         },
       },
@@ -34,11 +40,15 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          '&:focus': {
-            outline: 'none',
+          "&:focus, &:focus-visible": {
+            outline: "none",
+            backgroundColor: "transparent",
           },
-          '&:focus-visible': {
-            outline: 'none',
+          "&:hover": {
+            backgroundColor: "transparent",
+          },
+          "&:active": {
+            backgroundColor: "transparent",
           },
         },
       },

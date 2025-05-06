@@ -31,7 +31,7 @@ import { toast } from "react-toastify";
 import { BASE_API_URL } from './../../api.config';
 
 const Layout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const location = useLocation();

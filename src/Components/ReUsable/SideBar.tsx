@@ -9,9 +9,12 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  TooltipProps,
+  styled,
+  tooltipClasses,
 } from "@mui/material";
-import {East, ExitToApp, West } from "@mui/icons-material";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { East, ExitToApp, West } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
 import profileImage from "../../assets/Images/profile.svg";
@@ -41,7 +44,12 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setBackButtonNavigationAllowed, setIsEditing, setShowTabChangeDialog, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
+import {
+  setBackButtonNavigationAllowed,
+  setIsEditing,
+  setShowTabChangeDialog,
+  setSideNavigationAllowed,
+} from "../../store/slices/viewDailyPlanSlice";
 
 interface SidebarProps {
   open: boolean;
@@ -60,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const dynamicTexts = ["Kristin Watson", "Text Two"];
   const currentText = dynamicTexts[0];
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const navigate = useNavigate();
   const {
@@ -69,9 +77,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     isLaminationDataSave,
     isPrintingDataSave,
   } = useSelector((state: RootState) => state.masterData);
-  const {
-   hasUnsavedChanges
-  } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { hasUnsavedChanges } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
 
   // const handleDropdownOpen = (event: React.MouseEvent<HTMLElement>) =>
   //   setDropdownAnchor(event.currentTarget);
@@ -216,6 +224,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     setCollapsed(!collapsed);
   };
 
+  const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.white,
+      color: "#0073B7",
+      boxShadow: theme.shadows[1],
+    },
+  }));
+
   return (
     <>
       <Drawer
@@ -319,25 +337,31 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               const isSelected = location.pathname === item.path;
 
               return (
-<Tooltip
-  title={collapsed ? item.text : ""}
-  placement="right"
-  arrow
-  key={index}
-  sx={{
-    '.MuiTooltip-tooltip': {
-      backgroundColor: '#333',
-      color: '#fff',
-      fontSize: '0.875rem',
-      padding: '8px 12px',
-      borderRadius: '8px',
-      boxShadow: '0px 0px 10px rgba(0,0,0,0.2)',
-    },
-    '.MuiTooltip-arrow': {
-      color: '#333', // Arrow color
-    },
-  }}
->
+                <LightTooltip
+                  title={collapsed ? item.text : ""}
+                  placement="right"
+                  arrow={false}
+                  key={index}
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [0, -14],
+                          },
+                        },
+                      ],
+                    },
+                  }}
+                  sx={{
+                    ".MuiTooltip-tooltip": {
+                      fontSize: "0.875rem",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                    },
+                  }}
+                >
                   <ListItem
                     // component={Link}
                     // to={item.path}
@@ -367,20 +391,21 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       pl: "8px",
                       pr: 0,
                       justifyContent: collapsed ? "center" : "flex-start",
-                      cursor:'pointer'
+                      cursor: "pointer",
                     }}
-                    onClick={ () => {
+                    onClick={() => {
                       if (hasUnsavedChanges) {
-                      dispatch(setShowTabChangeDialog(true));
-                      localStorage.setItem("navigation",item.path);
-                      dispatch(setSideNavigationAllowed(true));
-                      dispatch(setBackButtonNavigationAllowed(false))
-                    } else {
-                      itemClick(); 
-                      navigate(item.path);
-                       dispatch(setIsEditing(false));
-                       dispatch(setSideNavigationAllowed(false));
-                    }}}
+                        dispatch(setShowTabChangeDialog(true));
+                        localStorage.setItem("navigation", item.path);
+                        dispatch(setSideNavigationAllowed(true));
+                        dispatch(setBackButtonNavigationAllowed(false));
+                      } else {
+                        itemClick();
+                        navigate(item.path);
+                        dispatch(setIsEditing(false));
+                        dispatch(setSideNavigationAllowed(false));
+                      }
+                    }}
                   >
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       {isSelected || hoveredIndex === index
@@ -402,7 +427,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       />
                     )}
                   </ListItem>
-                </Tooltip>
+                </LightTooltip>
               );
             })}
           </List>
@@ -427,11 +452,30 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
               const isSelected = location.pathname === item.path;
 
               return (
-                <Tooltip
+                <LightTooltip
                   title={collapsed ? item.text : ""}
                   placement="right"
-                  arrow
+                  arrow={false}
                   key={index}
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [0, -14],
+                          },
+                        },
+                      ],
+                    },
+                  }}
+                  sx={{
+                    ".MuiTooltip-tooltip": {
+                      fontSize: "0.875rem",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                    },
+                  }}
                 >
                   <ListItem
                     // component={Link}
@@ -446,7 +490,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                           : collapsed && isSelected
                           ? "transparent"
                           : "transparent",
-                          cursor:'pointer',
+                      cursor: "pointer",
                       boxShadow:
                         isSelected && !collapsed
                           ? 3
@@ -464,18 +508,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       pr: 0,
                       justifyContent: collapsed ? "center" : "flex-start",
                     }}
-                    onClick={ () => {
+                    onClick={() => {
                       if (hasUnsavedChanges) {
-                      dispatch(setShowTabChangeDialog(true));
-                      localStorage.setItem("navigation",item.path);
-                      dispatch(setSideNavigationAllowed(true));
-                      dispatch(setBackButtonNavigationAllowed(false))
-                    } else {
-                      itemClick(); 
-                      navigate(item.path);
-                       dispatch(setIsEditing(false));
-                       dispatch(setSideNavigationAllowed(false));
-                    }}}
+                        dispatch(setShowTabChangeDialog(true));
+                        localStorage.setItem("navigation", item.path);
+                        dispatch(setSideNavigationAllowed(true));
+                        dispatch(setBackButtonNavigationAllowed(false));
+                      } else {
+                        itemClick();
+                        navigate(item.path);
+                        dispatch(setIsEditing(false));
+                        dispatch(setSideNavigationAllowed(false));
+                      }
+                    }}
                   >
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       {isSelected || preferenceHoveredIndex === index
@@ -497,25 +542,25 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       />
                     )}
                   </ListItem>
-                </Tooltip>
+                </LightTooltip>
               );
             })}
           </List>
           <Box
-          sx={{
-            display: "flex",
-            justifyContent: collapsed ? "center" : "flex-end",
-            px: 1,
-            mb: 1,
-            ml:!collapsed ?'165px':'0px'
-          }}
-        >
-          <IconButton onClick={toggleSidebar}>
-            {collapsed ? <East /> : <West />}
-          </IconButton>
+            sx={{
+              display: "flex",
+              justifyContent: collapsed ? "center" : "flex-end",
+              px: 1,
+              mb: 1,
+              pr: collapsed ? 1 : 0,
+            }}
+          >
+            <IconButton onClick={toggleSidebar}>
+              {collapsed ? <East /> : <West />}
+            </IconButton>
+          </Box>
         </Box>
-        </Box>
-        
+
         {/* Bottom logout section */}
         <Box sx={{ borderTop: "1px solid #ECECEC" }}>
           <ListItem
@@ -531,9 +576,33 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 minWidth: 32,
               }}
             >
-              <Tooltip title={"LogOut"} placement="right" arrow>
+              <LightTooltip
+                title={"LogOut"}
+                placement="right"
+                arrow={false}
+                slotProps={{
+                  popper: {
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -7],
+                        },
+                      },
+                    ],
+                  },
+                }}
+                sx={{
+                  ".MuiTooltip-tooltip": {
+                    fontSize: "0.875rem",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    color: "#c82333",
+                  },
+                }}
+              >
                 <ExitToApp />
-              </Tooltip>
+              </LightTooltip>
             </ListItemIcon>
             {!collapsed && (
               <ListItemText
@@ -639,7 +708,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
-                    cursor:'pointer',
+                    cursor: "pointer",
                     "&:hover": {
                       bgcolor: "transparent",
                       "& .MuiListItemText-primary": {
@@ -649,18 +718,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
-                  onClick={ () => {
+                  onClick={() => {
                     if (hasUnsavedChanges) {
-                    dispatch(setShowTabChangeDialog(true));
-                    localStorage.setItem("navigation",item.path);
-                    dispatch(setSideNavigationAllowed(true));
-                    dispatch(setBackButtonNavigationAllowed(false))
-                  } else {
-                    itemClick(); 
-                    navigate(item.path);
-                     dispatch(setIsEditing(false));
-                     dispatch(setSideNavigationAllowed(false));
-                  }}}
+                      dispatch(setShowTabChangeDialog(true));
+                      localStorage.setItem("navigation", item.path);
+                      dispatch(setSideNavigationAllowed(true));
+                      dispatch(setBackButtonNavigationAllowed(false));
+                    } else {
+                      itemClick();
+                      navigate(item.path);
+                      dispatch(setIsEditing(false));
+                      dispatch(setSideNavigationAllowed(false));
+                    }
+                  }}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || hoveredIndex === index
@@ -702,7 +772,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   // to={item.path}
                   sx={{
                     py: 0.5,
-                    cursor:'pointer',
+                    cursor: "pointer",
                     bgcolor: isSelected ? "white" : "transparent",
                     boxShadow: isSelected ? 3 : 0,
                     borderRadius: 2,
@@ -715,18 +785,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     pl: "8px",
                     pr: 0,
                   }}
-                  onClick={ () => {
+                  onClick={() => {
                     if (hasUnsavedChanges) {
-                    dispatch(setShowTabChangeDialog(true));
-                    localStorage.setItem("navigation",item.path);
-                    dispatch(setSideNavigationAllowed(true));
-                    dispatch(setBackButtonNavigationAllowed(false))
-                  } else {
-                    itemClick(); 
-                    navigate(item.path);
-                     dispatch(setIsEditing(false));
-                     dispatch(setSideNavigationAllowed(false));
-                  }}}
+                      dispatch(setShowTabChangeDialog(true));
+                      localStorage.setItem("navigation", item.path);
+                      dispatch(setSideNavigationAllowed(true));
+                      dispatch(setBackButtonNavigationAllowed(false));
+                    } else {
+                      itemClick();
+                      navigate(item.path);
+                      dispatch(setIsEditing(false));
+                      dispatch(setSideNavigationAllowed(false));
+                    }
+                  }}
                 >
                   <ListItemIcon sx={{ minWidth: 30 }}>
                     {isSelected || preferenceHoveredIndex === index
@@ -742,7 +813,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     sx={{
                       color: isSelected ? "#0073B7" : "#737373",
                       whiteSpace: "nowrap",
-                      cursor:'pointer'
+                      cursor: "pointer",
                     }}
                   />
                 </ListItem>

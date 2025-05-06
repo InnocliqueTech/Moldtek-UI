@@ -1,6 +1,7 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import { Box, Typography } from "@mui/material";
+import AutoTooltipText from "./AutoTooltipText";
 
 interface TextAreaProps {
   label?: string;
@@ -34,13 +35,14 @@ const TextArea: React.FC<TextAreaProps> = ({
   return (
     <Box display="flex" flexDirection="column">
       <Box display="flex" alignItems="center" gap={0.5}>
-        <Typography
+        <AutoTooltipText
+          content={label ?? ""}
+          maxLength={25}
           variant="body2"
-          sx={{ fontWeight: 500, marginBottom: "4px" }}
-          color="#656565"
-        >
-          {label}
-        </Typography>
+          sx={{ color: "#656565" }}
+          tooltipPlacement="bottom"
+        TooltipProps={{ arrow: false }}
+        />
         {required && (
           <Typography component="span" color="error">
             *
