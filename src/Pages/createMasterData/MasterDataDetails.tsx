@@ -594,6 +594,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 error={!!errors.brand_description}
                 helperText={errors.brand_description}
                 required
+                multiline={false}
               />
             </Box>
             <Box sx={{ mt: (row2HasError&&!!errors.brand_description) ? 0 : 2 }}>

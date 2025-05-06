@@ -17,6 +17,7 @@ interface TextAreaProps {
   helperText?: string;
   className?: string;
   required?: boolean;
+  multiline?:boolean;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -31,6 +32,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   helperText = "",
   className = "",
   required = false,
+  multiline=true
 }) => {
   return (
     <Box display="flex" flexDirection="column">
@@ -53,7 +55,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   value={value}
   onChange={onChange}
   placeholder={placeholder}
-  multiline
+  multiline={multiline}
   rows={rows}
   fullWidth={fullWidth}
   disabled={disabled}
@@ -64,17 +66,17 @@ const TextArea: React.FC<TextAreaProps> = ({
   sx={{
     "& .MuiOutlinedInput-root": {
       borderRadius: "8px",
-      padding: "6px",
-    },
-    "& .MuiInputBase-inputMultiline": {
-      overflow: "auto",
-      whiteSpace: "pre", // Prevent wrapping
-      wordBreak: "keep-all",
-    },
-    "& input": {
-      color: "black",
-      overflow: "auto",
-    },
+      "& input": {
+        padding: "6px 12px",
+        color: "black",
+        "&::-ms-reveal": {
+          display: "none",
+        },
+        "&::-ms-clear": {
+          display: "none",
+        },
+      },
+    }
   }}
   inputProps={{
     style: {
