@@ -169,15 +169,28 @@ const ViewDailyPlan: React.FC = () => {
           break;
         }
         case 2:
-          await saveLaminationReportDetails(payload).unwrap();
-          toast.success("Lamination details saved successfully!");
+          if (dailyPlan.labelType === "THINWALL") {
+            await saveLabelCuttingDetails(payload).unwrap();
+            toast.success("Label cutting details saved successfully!");
+          } else {
+            await saveLaminationReportDetails(payload).unwrap();
+            toast.success("Lamination details saved successfully!");
+          }
+
           break;
         case 3:
-          await saveLabelCuttingDetails(payload).unwrap();
-          toast.success("Label cutting details saved successfully!");
+          if (dailyPlan.labelType === "THINWALL") {
+            await saveTravelCardDetails(payload).unwrap();
+            toast.success("Travel card details saved successfully!");
+          } else {
+            await saveLabelCuttingDetails(payload).unwrap();
+            toast.success("Label cutting details saved successfully!");
+          }
+
           break;
 
         case 4:
+          if (dailyPlan.labelType === "THINWALL") return null;
           await saveTravelCardDetails(payload).unwrap();
           toast.success("Travel card details saved successfully!");
           break;
