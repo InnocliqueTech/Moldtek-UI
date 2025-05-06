@@ -61,7 +61,7 @@ const ViewLamination: React.FC = () => {
         >
            Lamination Zone Settings
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       <DataTable columns={zoneTemperatureColumns} data={laminationSettings?[laminationSettings]:[]} />
       <Box sx={{ display: "flex", gap: 1,mt:1.5}}>
@@ -71,7 +71,7 @@ const ViewLamination: React.FC = () => {
               >
                Lamination Substrate
               </Typography>
-              <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+              {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
             </Box>
             <DataTable
               columns={laminatingSubstarteColumns}
@@ -84,7 +84,7 @@ const ViewLamination: React.FC = () => {
         >
           Tensions Details
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       <DataTable columns={tensionColumns} data={laminationSettings?[laminationSettings]:[]} />
       {/* <Box
@@ -129,7 +129,7 @@ const ViewLamination: React.FC = () => {
           >
             Bonding Material Specifications
           </Typography>
-          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+          {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
         <DataTable columns={bondingMaterialColumns} data={laminationAdhesive?laminationAdhesive:[]} tableTitle={true} firstRow={true} />
       </Box>
@@ -140,7 +140,7 @@ const ViewLamination: React.FC = () => {
         >
           Material Details
         </Typography>
-          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+          {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
         <DataTable columns={materialDetailsColumns} data={laminationSettings?[laminationSettings]:[]} />
     </Box>

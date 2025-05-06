@@ -55,7 +55,7 @@ const path = location.pathname.includes("/versionDetails")
     ueNumber: path ? UnitEffectiveNumber : selectedUEN,
     versionNo: path ? versionNumber : versionNo,
   });
-console.log(data?.data.masterDataDetails,"MASTERDETAILSDATA")
+
   const tabs = [
     "Master Data - Printing",
     ...(data?.data.masterDataDetails.label_type ==='Thin Wall'||data?.data.masterDataDetails.segment ==='TW' ? []:["Master Data - Lamination"]),
@@ -98,6 +98,7 @@ console.log(data?.data.masterDataDetails,"MASTERDETAILSDATA")
       );
     }
   }, [data, dispatch]);
+
 
   return (
     <Box
@@ -172,7 +173,7 @@ console.log(data?.data.masterDataDetails,"MASTERDETAILSDATA")
                data?.data.masterDataDetails.label_type ==='Thin Wall'||
                data?.data.masterDataDetails.label_type === "TW"
               ) ? <ViewLamination />:<ViewDyeCutting />}
-              {selectedTab === 2 && <ViewDyeCutting />}
+
             </Box>
           </Box>
         </>

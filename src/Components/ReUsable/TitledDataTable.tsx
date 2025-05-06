@@ -77,7 +77,7 @@ const TitledDataTable = <T extends Record<string, any>>({
         >
           {title}
         </Typography>
-        <InfoOutline sx={{ color: infoIconColor, width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: infoIconColor, width: 20, height: 20 }} /> */}
       </Box>
       {showTableSection && (
         <Box

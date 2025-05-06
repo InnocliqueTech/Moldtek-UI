@@ -296,7 +296,7 @@ const DataTable = <T extends Record<string, any>>({
                       }}
                     >
                   {
-  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && [ "ratio"].includes(column.id)) ||  ( row?.type === "Ethyl" &&  ["code", "brand", "ratio"].includes(column.id)) ||
+  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && [ "ratio"].includes(column.id)) ||  ( !location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" &&  ["code", "brand", "ratio"].includes(column.id)) ||
   (row?.type === "Adhesive" && ["ratio"].includes(column.id)) ||
   (row?.type === "Hardner" && ["ratio"].includes(column.id)) ? (
     location.pathname.includes("/viewMasterData") ? (

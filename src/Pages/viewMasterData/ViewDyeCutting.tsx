@@ -29,7 +29,7 @@ const ViewDyeCutting: React.FC = () => {
         >
           Dye Cutting Parameters
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       <DataTable columns={dyePriningColumns} data={dyeCuttingSettings?[dyeCuttingSettings]:[]} />
     </Box>

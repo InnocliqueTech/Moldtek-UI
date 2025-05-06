@@ -55,7 +55,7 @@ const ViewPrinting: React.FC = () => {
         >
           Machine Settings & Ink Configuration
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       <DataTable
         columns={machineSettingColumns}
@@ -69,7 +69,7 @@ const ViewPrinting: React.FC = () => {
         >
           Printing Substrate
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       <DataTable
         columns={printingSubstarteColumns}
@@ -93,7 +93,7 @@ const ViewPrinting: React.FC = () => {
           >
             Ink Station-wise Configuration{" "}
           </Typography>
-          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+          {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
         <DataTable
           columns={inkStationColumns}
