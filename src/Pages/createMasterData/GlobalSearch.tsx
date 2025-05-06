@@ -10,7 +10,6 @@ import CustomerSelect from "./CustomersData";
 import { toast } from "react-toastify";
 import { RootState } from "../../store";
 import {
-  FiltersPayload,
   setFiltersPayload,
   setIsSearchTriggered,
   setOpenSlider,
@@ -19,6 +18,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
+import { FiltersPayload } from "../../store/slices/masterDataInterface";
 
 interface LocalDatePayload {
   fromDate: Date | null;

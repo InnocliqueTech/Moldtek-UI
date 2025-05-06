@@ -19,14 +19,13 @@ import { AutocompleteCell } from "../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
-  LaminatingTableRow,
-  PrintingTableRow,
   setInvalidFieldsTable,
   setLaminationFormData,
   setLaminationTableValueVaidation,
   setPrintingTableValueVaidation,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
+import { LaminatingTableRow, PrintingTableRow } from "../../store/slices/masterDataInterface";
 
 interface Column {
   id: string;

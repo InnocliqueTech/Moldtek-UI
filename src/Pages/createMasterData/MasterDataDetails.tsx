@@ -15,7 +15,6 @@ import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
-  MasterDataFormErrors,
   setDyeCuttingDetails,
   setLaminatingDetails,
   setMasterDataDataTouched,
@@ -26,7 +25,6 @@ import {
   setSaveMasterDataDetailsData,
   setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
-import { MasterFormData } from "./../../store/slices/masterDataSlice";
 import { useLocation, useParams } from "react-router-dom";
 import {
   useGetLabelTypesQuery,
@@ -42,6 +40,7 @@ import {
   setPrintingSubstrate,
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
+import { MasterDataFormErrors, MasterFormData } from "../../store/slices/masterDataInterface";
 
 interface MasterDataProps {
   formData: MasterFormData;

@@ -5,9 +5,6 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
-  LaminatingTableRow,
-  LaminationFormData,
-  LaminationFormErrors,
   setLaminationDataTouched,
   setLaminationFormData,
   setLaminationFormErros,
@@ -17,6 +14,7 @@ import {
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
+import { LaminatingTableRow, LaminationFormData, LaminationFormErrors } from "../../store/slices/masterDataInterface";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];

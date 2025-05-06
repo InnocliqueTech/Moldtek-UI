@@ -7,9 +7,6 @@ import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useEffect, useState } from "react";
 import {
-  PrintingFormErrors,
-  PrintingFormValues,
-  PrintingTableRow,
   setPrintingDataTouched,
   setPrintingSave,
   setPrintngFormErros,
@@ -17,6 +14,7 @@ import {
   setSubmitAndPublishButtonPrinting,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
+import { PrintingFormErrors, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
 
 const machineFields = [
   {

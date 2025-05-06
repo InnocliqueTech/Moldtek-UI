@@ -7,16 +7,10 @@ import {
   setSelectedTab,
   setSaveFormData,
   setIsMasterDetailsDataSave,
-  MasterFormData,
-  PrintingFormValues,
-  PrintingTableRow,
   setIsPrintingDataSave,
   setSavePrintingFormData,
-  LaminatingTableRow,
-  LaminationFormData,
   setIsLaminatingDataSave,
   setLaminationFormData,
-  DyeCuttingFormData,
   setRequestPayload,
   setPrintingTab,
   setLaminationTab,
@@ -44,6 +38,7 @@ import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 import { useParams } from "react-router-dom";
+import { DyeCuttingFormData, LaminatingTableRow, LaminationFormData, MasterFormData, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

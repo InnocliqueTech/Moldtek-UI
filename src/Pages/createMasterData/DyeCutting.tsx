@@ -5,8 +5,6 @@ import ReusableInput from "../../Components/ReUsable/TextField";
 import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
-  DyeCuttingFormData,
-  DyeCuttingFormErrors,
   setDyeCuttingDataTouched,
   setDyeCuttingFormData,
   setDyeCuttingFormErros,
@@ -14,6 +12,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
+import { DyeCuttingFormData, DyeCuttingFormErrors } from "../../store/slices/masterDataInterface";
 
 interface DyeCuttingProps {
   formData: DyeCuttingFormData;
