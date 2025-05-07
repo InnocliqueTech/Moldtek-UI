@@ -13,7 +13,7 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { East, ExitToApp, West } from "@mui/icons-material";
+import { BarChartOutlined, East, ExitToApp, GridViewOutlined, ManageAccounts, ManageAccountsOutlined, Settings, West } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
@@ -88,9 +88,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const menuItems = [
     {
       text: "Dashboard",
-      icon: <img src={HomeIcon} alt="Dashboard" width="20" height="20" />,
+      icon: <GridViewOutlined />,
       selectedIcon: (
-        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+        <GridViewOutlined />
       ),
       path: "/dashboard",
     },
@@ -125,23 +125,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     {
       text: "Production Operators",
       icon: (
-        <img
-          src={ProductionOperatorsIcon}
-          alt="Dashboard"
-          width="20"
-          height="20"
-        />
+       <ManageAccountsOutlined/>
       ),
       selectedIcon: (
-        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+        <ManageAccountsOutlined/>
       ),
       path: "/invoices",
     },
     {
       text: "Reports",
-      icon: <img src={ReportsIcon} alt="Dashboard" width="20" height="20" />,
+      icon: <BarChartOutlined/>,
       selectedIcon: (
-        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+        <BarChartOutlined/>
       ),
       path: "/reports",
     },
@@ -150,20 +145,20 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const preferenceItems = [
     {
       text: "Settings",
-      icon: <img src={SettingsIcon} alt="Dashboard" width="20" height="20" />,
+      icon: <Settings />,
       selectedIcon: (
-        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+        <Settings />
       ),
       path: "/settings",
     },
-    {
-      text: "Help Center",
-      icon: <img src={HelpCenterIcon} alt="Dashboard" width="20" height="20" />,
-      selectedIcon: (
-        <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
-      ),
-      path: "/help",
-    },
+    // {
+    //   text: "Help Center",
+    //   icon: <img src={HelpCenterIcon} alt="Dashboard" width="20" height="20" />,
+    //   selectedIcon: (
+    //     <img src={HomeSelectedIcon} alt="Selected" width="20" height="20" />
+    //   ),
+    //   path: "/help",
+    // },
   ];
 
   const handleLogOut = () => {
@@ -408,7 +403,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       }
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 30 }}>
+                    <ListItemIcon sx={{ minWidth: 30,color:isSelected|| hoveredIndex === index?'#0073B7':'' }}>
                       {isSelected || hoveredIndex === index
                         ? item.selectedIcon
                         : item.icon}
@@ -523,7 +518,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       }
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 30 }}>
+                    <ListItemIcon sx={{ minWidth: 30,color:isSelected|| preferenceHoveredIndex === index?'#0073B7':''  }}>
                       {isSelected || preferenceHoveredIndex === index
                         ? item.selectedIcon
                         : item.icon}
@@ -733,7 +728,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 30 }}>
+                  <ListItemIcon sx={{ minWidth: 30,color:isSelected|| hoveredIndex === index?'#0073B7':''  }}>
                     {isSelected || hoveredIndex === index
                       ? item.selectedIcon
                       : item.icon}
@@ -800,7 +795,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 30 }}>
+                  <ListItemIcon sx={{ minWidth: 30 ,color:isSelected|| preferenceHoveredIndex === index?'#0073B7':'' }}>
                     {isSelected || preferenceHoveredIndex === index
                       ? item.selectedIcon
                       : item.icon}
