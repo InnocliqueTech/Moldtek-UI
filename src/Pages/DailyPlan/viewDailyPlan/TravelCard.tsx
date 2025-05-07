@@ -10,13 +10,14 @@ import {
 import { useGetTravelCardDetailsQuery } from "../../../store/services/api";
 import Loader from "../../../Loader";
 import { transformJobDetails } from "./tableTransfermationFunctions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
 import {
   MachineDetails,
   LabelDispatchSummary,
 } from "../../../store/Interfaces/createDailyPlanTypes";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer"; // adjust path if needed
+import { RootState } from "../../../store";
 
 interface TravelCardProps {
   indentNumber: string;
@@ -40,6 +41,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
   const { data, isLoading, isError, error } = useGetTravelCardDetailsQuery(indentNumber);
 
   const [editableData, setEditableData] = useState<EditableTravelCardData | null>(null);
+  const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
 
   // infoItems state for editing job details
   const [printingInfo, setPrintingInfo] = useState<InfoItem[]>([]);
@@ -163,7 +165,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }}
         />
       </Box>
-
+{dailyPlan.labelType !== "THINWALL" &&
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Lamination Machine"
@@ -202,6 +204,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
         />
       </Box>
+}
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
