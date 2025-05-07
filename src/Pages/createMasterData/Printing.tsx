@@ -489,7 +489,6 @@ const Printing: React.FC<PrintingProps> = ({
     const hasErrors = Object.values(errors).some((error) => error);
   
     const isSaveEnabled = !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
-    console.log(errors,isAnyFieldFilled,hasErrors,printingTableValueVaidation,"VALIDATION")
     dispatch(setPrintingSave(isSaveEnabled));
     
   }, [formValues, errors, dispatch]);

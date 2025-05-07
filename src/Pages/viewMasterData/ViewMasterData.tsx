@@ -17,7 +17,7 @@ import {
 import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyeCutting from "./ViewDyeCutting";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 
@@ -30,6 +30,8 @@ const ViewMasterData: React.FC = () => {
     (state: RootState) => state.viewMasterData
   );
 
+
+  const contentRef = useRef<HTMLDivElement>(null);
   const UEN = localStorage.getItem("selectedUEN");
   let selectedUEN: any;
   if (UEN) {
@@ -43,7 +45,13 @@ const ViewMasterData: React.FC = () => {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
+  
+    // Also scroll internal content (like the tab content area)
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
   };
+  
 
 const UnitEffectiveNumber = localStorage.getItem("UEN");
 const VersionNumber = localStorage.getItem("VersionNumber")
@@ -98,21 +106,26 @@ const path = location.pathname.includes("/versionDetails")
       );
     }
   }, [data, dispatch]);
+  console.log(selectedTab,"SELECTEDTAB")
 
 
   return (
     <Box
       sx={{
         height:
-          selectedTab !== 2
-            ? {
-                xl: "136vh",
-                lg: "144vh",
-                md: "152vh",
-                sm: "310vh",
-                xs: "400vh",
-              }
-            : { xl: "auto", lg: "auto", md: "auto", sm: "auto", xs: "auto" },
+        (
+          (data?.data.masterDataDetails.label_type !== 'Thin Wall' && data?.data.masterDataDetails.label_type !== 'TW' && selectedTab !== 2) ||
+          (data?.data.masterDataDetails.label_type === 'Thin Wall' || data?.data.masterDataDetails.label_type === 'TW') && selectedTab !== 1
+        )
+          ? {
+              xl: "136vh",
+              lg: "144vh",
+              md: "152vh",
+              sm: "310vh",
+              xs: "400vh",
+            }
+          : { xl: "auto", lg: "auto", md: "auto", sm: "auto", xs: "auto" },
+        
         display: "flex",
         flexDirection: "column",
       }}
@@ -141,7 +154,7 @@ const path = location.pathname.includes("/versionDetails")
             <OrderCard />
           </Box>
 
-          <Box
+          <Box ref={contentRef}
             sx={{
               flex: 1,
               overflow: "auto",
@@ -151,7 +164,7 @@ const path = location.pathname.includes("/versionDetails")
               flexDirection: "column",
             }}
           >
-            <Box
+            <Box 
               sx={{
                 position: "sticky",
                 top: 0,
@@ -172,7 +185,7 @@ const path = location.pathname.includes("/versionDetails")
               {selectedTab === 1 && !(
                data?.data.masterDataDetails.label_type ==='Thin Wall'||
                data?.data.masterDataDetails.label_type === "TW"
-              ) ? <ViewLamination />:<ViewDyeCutting />}
+              ) ? <ViewLamination />:selectedTab !== 0 &&<ViewDyeCutting />}
 
             </Box>
           </Box>

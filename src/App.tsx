@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Loader from "./Loader";
 import './App.css'
+import ScrollToTop from "./Components/ReUsable/ScrollTop";
 
 
 const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));
@@ -22,6 +23,7 @@ const ForgotPassword = lazy(()=>import("./Components/Authentication/ForgotPasswo
 const App: React.FC = () => {
   return (
     <Router>
+          <ScrollToTop />
       <Suspense fallback={<Loader/>}>
         <Routes>
           <Route path="/" element={<SignInPage />} />

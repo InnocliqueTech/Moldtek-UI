@@ -89,7 +89,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       default:
         return;
     }
-    console.log(updated,"inside dataUpdate");
+   
     setEditableData(updated);
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();

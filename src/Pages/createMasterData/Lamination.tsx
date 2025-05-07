@@ -288,7 +288,6 @@ const Lamination: React.FC<LaminationProps> = ({
     
       const thirdItem = bondingMaterials[2];
       let thirdInvalid = false;
-    console.log(thirdItem,"THIRDITEMOFTHEDATA")
       if (thirdItem) {
         const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
     
@@ -308,7 +307,6 @@ const Lamination: React.FC<LaminationProps> = ({
             thirdItem.ratio === undefined;
         }
       }
-    console.log(hasEmptyRatio,firstTwoInvalid,thirdInvalid,"hasEmptyRatio")
       allValid = hasEmptyRatio || firstTwoInvalid || thirdInvalid;
     }
     
@@ -377,7 +375,6 @@ const Lamination: React.FC<LaminationProps> = ({
       isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
     const shouldEnableSubmitAndPublish =
       areAllFieldsFilled || hasAnyError || allValid  || laminationTableValueVaidation;
-      console.log(areAllFieldsFilled,hasAnyError,allValid,laminationTableValueVaidation,"laminationTableValueVaidation")
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
       setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish)

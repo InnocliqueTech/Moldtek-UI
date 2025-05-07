@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Stack } from "@mui/material";
 import TabsComponent from "../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
@@ -381,9 +381,9 @@ viewMasterDataDetails
       },
       stationWiseMetrics: finalPrintingData.stationWiseMetrics.map((station:any) => ({
         ...station,
-        volume: Number(station.volume) || 0,
-        uv_led_intensity: Number(station.uv_led_intensity) || 0,
-        lf_value: Number(station.lf_value) || 0,
+        volume: Number(station.volume) || "",
+        uv_led_intensity: Number(station.uv_led_intensity) || "",
+        lf_value: Number(station.lf_value) || "",
       })),
     };
     
@@ -426,6 +426,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
     }
   }, [saveFormData.label_type, saveFormData.segment, selectedTab, dispatch]);
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     if (newValue === 1) {
       dispatch(setPrintingTab(true));
@@ -433,7 +435,13 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
       dispatch(setLaminationTab(true));
     }
     dispatch(setSelectedTab(newValue));
+  
+    // Reset the scroll position to top
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
   };
+  
 
   useEffect(() => {
     if (id && data) {
@@ -502,7 +510,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   }, [id, data, dispatch]);
 
   return (
-    <Box
+    <Box 
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -523,7 +531,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
         </Box>
       ) : (
         <>
-          <Box
+          <Box 
             sx={{
               position: "sticky",
               top: { xs: "96.5px", sm: "52.5px", md: "50.9px" },
@@ -538,7 +546,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
             />
           </Box>
 
-          <Box
+          <Box  ref={contentRef}
             sx={{
               flexGrow: 1,
               overflowY: "auto",

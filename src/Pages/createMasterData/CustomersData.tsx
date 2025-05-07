@@ -79,7 +79,7 @@ const CustomerSelect = () => {
     dispatch(setSelectedCustomers([]));
   };
 
-console.log(customersData,"CustomersData")
+
 
   return (
     <Box

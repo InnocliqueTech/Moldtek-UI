@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
-import { InfoOutline } from "@mui/icons-material";
+// import { InfoOutline } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 

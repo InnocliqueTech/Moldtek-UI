@@ -85,7 +85,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     if (!submitTrue) {
       createMasterData(requestPayload)
         .then((response) => {
-          console.log(response, "RESPONSEOFTHEDATA");
           if (response && response.data && response.data.statusCode === 200) {
             dispatch(setSubmitAndPublishPopup(false));
             dispatch(setSubmitPopupConfirm(true));
@@ -203,7 +202,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          disabled={isSubmitDisabled()}
+          // disabled={isSubmitDisabled()}
         />
       ) : (
         <>
