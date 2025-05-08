@@ -137,6 +137,41 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   const foilConsumptionData = [editableData.foilRollConsumptionDetails];
   const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
   const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
+
+  const rollKeys = Array.from(
+    new Set(
+      printingProcessData.flatMap((item) =>
+        Object.keys(item).filter((key) => key.startsWith("Roll-"))
+      )
+    )
+  );
+
+  const baseColumns = [
+    { id: "particular", label: "Particular", edit: false },
+    { id: "target", label: "Target", edit: isEditing },
+  ];
+  const rollColumns = rollKeys.map((roll) => ({
+    id: roll,
+    label: roll.replace("-", " ")
+  }));
+
+  const rollKeysMetrics = Array.from(
+    new Set(
+      printingRunMetricsRows.flatMap((item) =>
+        Object.keys(item).filter((key) => key.startsWith("Roll-"))
+      )
+    )
+  );
+
+  const baseColumnsMetrics = [
+    { id: "particular", label: "", edit: false },
+  ];
+  const rollColumnsMetrics = rollKeysMetrics.map((roll) => ({
+    id: roll,
+    label: roll.replace("-", " ")
+  }));
+
+
   return (
     <>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
@@ -229,27 +264,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Process Report"
-          columns={[
-            {
-              id: "particular",
-              label: "Particular",
-              edit: false,
-            },
-            {
-              id: "target",
-              label: "Target",
-              edit: isEditing, // Temporarily allow edit (we'll control it via rowEditable)
-            },
-            {
-              id: "roll1",
-              label: "Roll-1",
-             
-            },
-            {
-              id: "roll2",
-              label: "Roll-2",
-            },
-          ]}
+          columns={[...baseColumns, ...rollColumns]}
           data={printingProcessData}
           setData={(data: any) =>
             handleDataUpdate("printingProcessReport", data)
@@ -264,12 +279,7 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Printing Run Metrics"
-          columns={[
-            { id: "particular", label: "", edit: false },
-            // { id: "target", label: "Target", edit: false },
-            { id: "roll1", label: "Roll-1", edit: isEditing },
-            { id: "roll2", label: "Roll-2", edit: isEditing },
-          ]}
+          columns={[...baseColumnsMetrics, ...rollColumnsMetrics]}
           data={printingRunMetricsRows}
           setData={(data: any) => handleDataUpdate("printingRunMetrics", data)}
         />
