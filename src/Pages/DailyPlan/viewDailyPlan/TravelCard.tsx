@@ -165,7 +165,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
           }}
         />
       </Box>
-{dailyPlan.labelType !== "THINWALL" &&
+{(dailyPlan.labelType !== "THINWALL" ||dailyPlan.segment !=='TW') &&
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable
           title="Lamination Machine"

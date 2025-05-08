@@ -8,6 +8,7 @@ import Loader from "../../../Loader";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
 import { InkCoatingSpecification } from "../../../store/slices/viewDailyPlanSlice";
+import { useParams } from "react-router-dom";
 
 const inkCoatingColumns = [
   { id: "stationNo", label: "Station No" },
@@ -76,7 +77,8 @@ const MakeReady: React.FC<MakeReadyProps> = ({
   const [editableMaterialSpec, setEditableMaterialSpec] = useState(materialSpecification || {});
   const [plateReportItems, setPlateReportItems] = useState<InfoItem[]>([]);
   const [editableInkCoatingSpecifications, setEditableInkCoatingSpecifications] = useState(inkCoatingSpecifications || []);
-
+  const { indentNo } = useParams();
+  const decodedIndentNo = decodeURIComponent(indentNo || "");
   useEffect(() => {
     if (inkCoatingSpecifications && inkCoatingSpecifications.length > 0) {
       setEditableInkCoatingSpecifications(inkCoatingSpecifications);
@@ -127,7 +129,7 @@ const MakeReady: React.FC<MakeReadyProps> = ({
       ];
       setPlateReportItems(report);
     }
-  }, [inkCoatingSpecifications, materialSpecification, plateMountingSupervisorReport]);
+  }, [inkCoatingSpecifications, materialSpecification, plateMountingSupervisorReport,decodedIndentNo]);
 
   // const handleShiftReportUpdate = (items: InfoItem[]) => {
   //   setPlateReportItems(items);

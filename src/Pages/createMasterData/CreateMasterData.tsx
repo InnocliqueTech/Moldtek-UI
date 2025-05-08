@@ -416,15 +416,6 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
     "Master Data - Dye Cutting",
   ];
 
-  useEffect(() => {
-    if (
-      (saveFormData.label_type === "Thin Wall" ||
-        saveFormData.segment === "TW") ||((id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) &&
-      selectedTab === 2
-    ) {
-      dispatch(setSelectedTab(3));
-    }
-  }, [saveFormData.label_type, saveFormData.segment, selectedTab, dispatch]);
 
   const contentRef = useRef<HTMLDivElement>(null);
 

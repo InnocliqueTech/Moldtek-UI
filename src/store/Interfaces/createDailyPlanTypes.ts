@@ -171,6 +171,7 @@ export interface DailyPlan {
   shift: string
   workOrderNumber: string
   jobMasterId: number
+  segment:string
 }
 
 export interface GetReadyInkCoatingSpecification {
