@@ -51,7 +51,7 @@ const ForgotPassword: React.FC = () => {
         toast.error(response?.message);
       }
     } catch (err: any) {
-      toast.error(err?.message || "Login failed: No token received");
+      toast.error(err?.message || "Error Fetching Data");
       navigate("/");
     }
   };
