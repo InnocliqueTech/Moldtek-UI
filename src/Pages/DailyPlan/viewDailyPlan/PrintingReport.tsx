@@ -138,13 +138,18 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   const printingProcessData = transformPrintingProcessDataList(editableData.printingProcessReport);
   const printingRunMetricsRows = transformPrintingProcessDataList(editableData.printingRunMetrics);
 
-  const rollKeys = Array.from(
-    new Set(
-      printingProcessData.flatMap((item) =>
-        Object.keys(item).filter((key) => key.startsWith("Roll-"))
-      )
-    )
-  );
+  const rollKeys: string[] = [];
+  const seen: Record<string, boolean> = {};
+  
+  printingRunMetricsRows.forEach((item) => {
+    Object.keys(item).forEach((key) => {
+      if (key.startsWith("Roll-") && !seen[key]) {
+        seen[key] = true;
+        rollKeys.push(key);
+      }
+    });
+  });
+  
 
   const baseColumns = [
     { id: "particular", label: "Particular", edit: false },
@@ -155,13 +160,18 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
     label: roll.replace("-", " ")
   }));
 
-  const rollKeysMetrics = Array.from(
-    new Set(
-      printingRunMetricsRows.flatMap((item) =>
-        Object.keys(item).filter((key) => key.startsWith("Roll-"))
-      )
-    )
-  );
+  const rollKeysMetrics: string[] = [];
+  const seenMetrics: Record<string, boolean> = {};
+  
+  printingRunMetricsRows.forEach((item) => {
+    Object.keys(item).forEach((key) => {
+      if (key.startsWith("Roll-") && !seenMetrics[key]) {
+        seenMetrics[key] = true;
+        rollKeysMetrics.push(key);
+      }
+    });
+  });
+  
 
   const baseColumnsMetrics = [
     { id: "particular", label: "", edit: false },
