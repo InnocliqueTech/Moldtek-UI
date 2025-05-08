@@ -13,15 +13,11 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { BarChartOutlined, East, ExitToApp, GridViewOutlined, ManageAccountsOutlined, Settings, West } from "@mui/icons-material";
+import { ArticleOutlined, BarChartOutlined, East, ExitToApp, FolderOpenOutlined, GridViewOutlined, ManageAccountsOutlined, Settings, TaskOutlined, TopicOutlined, West } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
 import profileImage from "../../assets/Images/profile.svg";
-import MasterDataIcon from "../../assets/Images/masterData.png";
-import MasterDataSelectedIcon from "../../assets/Images/masterDataSelected.png";
-import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
-import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
 import {
   clearDyeCuttingFormData,
@@ -90,30 +86,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     },
     {
       text: "Master Data",
-      icon: <img src={MasterDataIcon} alt="Dashboard" width="20" height="20" />,
+      icon: <ArticleOutlined/>,
       selectedIcon: (
-        <img
-          src={MasterDataSelectedIcon}
-          alt="Selected"
-          width="20"
-          height="20"
-        />
+        <ArticleOutlined/>
       ),
       path: "/masterData",
     },
     {
       text: "Daily Plan",
-      icon: (
-        <img src={DailyPlanIcon} alt="daily plan icon" width="20" height="20" />
-      ),
-      selectedIcon: (
-        <img
-          src={DailyPlanSelectedIcon}
-          alt="Selected"
-          width="20"
-          height="20"
-        />
-      ),
+      icon: <TaskOutlined/>,
+      selectedIcon: <TaskOutlined/>,
       path: "/dailyPlan",
     },
     {

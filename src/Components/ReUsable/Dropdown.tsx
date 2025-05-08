@@ -56,18 +56,12 @@ const DropdownComponent: React.FC<DropdownProps> = ({
     if (showAllOption && selectedValues.includes("All")) {
       selectedValues = options;
     }
-    // If placeholder is selected, reset to empty
-    if (selectedValues.includes("")) {
-      selectedValues = [];
-    }
 
-    // Handle "All" selection for multi-select
     if (isMultiSelect && showAllOption && selectedValues.includes("All")) {
       selectedValues = options;
     }
 
     setSelectedOptions(selectedValues);
-    // Directly pass the event object back to the parent
     onChange(event);
   };
 
@@ -178,7 +172,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
               {checkbox && (
                 <Checkbox checked={selectedOptions.includes(option)} />
               )}
-              <Tooltip title={option} arrow>
+              <Tooltip title={option} arrow placement="right">
                 <div
                   style={{
                     whiteSpace: "nowrap",

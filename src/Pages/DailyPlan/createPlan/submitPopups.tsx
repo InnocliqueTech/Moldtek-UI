@@ -34,6 +34,7 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopupConfirm(false);
     navigate("/dailyPlan");
+    localStorage.setItem('dailyPlanDataPage','0')
   };
   return (
     <>

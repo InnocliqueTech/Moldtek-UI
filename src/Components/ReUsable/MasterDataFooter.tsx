@@ -148,6 +148,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
     navigate("/masterData");
+    localStorage.setItem('masterDataPage','0')
   };
 
   const UEN = localStorage.getItem("selectedUEN") ?? "";
