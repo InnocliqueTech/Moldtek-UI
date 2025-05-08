@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography} from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReusableInput from "../ReUsable/TextField";
 import ReusableButton from "../ReUsable/Button";
 import { signInSchema } from "../ZodSchemas/signInpageValidation";
@@ -18,7 +18,7 @@ const ForgotPassword: React.FC = () => {
     {}
   );
   const navigate = useNavigate();
-  const location = useLocation();
+
 
 
   const [forGotPassword, { isLoading }] = useForGotPasswordMutation();

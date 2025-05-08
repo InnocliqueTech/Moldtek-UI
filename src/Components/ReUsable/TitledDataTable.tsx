@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography,  } from "@mui/material";
-import InfoOutline from "@mui/icons-material/InfoOutlined";
+// import InfoOutline from "@mui/icons-material/InfoOutlined";
 import DataTable from "./MasterDataTable"; // Adjust the import path as needed
 import InfoContainer,{InfoItem} from "./InfoContainer";
 
@@ -40,7 +40,7 @@ const TitledDataTable = <T extends Record<string, any>>({
   borderColor = "#ECECEC",
   borderRadius = "16px",
   titleColor = "#2F2FF",
-  infoIconColor = "#9F9F9F",
+  // infoIconColor = "#9F9F9F",
   firstRow = false,
   infoItems = [],
   showInfoSection = false,

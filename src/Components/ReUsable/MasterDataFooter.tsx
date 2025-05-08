@@ -202,7 +202,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           textColor="white"
           p={2}
           onClick={handleSubmitAndPublishPopupOpen}
-          // disabled={isSubmitDisabled()}
+          disabled={isSubmitDisabled()}
         />
       ) : (
         <>

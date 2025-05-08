@@ -13,19 +13,13 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { BarChartOutlined, East, ExitToApp, GridViewOutlined, ManageAccounts, ManageAccountsOutlined, Settings, West } from "@mui/icons-material";
+import { BarChartOutlined, East, ExitToApp, GridViewOutlined, ManageAccountsOutlined, Settings, West } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
 import profileImage from "../../assets/Images/profile.svg";
-import HomeIcon from "../../assets/Images/home.svg";
-import HomeSelectedIcon from "../../assets/Images/homeSelected.png";
 import MasterDataIcon from "../../assets/Images/masterData.png";
 import MasterDataSelectedIcon from "../../assets/Images/masterDataSelected.png";
-import ProductionOperatorsIcon from "../../assets/Images/prouctionOperators.png";
-import ReportsIcon from "../../assets/Images/reports.png";
-import SettingsIcon from "../../assets/Images/settings.png";
-import HelpCenterIcon from "../../assets/Images/helpCenter.png";
 import DailyPlanIcon from "../../assets/Images/dailyPlanIcon.svg";
 import DailyPlanSelectedIcon from "../../assets/Images/dailyPlanSelectedIcon.svg";
 import { useState } from "react";
