@@ -9,7 +9,7 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import { EmailOutlined} from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
-import { useLoginMutation } from "../../store/services/api";
+import { useForGotPasswordMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
 
 const ForgotPassword: React.FC = () => {
@@ -19,9 +19,9 @@ const ForgotPassword: React.FC = () => {
   );
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/masterData";
 
-  const [login, { isLoading }] = useLoginMutation();
+
+  const [forGotPassword, { isLoading }] = useForGotPasswordMutation();
 
   const handleLogin = async () => {
     setErrors({});
@@ -41,26 +41,17 @@ const ForgotPassword: React.FC = () => {
     }
 
     try {
-      const response = await login({
+      const response = await forGotPassword({
         username: email,
       }).unwrap();
-      if (response?.data?.token) {
-        localStorage.setItem("token", response?.data?.token);
-        localStorage.setItem("auth", "true");
-        localStorage.setItem("role", response?.data?.userTypeName);
-        navigate(from, { replace: true });
+      if (response?.statusCode ===200) {
+       toast.success(response?.message)
+        navigate('/');
       } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.setItem("auth", "false");
-        toast.error("Login failed: No token received");
-        navigate("/");
+        toast.error(response?.message);
       }
     } catch (err: any) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.setItem("auth", "false");
-      toast.error(err?.data?.message || "Login failed: No token received");
+      toast.error(err?.message || "Login failed: No token received");
       navigate("/");
     }
   };

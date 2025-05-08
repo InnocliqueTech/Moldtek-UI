@@ -11,12 +11,12 @@ import {
   TravelCardDetailsResponse,
   SaveDailyJobRequest,
   SaveDailyJobResponse,
-  LaminationReportResponse ,
+  LaminationReportResponse,
   SaveLabelCuttingResponse,
   SaveLabelCuttingRequest,
   SaveTravelCardResponse,
   SaveTravelCardRequest,
-  SaveMakeReadyRequest
+  SaveMakeReadyRequest,
 } from "../Interfaces/createDailyPlanTypes";
 
 const getJobUniqueId = (job: DailyJob) => {
@@ -47,12 +47,19 @@ export const apiSlice = createApi({
     "TravelCardDetails",
     "SaveDailyJobs",
     "LaminationReport",
-    "LaminationReportDetails"
-  ], 
+    "LaminationReportDetails",
+  ],
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
       query: (newItem) => ({
         url: "/auth/login",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
+    forGotPassword: builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "auth/forgotPassword",
         method: "POST",
         body: newItem,
       }),
@@ -66,17 +73,21 @@ export const apiSlice = createApi({
         url: `/master/masterDataList?${newItem}`,
         method: "GET",
       }),
-      providesTags: ["MasterDataList"],  
+      providesTags: ["MasterDataList"],
     }),
-    versionHistory: builder.query<any,  { [key: string]: string | number | boolean }>({
+    versionHistory: builder.query<
+      any,
+      { [key: string]: string | number | boolean }
+    >({
       query: (newItem) => {
-        const queryString = Object.entries(newItem)
-        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        return{
-        url: `/master/getVersionHistory?${queryString}`,
-        method: "GET",
+        const queryString = Object.entries(newItem).map(
+          ([key, value]) => `${key}=${encodeURIComponent(value)}`
+        );
+        return {
+          url: `/master/getVersionHistory?${queryString}`,
+          method: "GET",
         };
-      }, 
+      },
     }),
     getJobsList: builder.query<
       any,
@@ -92,7 +103,10 @@ export const apiSlice = createApi({
         };
       },
     }),
-    viewMasterData: builder.query<any, { [key: string]: string | number | boolean }>({
+    viewMasterData: builder.query<
+      any,
+      { [key: string]: string | number | boolean }
+    >({
       query: (newItem) => {
         const queryString = Object.entries(newItem)
           .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -104,15 +118,16 @@ export const apiSlice = createApi({
         };
       },
     }),
-    updateStatusJob: builder.mutation<UpdateStatusResponse, UpdateStatusRequest>({
+    updateStatusJob: builder.mutation<
+      UpdateStatusResponse,
+      UpdateStatusRequest
+    >({
       query: ({ indentNumber, status }) => ({
-        url: '/dailyplan/updateStatusForJob',
-        method: 'GET',
+        url: "/dailyplan/updateStatusForJob",
+        method: "GET",
         params: { indentNumber, status },
       }),
-      
     }),
-    
 
     createMasterData: builder.mutation<any, any>({
       query: (newItem) => ({
@@ -120,35 +135,32 @@ export const apiSlice = createApi({
         method: "POST",
         body: newItem,
       }),
-      invalidatesTags: [
-        "MasterDataMetrics",  
-          "MasterDataList"
-      ],
+      invalidatesTags: ["MasterDataMetrics", "MasterDataList"],
     }),
-    masterFilters:builder.mutation<any,any>({
-query:(newItem)=>({
-  url:'/master/masterDataFilter',
-  method: "POST",
-  body: newItem,
-})
-    }),
-    dailyPlanFilters:builder.mutation<any,any>({
-      query:(newItem)=>({
-        url:'/dailyplan/getDailyJobsDataFilters',
+    masterFilters: builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/master/masterDataFilter",
         method: "POST",
         body: newItem,
-      })
-          }),
+      }),
+    }),
+    dailyPlanFilters: builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/dailyplan/getDailyJobsDataFilters",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
 
-    getCustomerDtails:builder.query<any, void>({
+    getCustomerDtails: builder.query<any, void>({
       query: () => "/master/getCustomerDetails",
     }),
-    getLabelTypes:builder.query<any, void>({
+    getLabelTypes: builder.query<any, void>({
       query: () => "/master/getLabelTypeDetails",
     }),
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => "/dailyplan/dailyJobMetrics",
-      providesTags: ["DailyJobMetrics"],  
+      providesTags: ["DailyJobMetrics"],
     }),
     getDailyJobsList: builder.query<DailyJobsListResponse, PaginationParams>({
       query: ({ page, size }) => ({
@@ -174,52 +186,56 @@ query:(newItem)=>({
       ],
     }),
     getMakeReadyDetails: builder.query<MakeReadyDetailsResponse, string>({
-      query: (jobId) => `/dailyplan/getDailyPlanMakeReadyDetails?indentNumber=${jobId}`,
+      query: (jobId) =>
+        `/dailyplan/getDailyPlanMakeReadyDetails?indentNumber=${jobId}`,
       providesTags: (_result, _error, jobId) => [
-        { type: 'MakeReadyDetails', id: jobId }
+        { type: "MakeReadyDetails", id: jobId },
       ],
     }),
     getLabelCuttingDetails: builder.query<LabelCuttingDetailsResponse, string>({
       query: (indentNumber) => ({
-        url: '/dailyplan/getDailyPlanLabelCuttingDetails',
-        params: { indentNumber }
+        url: "/dailyplan/getDailyPlanLabelCuttingDetails",
+        params: { indentNumber },
       }),
       providesTags: (_result, _error, indentNumber) => [
-        { type: 'LabelCuttingDetails', id: indentNumber }
+        { type: "LabelCuttingDetails", id: indentNumber },
       ],
     }),
     getTravelCardDetails: builder.query<TravelCardDetailsResponse, string>({
       query: (indentNumber) => ({
-        url: '/dailyplan/getDailyPlanTravelCardDetails',
-        params: { indentNumber }
+        url: "/dailyplan/getDailyPlanTravelCardDetails",
+        params: { indentNumber },
       }),
       providesTags: (_result, _error, indentNumber) => [
-        { type: 'TravelCardDetails', id: indentNumber }
+        { type: "TravelCardDetails", id: indentNumber },
       ],
     }),
     saveDailyJob: builder.mutation<SaveDailyJobResponse, SaveDailyJobRequest>({
       query: (jobData) => ({
-        url: '/dailyplan/saveDailyJob',
-        method: 'POST',
+        url: "/dailyplan/saveDailyJob",
+        method: "POST",
         body: jobData,
       }),
-      invalidatesTags: ['DailyJobs'], // Invalidates cached job lists
+      invalidatesTags: ["DailyJobs"], // Invalidates cached job lists
     }),
-    getLaminationReportDetails: builder.query<LaminationReportResponse, string>({
-      query: (indentNumber) => `/dailyplan/getDailyPlanLaminationReportDetails?indentNumber=${indentNumber}`,
-      providesTags: (_result, _error, indentNumber) => [
-        { type: 'LaminationReport', id: indentNumber }
-      ],
-    }),
-    
+    getLaminationReportDetails: builder.query<LaminationReportResponse, string>(
+      {
+        query: (indentNumber) =>
+          `/dailyplan/getDailyPlanLaminationReportDetails?indentNumber=${indentNumber}`,
+        providesTags: (_result, _error, indentNumber) => [
+          { type: "LaminationReport", id: indentNumber },
+        ],
+      }
+    ),
+
     saveLaminationReportDetails: builder.mutation<any, any>({
       query: (laminationReportData) => ({
-        url: '/dailyplan/saveLaminationReport',
-        method: 'POST',
+        url: "/dailyplan/saveLaminationReport",
+        method: "POST",
         body: laminationReportData,
       }),
       invalidatesTags: (_result, _error, arg) => [
-        { type: 'LaminationReportDetails', id: arg.indentNumber.toString() }
+        { type: "LaminationReportDetails", id: arg.indentNumber.toString() },
       ],
     }),
     saveLabelCuttingDetails: builder.mutation<
@@ -227,46 +243,55 @@ query:(newItem)=>({
       SaveLabelCuttingRequest
     >({
       query: (labelCuttingData) => ({
-        url: '/dailyplan/saveLabelCuttingDetails',
-        method: 'POST',
+        url: "/dailyplan/saveLabelCuttingDetails",
+        method: "POST",
         body: labelCuttingData,
       }),
       invalidatesTags: (_result, _error, arg) => [
-        { type: 'LabelCuttingDetails', id: arg.indentNumber.toString() },
-        "MakeReadyDetails"
+        { type: "LabelCuttingDetails", id: arg.indentNumber.toString() },
+        "MakeReadyDetails",
       ],
     }),
-    saveTravelCardDetails: builder.mutation<SaveTravelCardResponse, SaveTravelCardRequest>({
+    saveTravelCardDetails: builder.mutation<
+      SaveTravelCardResponse,
+      SaveTravelCardRequest
+    >({
       query: (travelCardData) => ({
-        url: '/dailyplan/saveDailyPlanTravelCardDetails',
-        method: 'POST',
+        url: "/dailyplan/saveDailyPlanTravelCardDetails",
+        method: "POST",
         body: travelCardData,
       }),
       invalidatesTags: (_result, _error, arg) => [
-        { type: 'TravelCardDetails', id: arg.indentNumber.toString() }
+        { type: "TravelCardDetails", id: arg.indentNumber.toString() },
       ],
     }),
     savePrintingReportDetails: builder.mutation<
-  { statusCode: number; message: string; payload: null; data: string },
-  any
->({
-  query: (reportData) => ({
-    url: "/dailyplan/updateDailyPlanPrintingReportDetails",
-    method: "POST",
-    body: reportData,
-  }),
-  invalidatesTags: ["PrintingReport"], // Optional: adjust if needed
-}),
-saveMakeReadyDetails: builder.mutation<SaveTravelCardResponse, SaveMakeReadyRequest>({
-  query: (payload) => ({
-    url: "/dailyplan/updateDailyPlanMakeReadyDetails",
-    method: "POST",
-    body: payload,
-  }),
-  invalidatesTags: (_result, _error, arg) => [
-    { type: "MakeReadyDetails", id: arg?.dailyPlan?.indentNumber?.toString() },
-  ],
-}),
+      { statusCode: number; message: string; payload: null; data: string },
+      any
+    >({
+      query: (reportData) => ({
+        url: "/dailyplan/updateDailyPlanPrintingReportDetails",
+        method: "POST",
+        body: reportData,
+      }),
+      invalidatesTags: ["PrintingReport"], // Optional: adjust if needed
+    }),
+    saveMakeReadyDetails: builder.mutation<
+      SaveTravelCardResponse,
+      SaveMakeReadyRequest
+    >({
+      query: (payload) => ({
+        url: "/dailyplan/updateDailyPlanMakeReadyDetails",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        {
+          type: "MakeReadyDetails",
+          id: arg?.dailyPlan?.indentNumber?.toString(),
+        },
+      ],
+    }),
   }),
 });
 
@@ -282,18 +307,19 @@ export const {
   useGetJobsListQuery,
   useGetCustomerDtailsQuery,
   useGetLabelTypesQuery,
-  useGetPrintingReportDetailsQuery, 
+  useGetPrintingReportDetailsQuery,
   useGetMakeReadyDetailsQuery,
   useMasterFiltersMutation,
   useGetLabelCuttingDetailsQuery,
   useGetTravelCardDetailsQuery,
   useDailyPlanFiltersMutation,
-  useSaveDailyJobMutation ,
+  useSaveDailyJobMutation,
   useGetLaminationReportDetailsQuery,
   useUpdateStatusJobMutation,
-  useSaveLabelCuttingDetailsMutation ,
+  useSaveLabelCuttingDetailsMutation,
   useSaveTravelCardDetailsMutation,
   useSavePrintingReportDetailsMutation,
   useSaveLaminationReportDetailsMutation,
-  useSaveMakeReadyDetailsMutation
+  useSaveMakeReadyDetailsMutation,
+  useForGotPasswordMutation
 } = apiSlice;
