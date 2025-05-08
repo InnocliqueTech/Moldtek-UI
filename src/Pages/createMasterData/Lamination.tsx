@@ -11,10 +11,10 @@ import {
   setLaminationSave,
   setSubmitAndPublishButtonMasterLamination,
 } from "../../store/slices/masterDataSlice";
-import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
 import { LaminatingTableRow, LaminationFormData, LaminationFormErrors } from "../../store/slices/masterDataInterface";
+import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];
@@ -613,7 +613,7 @@ const Lamination: React.FC<LaminationProps> = ({
             </Typography>
             <Grid container spacing={2} pt={1}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <DropdownComponent
+                <DropdownTextComponent
                   label="Substrate Type"
                   options={['60 hd+38 T',
                     '40HD+38 T',
@@ -625,10 +625,11 @@ const Lamination: React.FC<LaminationProps> = ({
                   isMultiSelect={false}
                   checkbox={false}
                   required
+                  allowNewOption
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <DropdownComponent
+                <DropdownTextComponent
                   label="Supplier"
                   options={["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"]}
                   value={formData.laminationSubstrate?.supplier}
@@ -637,6 +638,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   }
                   isMultiSelect={false}
                   checkbox={false}
+                  allowNewOption
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>

@@ -15,6 +15,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { PrintingFormErrors, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
+import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 
 const machineFields = [
   {
@@ -36,12 +37,13 @@ const substrateFields = [
   {
     id: "substrate_type", label: "Substrate Type", options: ["ORANGE PEEL FILM (CHIRIPAL)",
       "ORANGE PEEL FILM (GULF PACK)",
-      "WHITE HIGH DENSITY  FILM"]
+      "WHITE HIGH DENSITY  FILM"], allowTextFiled:true
   },
   {
     id: "supplier",
     label: "Supplier",
     options: ["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"],
+    allowTextFiled:true
   },
   { id: "dyne_level", label: "Dyne Level" },
   { id: "width", label: "Width (mm)" },
@@ -280,6 +282,7 @@ const Printing: React.FC<PrintingProps> = ({
     id: string;
     label: string;
     options?: string[];
+    allowTextFiled?:boolean
   }) => {
     const isMachineField = machineFields.some((f) => f.id === field.id);
     const isSubstrateField = substrateFields.some((f) => f.id === field.id);
@@ -296,7 +299,7 @@ const Printing: React.FC<PrintingProps> = ({
 
     const error = errors[field.id] || "";
 
-    if (field.options) {
+    if (field.options && !field.allowTextFiled) {
       return (
         <DropdownComponent
           key={field.id}
@@ -310,7 +313,21 @@ const Printing: React.FC<PrintingProps> = ({
         />
       );
     }
+if(field.allowTextFiled){
+  return (
+    <DropdownTextComponent
+      key={field.id}
+      label={field.label}
+      value={String(value)} // force to string
+      onChange={(val) => handleChange(field.id, val)}
+      options={field.options?field.options:[]}
+      isMultiSelect={false}
+      checkbox={false}
+allowNewOption
 
+    />
+  );
+}
     return (
       <ReusableInput
         key={field.id}

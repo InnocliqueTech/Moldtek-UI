@@ -41,6 +41,7 @@ import {
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
 import { MasterDataFormErrors, MasterFormData } from "../../store/slices/masterDataInterface";
+import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -315,24 +316,23 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       "ups",
     ];
 
-    const anyValuePresent = importantFields.some(
-      (field) =>
-        formData[field] !== "" &&
-        formData[field] !== null &&
-        formData[field] !== undefined
+    const { job_master_id, ...formDataWithoutJobId } = formData;
+
+    const anyValuePresent = Object.values(formDataWithoutJobId).some(
+      (value) => value !== "" && value !== null && value !== undefined
     );
+
 
     const anyErrors = importantFields.some((field) => errors[field] !== "");
 
-    // Enable only if any value is present and there are no errors
     const canSubmit = anyValuePresent && !anyErrors;
 
     dispatch(setMasterDataDetailsSave(!canSubmit));
-    // I assume your slice uses: true = disable, false = enable
+
   }, [formData, errors, dispatch]);
 
   const handleRemoveImage = () => {
-    // clear the uploaded image from formData
+
     setFormData((prev) => ({
       ...prev,
       customer_logo: "",
@@ -409,7 +409,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             />
             <Box sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }} />
             <Box sx={{ mt: (row2HasError&&!!errors.item_code) ? 0 : 2 }}>
-              <DropdownComponent
+              <DropdownTextComponent
                 label="Structure"
                 options={[
                   "60 hd+38 T",
@@ -423,6 +423,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 onChange={(e) => handleChange("structure", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
+                allowNewOption
               />
             </Box>
           </Grid>
