@@ -4,6 +4,12 @@ import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, Lab
 
 
 const initialState: MasterDataState = {
+  dropDownValuesStructure:[],
+  dropDownValuesMountingTape:[],
+  dropDownValuesSupplierLamination:[],
+  dropDownValuesSupplierPrinting:[],
+  dropDownValuesPrinting:[],
+  dropDownValuesLamination:[],
   saveLaminatingData: {
     laminationConditions: {
       lamination_id: 0,
@@ -703,6 +709,24 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setPrintingDropDownValues:(state,action:PayloadAction<any>)=>{
+     state.dropDownValuesPrinting = action.payload
+    },
+    setStructureDropDownValues:(state,action:PayloadAction<any>)=>{
+      state.dropDownValuesStructure = action.payload
+     },
+     setMountinTapeDropDownValues:(state,action:PayloadAction<any>)=>{
+      state.dropDownValuesMountingTape = action.payload
+     },
+     setSupplierPrintingDropDownValues:(state,action:PayloadAction<any>)=>{
+      state.dropDownValuesSupplierPrinting = action.payload
+     },
+     setSupplieraminationDropDownValues:(state,action:PayloadAction<any>)=>{
+      state.dropDownValuesSupplierLamination = action.payload
+     },
+    setlaminationDropDownValues:(state,action:PayloadAction<any>)=>{
+      state.dropDownValuesLamination = action.payload
+     },
     setSelectedTab: (state, action: PayloadAction<number>) => {
       state.selectedTab = action.payload;
     },
@@ -1602,6 +1626,12 @@ export const {
   setSavePrintingData,
   clearSaveLaminatingFormData,
   clearSaveMasterDetailsData,
-  clearSavePrintingFormData
+  clearSavePrintingFormData,
+  setPrintingDropDownValues,
+  setlaminationDropDownValues,
+  setMountinTapeDropDownValues,
+  setStructureDropDownValues,
+  setSupplierPrintingDropDownValues,
+  setSupplieraminationDropDownValues
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

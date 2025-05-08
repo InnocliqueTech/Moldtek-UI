@@ -9,6 +9,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useMountingTapesDropdownMutation } from "../store/services/api";
+import { setMountinTapeDropDownValues } from "../store/slices/masterDataSlice";
+import { useDispatch } from "react-redux";
 
 
 interface RenderTooltipProps {
@@ -67,6 +70,7 @@ interface AutocompleteCellProps {
   };
   rowIndex: number;
   handleChange: (rowIndex: number, columnId: string, newValue: string) => void;
+  onNewOptionAdd?:boolean;
 }
 
 export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
@@ -74,6 +78,7 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   column,
   rowIndex,
   handleChange,
+  onNewOptionAdd
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [inputValue, setInputValue] = useState("");
@@ -102,6 +107,17 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const dispatch = useDispatch()
+      const [mountingTapesDropdown] = useMountingTapesDropdownMutation();
+    
+  
+        const fetchDropdownValues = async (isNew:string) => {
+          const response = await mountingTapesDropdown({ mounting_tape:isNew}).unwrap();
+          const mountingTapeList = response?.data?.map((item: any) => item.mounting_tape);
+          dispatch(setMountinTapeDropDownValues(mountingTapeList));
+        };
+    
 
   return (
     <Box>
@@ -157,14 +173,26 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
           value={value}
           inputValue={inputValue}
           onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
-          onChange={(_, newValue) => {
-            const cleaned =
-              typeof newValue === "string"
-                ? newValue.replace(" (new)", "")
-                : "";
-            handleChange(rowIndex, column.id, cleaned);
+          onChange={async (_, newValue) => {
+            if (typeof newValue === "string") {
+              const isNew = newValue.endsWith(" (new)");
+              const cleaned = newValue.replace(" (new)", "");
+          
+              if (isNew && onNewOptionAdd) {
+                try {
+                  await fetchDropdownValues(cleaned);
+                } catch (error) {
+                  console.error("Failed to add new option:", error);
+                  return; // Do not update cell if API fails
+                }
+              }
+          
+              handleChange(rowIndex, column.id, cleaned);
+            }
+          
             handleClose();
           }}
+          
           renderInput={(params) => (
             <TextField
               {...params}

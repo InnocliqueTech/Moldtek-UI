@@ -14,6 +14,17 @@ import {
   TextField,
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
+import {
+  useStructureDropdownMutation,
+  useSubStrateDropDownMutation,
+} from "../../store/services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import {
+  setlaminationDropDownValues,
+  setPrintingDropDownValues,
+  setStructureDropDownValues,
+} from "../../store/slices/masterDataSlice";
 
 interface DropdownProps {
   options: string[];
@@ -27,10 +38,11 @@ interface DropdownProps {
   helperText?: string;
   required?: boolean;
   allowNewOption?: boolean;
+  dropdown?: string;
 }
 
 const DropdownTextComponent: React.FC<DropdownProps> = ({
-  options,
+  options: initialOptions,
   value,
   onChange,
   isMultiSelect,
@@ -41,9 +53,18 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
   helperText = "",
   required = false,
   allowNewOption = false,
+  dropdown = "",
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [newOption, setNewOption] = useState<string>("");
+  const [options, setOptions] = useState<string[]>(initialOptions);
+  const [open, setOpen] = useState(false);
+
+  const { selectedTab } = useSelector((state: RootState) => state.masterData);
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  const [structureDropdown] =
+    useStructureDropdownMutation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (Array.isArray(value)) {
@@ -54,12 +75,17 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
       setSelectedOptions([]);
     }
   }, [value]);
+  useEffect(() => {
+    if (initialOptions && initialOptions.length > 0) {
+      setOptions(initialOptions);
+    }
+  }, [initialOptions]);
 
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     let selectedValues = event.target.value as string[];
 
     if (!isMultiSelect) {
-      selectedValues = selectedValues.slice(-1); // Single select
+      selectedValues = selectedValues.slice(-1); // only last value
     }
 
     setSelectedOptions(selectedValues);
@@ -72,7 +98,69 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
     setNewOption(event.target.value);
   };
 
+  const handleAddNewOption = async () => {
+    const trimmedOption = newOption.trim();
+    if (trimmedOption === "") return;
 
+    try {
+      if (dropdown === "structure") {
+        const response = await structureDropdown({
+          structure: "",
+        }).unwrap();
+        if (!options.includes(trimmedOption)) {
+          setOptions((prev) => [...prev, trimmedOption]);
+        }
+
+        const newSelected = isMultiSelect
+          ? [...selectedOptions, trimmedOption]
+          : [trimmedOption];
+
+        setSelectedOptions(newSelected);
+        onChange({
+          target: { value: newSelected },
+        } as SelectChangeEvent<string[]>);
+
+        setNewOption("");
+        setOpen(false);
+        const structureList = response?.data?.map(
+          (item: any) => item.structure
+        );
+
+        dispatch(setStructureDropDownValues(structureList));
+      } else {
+        const response = await subStrateDropDown({
+          substrate: trimmedOption,
+          substrateType: selectedTab === 1 ? "printing" : "lamination",
+        }).unwrap();
+
+        if (!options.includes(trimmedOption)) {
+          setOptions((prev) => [...prev, trimmedOption]);
+        }
+
+        const newSelected = isMultiSelect
+          ? [...selectedOptions, trimmedOption]
+          : [trimmedOption];
+
+        setSelectedOptions(newSelected);
+        onChange({
+          target: { value: newSelected },
+        } as SelectChangeEvent<string[]>);
+
+        setNewOption("");
+        setOpen(false);
+        const substrateList = response?.data?.map(
+          (item: any) => item.substrate
+        );
+        if (selectedTab === 1) {
+          dispatch(setPrintingDropDownValues(substrateList));
+        } else {
+          dispatch(setlaminationDropDownValues(substrateList));
+        }
+      }
+    } catch (error) {
+      console.error("Error adding new substrate:", error);
+    }
+  };
 
   return (
     <>
@@ -96,6 +184,9 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
           multiple={isMultiSelect}
           value={selectedOptions}
           onChange={handleSelectChange}
+          open={open}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           displayEmpty
           renderValue={(selected) => {
             if (
@@ -161,24 +252,9 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
                 autoFocus
                 onKeyDown={(e) => {
                   e.stopPropagation();
-                  if (e.key === "Enter" && newOption.trim() !== "") {
+                  if (e.key === "Enter") {
                     e.preventDefault();
-                    const trimmedOption = newOption.trim();
-                    if (!options.includes(trimmedOption)) {
-                      options.push(trimmedOption);
-                    }
-              
-                    const newSelected = isMultiSelect
-                      ? [...selectedOptions, trimmedOption]
-                      : [trimmedOption];
-              
-                    setSelectedOptions(newSelected);
-                    setNewOption("");
-                    onChange({
-                      target: { value: newSelected },
-                    } as SelectChangeEvent<string[]>);
-              
-                    (e.target as HTMLInputElement).blur();
+                    handleAddNewOption();
                   }
                 }}
                 fullWidth

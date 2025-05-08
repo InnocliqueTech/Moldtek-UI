@@ -9,12 +9,14 @@ import {
   setLaminationFormData,
   setLaminationFormErros,
   setLaminationSave,
+  setlaminationDropDownValues,
   setSubmitAndPublishButtonMasterLamination,
 } from "../../store/slices/masterDataSlice";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
 import { LaminatingTableRow, LaminationFormData, LaminationFormErrors } from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
+import { useSubStrateDropDownMutation } from "../../store/services/api";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];
@@ -36,7 +38,8 @@ const Lamination: React.FC<LaminationProps> = ({
     laminatingDetails,
     laminationTableValueVaidation,
     saveButtonLaminatingData,
-    saveLaminatingData
+    saveLaminatingData,
+    dropDownValuesLamination
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -428,6 +431,24 @@ const Lamination: React.FC<LaminationProps> = ({
     { label: "Adhesive GSM", key: "adhesive_gsm" },
   ];
 
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  
+    useEffect(()=>{
+      const dropDown = async ()=>{
+        const response = await subStrateDropDown({
+          substrate : "",
+          substrateType:"lamination"
+      }).unwrap();
+      const substrateList = response?.data?.map((item:any) => item.substrate);
+      console.log(substrateList,"RESPONSEOFTHEDATA")
+      dispatch(setlaminationDropDownValues(substrateList))
+  
+      }
+    
+      dropDown()
+    
+    },[]);
+
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -615,9 +636,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownTextComponent
                   label="Substrate Type"
-                  options={['60 hd+38 T',
-                    '40HD+38 T',
-                    '70 HD+12 T']}
+                  options={dropDownValuesLamination}
                   value={formData.laminationSubstrate?.substrate_type}
                   onChange={(value) =>
                     handleChange("laminationSubstrate", "substrate_type", value)

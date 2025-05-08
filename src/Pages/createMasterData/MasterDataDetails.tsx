@@ -23,11 +23,14 @@ import {
   setPrintingDetails,
   setSaveFormData,
   setSaveMasterDataDetailsData,
+  setStructureDropDownValues,
   setSubmitAndPublishButtonMasterData,
 } from "../../store/slices/masterDataSlice";
 import { useLocation, useParams } from "react-router-dom";
 import {
   useGetLabelTypesQuery,
+  useSegmentsDropdownMutation,
+  useStructureDropdownMutation,
   useViewMasterDataQuery,
 } from "../../store/services/api";
 import {
@@ -119,11 +122,37 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   }, [id,data]);
 
-  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData } =
+  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
     useSelector((state: RootState) => state.masterData);
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
+  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+
+  useEffect(()=>{
+segmentsDropdown({
+  segment: ""
+})
+  },[])
+  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+  const [structureDropdown] = useStructureDropdownMutation();
+
+
+  
+    useEffect(() => {
+      const fetchDropdownValues = async () => {
+        const response = await structureDropdown({
+          structure: ""
+    }).unwrap();
+        const structureList = response?.data?.map((item: any) => item.structure);
+        dispatch(setStructureDropDownValues(structureList));
+      };
+  
+      fetchDropdownValues();
+    }, [structureDropdown, dispatch]);
+
+
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     job_master_id: "",
@@ -411,19 +440,13 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Box sx={{ mt: (row2HasError&&!!errors.item_code) ? 0 : 2 }}>
               <DropdownTextComponent
                 label="Structure"
-                options={[
-                  "60 hd+38 T",
-                  "60 hd EXTONE COATED",
-                  "40HD+38 T",
-                  "70 HD+12 T",
-                  "60mic",
-                  "70MIC",
-                ]}
+                options={dropDownValuesStructure}
                 value={formData.structure}
                 onChange={(e) => handleChange("structure", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
                 allowNewOption
+                dropdown='structure'
               />
             </Box>
           </Grid>
@@ -601,7 +624,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Box sx={{ mt: (row2HasError&&!!errors.brand_description) ? 0 : 2 }}>
               <DropdownComponent
                 label="Segment"
-                options={["LB","PB","QP","TW"]}
+                options={segmentNames}
                 value={formData.segment}
                 onChange={(e) => handleChange("segment", e.target.value)}
                 isMultiSelect={false}

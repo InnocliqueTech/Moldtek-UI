@@ -341,4 +341,10 @@ export interface PrintingTableRow {
     saveButtonMasterData: boolean;
     saveButtonPrintingData: boolean;
     saveButtonLaminatingData: boolean;
+    dropDownValuesPrinting:any;
+    dropDownValuesLamination:any
+    dropDownValuesSupplierLamination:any;
+    dropDownValuesSupplierPrinting:any;
+    dropDownValuesMountingTape:any;
+    dropDownValuesStructure:any
   }

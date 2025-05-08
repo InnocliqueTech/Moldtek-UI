@@ -35,6 +35,7 @@ interface Column {
   edit?: boolean;
   editSelect?: boolean;
   required?:boolean;
+  onNewOptionAdd?:boolean;
 }
 
 interface DataTableProps<T> {
@@ -55,7 +56,7 @@ const DataTable = <T extends Record<string, any>>({
   tableTitle = false,
   firstRow = false,
   id,
-  rowEditable,
+  rowEditable
 }: DataTableProps<T>) => {
   const dispatch = useDispatch<AppDispatch>();
   const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
@@ -494,7 +495,7 @@ const DataTable = <T extends Record<string, any>>({
                             </MenuItem>
                           ))}
                         </Select>
-                      ) : column.editSelect ? (
+                      ) : column.editSelect && !column.onNewOptionAdd  ? (
                         <AutocompleteCell
                           row={row}
                           column={column}
@@ -507,7 +508,21 @@ const DataTable = <T extends Record<string, any>>({
                             )
                           }
                         />
-                      ) : (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
+                      ) : column.editSelect && column.onNewOptionAdd ? (
+                        <AutocompleteCell
+                          row={row}
+                          column={column}
+                          rowIndex={rowIndex}
+                          handleChange={(rowIndex, columnId, newValue) =>
+                            handleChange(
+                              rowIndex,
+                              columnId as keyof T,
+                              newValue as T[keyof T]
+                            )
+                          }
+                          onNewOptionAdd={column.onNewOptionAdd}
+                        />
+                      ): (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
                           <TextField
                             variant="standard"
                             value={row[column?.id]?row[column?.id]:''} // only the number

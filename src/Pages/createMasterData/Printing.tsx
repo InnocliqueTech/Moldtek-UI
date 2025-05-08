@@ -7,49 +7,20 @@ import DataTable from "../../Components/ReUsable/MasterDataTable";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useEffect, useState } from "react";
 import {
+  setPrintingDropDownValues,
   setPrintingDataTouched,
   setPrintingSave,
   setPrintngFormErros,
   setSavePrintingFormData,
   setSubmitAndPublishButtonPrinting,
+  setMountinTapeDropDownValues,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import { PrintingFormErrors, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
+import { useGetMachinesByTypeQuery, useMountingTapesDropdownMutation, useSubStrateDropDownMutation } from "../../store/services/api";
 
-const machineFields = [
-  {
-    id: "printing_machine_name",
-    label: "Printinting Machine Name",
-    options: ["UVG-1","UVG-2","UVG-3","OMET","430","530"],
-  },
-  { id: "cylinder_teeth", label: "Cylinder Teeth" },
-  { id: "tension", label: "Tension" },
-  { id: "unwinder", label: "Unwinder",options:["110","6"] },
-  { id: "infeed", label: "Infeed",options:["110","5"] },
-  { id: "outfeed", label: "Outfeed" ,options:["120","8"]},
-  { id: "rewinder", label: "Rewinder",options:["50%","7.5"] },
-  { id: "static_charge", label: "Static Charge" },
-  { id: "format_correct", label: "Format Correct" },
-];
 
-const substrateFields = [
-  {
-    id: "substrate_type", label: "Substrate Type", options: ["ORANGE PEEL FILM (CHIRIPAL)",
-      "ORANGE PEEL FILM (GULF PACK)",
-      "WHITE HIGH DENSITY  FILM"], allowTextFiled:true
-  },
-  {
-    id: "supplier",
-    label: "Supplier",
-    options: ["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"],
-    allowTextFiled:true
-  },
-  { id: "dyne_level", label: "Dyne Level" },
-  { id: "width", label: "Width (mm)" },
-  { id: "thickness", label: "Thickness" },
-  { id: "density", label: "Density (g/cm³)" },
-];
 
 interface PrintingProps {
   tableData: PrintingTableRow[];
@@ -64,15 +35,84 @@ const Printing: React.FC<PrintingProps> = ({
   setTableData,
   setFormValues,
 }) => {
-  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation,saveButtonPrintingData,savePrintingData } = useSelector(
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  const { data: machineNameData } = useGetMachinesByTypeQuery('printing');
+
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await subStrateDropDown({ substrate: "", substrateType: "printing" }).unwrap();
+      const substrateList = response?.data?.map((item: any) => item.substrate);
+      dispatch(setPrintingDropDownValues(substrateList));
+    };
+
+    fetchDropdownValues();
+  }, [subStrateDropDown, dispatch]);
+
+  const machineNames = machineNameData?.statusCode === 200 ? machineNameData?.data?.map((item: any) => item.machineName) : [];
+
+  
+
+  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation,saveButtonPrintingData,savePrintingData ,dropDownValuesPrinting,dropDownValuesMountingTape} = useSelector(
     (state: RootState) => state.masterData
   );
+
+
+
+
+  const machineFields = [
+    {
+      id: "printing_machine_name",
+      label: "Printinting Machine Name",
+      options: machineNames,
+    },
+    { id: "cylinder_teeth", label: "Cylinder Teeth" },
+    { id: "tension", label: "Tension" },
+    { id: "unwinder", label: "Unwinder",options:["110","6"] },
+    { id: "infeed", label: "Infeed",options:["110","5"] },
+    { id: "outfeed", label: "Outfeed" ,options:["120","8"]},
+    { id: "rewinder", label: "Rewinder",options:["50%","7.5"] },
+    { id: "static_charge", label: "Static Charge" },
+    { id: "format_correct", label: "Format Correct" },
+  ];
+  
+  const substrateFields = [
+    {
+      id: "substrate_type", label: "Substrate Type", options: dropDownValuesPrinting, allowTextFiled:true
+    },
+    {
+      id: "supplier",
+      label: "Supplier",
+      options: ["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"],
+      allowTextFiled:true
+    },
+    { id: "dyne_level", label: "Dyne Level" },
+    { id: "width", label: "Width (mm)" },
+    { id: "thickness", label: "Thickness" },
+    { id: "density", label: "Density (g/cm³)" },
+  ];
+
+
+
   const {
     printingInkStatinData,
     printingMachineSettings,
     printingSubstrateSettings,
   } = useSelector((state: RootState) => state.viewMasterData);
-  const dispatch = useDispatch<AppDispatch>();
+
+  const [mountingTapesDropdown] = useMountingTapesDropdownMutation();
+
+
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await mountingTapesDropdown({ mounting_tape:""}).unwrap();
+      const mountingTapeList = response?.data?.map((item: any) => item.mounting_tape);
+      dispatch(setMountinTapeDropDownValues(mountingTapeList));
+    };
+
+    fetchDropdownValues();
+  }, [mountingTapesDropdown, dispatch]);
 
   const columns = [
     { id: "station_no", label: "Station No" },
@@ -90,7 +130,7 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
     { id: "mixing_on_gec", label: "Mixing On GEC", edit: true },
     { id: "mptl_code", label: "MPTL Code", edit: true },
-    { id: "mounting_tape", label: "Mounting Tape", editSelect: true, options: ["Soft", "Medium","Hard"] },
+    { id: "mounting_tape", label: "Mounting Tape", editSelect: true, options: dropDownValuesMountingTape,onNewOptionAdd:true },
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({

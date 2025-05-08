@@ -64,6 +64,39 @@ export const apiSlice = createApi({
         body: newItem,
       }),
     }),
+    subStrateDropDown:builder.mutation<any,any>({
+     query:(newItem)=>({
+     url:'dailyplan/substrateDropdown',
+     method:'POST',
+     body:newItem
+     }),
+    }),
+    structureDropdown:builder.mutation<any,any>({
+      query:(newItem)=>({
+      url:'dailyplan/StructureDropdown',
+      method:'POST',
+      body:newItem
+      }),
+     }),
+     mountingTapesDropdown:builder.mutation<any,any>({
+      query:(newItem)=>({
+      url:'dailyplan/mountingTapesDropdown',
+      method:'POST',
+      body:newItem
+      }),
+     }),
+     segmentsDropdown:builder.mutation<any,any>({
+      query:(newItem)=>({
+      url:'dailyplan/segmentsDropdown',
+      method:'POST',
+      body:newItem
+      }),
+     }),
+
+     getMachinesByType: builder.query<any, string>({
+    query: (machineName) =>
+      `/dailyplan/getMachinesByType?machineType=${machineName}`,
+  }),
     getMetrics: builder.query<any, void>({
       query: () => "/master/masterDataMetrics",
       providesTags: ["MasterDataMetrics"],
@@ -321,5 +354,10 @@ export const {
   useSavePrintingReportDetailsMutation,
   useSaveLaminationReportDetailsMutation,
   useSaveMakeReadyDetailsMutation,
-  useForGotPasswordMutation
+  useForGotPasswordMutation,
+  useSubStrateDropDownMutation,
+  useGetMachinesByTypeQuery,
+  useSegmentsDropdownMutation,
+  useStructureDropdownMutation,
+  useMountingTapesDropdownMutation
 } = apiSlice;
