@@ -563,18 +563,18 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
             )}
             {selectedTab === 2 &&
               !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
-                (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")) && (
+                (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"  )) ? (
                 <Lamination
                   tableData={LaminationTableData}
                   setTableData={setLaminationTableData}
                   formData={lamiFormData}
                   setFormData={setLamiFormData}
                 />
-              )}
+              ):selectedTab !== 0  && selectedTab !== 1&& <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />}
 
-            {selectedTab === 3 && (
+            {/* {selectedTab === 3 && (
               <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />
-            )}
+            )} */}
           </Box>
 
           <Box

@@ -10,13 +10,12 @@ const theme = createTheme({
         root: {
           "&:focus, &:focus-visible": {
             outline: "none",
-            backgroundColor: "transparent",
+            // backgroundColor: "transparent",
           },
           "&:hover": {
-            backgroundColor: "transparent",
+            // backgroundColor: "transparent",
           },
           "&:active": {
-            backgroundColor: "transparent",
           },
         },
       },
@@ -26,13 +25,6 @@ const theme = createTheme({
         root: {
           "&:focus, &:focus-visible": {
             outline: "none",
-            backgroundColor: "transparent",
-          },
-          "&:hover": {
-            backgroundColor: "transparent",
-          },
-          "&:active": {
-            backgroundColor: "transparent",
           },
         },
       },
@@ -42,13 +34,6 @@ const theme = createTheme({
         root: {
           "&:focus, &:focus-visible": {
             outline: "none",
-            backgroundColor: "transparent",
-          },
-          "&:hover": {
-            backgroundColor: "transparent",
-          },
-          "&:active": {
-            backgroundColor: "transparent",
           },
         },
       },
