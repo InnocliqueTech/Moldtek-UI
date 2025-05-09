@@ -205,15 +205,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       boxShadow: theme.shadows[1],
     },
   }));
-  const RoleTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.common.white,
-      color: "#0073B7",
-      boxShadow: theme.shadows[1],
-    },
-  }));
 
   const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("role");
@@ -357,6 +348,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
           <List sx={{ py: 0 }}>
             {menuItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
+              const isHovered = hoveredIndex === index;
 
               return (
                 <LightTooltip
@@ -385,24 +377,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   }}
                 >
                   <ListItem
-                    // component={Link}
-                    // to={item.path}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                     sx={{
                       py: !collapsed ? 0.5 : 1.3,
                       bgcolor:
-                        isSelected && !collapsed
-                          ? "white"
-                          : collapsed && isSelected
-                          ? "transparent"
-                          : "transparent",
-                      boxShadow:
-                        isSelected && !collapsed
-                          ? 3
-                          : collapsed && isSelected
-                          ? 0
-                          : 0,
+                        isSelected && !collapsed ? "white" : "transparent",
+                      boxShadow: isSelected && !collapsed ? 3 : 0,
                       borderRadius: collapsed && isSelected ? 0 : 2,
                       "&:hover": {
                         bgcolor: "transparent",
@@ -432,11 +413,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     <ListItemIcon
                       sx={{
                         minWidth: 30,
-                        color:
-                          isSelected || hoveredIndex === index ? "#0073B7" : "",
+                        color: isHovered
+                          ? "#0073B7"
+                          : isSelected
+                          ? "#0073B7"
+                          : "",
                       }}
                     >
-                      {isSelected || hoveredIndex === index
+                      {isHovered
+                        ? item.selectedIcon
+                        : isSelected
                         ? item.selectedIcon
                         : item.icon}
                     </ListItemIcon>
@@ -478,6 +464,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
           <List sx={{ py: 0 }}>
             {preferenceItems.map((item, index) => {
               const isSelected = location.pathname === item.path;
+              const isHovered = preferenceHoveredIndex === index;
 
               return (
                 <LightTooltip
@@ -506,26 +493,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                   }}
                 >
                   <ListItem
-                    // component={Link}
-                    // to={item.path}
                     onMouseEnter={() => setPreferenceHoveredIndex(index)}
                     onMouseLeave={() => setPreferenceHoveredIndex(null)}
                     sx={{
                       py: !collapsed ? 0.5 : 1.3,
                       bgcolor:
-                        isSelected && !collapsed
-                          ? "white"
-                          : collapsed && isSelected
-                          ? "transparent"
-                          : "transparent",
-                      cursor: "pointer",
-                      boxShadow:
-                        isSelected && !collapsed
-                          ? 3
-                          : collapsed && isSelected
-                          ? 0
-                          : 0,
+                        isSelected && !collapsed ? "white" : "transparent",
+                      boxShadow: isSelected && !collapsed ? 3 : 0,
                       borderRadius: collapsed && isSelected ? 0 : 2,
+                      cursor: "pointer",
                       "&:hover": {
                         bgcolor: "transparent",
                         "& .MuiListItemText-primary": {
@@ -553,13 +529,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     <ListItemIcon
                       sx={{
                         minWidth: 30,
-                        color:
-                          isSelected || preferenceHoveredIndex === index
-                            ? "#0073B7"
-                            : "",
+                        color: isHovered
+                          ? "#0073B7"
+                          : isSelected
+                          ? "#0073B7"
+                          : "",
                       }}
                     >
-                      {isSelected || preferenceHoveredIndex === index
+                      {isHovered
+                        ? item.selectedIcon
+                        : isSelected
                         ? item.selectedIcon
                         : item.icon}
                     </ListItemIcon>
