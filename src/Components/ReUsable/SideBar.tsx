@@ -13,7 +13,19 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { ArticleOutlined, BarChartOutlined, East, ExitToApp, FolderOpenOutlined, GridViewOutlined, ManageAccountsOutlined, Settings, TaskOutlined, TopicOutlined, West } from "@mui/icons-material";
+import {
+  ArticleOutlined,
+  BarChartOutlined,
+  East,
+  ExitToApp,
+  FolderOpenOutlined,
+  GridViewOutlined,
+  ManageAccountsOutlined,
+  Settings,
+  TaskOutlined,
+  TopicOutlined,
+  West,
+} from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
@@ -56,8 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   //   null
   // );
 
-  const dynamicTexts = ["Kristin Watson", "Text Two"];
-  const currentText = dynamicTexts[0];
+  // const dynamicTexts = ["Kristin Watson", "Text Two"];
+  // const currentText = dynamicTexts[0];
   const [collapsed, setCollapsed] = useState(true);
 
   const navigate = useNavigate();
@@ -79,41 +91,31 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     {
       text: "Dashboard",
       icon: <GridViewOutlined />,
-      selectedIcon: (
-        <GridViewOutlined />
-      ),
+      selectedIcon: <GridViewOutlined />,
       path: "/dashboard",
     },
     {
       text: "Master Data",
-      icon: <ArticleOutlined/>,
-      selectedIcon: (
-        <ArticleOutlined/>
-      ),
+      icon: <ArticleOutlined />,
+      selectedIcon: <ArticleOutlined />,
       path: "/masterData",
     },
     {
       text: "Daily Plan",
-      icon: <TaskOutlined/>,
-      selectedIcon: <TaskOutlined/>,
+      icon: <TaskOutlined />,
+      selectedIcon: <TaskOutlined />,
       path: "/dailyPlan",
     },
     {
       text: "Production Operators",
-      icon: (
-       <ManageAccountsOutlined/>
-      ),
-      selectedIcon: (
-        <ManageAccountsOutlined/>
-      ),
+      icon: <ManageAccountsOutlined />,
+      selectedIcon: <ManageAccountsOutlined />,
       path: "/invoices",
     },
     {
       text: "Reports",
-      icon: <BarChartOutlined/>,
-      selectedIcon: (
-        <BarChartOutlined/>
-      ),
+      icon: <BarChartOutlined />,
+      selectedIcon: <BarChartOutlined />,
       path: "/reports",
     },
   ];
@@ -122,9 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     {
       text: "Settings",
       icon: <Settings />,
-      selectedIcon: (
-        <Settings />
-      ),
+      selectedIcon: <Settings />,
       path: "/settings",
     },
     // {
@@ -141,6 +141,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     navigate("/");
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("userName");
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
     localStorage.setItem("masterData-page", (0).toString());
@@ -204,6 +205,18 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       boxShadow: theme.shadows[1],
     },
   }));
+  const RoleTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.white,
+      color: "#0073B7",
+      boxShadow: theme.shadows[1],
+    },
+  }));
+
+  const userName = localStorage.getItem("userName");
+  const role = localStorage.getItem("role");
 
   return (
     <>
@@ -243,51 +256,88 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                 justifyContent: "center",
                 mb: 2,
                 width: 50,
-                ml:0.32
+                ml: 0.32,
               }}
             >
               <img src={LogoIcon} alt="Logo" />
             </Box>
           )}
 
-          <Box
+          <LightTooltip
+            title={
+              collapsed ? (
+                <Box>
+                  <Typography sx={{ fontWeight: 600 }}>{userName}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {role}
+                  </Typography>
+                </Box>
+              ) : (
+                ""
+              )
+            }
+            placement="right"
+            arrow={false}
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -14],
+                    },
+                  },
+                ],
+              },
+            }}
             sx={{
-              backgroundColor: collapsed ? "transparent" : "white",
-              boxShadow: collapsed ? 0 : 3,
-              px: 1,
-              py: 0,
-              borderRadius: collapsed ? 0 : 2,
-              mb: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              justifyContent: collapsed ? "center" : "flex-start",
+              ".MuiTooltip-tooltip": {
+                fontSize: "0.875rem",
+                padding: "8px 12px",
+                borderRadius: "8px",
+              },
             }}
           >
-            <Avatar
-              alt="User Avatar"
+            <Box
               sx={{
-                width: 40,
-                height: 40,
-                bgcolor: "#0073B7",
-                color: "white",
-                fontWeight: 600,
+                backgroundColor: collapsed ? "transparent" : "white",
+                boxShadow: collapsed ? 0 : 3,
+                px: 1,
+                py: 0,
+                borderRadius: collapsed ? 0 : 2,
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                justifyContent: collapsed ? "center" : "flex-start",
+                cursor: collapsed ? "pointer" : "default",
               }}
             >
-              {currentText?.charAt(0)?.toUpperCase()}
-            </Avatar>
+              <Avatar
+                alt="User Avatar"
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "#0073B7",
+                  color: "white",
+                  fontWeight: 600,
+                }}
+              >
+                {userName?.charAt(0)?.toUpperCase()}
+              </Avatar>
 
-            {!collapsed && (
-              <Box sx={{ flexGrow: 1, p: 1 }}>
-                <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
-                  {currentText}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  creator
-                </Typography>
-              </Box>
-            )}
-          </Box>
+              {!collapsed && (
+                <Box sx={{ flexGrow: 1, p: 1 }}>
+                  <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
+                    {userName}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {role}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </LightTooltip>
 
           {/* Main Menu */}
           {!collapsed && (
@@ -379,7 +429,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       }
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 30,color:isSelected|| hoveredIndex === index?'#0073B7':'' }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 30,
+                        color:
+                          isSelected || hoveredIndex === index ? "#0073B7" : "",
+                      }}
+                    >
                       {isSelected || hoveredIndex === index
                         ? item.selectedIcon
                         : item.icon}
@@ -494,7 +550,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                       }
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 30,color:isSelected|| preferenceHoveredIndex === index?'#0073B7':''  }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 30,
+                        color:
+                          isSelected || preferenceHoveredIndex === index
+                            ? "#0073B7"
+                            : "",
+                      }}
+                    >
                       {isSelected || preferenceHoveredIndex === index
                         ? item.selectedIcon
                         : item.icon}
@@ -624,16 +688,23 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
           >
             <Avatar
               alt="User Avatar"
-              src={profileImage}
-              sx={{ width: 40, height: 40 }}
-            />
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: "#0073B7",
+                color: "white",
+                fontWeight: 600,
+              }}
+            >
+              {userName?.charAt(0)?.toUpperCase()}
+            </Avatar>
 
             <Box sx={{ flexGrow: 1, p: 1 }}>
               <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
-                {currentText}
+                {userName}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                creator
+                {role}
               </Typography>
             </Box>
 
@@ -704,7 +775,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 30,color:isSelected|| hoveredIndex === index?'#0073B7':''  }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 30,
+                      color:
+                        isSelected || hoveredIndex === index ? "#0073B7" : "",
+                    }}
+                  >
                     {isSelected || hoveredIndex === index
                       ? item.selectedIcon
                       : item.icon}
@@ -771,7 +848,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 30 ,color:isSelected|| preferenceHoveredIndex === index?'#0073B7':'' }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 30,
+                      color:
+                        isSelected || preferenceHoveredIndex === index
+                          ? "#0073B7"
+                          : "",
+                    }}
+                  >
                     {isSelected || preferenceHoveredIndex === index
                       ? item.selectedIcon
                       : item.icon}

@@ -34,6 +34,7 @@ import {
   SxProps,
   Theme,
   SelectChangeEvent,
+  DialogContentText,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -81,7 +82,7 @@ interface TableProps<T> {
   title?: string;
   lastUpdate?: string;
   info?: boolean;
-  infoText?:string;
+  infoText?: string;
   searchVisible?: boolean;
   label?: string;
   actions?: TableAction<T>[];
@@ -122,8 +123,8 @@ function ReusableTable<T extends Record<string, any>>({
   totalLength = 0,
   pageRange = false,
   pageNumber = 0,
-  infoText='Table Info',
-  handleRowsPerPageChange
+  infoText = "Table Info",
+  handleRowsPerPageChange,
 }: TableProps<T>) {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("");
@@ -293,37 +294,58 @@ function ReusableTable<T extends Record<string, any>>({
     setShowSelectionBar(false);
   };
   const [updateStatusJob] = useUpdateStatusJobMutation();
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [statusChangeMessage, setStatusChangeMessage] =
+    useState<React.ReactNode>("");
 
-  const handleDropdownChange = async (
-    row: T,
-    field: string,
-    newValue: string
-  ) => {
-    console.log(field, "DONT Remove This");
+  const handleDropdownSelect = (row: T, newValue: string) => {
+    if (newValue === "Inactive") {
+      setStatusChangeMessage(
+        <>
+          Are you sure you want to change the status from{" "}
+          <strong>{row.status}</strong> to <strong>{newValue}</strong>?<br />
+          If you proceed, the master data and daily jobs will be deleted.
+        </>
+      );
+    } else {
+      setStatusChangeMessage(
+        <>
+          Are you sure you want to change the status from{" "}
+          <strong>{row.status}</strong> to <strong>{newValue}</strong>?<br />
+        </>
+      );
+    }
+    setSelectedRow(row);
+    setSelectedValue(newValue);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
+    if (!selectedRow) return;
     setLoading(true);
+    setConfirmDialogOpen(false);
+
     try {
       const response = await updateStatusJob({
-        indentNumber: row.indentNumber,
-        status: newValue,
+        indentNumber: selectedRow.indentNumber,
+        status: selectedValue,
       }).unwrap();
 
       if (response?.statusCode === 200) {
         dispatch(setDropDown(!dropDown));
         if (response?.message !== "Status Updated") {
           toast.error(response?.message);
-          setLoading(false);
         } else {
-          toast.success("Status Updated Succesfully!");
+          toast.success("Status Updated Successfully!");
         }
       } else {
         toast.error(response?.message);
         dispatch(setDropDown(!dropDown));
-        setLoading(false);
       }
     } catch (error) {
       toast.error("Something Went Wrong!");
       dispatch(setDropDown(!dropDown));
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -814,9 +836,9 @@ function ReusableTable<T extends Record<string, any>>({
                                   size="small"
                                   value={row[column.id] || ""}
                                   onChange={(e) =>
-                                    handleDropdownChange(
+                                    handleDropdownSelect(
                                       row,
-                                      column.id,
+                                      // column.id,
                                       e.target.value
                                     )
                                   }
@@ -916,122 +938,121 @@ function ReusableTable<T extends Record<string, any>>({
                     )}`}
               </Typography>
               <Box display={"flex"} flexDirection={"row"}>
-        <Typography sx={{marginRight:'4px',marginTop:'6px'}}>Rows per page:</Typography>
-        <Select
-          value={rowsPerPage.toString()}
-          onChange={handleRowsPerPageChange}
-          label="Rows per page"
-          variant="standard"
-          sx={{
-            height: "32px",
-            fontSize: "14px",
-            marginTop:'4px',
-            borderBottom: "none",
-            "&:before": { borderBottom: "none" },
-            "&:after": { borderBottom: "none" },
-            "&:hover:not(.Mui-disabled):before": {
-              borderBottom: "none !important",
-            },
-            "& .MuiSelect-select": {
-              display: "flex",
-              alignItems: "center",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            },
-          }}
-        >
-          <MenuItem value={10}>10</MenuItem>
-          <MenuItem value={25}>25</MenuItem>
-          <MenuItem value={50}>50</MenuItem>
-          <MenuItem value={100}>100</MenuItem>
-        </Select>
-              <Stack spacing={2}>
-                <Pagination
-                  count={
-                    pageRange
-                      ? Math.ceil(totalLength / rowsPerPage)
-                      : Math.ceil(filteredData.length / rowsPerPage)
-                  }
-                  page={pageNumber + 1}
-                  onChange={
-                   (_, newPage) => {
-                          onPageChange?.(newPage - 1);
-                          // setPage(newPage - 1);
-                        }
-                  
-                  }
-                  shape="rounded"
-                  variant="outlined"
-                  siblingCount={0}
-                  boundaryCount={1}
-                  showFirstButton={false}
-                  showLastButton={false}
-                  renderItem={(item) => {
-                    if (pageRange) {
-                      const hasNextPage =
-                        (pageNumber + 1) * rowsPerPage < totalLength;
-                      const hasPrevPage = pageNumber > 0;
-
-                      const disabled =
-                        (item.type === "previous" && !hasPrevPage) ||
-                        (item.type === "next" && !hasNextPage);
-
-                      return (
-                        <PaginationItem
-                          {...item}
-                          disabled={disabled}
-                          components={{
-                            previous: ChevronLeft,
-                            next: ChevronRight,
-                          }}
-                          sx={{
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            minWidth: "36px",
-                            height: "36px",
-                            "&.Mui-selected": {
-                              backgroundColor: "#0B72E7",
-                              color: "#FFF",
-                              borderColor: "#0B72E7",
-                            },
-                            "&:hover": {
-                              backgroundColor: "#0B72E7",
-                              color: "#FFF",
-                              borderColor: "#0B72E7",
-                            },
-                          }}
-                        />
-                      );
-                    } else {
-                      return (
-                        <PaginationItem
-                          {...item}
-                          components={{
-                            previous: ChevronLeft,
-                            next: ChevronRight,
-                          }}
-                          sx={{
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            minWidth: "36px",
-                            height: "36px",
-                            "&.Mui-selected": {
-                              backgroundColor: "#0B72E7",
-                              color: "#FFF",
-                              borderColor: "#0B72E7",
-                            },
-                            "&:hover": {
-                              backgroundColor: "#0B72E7",
-                              borderColor: "#0B72E7",
-                            },
-                          }}
-                        />
-                      );
-                    }
+                <Typography sx={{ marginRight: "4px", marginTop: "6px" }}>
+                  Rows per page:
+                </Typography>
+                <Select
+                  value={rowsPerPage.toString()}
+                  onChange={handleRowsPerPageChange}
+                  label="Rows per page"
+                  variant="standard"
+                  sx={{
+                    height: "32px",
+                    fontSize: "14px",
+                    marginTop: "4px",
+                    borderBottom: "none",
+                    "&:before": { borderBottom: "none" },
+                    "&:after": { borderBottom: "none" },
+                    "&:hover:not(.Mui-disabled):before": {
+                      borderBottom: "none !important",
+                    },
+                    "& .MuiSelect-select": {
+                      display: "flex",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    },
                   }}
-                />
-              </Stack>
+                >
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={25}>25</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                  <MenuItem value={100}>100</MenuItem>
+                </Select>
+                <Stack spacing={2}>
+                  <Pagination
+                    count={
+                      pageRange
+                        ? Math.ceil(totalLength / rowsPerPage)
+                        : Math.ceil(filteredData.length / rowsPerPage)
+                    }
+                    page={pageNumber + 1}
+                    onChange={(_, newPage) => {
+                      onPageChange?.(newPage - 1);
+                      // setPage(newPage - 1);
+                    }}
+                    shape="rounded"
+                    variant="outlined"
+                    siblingCount={0}
+                    boundaryCount={1}
+                    showFirstButton={false}
+                    showLastButton={false}
+                    renderItem={(item) => {
+                      if (pageRange) {
+                        const hasNextPage =
+                          (pageNumber + 1) * rowsPerPage < totalLength;
+                        const hasPrevPage = pageNumber > 0;
+
+                        const disabled =
+                          (item.type === "previous" && !hasPrevPage) ||
+                          (item.type === "next" && !hasNextPage);
+
+                        return (
+                          <PaginationItem
+                            {...item}
+                            disabled={disabled}
+                            components={{
+                              previous: ChevronLeft,
+                              next: ChevronRight,
+                            }}
+                            sx={{
+                              border: "1px solid #ccc",
+                              borderRadius: "8px",
+                              minWidth: "36px",
+                              height: "36px",
+                              "&.Mui-selected": {
+                                backgroundColor: "#0B72E7",
+                                color: "#FFF",
+                                borderColor: "#0B72E7",
+                              },
+                              "&:hover": {
+                                backgroundColor: "#0B72E7",
+                                color: "#FFF",
+                                borderColor: "#0B72E7",
+                              },
+                            }}
+                          />
+                        );
+                      } else {
+                        return (
+                          <PaginationItem
+                            {...item}
+                            components={{
+                              previous: ChevronLeft,
+                              next: ChevronRight,
+                            }}
+                            sx={{
+                              border: "1px solid #ccc",
+                              borderRadius: "8px",
+                              minWidth: "36px",
+                              height: "36px",
+                              "&.Mui-selected": {
+                                backgroundColor: "#0B72E7",
+                                color: "#FFF",
+                                borderColor: "#0B72E7",
+                              },
+                              "&:hover": {
+                                backgroundColor: "#0B72E7",
+                                borderColor: "#0B72E7",
+                              },
+                            }}
+                          />
+                        );
+                      }
+                    }}
+                  />
+                </Stack>
               </Box>
             </Box>
             {showSelectionBar && (
@@ -1266,6 +1287,51 @@ function ReusableTable<T extends Record<string, any>>({
                   color="primary"
                 >
                   Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Dialog
+              open={confirmDialogOpen}
+              onClose={() => setConfirmDialogOpen(false)}
+              maxWidth="sm"
+              fullWidth
+              PaperProps={{ sx: { borderRadius: 5, p: 0.5 } }}
+            >
+              <DialogTitle>Confirm Status Change</DialogTitle>
+              <DialogContent>
+                <DialogContentText>{statusChangeMessage}</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderRadius: 10,
+                    color: "primary.main",
+                    borderColor: "primary.main",
+                    "&:hover": {
+                      // backgroundColor: 'primary.main',
+                      // color: 'white',
+                      borderColor: "primary.main",
+                    },
+                  }}
+                  onClick={() => setConfirmDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: "white",
+                    borderRadius: 10,
+                    backgroundColor: "primary.main",
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                    },
+                  }}
+                  onClick={handleConfirmUpdate}
+                >
+                  Yes, Change Status
                 </Button>
               </DialogActions>
             </Dialog>
