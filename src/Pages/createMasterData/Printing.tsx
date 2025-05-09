@@ -14,13 +14,21 @@ import {
   setSavePrintingFormData,
   setSubmitAndPublishButtonPrinting,
   setMountinTapeDropDownValues,
+  setSupplierPrintingDropDownValues,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
-import { PrintingFormErrors, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
+import {
+  PrintingFormErrors,
+  PrintingFormValues,
+  PrintingTableRow,
+} from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
-import { useGetMachinesByTypeQuery, useMountingTapesDropdownMutation, useSubStrateDropDownMutation } from "../../store/services/api";
-
-
+import {
+  useGetMachinesByTypeQuery,
+  useMountingTapesDropdownMutation,
+  useSubStrateDropDownMutation,
+  useSupplierDropdownMutation,
+} from "../../store/services/api";
 
 interface PrintingProps {
   tableData: PrintingTableRow[];
@@ -38,11 +46,15 @@ const Printing: React.FC<PrintingProps> = ({
   const dispatch = useDispatch<AppDispatch>();
 
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const { data: machineNameData } = useGetMachinesByTypeQuery('printing');
+  const { data: machineNameData } = useGetMachinesByTypeQuery("printing");
+  const [supplierDropdown] = useSupplierDropdownMutation();
 
   useEffect(() => {
     const fetchDropdownValues = async () => {
-      const response = await subStrateDropDown({ substrate: "", substrateType: "printing" }).unwrap();
+      const response = await subStrateDropDown({
+        substrate: "",
+        substrateType: "printing",
+      }).unwrap();
       const substrateList = response?.data?.map((item: any) => item.substrate);
       dispatch(setPrintingDropDownValues(substrateList));
     };
@@ -50,16 +62,36 @@ const Printing: React.FC<PrintingProps> = ({
     fetchDropdownValues();
   }, [subStrateDropDown, dispatch]);
 
-  const machineNames = machineNameData?.statusCode === 200 ? machineNameData?.data?.map((item: any) => item.machineName) : [];
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await supplierDropdown({
+        supplier: "",
+        supplier_type: "printing",
+      }).unwrap();
+      const supplierList = response?.data?.map((item: any) => item.supplier);
+      dispatch(setSupplierPrintingDropDownValues(supplierList));
+    };
 
-  
+    fetchDropdownValues();
+  }, [supplierDropdown, dispatch]);
 
-  const { printingSaveFormData,printingFormErrors,printingDataTouched,printingDetails,printingTableValueVaidation,saveButtonPrintingData,savePrintingData ,dropDownValuesPrinting,dropDownValuesMountingTape} = useSelector(
-    (state: RootState) => state.masterData
-  );
+  const machineNames =
+    machineNameData?.statusCode === 200
+      ? machineNameData?.data?.map((item: any) => item.machineName)
+      : [];
 
-
-
+  const {
+    printingSaveFormData,
+    printingFormErrors,
+    printingDataTouched,
+    printingDetails,
+    printingTableValueVaidation,
+    saveButtonPrintingData,
+    savePrintingData,
+    dropDownValuesPrinting,
+    dropDownValuesMountingTape,
+    dropDownValuesSupplierPrinting,
+  } = useSelector((state: RootState) => state.masterData);
 
   const machineFields = [
     {
@@ -69,31 +101,32 @@ const Printing: React.FC<PrintingProps> = ({
     },
     { id: "cylinder_teeth", label: "Cylinder Teeth" },
     { id: "tension", label: "Tension" },
-    { id: "unwinder", label: "Unwinder",options:["110","6"] },
-    { id: "infeed", label: "Infeed",options:["110","5"] },
-    { id: "outfeed", label: "Outfeed" ,options:["120","8"]},
-    { id: "rewinder", label: "Rewinder",options:["50%","7.5"] },
+    { id: "unwinder", label: "Unwinder", options: ["110", "6"] },
+    { id: "infeed", label: "Infeed", options: ["110", "5"] },
+    { id: "outfeed", label: "Outfeed", options: ["120", "8"] },
+    { id: "rewinder", label: "Rewinder", options: ["50%", "7.5"] },
     { id: "static_charge", label: "Static Charge" },
     { id: "format_correct", label: "Format Correct" },
   ];
-  
+
   const substrateFields = [
     {
-      id: "substrate_type", label: "Substrate Type", options: dropDownValuesPrinting, allowTextFiled:true
+      id: "substrate_type",
+      label: "Substrate Type",
+      options: dropDownValuesPrinting,
+      allowTextFiled: true,
     },
     {
       id: "supplier",
       label: "Supplier",
-      options: ["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"],
-      allowTextFiled:true
+      options: dropDownValuesSupplierPrinting,
+      allowTextFiled: true,
     },
     { id: "dyne_level", label: "Dyne Level" },
     { id: "width", label: "Width (mm)" },
     { id: "thickness", label: "Thickness" },
     { id: "density", label: "Density (g/cm³)" },
   ];
-
-
 
   const {
     printingInkStatinData,
@@ -103,11 +136,14 @@ const Printing: React.FC<PrintingProps> = ({
 
   const [mountingTapesDropdown] = useMountingTapesDropdownMutation();
 
-
   useEffect(() => {
     const fetchDropdownValues = async () => {
-      const response = await mountingTapesDropdown({ mounting_tape:""}).unwrap();
-      const mountingTapeList = response?.data?.map((item: any) => item.mounting_tape);
+      const response = await mountingTapesDropdown({
+        mounting_tape: "",
+      }).unwrap();
+      const mountingTapeList = response?.data?.map(
+        (item: any) => item.mounting_tape
+      );
       dispatch(setMountinTapeDropDownValues(mountingTapeList));
     };
 
@@ -130,7 +166,13 @@ const Printing: React.FC<PrintingProps> = ({
     { id: "uv_led_intensity", label: "UV/LED Intensity", edit: true },
     { id: "mixing_on_gec", label: "Mixing On GEC", edit: true },
     { id: "mptl_code", label: "MPTL Code", edit: true },
-    { id: "mounting_tape", label: "Mounting Tape", editSelect: true, options: dropDownValuesMountingTape,onNewOptionAdd:true },
+    {
+      id: "mounting_tape",
+      label: "Mounting Tape",
+      editSelect: true,
+      options: dropDownValuesMountingTape,
+      onNewOptionAdd: true,
+    },
   ];
 
   const [errors, setErrors] = useState<PrintingFormErrors>({
@@ -143,40 +185,44 @@ const Printing: React.FC<PrintingProps> = ({
     thickness: "",
     density: "",
     color_pantone: "",
-            lf_value: "",
-            ink_supplier: "",
-            lpcm: "",
-            volume: "",
-            uv_led: "",
-            uv_led_intensity: "",
-            mixing_on_gec:"",
-            mptl_code:"",
-            mounting_tape:""
+    lf_value: "",
+    ink_supplier: "",
+    lpcm: "",
+    volume: "",
+    uv_led: "",
+    uv_led_intensity: "",
+    mixing_on_gec: "",
+    mptl_code: "",
+    mounting_tape: "",
   });
 
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
       printingDetails: {
-        machine_settings_id:data?.machine_settings_id||0, job_master_id:data?.job_master_id||0,
+        machine_settings_id: data?.machine_settings_id || 0,
+        job_master_id: data?.job_master_id || 0,
         printing_machine_name: data?.printing_machine_name || "",
-        cylinder_teeth: data?.cylinder_teeth !== undefined ? String(data.cylinder_teeth) : "",
+        cylinder_teeth:
+          data?.cylinder_teeth !== undefined ? String(data.cylinder_teeth) : "",
         tension: data?.tension !== undefined ? String(data.tension) : "",
         unwinder: data?.unwinder !== undefined ? String(data.unwinder) : "",
         infeed: data?.infeed !== undefined ? String(data.infeed) : "",
         outfeed: data?.outfeed !== undefined ? String(data.outfeed) : "",
         rewinder: data?.rewinder !== undefined ? String(data.rewinder) : "",
-        static_charge: data?.static_charge !== undefined ? String(data.static_charge) : "",
-        format_correct: data?.format_correct !== undefined ? String(data.format_correct) : "",
-      },      
+        static_charge:
+          data?.static_charge !== undefined ? String(data.static_charge) : "",
+        format_correct:
+          data?.format_correct !== undefined ? String(data.format_correct) : "",
+      },
       printingSubstrateSettings: {
         print_substrate_id: data?.print_substrate_id || "",
         machine_settings_id: data?.machine_settings_id || "",
         substrate_type: data?.substrate_type || "",
         supplier: data?.supplier || "",
         dyne_level: data?.dyne_level || "",
-        width:data?.width !==undefined ? String(data.width) : "",
-        thickness: data?.thickness!==undefined ? String(data.thickness) : "",
-        density: data?.density!==undefined ? String(data.density) : "",
+        width: data?.width !== undefined ? String(data.width) : "",
+        thickness: data?.thickness !== undefined ? String(data.thickness) : "",
+        density: data?.density !== undefined ? String(data.density) : "",
       },
       stationWiseMetrics: Array.isArray(data)
         ? data
@@ -189,9 +235,9 @@ const Printing: React.FC<PrintingProps> = ({
             volume: "",
             uv_led: "",
             uv_led_intensity: "",
-            mixing_on_gec:"",
-            mptl_code:"",
-            mounting_tape:""
+            mixing_on_gec: "",
+            mptl_code: "",
+            mounting_tape: "",
           })),
     };
   }
@@ -205,13 +251,13 @@ const Printing: React.FC<PrintingProps> = ({
     if (id) {
       dispatch(setPrintingDataTouched(true));
     }
-  
+
     const newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
-  
+
     const isNumberField = [
       "width",
       "density",
@@ -220,20 +266,20 @@ const Printing: React.FC<PrintingProps> = ({
       "outfeed",
       "dyne_level",
       "tension",
-      "lf_value"
+      "lf_value",
     ].includes(field);
-  
+
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
     const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
-  
+
     let errorMsg = "";
     let finalValue: string | number | string[] = newValue;
-  
+
     // Validate number fields
     if (isNumberField) {
       const stringValue = newValue.toString().trim();
-  
+
       // Allow "0" or "0.0" or other decimal values
       if (stringValue === "0" || stringValue === "0.0" || stringValue === "") {
         finalValue = stringValue; // Allow 0 and empty
@@ -242,7 +288,7 @@ const Printing: React.FC<PrintingProps> = ({
         // Regex to validate decimal or percentage with optional "%"
         const regex = /^(\d+(\.\d+)?)(%)?$/;
         const match = stringValue.match(regex);
-  
+
         if (match) {
           finalValue = stringValue; // Keep the value as a string with or without percentage
           errorMsg = ""; // Valid number or percentage
@@ -251,11 +297,11 @@ const Printing: React.FC<PrintingProps> = ({
         }
       }
     }
-  
+
     // Validate thickness field (alphanumeric check)
     else if (field === "thickness") {
       const trimmed = (newValue as string).trim();
-  
+
       if (trimmed === "") {
         errorMsg = "Thickness cannot be empty.";
         finalValue = "";
@@ -265,7 +311,7 @@ const Printing: React.FC<PrintingProps> = ({
         errorMsg = "";
         finalValue = trimmed;
       }
-    } 
+    }
     // For other string-based fields
     else if (typeof newValue === "string") {
       const trimmed = newValue.trim();
@@ -281,28 +327,29 @@ const Printing: React.FC<PrintingProps> = ({
         field !== "rewinder" &&
         field !== "substrate_type"
       ) {
-        errorMsg = "Only alphabets are allowed — no numbers or special characters";
+        errorMsg =
+          "Only alphabets are allowed — no numbers or special characters";
       }
     }
-  
+
     // Update errors
     const updatedErrors = { ...errors };
-  
+
     if (field !== "printing_machine_name") {
       updatedErrors[field] = errorMsg;
     } else {
       delete updatedErrors[field]; // Remove error if no issues
     }
-  
+
     if (field !== "supplier") {
       updatedErrors[field] = errorMsg;
     } else {
       delete updatedErrors[field]; // Remove error if no issues
     }
-  
+
     setErrors(updatedErrors);
     dispatch(setPrintngFormErros(updatedErrors));
-  
+
     const updatedFormData = {
       ...formValues,
       printingDetails: isMachineField
@@ -312,17 +359,16 @@ const Printing: React.FC<PrintingProps> = ({
         ? { ...formValues.printingSubstrateSettings, [field]: finalValue }
         : formValues.printingSubstrateSettings,
     };
-  
+
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
-  
-  
+
   const renderField = (field: {
     id: string;
     label: string;
     options?: string[];
-    allowTextFiled?:boolean
+    allowTextFiled?: boolean;
   }) => {
     const isMachineField = machineFields.some((f) => f.id === field.id);
     const isSubstrateField = substrateFields.some((f) => f.id === field.id);
@@ -349,25 +395,25 @@ const Printing: React.FC<PrintingProps> = ({
           options={field.options}
           isMultiSelect={false}
           checkbox={false}
-          required={field.label==='Supplier'?false:true}
+          required={field.label === "Supplier" ? false : true}
         />
       );
     }
-if(field.allowTextFiled){
-  return (
-    <DropdownTextComponent
-      key={field.id}
-      label={field.label}
-      value={String(value)} // force to string
-      onChange={(val) => handleChange(field.id, val)}
-      options={field.options?field.options:[]}
-      isMultiSelect={false}
-      checkbox={false}
-allowNewOption
-
-    />
-  );
-}
+    if (field.allowTextFiled) {
+      return (
+        <DropdownTextComponent
+          key={field.id}
+          label={field.label}
+          value={String(value)} // force to string
+          onChange={(val) => handleChange(field.id, val)}
+          options={field.options ? field.options : []}
+          isMultiSelect={false}
+          checkbox={false}
+          allowNewOption
+          dropdown={field.label === "Supplier" ? "supplier" : ""}
+        />
+      );
+    }
     return (
       <ReusableInput
         key={field.id}
@@ -376,15 +422,24 @@ allowNewOption
         onChange={(val) => handleChange(field.id, val)}
         error={!!error}
         helperText={error}
-        required={field.label==='Static Charge' ||field.label==='Format Correct' ?false:true}
+        required={
+          field.label === "Static Charge" || field.label === "Format Correct"
+            ? false
+            : true
+        }
       />
     );
   };
-  useEffect(()=>{
-    if(id&&location.pathname.includes('/updateMasterData') && !printingDataTouched){
+  useEffect(() => {
+    if (
+      id &&
+      location.pathname.includes("/updateMasterData") &&
+      !printingDataTouched
+    ) {
       setFormValues(printingDetails);
       setTableData(printingDetails.stationWiseMetrics);
-    }},[id,printingDetails])
+    }
+  }, [id, printingDetails]);
 
   useEffect(() => {
     if (!id && printingSaveFormData) {
@@ -393,16 +448,22 @@ allowNewOption
         setTableData(printingSaveFormData.stationWiseMetrics);
       }
     }
-    if( printingFormErrors){
-      setErrors(printingFormErrors)
+    if (printingFormErrors) {
+      setErrors(printingFormErrors);
     }
-    if(!id && saveButtonPrintingData && savePrintingData ){
-      setFormValues(savePrintingData)
+    if (!id && saveButtonPrintingData && savePrintingData) {
+      setFormValues(savePrintingData);
     }
-  }, [printingSaveFormData,printingFormErrors,id,savePrintingData,saveButtonPrintingData]);
+  }, [
+    printingSaveFormData,
+    printingFormErrors,
+    id,
+    savePrintingData,
+    saveButtonPrintingData,
+  ]);
 
   useEffect(() => {
-    if (id&&!printingDataTouched) {
+    if (id && !printingDataTouched) {
       const machineValues = sanitizeMasterData(printingMachineSettings);
       const substrateValues = sanitizeMasterData(printingSubstrateSettings);
       const combinedValues: PrintingFormValues = {
@@ -422,10 +483,6 @@ allowNewOption
     printingSubstrateSettings,
   ]);
 
-
-
-  
-  
   useEffect(() => {
     const importantFields = [
       "printing_machine_name",
@@ -439,27 +496,33 @@ allowNewOption
       "dyne_level",
       "width",
       "thickness",
-      "density"
-     ] as (
+      "density",
+    ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
       | keyof PrintingFormValues["stationWiseMetrics"][number]
     )[];
     const isAllFieldFilled = importantFields.every((field) => {
       if (field in formValues.printingDetails) {
-        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
+        const value =
+          formValues.printingDetails[
+            field as keyof PrintingFormValues["printingDetails"]
+          ];
 
         if (typeof value === "string") return value.trim() !== "";
         return value !== null && value !== undefined;
       }
-  
+
       if (field in formValues.printingSubstrateSettings) {
-        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
+        const value =
+          formValues.printingSubstrateSettings[
+            field as keyof PrintingFormValues["printingSubstrateSettings"]
+          ];
 
         if (typeof value === "string") return value.trim() !== "";
         return value !== null && value !== undefined;
       }
-  
+
       const stationResult = formValues.stationWiseMetrics.some((station) => {
         if (field in station) {
           const value = station[field as keyof typeof station];
@@ -469,19 +532,16 @@ allowNewOption
         }
         return false;
       });
-  
+
       return stationResult;
     });
-  
+
     const hasErrors = Object.values(errors).some((error) => error);
-    const shouldDisableButton = !isAllFieldFilled || hasErrors || printingTableValueVaidation;
+    const shouldDisableButton =
+      !isAllFieldFilled || hasErrors || printingTableValueVaidation;
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
   }, [formValues, errors, printingTableValueVaidation]);
-  
-  
-  
-  
-  
+
   useEffect(() => {
     const importantFields = [
       "static_charge",
@@ -514,22 +574,28 @@ allowNewOption
       | keyof PrintingFormValues["printingSubstrateSettings"]
       | keyof PrintingFormValues["stationWiseMetrics"][number]
     )[];
-  
+
     const isAnyFieldFilled = importantFields.some((field) => {
       if (field in formValues.printingDetails) {
-        const value = formValues.printingDetails[field as keyof PrintingFormValues["printingDetails"]];
+        const value =
+          formValues.printingDetails[
+            field as keyof PrintingFormValues["printingDetails"]
+          ];
 
         if (typeof value === "string") return value.trim() !== "";
         return value !== null && value !== undefined;
       }
-  
+
       if (field in formValues.printingSubstrateSettings) {
-        const value = formValues.printingSubstrateSettings[field as keyof PrintingFormValues["printingSubstrateSettings"]];
+        const value =
+          formValues.printingSubstrateSettings[
+            field as keyof PrintingFormValues["printingSubstrateSettings"]
+          ];
 
         if (typeof value === "string") return value.trim() !== "";
         return value !== null && value !== undefined;
       }
-  
+
       const stationResult = formValues.stationWiseMetrics.some((station) => {
         if (field in station) {
           const value = station[field as keyof typeof station];
@@ -539,17 +605,16 @@ allowNewOption
         }
         return false;
       });
-  
+
       return stationResult;
     });
-  
+
     const hasErrors = Object.values(errors).some((error) => error);
-  
-    const isSaveEnabled = !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
+
+    const isSaveEnabled =
+      !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
     dispatch(setPrintingSave(isSaveEnabled));
-    
   }, [formValues, errors, dispatch]);
-  
 
   return (
     <Box sx={{ borderRadius: "0px" }}>

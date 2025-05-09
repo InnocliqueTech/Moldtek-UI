@@ -17,6 +17,7 @@ import { Done } from "@mui/icons-material";
 import {
   useStructureDropdownMutation,
   useSubStrateDropDownMutation,
+  useSupplierDropdownMutation,
 } from "../../store/services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -24,6 +25,8 @@ import {
   setlaminationDropDownValues,
   setPrintingDropDownValues,
   setStructureDropDownValues,
+  setSupplieraminationDropDownValues,
+  setSupplierPrintingDropDownValues,
 } from "../../store/slices/masterDataSlice";
 
 interface DropdownProps {
@@ -62,8 +65,8 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
 
   const { selectedTab } = useSelector((state: RootState) => state.masterData);
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const [structureDropdown] =
-    useStructureDropdownMutation();
+  const [supplierDropdown] = useSupplierDropdownMutation();
+  const [structureDropdown] = useStructureDropdownMutation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -100,67 +103,70 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
 
   const handleAddNewOption = async () => {
     const trimmedOption = newOption.trim();
-    if (trimmedOption === "") return;
-
+    if (!trimmedOption) return;
+  
+    const addToOptions = () => {
+      if (!options.includes(trimmedOption)) {
+        setOptions((prev) => [...prev, trimmedOption]);
+      }
+      const newSelected = isMultiSelect
+        ? [...selectedOptions, trimmedOption]
+        : [trimmedOption];
+  
+      setSelectedOptions(newSelected);
+      onChange({
+        target: { value: newSelected },
+      } as SelectChangeEvent<string[]>);
+  
+      setNewOption("");
+      setOpen(false);
+    };
+  
     try {
-      if (dropdown === "structure") {
-        const response = await structureDropdown({
-          structure: "",
-        }).unwrap();
-        if (!options.includes(trimmedOption)) {
-          setOptions((prev) => [...prev, trimmedOption]);
+      switch (dropdown) {
+        case "structure": {
+          const response = await structureDropdown({ structure: "" }).unwrap();
+          const structureList = response?.data?.map((item: any) => item.structure);
+          dispatch(setStructureDropDownValues(structureList));
+          addToOptions();
+          break;
         }
-
-        const newSelected = isMultiSelect
-          ? [...selectedOptions, trimmedOption]
-          : [trimmedOption];
-
-        setSelectedOptions(newSelected);
-        onChange({
-          target: { value: newSelected },
-        } as SelectChangeEvent<string[]>);
-
-        setNewOption("");
-        setOpen(false);
-        const structureList = response?.data?.map(
-          (item: any) => item.structure
-        );
-
-        dispatch(setStructureDropDownValues(structureList));
-      } else {
-        const response = await subStrateDropDown({
-          substrate: trimmedOption,
-          substrateType: selectedTab === 1 ? "printing" : "lamination",
-        }).unwrap();
-
-        if (!options.includes(trimmedOption)) {
-          setOptions((prev) => [...prev, trimmedOption]);
+  
+        case "supplier": {
+          const response = await supplierDropdown({
+            supplier: trimmedOption,
+            supplier_type: selectedTab === 1 ? "printing" : "lamination",
+          }).unwrap();
+          const supplierList = response?.data?.map((item: any) => item.supplier);
+          if (selectedTab === 1) {
+            dispatch(setSupplierPrintingDropDownValues(supplierList));
+          } else {
+            dispatch(setSupplieraminationDropDownValues(supplierList));
+          }
+          addToOptions();
+          break;
         }
-
-        const newSelected = isMultiSelect
-          ? [...selectedOptions, trimmedOption]
-          : [trimmedOption];
-
-        setSelectedOptions(newSelected);
-        onChange({
-          target: { value: newSelected },
-        } as SelectChangeEvent<string[]>);
-
-        setNewOption("");
-        setOpen(false);
-        const substrateList = response?.data?.map(
-          (item: any) => item.substrate
-        );
-        if (selectedTab === 1) {
-          dispatch(setPrintingDropDownValues(substrateList));
-        } else {
-          dispatch(setlaminationDropDownValues(substrateList));
+  
+        default: {
+          const response = await subStrateDropDown({
+            substrate: trimmedOption,
+            substrateType: selectedTab === 1 ? "printing" : "lamination",
+          }).unwrap();
+          const substrateList = response?.data?.map((item: any) => item.substrate);
+          if (selectedTab === 1) {
+            dispatch(setPrintingDropDownValues(substrateList));
+          } else {
+            dispatch(setlaminationDropDownValues(substrateList));
+          }
+          addToOptions();
+          break;
         }
       }
     } catch (error) {
-      console.error("Error adding new substrate:", error);
+      console.error("Error adding new option:", error);
     }
   };
+  
 
   return (
     <>

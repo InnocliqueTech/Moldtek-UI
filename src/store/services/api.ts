@@ -73,7 +73,14 @@ export const apiSlice = createApi({
     }),
     structureDropdown:builder.mutation<any,any>({
       query:(newItem)=>({
-      url:'dailyplan/StructureDropdown',
+      url:'dailyplan/structureDropdown',
+      method:'POST',
+      body:newItem
+      }),
+     }),
+     supplierDropdown:builder.mutation<any,any>({
+      query:(newItem)=>({
+      url:'dailyplan/suppliersDropdown',
       method:'POST',
       body:newItem
       }),
@@ -359,5 +366,6 @@ export const {
   useGetMachinesByTypeQuery,
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
+  useSupplierDropdownMutation,
   useMountingTapesDropdownMutation
 } = apiSlice;

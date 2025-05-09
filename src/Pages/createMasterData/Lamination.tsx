@@ -11,12 +11,13 @@ import {
   setLaminationSave,
   setlaminationDropDownValues,
   setSubmitAndPublishButtonMasterLamination,
+  setSupplieraminationDropDownValues,
 } from "../../store/slices/masterDataSlice";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
 import { LaminatingTableRow, LaminationFormData, LaminationFormErrors } from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
-import { useSubStrateDropDownMutation } from "../../store/services/api";
+import { useSubStrateDropDownMutation, useSupplierDropdownMutation } from "../../store/services/api";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];
@@ -39,7 +40,8 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationTableValueVaidation,
     saveButtonLaminatingData,
     saveLaminatingData,
-    dropDownValuesLamination
+    dropDownValuesLamination,
+    dropDownValuesSupplierLamination
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -432,6 +434,7 @@ const Lamination: React.FC<LaminationProps> = ({
   ];
 
   const [subStrateDropDown] = useSubStrateDropDownMutation();
+   const [supplierDropdown] = useSupplierDropdownMutation();
   
     useEffect(()=>{
       const dropDown = async ()=>{
@@ -440,7 +443,6 @@ const Lamination: React.FC<LaminationProps> = ({
           substrateType:"lamination"
       }).unwrap();
       const substrateList = response?.data?.map((item:any) => item.substrate);
-      console.log(substrateList,"RESPONSEOFTHEDATA")
       dispatch(setlaminationDropDownValues(substrateList))
   
       }
@@ -448,6 +450,16 @@ const Lamination: React.FC<LaminationProps> = ({
       dropDown()
     
     },[]);
+
+      useEffect(() => {
+        const fetchDropdownValues = async () => {
+          const response = await supplierDropdown({ supplier: "", supplier_type: "lamination" }).unwrap();
+          const supplierList = response?.data?.map((item: any) => item.supplier);
+          dispatch(setSupplieraminationDropDownValues(supplierList));
+        };
+    
+        fetchDropdownValues();
+      }, [supplierDropdown, dispatch]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -650,7 +662,7 @@ const Lamination: React.FC<LaminationProps> = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownTextComponent
                   label="Supplier"
-                  options={["U-Flex Ltd.", "Huhtamaki", "Gulf Pack Supplier"]}
+                  options={dropDownValuesSupplierLamination}
                   value={formData.laminationSubstrate?.supplier}
                   onChange={(value) =>
                     handleChange("laminationSubstrate", "supplier", value)
@@ -658,6 +670,7 @@ const Lamination: React.FC<LaminationProps> = ({
                   isMultiSelect={false}
                   checkbox={false}
                   allowNewOption
+                  dropdown="supplier"
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
