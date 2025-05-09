@@ -44,6 +44,8 @@ const FilterForm: React.FC = () => {
 
   const [searchField , setSearchField ] = useState(filtersPayload.searchField  || '');
   const [searchType, setSearchType] = useState(filtersPayload.searchType || '');
+  const [status, setStatus] = useState(filtersPayload.status || '');
+
 
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
     fromDate: filtersPayload.fromDate ? new Date(filtersPayload.fromDate.split("-").reverse().join("-")) : null,
@@ -63,7 +65,8 @@ const FilterForm: React.FC = () => {
           toDate: '',
           labelType: [],
           searchField : '',
-          searchType: ''
+          searchType: '',
+          status
         }));
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
@@ -82,8 +85,8 @@ const FilterForm: React.FC = () => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
     const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '' || searchType !== '';
-  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField , searchType]);
+    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '' || searchType !== ''||status!=='';
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField , searchType,status]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -100,7 +103,8 @@ const FilterForm: React.FC = () => {
       toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
       labelType,
       searchField : searchField .trim(),
-      searchType
+      searchType,
+      status
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -120,7 +124,8 @@ const FilterForm: React.FC = () => {
       toDate: '',
       labelType: [],
       searchField : '',
-      searchType: ''
+      searchType: '',
+      status:''
     }));
 
     dispatch(setSelectedCustomers([]));
@@ -236,7 +241,24 @@ const FilterForm: React.FC = () => {
       <Grid size={{ xs: 12 }}>
         <LabelTypeSelector />
       </Grid>
-
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+  <Grid size={{xs:12}}>
+    <Typography sx={{ fontWeight: 500, mb: 1 }}>Status</Typography>
+    <Box display="flex" gap={2} flexWrap="wrap">
+      {['Completed', 'Inprogress', 'Active', 'Inactive'].map((statusOption) => (
+        <Box key={statusOption} display="flex" alignItems="center">
+          <input
+            type="checkbox"
+            checked={status === statusOption}
+            onChange={() => setStatus(status === statusOption ? '' : statusOption)}
+            style={{ marginRight: 6 }}
+          />
+          <Typography>{statusOption}</Typography>
+        </Box>
+      ))}
+    </Box>
+  </Grid>
+</Grid>
       <Grid container spacing={0} sx={{ mb: 2 }}>
   <Grid size={{xs:12}}>
     <Typography sx={{ mb: 1, fontWeight: 500 }}>Search</Typography>
@@ -307,6 +329,7 @@ const FilterForm: React.FC = () => {
     </Box>
   </Grid>
 </Grid>
+
 
 
 
