@@ -1,17 +1,18 @@
 import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio ,SelectChangeEvent} from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
 import { toast } from 'react-toastify';
 import SubmitPopups from './submitPopups';
-import { useDispatch } from "react-redux";
-import { AppDispatch } from '../../../store';
-import { setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from '../../../store';
+import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
 import { listOfLables } from '../../createMasterData/data';
 import { validateFormFields } from './formValidation';
-import { useSaveDailyJobMutation } from '../../../store/services/api';
+import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
+import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -22,57 +23,84 @@ export interface FormField {
   type?: string;
   component?: 'dropdown' | 'input';
   options?: string[];
+  allowTextFiled?:boolean
 }
 
-const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
-
-const initialFormFields: FormField[] = [
-  { id: 'indentNumber', label: 'Indent Number:', value: '' },
-  { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
-  { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
-  { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: ['PB','PH','LB','TW','QP'] },
-  { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: typeOfLabelOptions },
-  { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
-  { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
-  { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
-  { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
-  { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
-  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
-  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-  { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
-  { id: 'jarCap', label: 'Jar/Cap', type: 'text', value: '' },
-  { id: 'width', label: 'Width', value: '' },
-  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
-  { id: 'substrateType', label: 'Substrate Type', type: 'text', value: '',component:"dropdown",options:["ORANGE PEEL FILM (CHIRIPAL)",
-    "ORANGE PEEL FILM (GULF PACK)",
-    "WHITE HIGH DENSITY  FILM"] },
-  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
-  { id: 'repeatLength', label: 'Repeat Length', value: '' },
-  { id: 'ups', label: 'UPS', value: '' },
-  { id: 'dyne', label: 'Dyne', value: '' },
-  { id: 'substrate', label: 'Printing Substrate', value: ''},
-  { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
-];
-
-const fieldsToSkipForRepeat = [
-  'customerName',
-  'brandName',
-  'jarCap',
-  'width',
-  'thickness',
-  'subStrateType',
-  'gsm',
-  'repeatLength',
-  'ups',
-  'substrate',
-  'lamSubstrate',
-  'dyne',
-  'substrateType'
-];
 
 
 const CreatePlan: React.FC = () => {
+  
   const dispatch = useDispatch<AppDispatch>();
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await subStrateDropDown({
+        substrate: "",
+        substrateType: "printing",
+      }).unwrap();
+      const substrateList = response?.data?.map((item: any) => item.substrate);
+      dispatch(setPrintingDropDownValues(substrateList));
+    };
+
+    fetchDropdownValues();
+  }, [subStrateDropDown, dispatch]);
+
+  const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
+  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
+   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  
+    useEffect(()=>{
+  segmentsDropdown({
+    segment: ""
+  })
+    },[])
+    const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+
+const initialFormFields = useMemo<FormField[]>(() => [
+    { id: 'indentNumber', label: 'Indent Number:', value: '' },
+    { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
+    { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
+    { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: segmentNames },
+    { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: typeOfLabelOptions },
+    { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
+    { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
+    { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
+    { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
+    { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
+    { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
+    { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
+    { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
+    { id: 'jarCap', label: 'Jar/Cap', type: 'text',value:'',component:"dropdown",options:["JAR","CAP","JAR&CAP"] },
+    { id: 'width', label: 'Width', value: '' },
+    { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
+    { id: 'substrateType', label: 'Substrate Type', type: 'text', value: '',component:"dropdown",options:dropDownValuesPrinting, allowTextFiled: true},
+    { id: 'gsm', label: 'GSM', type: 'text', value: '' },
+    { id: 'repeatLength', label: 'Repeat Length', value: '' },
+    { id: 'ups', label: 'UPS', value: '' },
+    { id: 'dyne', label: 'Dyne', value: '' },
+    { id: 'substrate', label: 'Printing Substrate', value: ''},
+    { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
+  ], [dropDownValuesPrinting,segmentNames]);
+  
+  const fieldsToSkipForRepeat = [
+    'customerName',
+    'brandName',
+    'jarCap',
+    'width',
+    'thickness',
+    'subStrateType',
+    'gsm',
+    'repeatLength',
+    'ups',
+    'substrate',
+    'lamSubstrate',
+    'dyne',
+    'substrateType'
+  ];
+
+
+
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
@@ -89,16 +117,21 @@ const CreatePlan: React.FC = () => {
     fieldId: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
-    const extractedValue =
+    let extractedValue =
       typeof value === 'object' && 'target' in value ? value.target.value : value;
-
+      if (fieldId==="substrateType") {
+        if (Array.isArray(extractedValue)) {
+          // Remove empty strings, trim, then join if needed
+          extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
+        }
+      }
     setFormFields(prevFields =>
       prevFields.map(field =>
         field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
-
-  // Clear error when user starts typing
+  
+    // Clear error when user starts typing
     if (errors[fieldId]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -204,6 +237,8 @@ const CreatePlan: React.FC = () => {
     }
   }, []);
 
+
+
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
@@ -235,7 +270,7 @@ const CreatePlan: React.FC = () => {
             .filter((f) => shouldShowField(f.id))
             .map((field) => (
               <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-                {field.component === "dropdown" ? (
+                {field.component === "dropdown" && !field.allowTextFiled ? (
                   <DropdownComponent
                     label={field.label}
                     options={field.options || []}
@@ -246,7 +281,20 @@ const CreatePlan: React.FC = () => {
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
                   />
-                ) : (
+                ) :field.component === "dropdown" && field.allowTextFiled ? (
+                  <DropdownTextComponent
+                    label={field.label}
+                    options={field.options || []}
+                    value={field.value}
+                    onChange={(value) => handleInputChange(field.id, value)}
+                    isMultiSelect={false}
+                    checkbox={false}
+                    error={!!errors[field.id]}
+                    helperText={errors[field.id]}
+                    dropdown='printingDailyPlan'
+                    allowNewOption
+                  />
+                ): (
                   <ReusableInput
                     label={field.label}
                     value={field.value}

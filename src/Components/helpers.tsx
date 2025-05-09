@@ -9,8 +9,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useMountingTapesDropdownMutation } from "../store/services/api";
-import { setMountinTapeDropDownValues } from "../store/slices/masterDataSlice";
+import { useMountingTapesDropdownMutation, useSupplierDropdownMutation } from "../store/services/api";
+import { setMountinTapeDropDownValues, setSupplierPrintingDropDownValues } from "../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 
 
@@ -71,6 +71,7 @@ interface AutocompleteCellProps {
   rowIndex: number;
   handleChange: (rowIndex: number, columnId: string, newValue: string) => void;
   onNewOptionAdd?:boolean;
+  field?:string
 }
 
 export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
@@ -78,7 +79,8 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
   column,
   rowIndex,
   handleChange,
-  onNewOptionAdd
+  onNewOptionAdd,
+  field
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [inputValue, setInputValue] = useState("");
@@ -110,13 +112,22 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
 
   const dispatch = useDispatch()
       const [mountingTapesDropdown] = useMountingTapesDropdownMutation();
-    
+     const [supplierDropdown] = useSupplierDropdownMutation();
   
         const fetchDropdownValues = async (isNew:string) => {
           const response = await mountingTapesDropdown({ mounting_tape:isNew}).unwrap();
           const mountingTapeList = response?.data?.map((item: any) => item.mounting_tape);
           dispatch(setMountinTapeDropDownValues(mountingTapeList));
         };
+
+            const fetchDropdownSupplierValues = async (isNew:string) => {
+              const response = await supplierDropdown({
+                supplier: isNew,
+                supplier_type: "printing",
+              }).unwrap();
+              const supplierList = response?.data?.map((item: any) => item.supplier);
+              dispatch(setSupplierPrintingDropDownValues(supplierList));
+            };
     
 
   return (
@@ -180,7 +191,11 @@ export const AutocompleteCell: React.FC<AutocompleteCellProps> = ({
           
               if (isNew && onNewOptionAdd) {
                 try {
+                  if(field==='mounting_tape'){
                   await fetchDropdownValues(cleaned);
+                  } else{
+                    await fetchDropdownSupplierValues(cleaned);
+                  }
                 } catch (error) {
                   console.error("Failed to add new option:", error);
                   return; // Do not update cell if API fails

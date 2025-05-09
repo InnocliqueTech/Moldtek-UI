@@ -65,8 +65,8 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
 
   const { selectedTab } = useSelector((state: RootState) => state.masterData);
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const [supplierDropdown] = useSupplierDropdownMutation();
-  const [structureDropdown] = useStructureDropdownMutation();
+   const [supplierDropdown] = useSupplierDropdownMutation();
+  const [structureDropdown] =useStructureDropdownMutation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -91,8 +91,8 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
       selectedValues = selectedValues.slice(-1); // only last value
     }
 
-    setSelectedOptions(selectedValues);
-    onChange(event);
+      setSelectedOptions(selectedValues);
+      onChange(event);
   };
 
   const handleNewOptionChange = (
@@ -103,60 +103,70 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
 
   const handleAddNewOption = async () => {
     const trimmedOption = newOption.trim();
-    if (!trimmedOption) return;
-  
+    if (trimmedOption === "") return;
+
     const addToOptions = () => {
-      if (!options.includes(trimmedOption)) {
-        setOptions((prev) => [...prev, trimmedOption]);
-      }
-      const newSelected = isMultiSelect
-        ? [...selectedOptions, trimmedOption]
-        : [trimmedOption];
-  
-      setSelectedOptions(newSelected);
-      onChange({
-        target: { value: newSelected },
-      } as SelectChangeEvent<string[]>);
-  
-      setNewOption("");
-      setOpen(false);
+        if (!options.includes(trimmedOption)) {
+          setOptions((prev) => [...prev, trimmedOption]);
+        }
+        const newSelected = isMultiSelect
+          ? [...selectedOptions, trimmedOption]
+          : [trimmedOption];
+
+        setSelectedOptions(newSelected);
+        onChange({
+          target: { value: newSelected },
+        } as SelectChangeEvent<string[]>);
+
+        setNewOption("");
+        setOpen(false);
     };
-  
+
     try {
       switch (dropdown) {
         case "structure": {
-          const response = await structureDropdown({ structure: "" }).unwrap();
+          const response = await structureDropdown({ structure: trimmedOption }).unwrap();
           const structureList = response?.data?.map((item: any) => item.structure);
-          dispatch(setStructureDropDownValues(structureList));
+        dispatch(setStructureDropDownValues(structureList));
           addToOptions();
           break;
-        }
+      } 
   
         case "supplier": {
-          const response = await supplierDropdown({
-            supplier: trimmedOption,
-            supplier_type: selectedTab === 1 ? "printing" : "lamination",
-          }).unwrap();
+        const response = await supplierDropdown({
+        supplier: trimmedOption,
+        supplier_type: selectedTab === 1 ? "printing" : "lamination",
+        }).unwrap();
           const supplierList = response?.data?.map((item: any) => item.supplier);
-          if (selectedTab === 1) {
-            dispatch(setSupplierPrintingDropDownValues(supplierList));
-          } else {
-            dispatch(setSupplieraminationDropDownValues(supplierList));
-          }
+        if (selectedTab === 1) {
+          dispatch(setSupplierPrintingDropDownValues(supplierList));
+        } else {
+          dispatch(setSupplieraminationDropDownValues(supplierList));
+        }
+          addToOptions();
+          break;
+      }
+      case "printingDailyPlan":{
+        const response = await subStrateDropDown({
+          substrate: trimmedOption,
+          substrateType: "printing" ,
+        }).unwrap();
+          const substrateList = response?.data?.map((item: any) => item.substrate);
+          dispatch(setPrintingDropDownValues(substrateList));
           addToOptions();
           break;
         }
   
         default: {
-          const response = await subStrateDropDown({
-            substrate: trimmedOption,
-            substrateType: selectedTab === 1 ? "printing" : "lamination",
-          }).unwrap();
+        const response = await subStrateDropDown({
+          substrate: trimmedOption,
+          substrateType: selectedTab === 1 ? "printing" : "lamination",
+        }).unwrap();
           const substrateList = response?.data?.map((item: any) => item.substrate);
-          if (selectedTab === 1) {
-            dispatch(setPrintingDropDownValues(substrateList));
-          } else {
-            dispatch(setlaminationDropDownValues(substrateList));
+        if (selectedTab === 1) {
+          dispatch(setPrintingDropDownValues(substrateList));
+        } else {
+          dispatch(setlaminationDropDownValues(substrateList));
           }
           addToOptions();
           break;
@@ -166,7 +176,7 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
       console.error("Error adding new option:", error);
     }
   };
-  
+
 
   return (
     <>

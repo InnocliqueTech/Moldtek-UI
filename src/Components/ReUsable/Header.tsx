@@ -9,6 +9,12 @@ import {
   Select,
   SelectChangeEvent,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
@@ -30,7 +36,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
 import { useUpdateStatusJobMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 
 interface HeaderProps {
@@ -51,7 +57,7 @@ interface HeaderProps {
   headerButtonColor?: boolean;
   dropDown?: boolean;
   dropDownOptions?: string[];
-  editButton?:boolean;
+  editButton?: boolean;
   editClick?: () => void;
 }
 
@@ -74,21 +80,18 @@ const Header: React.FC<HeaderProps> = ({
   dropDown = false,
   dropDownOptions = [],
   editButton = false,
-  editClick
+  editClick,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup, submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
-  const { isEditing } = useSelector(
-    (store: RootState) => store.viewDailyPlan
-  );
+  const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(() => {
     return localStorage.getItem("status") || "";
   });
-  
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -96,44 +99,73 @@ const Header: React.FC<HeaderProps> = ({
 
   const storedStatus = localStorage.getItem("status");
   useEffect(() => {
-        if (storedStatus) {
+    if (storedStatus) {
       setSelectedStatus(storedStatus);
     }
   }, [storedStatus]);
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [statusChangeMessage, setStatusChangeMessage] =
+    useState<React.ReactNode>("");
+
   const [updateStatusJob] = useUpdateStatusJobMutation();
-  const handleDropdownChange = async (e: SelectChangeEvent<string>) => {
-    const newStatus = e.target.value;
-    const previousStatus = selectedStatus;
-  
-    setSelectedStatus(newStatus);
-  
+  const performStatusUpdate = async () => {
     try {
       const response = await updateStatusJob({
         indentNumber: decodedIndentNo,
-        status: newStatus,
+        status: selectedValue,
       }).unwrap();
-  
+
       if (response?.statusCode === 200) {
-        localStorage.setItem("status", newStatus);
+        localStorage.setItem("status", selectedValue);
         if (response?.message !== "Status Updated") {
           toast.error(response?.message);
         } else {
           toast.success("Status Updated Successfully!");
+          setConfirmDialogOpen(false);
+          if (selectedValue === "Inactive") {
+            navigate("/dailyPlan");
+          }
         }
       } else {
-        setSelectedStatus(previousStatus);
-        localStorage.setItem("status", previousStatus);
+        setSelectedStatus(selectedStatus);
+        localStorage.setItem("status", selectedStatus);
         toast.error(response?.message);
       }
     } catch (error) {
-      setSelectedStatus(previousStatus);
-      localStorage.setItem("status", previousStatus);
+      setSelectedStatus(selectedStatus);
+      localStorage.setItem("status", selectedStatus);
       toast.error("Something Went Wrong!");
     }
   };
-  
+
+  const handleDropdownChange = (e: SelectChangeEvent<string>) => {
+    const newStatus = e.target.value;
+
+    if (newStatus === "Inactive") {
+      setStatusChangeMessage(
+        <>
+          Are you sure you want to change the status from{" "}
+          <strong>{selectedStatus}</strong> to <strong>{newStatus}</strong>?
+          <br />
+          If you proceed,the total daily job data is deleted for this number.
+        </>
+      );
+    } else {
+      setStatusChangeMessage(
+        <>
+          Are you sure you want to change the status from{" "}
+          <strong>{selectedStatus}</strong> to <strong>{newStatus}</strong>?
+          <br />
+        </>
+      );
+    }
+    setConfirmDialogOpen(true);
+    setSelectedValue(newStatus);
+  };
+
   const handleClosePopUp = () => {
     dispatch(setUploadPopup(false));
   };
@@ -270,37 +302,40 @@ const Header: React.FC<HeaderProps> = ({
             </Box>
 
             <Box display="flex" gap={2}>
-            {dropDown && (
-  <Box display="flex" alignItems="center" gap={1}>
-    <Typography variant="subtitle2" sx={{ fontWeight: 500, color: "#1976D2" }}>
-      Status:
-    </Typography>
-    <Select
-  value={selectedStatus}
-  onChange={handleDropdownChange}
-  displayEmpty
-  size="small"
-  sx={{
-    borderRadius: "20px",
-    padding: "0px 0px",
-    border: "1px solid #00000000",
-    background: "#fff",
-    fontSize: "14px",
-    outline: "none",
-    cursor: "pointer",
-  }}
->
-  {dropDownOptions.map((option) => (
-    <MenuItem key={option} value={option}>
-      {option}
-    </MenuItem>
-  ))}
-</Select>
-  </Box>
-)}
+              {dropDown && (
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 500, color: "#1976D2" }}
+                  >
+                    Status:
+                  </Typography>
+                  <Select
+                    value={selectedStatus}
+                    onChange={handleDropdownChange}
+                    displayEmpty
+                    size="small"
+                    sx={{
+                      borderRadius: "20px",
+                      padding: "0px 0px",
+                      border: "1px solid #00000000",
+                      background: "#fff",
+                      fontSize: "14px",
+                      outline: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {dropDownOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
+              )}
               {button1Text && (
                 <ButtonComponent
-                {...(onButton1Click && { onClick: onButton1Click })}
+                  {...(onButton1Click && { onClick: onButton1Click })}
                   color="white"
                   text={button1Text}
                   textColor="#0E0E0E"
@@ -395,6 +430,55 @@ const Header: React.FC<HeaderProps> = ({
       <Filter filterTitle={filterTitle || ""} />
       <FilterDailyPlan filterTitle="Daily Plan Filter" />
       <VersinDetails />
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 5,
+            p: 0.5,
+          },
+        }}
+      >
+        <DialogTitle>Confirm Status Change</DialogTitle>
+        <DialogContent>
+          <DialogContentText component="div">
+            {statusChangeMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            sx={{
+              borderRadius: 10,
+              color: "primary.main",
+              borderColor: "primary.main",
+              "&:hover": {
+                // backgroundColor: 'primary.main',
+                // color: 'white',
+                borderColor: "primary.main",
+              },
+            }}
+            onClick={() => setConfirmDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              color: "white",
+              borderRadius: 10,
+              backgroundColor: "primary.main",
+              "&:hover": {
+                backgroundColor: "primary.main",
+              },
+            }}
+            onClick={performStatusUpdate}
+          >
+            Yes, Change Status
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

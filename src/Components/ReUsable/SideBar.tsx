@@ -199,7 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     [`& .${tooltipClasses.tooltip}`]: {
       backgroundColor: theme.palette.common.white,
       color: "#0073B7",
-      boxShadow: theme.shadows[1],
+      boxShadow: theme.shadows[4],
     },
   }));
 

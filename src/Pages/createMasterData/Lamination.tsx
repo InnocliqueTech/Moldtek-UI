@@ -155,11 +155,17 @@ const Lamination: React.FC<LaminationProps> = ({
     }
 
     // Extract value from the input
-    const newValue = Array.isArray(value)
+    let newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
+      if (field === "supplier" || field==="substrate_type") {
+        if (Array.isArray(newValue)) {
+          // Remove empty strings, trim, then join if needed
+          newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
+        }
+      }
 
     let finalValue: string | string[] | number = newValue;
     let errorMessage = "";

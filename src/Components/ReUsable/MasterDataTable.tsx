@@ -36,6 +36,7 @@ interface Column {
   editSelect?: boolean;
   required?:boolean;
   onNewOptionAdd?:boolean;
+  field?:string
 }
 
 interface DataTableProps<T> {
@@ -521,6 +522,7 @@ const DataTable = <T extends Record<string, any>>({
                             )
                           }
                           onNewOptionAdd={column.onNewOptionAdd}
+                          field={column.field}
                         />
                       ): (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
                           <TextField

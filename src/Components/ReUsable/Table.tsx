@@ -305,7 +305,7 @@ function ReusableTable<T extends Record<string, any>>({
         <>
           Are you sure you want to change the status from{" "}
           <strong>{row.status}</strong> to <strong>{newValue}</strong>?<br />
-          If you proceed, the master data and daily jobs will be deleted.
+          If you proceed,the total daily job data is deleted for this number.
         </>
       );
     } else {

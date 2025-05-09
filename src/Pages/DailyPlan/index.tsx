@@ -47,10 +47,10 @@ const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatIte
   if (!apiData) {
     // Return empty stats when no data
     return [
-      { title: "Total Jobs", value: 0,infoText:'' },
-      { title: "Lamination Jobs", value: 0,infoText:'' },
-      { title: "Non-Lamination Jobs", value: 0,infoText:'' },
-      { title: "New Jobs Added", value: 0,infoText:'' },
+      { title: "Total Jobs", value:  0,infoText:'Displays the count of newly created jobs' },
+      { title: "Lamination Jobs", value:  0,infoText:'Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW'  },
+      { title: "Non-Lamination Jobs", value:  0 ,infoText:'Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW.' },
+      { title: "New Jobs Added", value: 0,infoText:'Displays total number of jobs created'  },
     ];
   }
 
@@ -288,6 +288,7 @@ const dispatch = useDispatch()
                         sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
                       />
                     }
+                    infoText={stat.infoText}
                   />
                 </Grid>
               ))

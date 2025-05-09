@@ -158,7 +158,9 @@ const Printing: React.FC<PrintingProps> = ({
       id: "ink_supplier",
       label: "Ink Supplier",
       editSelect: true,
-      options: ["Siegwerk", "Flint Group"],
+      options: dropDownValuesSupplierPrinting,
+      onNewOptionAdd: true,
+      field:'ink_supplier'
     },
     { id: "lpcm", label: "LPCM", edit: true },
     { id: "volume", label: "Volume", edit: true },
@@ -172,6 +174,7 @@ const Printing: React.FC<PrintingProps> = ({
       editSelect: true,
       options: dropDownValuesMountingTape,
       onNewOptionAdd: true,
+      field:'mounting_tape'
     },
   ];
 
@@ -252,11 +255,18 @@ const Printing: React.FC<PrintingProps> = ({
       dispatch(setPrintingDataTouched(true));
     }
 
-    const newValue = Array.isArray(value)
+
+    let newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
+      if (field === "supplier" || field==="substrate_type") {
+        if (Array.isArray(newValue)) {
+          // Remove empty strings, trim, then join if needed
+          newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
+        }
+      }
 
     const isNumberField = [
       "width",

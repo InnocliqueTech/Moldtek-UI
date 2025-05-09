@@ -199,14 +199,25 @@ segmentsDropdown({
     if (id) {
       dispatch(setMasterDataDataTouched(true));
     }
-  
+
     let newValue: string | string[] =
       Array.isArray(value) ? value : typeof value === "string" ? value : value.target.value;
-  
+    
+    // Convert to string if it's an array (especially for 'structure' field)
+    if (field === "structure") {
+      if (Array.isArray(newValue)) {
+        // Remove empty strings, trim, then join if needed
+        newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
+      } else {
+        newValue = newValue.trim();
+      }
+    }
+    
     let finalValue: string | number = newValue as string;
     let errorMessage = "";
-  
+    
     const trimmed = (newValue as string).trim();
+    
     const isImportant = importantFields.includes(field);
   
     if (numericFields.includes(field)) {
