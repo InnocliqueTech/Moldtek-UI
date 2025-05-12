@@ -12,6 +12,7 @@ import {
   useGetMetricsQuery,
   useMasterFiltersMutation,
 } from "../../store/services/api";
+import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
@@ -189,6 +190,7 @@ const MasterData: React.FC = () => {
   }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    dispatch(setIsSearchTriggered(false));
     localStorage.setItem(storageKey, newPage.toString());
   };
   return (

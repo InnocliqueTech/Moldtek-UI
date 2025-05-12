@@ -16,7 +16,7 @@ import { generateId,formatDate } from '../../Components/helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { setSelectedTab } from '../../store/slices/viewMasterDataSlice';
-import { setBackButtonNavigationAllowed, setIsEditing, setSideNavigationAllowed } from '../../store/slices/viewDailyPlanSlice';
+import { setBackButtonNavigationAllowed, setIsEditing, setIsSearchTriggered, setSideNavigationAllowed } from '../../store/slices/viewDailyPlanSlice';
 
 interface DailyPlanProps {
   title?: string;
@@ -139,8 +139,6 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     },
   ] = useDailyPlanFiltersMutation();
   useEffect(() => {
-
-  
     if (!openSliderDaily|| dropDown) {
       dailyPlanFilters({ ...filtersPayload, page: isSearchTriggered ?0:page, size: rowsPerPage });
     }
@@ -258,6 +256,7 @@ const dispatch = useDispatch()
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    dispatch(setIsSearchTriggered(false));
     localStorage.setItem(storageKey, newPage.toString());
   };
 

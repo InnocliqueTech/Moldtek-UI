@@ -44,7 +44,15 @@ const FilterForm: React.FC = () => {
 
   const [searchField , setSearchField ] = useState(filtersPayload.searchField  || '');
   const [searchType, setSearchType] = useState(filtersPayload.searchType || '');
-  const [status, setStatus] = useState(filtersPayload.status || '');
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(filtersPayload.status || []);
+
+  const statusOptions = [
+    { label: "Active", value: "Active", color: "#FFA500" },  
+    { label: "Inprogress", value: "Inprogress", color: "#0073B7" }, 
+    { label: "Completed", value: "Completed", color: "#4CAF50" }, 
+    { label: "Inactive", value: "Inactive", color: "#f44336" }, 
+  ];
+  
 
 
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
@@ -66,7 +74,7 @@ const FilterForm: React.FC = () => {
           labelType: [],
           searchField : '',
           searchType: '',
-          status
+          status:[]
         }));
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
@@ -85,8 +93,8 @@ const FilterForm: React.FC = () => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
     const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '' || searchType !== ''||status!=='';
-  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField , searchType,status]);
+    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '' || searchType !== ''||selectedStatuses.length>0;
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField , searchType,selectedStatuses]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -104,10 +112,11 @@ const FilterForm: React.FC = () => {
       labelType,
       searchField : searchField .trim(),
       searchType,
-      status
+      status:selectedStatuses
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
+    localStorage.setItem('dailyPlanDataPage','0');
     dispatch(setIsSearchTriggered(true));
     dispatch(setOpenSliderDaily(false));
     toast.success("Search submitted successfully!");
@@ -125,7 +134,7 @@ const FilterForm: React.FC = () => {
       labelType: [],
       searchField : '',
       searchType: '',
-      status:''
+      status:[]
     }));
 
     dispatch(setSelectedCustomers([]));
@@ -134,6 +143,17 @@ const FilterForm: React.FC = () => {
     dispatch(setOpenSliderDaily(false));
     toast.success("Filters cleared!");
   };
+
+  const handleClearStatuses = () => {
+    setSelectedStatuses([]);
+  };
+
+  const toggleStatus = (value: string) => {
+    setSelectedStatuses((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+  
 
   return (
     <>
@@ -241,27 +261,56 @@ const FilterForm: React.FC = () => {
       <Grid size={{ xs: 12 }}>
         <LabelTypeSelector />
       </Grid>
-      <Grid container spacing={2} sx={{ mb: 2 }}>
-  <Grid size={{xs:12}}>
-    <Typography sx={{ fontWeight: 500, mb: 1 }}>Status</Typography>
-    <Box display="flex" gap={2} flexWrap="wrap">
-      {['Completed', 'Inprogress', 'Active', 'Inactive'].map((statusOption) => (
-        <Box key={statusOption} display="flex" alignItems="center">
+      <Grid container spacing={1} sx={{ mt: 2,mb:2 }}>
+  <Grid size={{xs:12}} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+       <Typography variant="subtitle1">Status({selectedStatuses.length})</Typography>
+      <IconButton size="small" onClick={handleClearStatuses}>
+        <ClearIcon fontSize="small" />
+      </IconButton>
+  </Grid>
+
+  {statusOptions.map((status) => {
+    const isSelected = selectedStatuses.includes(status.value);
+    return (
+      <Grid  key={status.value}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            px: 1,
+            py: 0,
+            border: "2px solid",
+            borderColor: isSelected ? status.color : "#ccc",
+            borderRadius: "20px",
+            cursor: "pointer",
+            backgroundColor: isSelected ? `${status.color}20` : "transparent"
+          }}
+          onClick={() => toggleStatus(status.value)}
+        >
           <input
             type="checkbox"
-            checked={status === statusOption}
-            onChange={() => setStatus(status === statusOption ? '' : statusOption)}
-            style={{ marginRight: 6 }}
+            checked={isSelected}
+            readOnly
+            style={{
+              accentColor: status.color,
+              width: "14px",
+              height: "14px",
+              marginRight: "8px",
+              borderRadius: "0px"
+            }}
           />
-          <Typography>{statusOption}</Typography>
+          <Typography sx={{ fontWeight: 400, color: status.color,fontSize:'16px' }}>
+            {status.label}
+          </Typography>
         </Box>
-      ))}
-    </Box>
-  </Grid>
+      </Grid>
+    );
+  })}
 </Grid>
+
       <Grid container spacing={0} sx={{ mb: 2 }}>
   <Grid size={{xs:12}}>
-    <Typography sx={{ mb: 1, fontWeight: 500 }}>Search</Typography>
+  <Typography variant="subtitle1" sx={{ mb: 1}}>Search</Typography>
   </Grid>
 
   <Grid size={{xs:12,sm:12,md:9}}>
