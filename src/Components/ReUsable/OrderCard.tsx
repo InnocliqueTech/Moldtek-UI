@@ -258,7 +258,7 @@ const OrderCard: React.FC = () => {
                 {columns.find((col) => col.id === key)?.label || key}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {value}
+                {value ? value:'N/A'}
               </Typography>
             </Box>
           ))}
