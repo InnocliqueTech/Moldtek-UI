@@ -502,7 +502,6 @@ const Printing: React.FC<PrintingProps> = ({
       "rewinder",
       "infeed",
       "outfeed",
-      "substrate_type",
       "dyne_level",
       "width",
       "thickness",

@@ -594,7 +594,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
                     ? handleSaveMasterData
                     : selectedTab === 1
                     ? handleSavePrinting
-                    : selectedTab === 2
+                    : selectedTab === 2 &&               !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
+                      (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"  ))
                     ? handleSaveLamination
                     : handleSaveDyeCutting
                 }

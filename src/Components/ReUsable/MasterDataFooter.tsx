@@ -74,7 +74,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   };
 
   const handleSubmitAndPublishPopupOpen = () => {
-    if (selectedTab === 3) {
+    if (!skipLamination && selectedTab === 3 || skipLamination&&selectedTab===2 ) {
       dispatch(setSubmitAndPublishPopup(true));
       if (handleSave) handleSave();
     }
@@ -184,7 +184,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       return true;
     }
   };
-console.log(((saveFormData.label_type === "Thin Wall"||saveFormData.segment === "TW") && selectedTab===2 ),selectedTab,"TABBUTTONS")
+
   return (
     <Box
       display="flex"
