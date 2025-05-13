@@ -47,6 +47,7 @@ const Printing: React.FC<PrintingProps> = ({
 
   const [subStrateDropDown] = useSubStrateDropDownMutation();
   const { data: machineNameData } = useGetMachinesByTypeQuery("printing");
+  const [formInitialized, setFormInitialized] = useState(false); 
   const [supplierDropdown] = useSupplierDropdownMutation();
 
   useEffect(() => {
@@ -452,24 +453,31 @@ const Printing: React.FC<PrintingProps> = ({
   }, [id, printingDetails]);
 
   useEffect(() => {
+    if (formInitialized) return;
     if (!id && printingSaveFormData) {
       setFormValues(printingSaveFormData);
+      setFormInitialized(true);
       if (!id && printingSaveFormData.stationWiseMetrics) {
         setTableData(printingSaveFormData.stationWiseMetrics);
+        setFormInitialized(true);
       }
     }
     if (printingFormErrors) {
       setErrors(printingFormErrors);
+      setFormInitialized(true);
     }
     if (!id && saveButtonPrintingData && savePrintingData) {
       setFormValues(savePrintingData);
+      setFormInitialized(true);
     }
+
   }, [
     printingSaveFormData,
     printingFormErrors,
     id,
     savePrintingData,
     saveButtonPrintingData,
+    formInitialized
   ]);
 
   useEffect(() => {

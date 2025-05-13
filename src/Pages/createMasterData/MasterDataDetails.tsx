@@ -12,7 +12,7 @@ import TextArea from "../../Components/ReUsable/TextArea";
 import { Close, Delete, Edit, Visibility } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
   setDyeCuttingDetails,
@@ -59,6 +59,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const { id } = useParams();
   const location = useLocation();
+  
   const UEN = localStorage.getItem("selectedUEN");
   let selectedUEN: any;
   if (UEN) {
@@ -81,49 +82,71 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   );
 
+  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
+  useSelector((state: RootState) => state.masterData);
+
+  const isUpdatePage = useMemo(
+    () => location.pathname.includes("/updateMasterData"),
+    [location.pathname]
+  );
+
+
+  const masterData = useMemo(() => data?.data ?? null, [data]);
+
   useEffect(() => {
-    if (id && location.pathname.includes("/updateMasterData") && !masterDataDataTouched) {
-      dispatch(setViewMasterDataDetails(data?.data?.masterDataDetails));
-      dispatch(setPrintingDetails(data?.data.masterDataPrinting));
-      dispatch(setLaminatingDetails(data?.data.masterDataLamination));
-      dispatch(setDyeCuttingDetails(data?.data.masterDataDyeCutting));
+    if (
+      id &&
+      isUpdatePage &&
+      !masterDataDataTouched &&
+      masterData
+    ) {
+      dispatch(setViewMasterDataDetails(masterData.masterDataDetails));
+      dispatch(setPrintingDetails(masterData.masterDataPrinting));
+      dispatch(setLaminatingDetails(masterData.masterDataLamination));
+      dispatch(setDyeCuttingDetails(masterData.masterDataDyeCutting));
+
       dispatch(
         setPrintingMachineSettingsData(
-          data?.data.masterDataPrinting.printingDetails
+          masterData.masterDataPrinting.printingDetails
         )
       );
       dispatch(
         setPrintingSubstrate(
-          data?.data.masterDataPrinting.printingSubstrateSettings
+          masterData.masterDataPrinting.printingSubstrateSettings
         )
       );
       dispatch(
         setPrintingInkStationData(
-          data?.data.masterDataPrinting.stationWiseMetrics
+          masterData.masterDataPrinting.stationWiseMetrics
         )
       );
-      dispatch(setDyeCuttingSettings(data?.data.masterDataDyeCutting));
+
+      dispatch(setDyeCuttingSettings(masterData.masterDataDyeCutting));
       dispatch(
         setLaminationSettings(
-          data?.data.masterDataLamination.laminationConditions
+          masterData.masterDataLamination.laminationConditions
         )
       );
       dispatch(
         setLaminatingSubstrate(
-          data?.data.masterDataLamination.laminationSubstrate
+          masterData.masterDataLamination.laminationSubstrate
         )
       );
       dispatch(
         setLaminationAdhesiveDetails(
-          data?.data.masterDataLamination.bondingMaterials
+          masterData.masterDataLamination.bondingMaterials
         )
       );
-      setFormData(data?.data?.masterDataDetails);
-    }
-  }, [id,data]);
 
-  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
-    useSelector((state: RootState) => state.masterData);
+      setFormData(masterData.masterDataDetails);
+    }
+  }, [
+    id,
+    isUpdatePage,
+    masterDataDataTouched,
+    masterData,
+    dispatch,
+  ]);
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
@@ -154,6 +177,8 @@ segmentsDropdown({
 
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [formInitialized, setFormInitialized] = useState(false); 
+
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     job_master_id: "",
     repeat_length: "",
@@ -294,16 +319,24 @@ segmentsDropdown({
   };
 
   useEffect(() => {
+    if (formInitialized) return;
     if (!id && saveFormData && !saveButtonMasterData) {
       setFormData(saveFormData);
+      setFormInitialized(true);
     }
     if (masterDataFormErrors) {
       setErrors(masterDataFormErrors);
     }
     if(!id && saveButtonMasterData && saveMasterDataDetailsData ){
       setFormData(saveMasterDataDetailsData)
+      setFormInitialized(true);
     }
-  }, [saveFormData, masterDataFormErrors, id,saveButtonMasterData,saveMasterDataDetailsData]);
+  }, [ id,
+    saveFormData,
+    saveButtonMasterData,
+    saveMasterDataDetailsData,
+    masterDataFormErrors,
+    formInitialized]);
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {

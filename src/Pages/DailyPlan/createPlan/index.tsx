@@ -57,31 +57,52 @@ const CreatePlan: React.FC = () => {
     },[])
     const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
 
-const initialFormFields = useMemo<FormField[]>(() => [
-    { id: 'indentNumber', label: 'Indent Number:', value: '' },
-    { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
-    { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
-    { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: segmentNames },
-    { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: typeOfLabelOptions },
-    { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
-    { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
-    { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
-    { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
-    { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
-    { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
-    { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-    { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
-    { id: 'jarCap', label: 'Jar/Cap', type: 'text',value:'',component:"dropdown",options:["JAR","CAP","JAR&CAP"] },
-    { id: 'width', label: 'Width', value: '' },
-    { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
-    { id: 'substrateType', label: 'Substrate Type', type: 'text', value: '',component:"dropdown",options:dropDownValuesPrinting, allowTextFiled: true},
-    { id: 'gsm', label: 'GSM', type: 'text', value: '' },
-    { id: 'repeatLength', label: 'Repeat Length', value: '' },
-    { id: 'ups', label: 'UPS', value: '' },
-    { id: 'dyne', label: 'Dyne', value: '' },
-    { id: 'substrate', label: 'Printing Substrate', value: ''},
-    { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
-  ], [dropDownValuesPrinting,segmentNames]);
+const initialFormFields: FormField[] = [
+  { id: 'indentNumber', label: 'Indent Number:', value: '' },
+  { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
+  { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
+  { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: [] },
+  { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: [] },
+  { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
+  { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
+  { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
+  { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
+  { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
+  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
+  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
+  { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
+  { id: 'jarCap', label: 'Jar/Cap', type: 'text',value:'',component:"dropdown",options:["JAR","CAP","JAR&CAP"] },
+  { id: 'width', label: 'Width', value: '' },
+  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
+  { id: 'substrateType', label: 'Substrate Type', type: 'text', value: '',component:"dropdown",options:[], allowTextFiled: true},
+  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
+  { id: 'repeatLength', label: 'Repeat Length', value: '' },
+  { id: 'ups', label: 'UPS', value: '' },
+  { id: 'dyne', label: 'Dyne', value: '' },
+  { id: 'substrate', label: 'Printing Substrate', value: ''},
+  { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
+];
+
+const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
+
+useEffect(() => {
+  setFormFields(prevFields =>
+    prevFields.map(field => {
+      if (field.id === 'segment' && segmentNames.length) {
+        return { ...field, options: segmentNames };
+      }
+      if (field.id === 'labelType' && typeOfLabelOptions.length) {
+        return { ...field, options: typeOfLabelOptions };
+      }
+      if (field.id === 'substrateType' && dropDownValuesPrinting.length) {
+        return { ...field, options: dropDownValuesPrinting };
+      }
+      return field;
+    })
+  );
+}, [segmentNames.join(), typeOfLabelOptions.join(), dropDownValuesPrinting.join()]);
+
+
   
   const fieldsToSkipForRepeat = [
     'customerName',
@@ -99,9 +120,6 @@ const initialFormFields = useMemo<FormField[]>(() => [
     'substrateType'
   ];
 
-
-
-  const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
@@ -140,16 +158,6 @@ const initialFormFields = useMemo<FormField[]>(() => [
       });
     }
   }
-
-  // const handleSave = () => {
-  //   const formData = formFields.reduce((acc, field) => {
-  //     acc[field.id] = field.value;
-  //     return acc;
-  //   }, {} as Record<string, string | string[]>);
-
-  //   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-  //   // toast.success('Data saved successfully!');
-  // };
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
