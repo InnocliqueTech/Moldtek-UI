@@ -442,6 +442,7 @@ const Printing: React.FC<PrintingProps> = ({
     );
   };
   useEffect(() => {
+     if (formInitialized) return;
     if (
       id &&
       location.pathname.includes("/updateMasterData") &&
@@ -449,8 +450,9 @@ const Printing: React.FC<PrintingProps> = ({
     ) {
       setFormValues(printingDetails);
       setTableData(printingDetails.stationWiseMetrics);
+        setFormInitialized(true);
     }
-  }, [id, printingDetails]);
+  }, [id, printingDetails,formInitialized]);
 
   useEffect(() => {
     if (formInitialized) return;

@@ -49,6 +49,7 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationSettings,
   } = useSelector((state: RootState) => state.viewMasterData);
   const dispatch = useDispatch<AppDispatch>();
+   const [formInitialized, setFormInitialized] = useState(false); 
   const bondingMaterialColumns = [
     { id: "type", label: "Field" },
     {
@@ -393,26 +394,33 @@ const Lamination: React.FC<LaminationProps> = ({
   }, [errors, formData]);
 
   useEffect(() => {
+      if (formInitialized) return;
     if (id && location.pathname.includes("/updateMasterData") && !laminationDataTouched) {
       setFormData(laminatingDetails);
       setTableData(laminatingDetails.bondingMaterials);
+        setFormInitialized(true);
     }
-  }, [id,laminatingDetails]);
+  }, [id,laminatingDetails,formInitialized]);
 
   useEffect(() => {
+      if (formInitialized) return;
     if (!id && laminaionFormData) {
         setFormData(laminaionFormData);
+          setFormInitialized(true);
       if (!id && laminaionFormData?.bondingMaterials) {
         setTableData(laminaionFormData?.bondingMaterials);
+          setFormInitialized(true);
         }
       }
     if(!id && saveButtonLaminatingData && saveLaminatingData ){
       setFormData(saveLaminatingData)
+        setFormInitialized(true);
     }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
+        setFormInitialized(true);
     }
-  }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData]);
+  }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData,formInitialized]);
 
   useEffect(() => {
         if (id && !laminationDataTouched) {

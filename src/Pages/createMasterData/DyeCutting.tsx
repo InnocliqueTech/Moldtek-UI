@@ -28,6 +28,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dye_code: "",
     run_speed: "",
   });
+   const [formInitialized, setFormInitialized] = useState(false); 
 
   const {
     dyeCuttingFormData,
@@ -144,19 +145,24 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
   }, [errors]);
 
   useEffect(() => {
+      if (formInitialized) return;
     if (id && location.pathname.includes("/updateMasterData") && !dyeCuttingDataTouched) {
       setFormData(dyeCuttingDetails);
+        setFormInitialized(true);
     }
-  }, [id,dyeCuttingDetails]);
+  }, [id,dyeCuttingDetails,formInitialized]);
 
   useEffect(() => {
+      if (formInitialized) return;
     if (!id && dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
+        setFormInitialized(true);
     }
     if (dyeCuttingErrors) {
       setErrors(dyeCuttingErrors);
+        setFormInitialized(true);
     }
-  }, [dyeCuttingFormData, dyeCuttingErrors, id]);
+  }, [dyeCuttingFormData, dyeCuttingErrors, id,formInitialized]);
 
   useEffect(() => {
     if (id && dyeCuttingSettings && !dyeCuttingDataTouched) {
