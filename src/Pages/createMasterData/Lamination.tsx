@@ -385,11 +385,11 @@ const Lamination: React.FC<LaminationProps> = ({
 
     const shouldEnableSave =
       isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
-    const shouldEnableSubmitAndPublish =
-      areAllFieldsFilled || hasAnyError || allValid  || laminationTableValueVaidation;
+    const shouldEnableSubmitAndPublish = hasAnyError || allValid  || laminationTableValueVaidation;
+     const shouldEnableSubmitAndPublishButton = areAllFieldsFilled && !shouldEnableSubmitAndPublish
     dispatch(setLaminationSave(!shouldEnableSave));
     dispatch(
-      setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublish)
+      setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublishButton)
     );
   }, [errors, formData]);
 
@@ -418,7 +418,7 @@ const Lamination: React.FC<LaminationProps> = ({
     }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
-        setFormInitialized(true);
+        // setFormInitialized(true);
     }
   }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData,formInitialized]);
 
