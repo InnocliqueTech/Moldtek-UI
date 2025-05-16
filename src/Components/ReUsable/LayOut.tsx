@@ -258,7 +258,7 @@ const formattedDate = today
       onButton2Click: () => alert("Change Password Clicked"),
     },
     "/masterData": {
-      title: "Master Data Button",
+      title: "Master Data",
       button1Text: "Filter",
       button2Text: "Create Master Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
