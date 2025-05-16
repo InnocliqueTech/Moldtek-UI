@@ -6,13 +6,13 @@ console.log(env,"ENVIRONMENT")
   
     switch (env) {
       case 'development':
-        return 'http://localhost:8880/MOLD-TEK/api';
+        return 'http://183.82.55.190:8880/MOLD-TEK/api';
       case 'staging':
-        return 'http://10.10.25.5:8880/MOLD-TEK/api';
+        return 'http://183.82.55.190:8880/MOLD-TEK/api';
       case 'production':
-        return 'http://10.10.25.5:8880/MOLD-TEK/api';
+        return 'http://183.82.55.190:8880/MOLD-TEK/api';
       default:
-        return 'http://localhost:8880/MOLD-TEK/api';
+        return 'http://183.82.55.190:8880/MOLD-TEK/api';
     }
   };
   
