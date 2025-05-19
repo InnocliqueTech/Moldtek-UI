@@ -1,7 +1,14 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Box, InputAdornment, IconButton, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  InputAdornment,
+  IconButton,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import LabelTypeSelector from "./LabelType";
@@ -14,9 +21,13 @@ import {
   setIsSearchTriggered,
   setOpenSlider,
   setSelectedCustomers,
-  setSelectedLabelTypeIds
+  setSelectedLabelTypeIds,
 } from "../../store/slices/masterDataSlice";
-import { ArrowForward, CalendarToday, Clear as ClearIcon } from "@mui/icons-material";
+import {
+  ArrowForward,
+  CalendarToday,
+  Clear as ClearIcon,
+} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { FiltersPayload } from "../../store/slices/masterDataInterface";
 
@@ -27,16 +38,24 @@ interface LocalDatePayload {
 
 const FilterForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { selectedCustomers, selectedLabelTypeIds, filtersPayload, openSider,isSearchTriggered } = useSelector(
-    (state: RootState) => state.masterData
-  );
+  const {
+    selectedCustomers,
+    selectedLabelTypeIds,
+    filtersPayload,
+    openSider,
+    isSearchTriggered,
+  } = useSelector((state: RootState) => state.masterData);
 
   const [openFrom, setOpenFrom] = useState(false);
-  const [searchField , setSearchField ] = useState(filtersPayload.searchField  || '');
+  const [searchField, setSearchField] = useState(
+    filtersPayload.searchField || ""
+  );
   const [openTo, setOpenTo] = useState(false);
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
-    fromDate: filtersPayload.fromDate ? new Date(filtersPayload.fromDate.split("-").reverse().join("-")) : null,
-    toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate.split("-").reverse().join("-")) : null,
+    fromDate: filtersPayload.fromDate
+      ? new Date(filtersPayload.fromDate)
+      : null,
+    toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate) : null,
   });
 
   const hasInitialized = useRef(false);
@@ -46,31 +65,39 @@ const FilterForm: React.FC = () => {
       hasInitialized.current = true;
 
       if (!isSearchTriggered) {
-        dispatch(setFiltersPayload({
-          customerName: [],
-          fromDate: '',
-          toDate: '',
-          labelType: [],
-          searchField : '',
-        }));
+        dispatch(
+          setFiltersPayload({
+            customerName: [],
+            fromDate: "",
+            toDate: "",
+            labelType: [],
+            searchField: "",
+          })
+        );
         dispatch(setSelectedCustomers([]));
         dispatch(setSelectedLabelTypeIds([]));
         setLocalDates({ fromDate: null, toDate: null });
-        setSearchField ('');
+        setSearchField("");
       }
     }
   }, [openSider, dispatch, isSearchTriggered]);
 
-  const handleDateChange = (date: Date | null, field: keyof LocalDatePayload) => {
+  const handleDateChange = (
+    date: Date | null,
+    field: keyof LocalDatePayload
+  ) => {
     setLocalDates((prev) => ({ ...prev, [field]: date }));
   };
 
   const isSearchEnabled = useMemo(() => {
     const hasCustomer = selectedCustomers.length > 0;
     const hasLabelTypes = selectedLabelTypeIds.length > 0;
-    const hasValidDates = localDates.fromDate !== null && localDates.toDate !== null;
-    return hasCustomer || hasValidDates || hasLabelTypes || searchField .trim() !== '';
-  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField ]);
+    const hasValidDates =
+      localDates.fromDate !== null && localDates.toDate !== null;
+    return (
+      hasCustomer || hasValidDates || hasLabelTypes || searchField.trim() !== ""
+    );
+  }, [selectedCustomers, localDates, selectedLabelTypeIds, searchField]);
 
   const onSubmit = () => {
     if (!isSearchEnabled) {
@@ -78,15 +105,25 @@ const FilterForm: React.FC = () => {
       return;
     }
 
-    const customerName = selectedCustomers.map((customer: any) => customer.fullName);
-    const labelType = selectedLabelTypeIds.map((label: any) => label.labelTypeName);
+    const customerName = selectedCustomers.map(
+      (customer: any) => customer.fullName
+    );
+    const labelType = selectedLabelTypeIds.map(
+      (label: any) => label.labelTypeName
+    );
 
     const finalSearchPayload: FiltersPayload = {
       customerName,
-      fromDate: localDates.fromDate && localDates.toDate ? format(localDates.fromDate, "yyyy-MM-dd") : '',
-      toDate: localDates.fromDate && localDates.toDate ? format(localDates.toDate, "yyyy-MM-dd") : '',
+      fromDate:
+        localDates.fromDate && localDates.toDate
+          ? format(localDates.fromDate, "yyyy-MM-dd")
+          : "",
+      toDate:
+        localDates.fromDate && localDates.toDate
+          ? format(localDates.toDate, "yyyy-MM-dd")
+          : "",
       labelType,
-      searchField : searchField .trim(),
+      searchField: searchField.trim(),
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -97,15 +134,17 @@ const FilterForm: React.FC = () => {
 
   const handleClear = () => {
     setLocalDates({ fromDate: null, toDate: null });
-    setSearchField ('');
+    setSearchField("");
 
-    dispatch(setFiltersPayload({
-      customerName: [],
-      fromDate: '',
-      toDate: '',
-      labelType: [],
-      searchField : '',
-    }));
+    dispatch(
+      setFiltersPayload({
+        customerName: [],
+        fromDate: "",
+        toDate: "",
+        labelType: [],
+        searchField: "",
+      })
+    );
 
     dispatch(setSelectedCustomers([]));
     dispatch(setSelectedLabelTypeIds([]));
@@ -114,12 +153,25 @@ const FilterForm: React.FC = () => {
     toast.success("Filters cleared!");
   };
 
+  console.log(localDates, "LOCALDATES");
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box>
-          <Box sx={{ display: 'flex', gap: '2px', flexDirection: { md: 'row', sm: 'column' } }}>
-            <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
+          <Box
+            sx={{
+              display: "flex",
+              gap: "2px",
+              flexDirection: { md: "row", sm: "column" },
+            }}
+          >
+            <Box
+              display="flex"
+              flexDirection="column"
+              flex="1"
+              maxWidth="170px"
+            >
               <DatePicker
                 label="From Date"
                 open={openFrom}
@@ -138,8 +190,11 @@ const FilterForm: React.FC = () => {
                         border: "#f0f0f0",
                         "& fieldset": { borderWidth: "2px" },
                         "&:hover fieldset": { borderWidth: "2px" },
-                        "&.Mui-focused fieldset": { borderWidth: "2px", border: "#f0f0f0" }
-                      }
+                        "&.Mui-focused fieldset": {
+                          borderWidth: "2px",
+                          border: "#f0f0f0",
+                        },
+                      },
                     },
                     InputProps: {
                       endAdornment: (
@@ -148,7 +203,10 @@ const FilterForm: React.FC = () => {
                             <IconButton
                               onClick={(event) => {
                                 event.stopPropagation();
-                                setLocalDates(prev => ({ ...prev, fromDate: null }));
+                                setLocalDates((prev) => ({
+                                  ...prev,
+                                  fromDate: null,
+                                }));
                               }}
                             >
                               <ClearIcon />
@@ -159,16 +217,21 @@ const FilterForm: React.FC = () => {
                             </IconButton>
                           )}
                         </InputAdornment>
-                      )
-                    }
-                  }
+                      ),
+                    },
+                  },
                 }}
               />
             </Box>
 
             <ArrowForward sx={{ alignSelf: "center" }} />
 
-            <Box display="flex" flexDirection="column" flex="1" maxWidth="170px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              flex="1"
+              maxWidth="170px"
+            >
               <DatePicker
                 label="To Date"
                 open={openTo}
@@ -194,8 +257,11 @@ const FilterForm: React.FC = () => {
                         border: "#f0f0f0",
                         "& fieldset": { borderWidth: "2px" },
                         "&:hover fieldset": { borderWidth: "2px" },
-                        "&.Mui-focused fieldset": { borderWidth: "2px", border: "#f0f0f0" }
-                      }
+                        "&.Mui-focused fieldset": {
+                          borderWidth: "2px",
+                          border: "#f0f0f0",
+                        },
+                      },
                     },
                     InputProps: {
                       endAdornment: (
@@ -204,7 +270,10 @@ const FilterForm: React.FC = () => {
                             <IconButton
                               onClick={(event) => {
                                 event.stopPropagation();
-                                setLocalDates(prev => ({ ...prev, toDate: null }));
+                                setLocalDates((prev) => ({
+                                  ...prev,
+                                  toDate: null,
+                                }));
                               }}
                             >
                               <ClearIcon />
@@ -215,9 +284,9 @@ const FilterForm: React.FC = () => {
                             </IconButton>
                           )}
                         </InputAdornment>
-                      )
-                    }
-                  }
+                      ),
+                    },
+                  },
                 }}
               />
             </Box>
@@ -233,15 +302,15 @@ const FilterForm: React.FC = () => {
         <LabelTypeSelector />
       </Grid>
       <Grid container spacing={4} sx={{ mb: 2 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 4}}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Term</Typography>
           <TextField
             size="small"
             fullWidth
             variant="outlined"
             placeholder="Search For UEN"
-            value={searchField }
-            onChange={(e) => setSearchField (e.target.value)}
+            value={searchField}
+            onChange={(e) => setSearchField(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start" sx={{ ml: 0.5 }}>
@@ -253,26 +322,26 @@ const FilterForm: React.FC = () => {
                 pl: 1.2,
                 pr: 1,
                 py: 0.5,
-                fontSize: "0.875rem"
-              }
+                fontSize: "0.875rem",
+              },
             }}
             sx={{
               minWidth: { xs: "235%", sm: "235%", md: "370px" },
               "& .MuiOutlinedInput-root": {
                 borderRadius: "50px",
-                px: 1
+                px: 1,
               },
               "& .MuiInputBase-input": {
                 padding: "4px 0",
                 fontSize: "0.875rem",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                overflow: "hidden"
+                overflow: "hidden",
               },
               "& input": {
                 padding: "6px 8px",
-                fontSize: "0.875rem"
-              }
+                fontSize: "0.875rem",
+              },
             }}
           />
         </Grid>

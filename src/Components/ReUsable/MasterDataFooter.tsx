@@ -56,12 +56,13 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     laminationTab,
     printingTab,
   } = useSelector((store: RootState) => store.masterData);
+  const {viewMasterDataDetails} =  useSelector((store: RootState) => store.viewMasterData);
   const skipLamination =
     saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
-
+const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"
   const buttonText = [
     "Next: Master Data - Printing",
-    skipLamination
+    skipLamination || skipLaminationButton
       ? "Next: Master Data - Dye Cutting"
       : "Next: Master Data - Lamination",
     "Next: Master Data - Dye Cutting",
@@ -74,7 +75,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   };
 
   const handleSubmitAndPublishPopupOpen = () => {
-    if (!skipLamination && selectedTab === 3 || skipLamination&&selectedTab===2 ) {
+    if ((!skipLamination||!skipLaminationButton) && selectedTab === 3 || (skipLamination||skipLaminationButton)&&selectedTab===2 ) {
       dispatch(setSubmitAndPublishPopup(true));
       if (handleSave) handleSave();
     }
@@ -170,7 +171,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         submitAndPublishButtonMasterData ||
         submitAndPublishButtonDyeCutting ||
         submitAndPublishButtonPrinting ||
-        (!skipLamination && submitAndPublishButtonLamination)
+        ((!skipLamination||!skipLaminationButton) && submitAndPublishButtonLamination)
       );
     }
     else if (id){
@@ -178,7 +179,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         submitAndPublishButtonMasterData ||
         submitAndPublishButtonDyeCutting ||
         submitAndPublishButtonPrinting ||
-        (!skipLamination && submitAndPublishButtonLamination)
+        ((!skipLamination||!skipLaminationButton) && submitAndPublishButtonLamination)
       );
     } else {
       return true;
@@ -194,7 +195,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       gap={2}
       flexWrap="wrap"
     >
-      {selectedTab === 3 || ((saveFormData.label_type === "Thin Wall"||saveFormData.segment === "TW") && selectedTab===2 )? (
+      {selectedTab === 3 || ((saveFormData.label_type === "Thin Wall"||saveFormData.segment === "TW")||(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && selectedTab===2 )? (
         <ReusableButton
           text={id ? "Update and Publish" : "Submit and Publish"}
           color="#0073B7"

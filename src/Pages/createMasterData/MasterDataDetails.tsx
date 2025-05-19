@@ -60,12 +60,12 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const { id } = useParams();
   const location = useLocation();
   
-  const UEN = localStorage.getItem("selectedUEN");
+  const UEN = localStorage.getItem("actionSelectedUEN");
   let selectedUEN: any;
   if (UEN) {
     selectedUEN = UEN;
   }
-  const version = localStorage.getItem("selectedVersionNo");
+  const version = localStorage.getItem("actionVersionNo");
   let versionNo: any;
   if (version) {
     versionNo = version;
