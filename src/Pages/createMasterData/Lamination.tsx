@@ -415,7 +415,19 @@ const Lamination: React.FC<LaminationProps> = ({
       | keyof LaminationFormData["bondingMaterials"][number]
     )[];
 
-    const isAllFieldFilled = importantFields.some((field) => {
+    const bondingMaterials = formData?.bondingMaterials || [];
+
+    const hasNonEmptyValue = bondingMaterials.some((item) =>
+      Object.entries(item).some(
+        ([key, value]) =>
+          !["type", "bonding_id", "lamination_id"].includes(key) &&
+          value !== "" &&
+          value !== null &&
+          value !== undefined
+      )
+    );
+
+    const isAnyFieldFilled = importantFields.some((field) => {
       if (field in formData.laminationConditions) {
         const value =
           formData.laminationConditions[
@@ -436,55 +448,13 @@ const Lamination: React.FC<LaminationProps> = ({
         return value !== null && value !== undefined;
       }
     });
-    let allValid = false;
-    const bondingMaterials = formData?.bondingMaterials || [];
-    if (bondingMaterials.length > 0) {
-      const hasEmptyRatio = bondingMaterials.some(
-        (item) =>
-          item.ratio === "" || item.ratio === null || item.ratio === undefined
-      );
-
-      const firstTwoInvalid = bondingMaterials
-        .slice(0, 1)
-        .some(
-          (item) =>
-            !item.code ||
-            !item.brand ||
-            item.ratio === "" ||
-            item.ratio === null ||
-            item.ratio === undefined
-        );
-
-      const thirdItem = bondingMaterials[2];
-      let thirdInvalid = false;
-      if (thirdItem) {
-        const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
-        if (isEthyl) {
-          thirdInvalid =
-            thirdItem.ratio === "" ||
-            thirdItem.ratio === null ||
-            thirdItem.ratio === undefined;
-        } else {
-          thirdInvalid =
-            !thirdItem.code ||
-            !thirdItem.brand ||
-            thirdItem.ratio === "" ||
-            thirdItem.ratio === null ||
-            thirdItem.ratio === undefined;
-        }
-      }
-
-      // Correct logic: allValid means no missing required fields in bondingMaterials
-      allValid = hasEmptyRatio && firstTwoInvalid && thirdInvalid;
-    }
 
     const hasErrors = Object.values(errors).some((error) => error);
-    const shouldDisableButton =
-      !isAllFieldFilled ||
-      hasErrors ||
-      laminationTableValueVaidation ||
-      allValid;
-    dispatch(setLaminationSave(shouldDisableButton));
+
+    const isSaveEnabled =
+      !isAnyFieldFilled || hasErrors || laminationTableValueVaidation;
+
+    dispatch(setLaminationSave(isSaveEnabled && !hasNonEmptyValue));
   }, [errors, formData, laminationTableValueVaidation]);
   useEffect(() => {
     if (formInitialized) return;
