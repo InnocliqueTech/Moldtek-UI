@@ -15,9 +15,16 @@ import {
 } from "../../store/slices/masterDataSlice";
 import DataTable from "../../Components/ReUsable/MasterDataTable";
 import { useParams } from "react-router-dom";
-import { LaminatingTableRow, LaminationFormData, LaminationFormErrors } from "../../store/slices/masterDataInterface";
+import {
+  LaminatingTableRow,
+  LaminationFormData,
+  LaminationFormErrors,
+} from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
-import { useSubStrateDropDownMutation, useSupplierDropdownMutation } from "../../store/services/api";
+import {
+  useSubStrateDropDownMutation,
+  useSupplierDropdownMutation,
+} from "../../store/services/api";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];
@@ -41,7 +48,7 @@ const Lamination: React.FC<LaminationProps> = ({
     saveButtonLaminatingData,
     saveLaminatingData,
     dropDownValuesLamination,
-    dropDownValuesSupplierLamination
+    dropDownValuesSupplierLamination,
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -49,7 +56,7 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationSettings,
   } = useSelector((state: RootState) => state.viewMasterData);
   const dispatch = useDispatch<AppDispatch>();
-   const [formInitialized, setFormInitialized] = useState(false); 
+  const [formInitialized, setFormInitialized] = useState(false);
   const bondingMaterialColumns = [
     { id: "type", label: "Field" },
     {
@@ -141,7 +148,7 @@ const Lamination: React.FC<LaminationProps> = ({
     "lami_set_tension",
     "rewinder_tension",
     "adhesive_gsm",
-    "dyne_level"
+    "dyne_level",
   ]);
 
   const characterFields = new Set(["viscosity_range", "type", "code", "brand"]);
@@ -161,12 +168,15 @@ const Lamination: React.FC<LaminationProps> = ({
       : typeof value === "string"
       ? value
       : value.target.value;
-      if (field === "supplier" || field==="substrate_type") {
-        if (Array.isArray(newValue)) {
-          // Remove empty strings, trim, then join if needed
-          newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
-        }
+    if (field === "supplier" || field === "substrate_type") {
+      if (Array.isArray(newValue)) {
+        // Remove empty strings, trim, then join if needed
+        newValue = newValue
+          .filter(Boolean)
+          .map((v) => v.trim())
+          .join(" ");
       }
+    }
 
     let finalValue: string | string[] | number = newValue;
     let errorMessage = "";
@@ -176,7 +186,7 @@ const Lamination: React.FC<LaminationProps> = ({
     // Handle specific fields
     if (field === "thickness") {
       const trimmed = (newValue as string).trim();
-    
+
       if (trimmed === "") {
         errorMessage = "Thickness cannot be empty.";
         finalValue = "";
@@ -186,14 +196,25 @@ const Lamination: React.FC<LaminationProps> = ({
         errorMessage = "";
         finalValue = trimmed;
       }
-    }
-     else if (
+    } else if (field === "substrate_type") {
+      const trimmed = (newValue as string).trim();
+      if (trimmed === "") {
+        errorMessage = "Substrate type cannot be empty.";
+        finalValue = "";
+      } else {
+        errorMessage = "";
+        finalValue = trimmed;
+      }
+    } else if (
       [
         "lami_set_tension",
         "rewinder_tension",
         "printed_film_tension",
         "laminate_film_tension",
         "adhesive_gsm",
+        "width",
+        "density",
+        "dyne_level",
       ].includes(field)
     ) {
       const trimmed = (newValue as string).trim();
@@ -206,23 +227,25 @@ const Lamination: React.FC<LaminationProps> = ({
         finalValue = Number(trimmed); // Save as number
         errorMessage = "";
       }
-    } 
-    else if (numericFields.has(field)) {
+    } else if (numericFields.has(field)) {
       const trimmed = (newValue as string).trim();
-    
+
       // Match for valid number or percentage (e.g., 12, 12.5, 12%, 12.5%, 0, 0.0)
-      const percentageMatch = trimmed.match(/^(\d+(\.\d+)?)(%)?$/); 
-    
+      const percentageMatch = trimmed.match(/^(\d+(\.\d+)?)(%)?$/);
+
       // Allow empty, zero, or "0.0" as valid entries
       if (trimmed === "" || trimmed === "0" || trimmed === "0.0") {
         finalValue = trimmed === "0" || trimmed === "0.0" ? 0 : ""; // Set to 0 or empty when cleared, zero, or 0.0
       } else if (!percentageMatch) {
         // If the value doesn't match the valid number or percentage pattern
         finalValue = trimmed; // Keep the original string value (invalid input)
-        errorMessage = `${field.replace(/_/g, " ")} must be a valid number or percentage.`; // Invalid number error
+        errorMessage = `${field.replace(
+          /_/g,
+          " "
+        )} must be a valid number or percentage.`; // Invalid number error
       } else {
         const numericPart = parseFloat(percentageMatch[1]); // Get numeric part (without the % sign)
-        
+
         // If the parsed number is NaN, treat it as invalid
         if (isNaN(numericPart)) {
           finalValue = trimmed; // Retain as string
@@ -232,22 +255,20 @@ const Lamination: React.FC<LaminationProps> = ({
           errorMessage = ""; // Clear the error if input is valid
         }
       }
-    }
-    
-    else if (characterFields.has(field)) {
+    } else if (characterFields.has(field)) {
       const trimmed = (newValue as string).trim();
-    
+
       if (trimmed === "") {
         errorMessage = "This field cannot be empty.";
         finalValue = "";
       } else if (!onlyAlphanumericRegex.test(trimmed)) {
-        errorMessage = "Only letters, numbers, spaces, dots, hyphens, and underscores are allowed.";
+        errorMessage =
+          "Only letters, numbers, spaces, dots, hyphens, and underscores are allowed.";
       } else {
         finalValue = newValue;
         errorMessage = "";
       }
     }
-    
 
     // Dispatch the errors to Redux
     const updatedErrors = {
@@ -263,30 +284,69 @@ const Lamination: React.FC<LaminationProps> = ({
       [section]: {
         ...(formData as any)[section],
         [field]: numericFields.has(field)
-            ? newValue // Save numeric fields as numbers
-            : finalValue, // Otherwise, save the string value
+          ? newValue // Save numeric fields as numbers
+          : finalValue, // Otherwise, save the string value
       },
     };
-
 
     setFormData(updatedFormData);
     dispatch(setLaminationFormData(updatedFormData));
   };
+
   useEffect(() => {
-    const errorValues = Object.values(errors);
-    const hasAnyError = errorValues.some((err) => err !== "");
-    let isAnyFieldFilled = false; // For Save button
-    let areAllFieldsFilled = true; // For Submit & Publish button
+    const importantFields = [
+      "zone1_temp",
+      "zone2_temp",
+      "nip_pressure_bar",
+      "speed",
+      "lami_set_tension",
+      "rewinder_tension",
+      "printed_film_tension",
+      "laminate_film_tension",
+      "viscosity_range",
+      "adhesive_gsm",
 
-    const bondingMaterials = formData?.bondingMaterials || [];
+      "substrate_type",
+
+      "dyne_level",
+      "width",
+      "thickness",
+      "density",
+    ] as (
+      | keyof LaminationFormData["laminationConditions"]
+      | keyof LaminationFormData["laminationSubstrate"]
+      | keyof LaminationFormData["bondingMaterials"][number]
+    )[];
+
+    const isAllFieldFilled = importantFields.every((field) => {
+      if (field in formData.laminationConditions) {
+        const value =
+          formData.laminationConditions[
+            field as keyof LaminationFormData["laminationConditions"]
+          ];
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
+      }
+
+      if (field in formData.laminationSubstrate) {
+        const value =
+          formData.laminationSubstrate[
+            field as keyof LaminationFormData["laminationSubstrate"]
+          ];
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
+      }
+    });
     let allValid = false;
-
+    const bondingMaterials = formData?.bondingMaterials || [];
     if (bondingMaterials.length > 0) {
       const hasEmptyRatio = bondingMaterials.some(
         (item) =>
           item.ratio === "" || item.ratio === null || item.ratio === undefined
       );
-    
+
       const firstTwoInvalid = bondingMaterials
         .slice(0, 1)
         .some(
@@ -297,20 +357,17 @@ const Lamination: React.FC<LaminationProps> = ({
             item.ratio === null ||
             item.ratio === undefined
         );
-    
+
       const thirdItem = bondingMaterials[2];
       let thirdInvalid = false;
       if (thirdItem) {
         const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
-    
-        // Ethyl: ratio is required, code/brand are not
         if (isEthyl) {
           thirdInvalid =
             thirdItem.ratio === "" ||
             thirdItem.ratio === null ||
             thirdItem.ratio === undefined;
         } else {
-          // Other types: all three required
           thirdInvalid =
             !thirdItem.code ||
             !thirdItem.brand ||
@@ -319,123 +376,169 @@ const Lamination: React.FC<LaminationProps> = ({
             thirdItem.ratio === undefined;
         }
       }
-      allValid = hasEmptyRatio || firstTwoInvalid || thirdInvalid;
-    }
-    
 
-    for (const sectionKey in formData) {
-      const section = (formData as any)[sectionKey];
-      if (section && typeof section === "object") {
-        for (const fieldKey in section) {
-          const field = section[fieldKey];
-
-          const value =
-            typeof field === "object" && field !== null && "value" in field
-              ? field.value
-              : field;
-
-
-          if (typeof value === "object" && value !== null) {
-            for (const innerKey in value) {
-              const innerValue = value[innerKey];
-              let isEmptyForSave = true;
-              if (innerKey !== "type") {
-                isEmptyForSave =
-                  innerValue === "" ||
-                  innerValue === null ||
-                  innerValue === undefined ||
-                  (Array.isArray(innerValue) && innerValue.length === 0) ||
-                  (typeof innerValue === "number" && innerValue === 0);
-
-                if (!isEmptyForSave) isAnyFieldFilled = true;
-              }
-
-              const isEmptyForSubmit =
-                innerValue === "" ||
-                innerValue === null ||
-                innerValue === undefined ||
-                (Array.isArray(innerValue) && innerValue.length === 0);
-
-              if (isEmptyForSubmit) areAllFieldsFilled = false;
-            }
-          } else {
-            let isEmptyForSave = true;
-            if (fieldKey !== "type") {
-              isEmptyForSave =
-                value === "" ||
-                value === null ||
-                value === undefined ||
-                (Array.isArray(value) && value.length === 0) ||
-                (typeof value === "number" && value === 0);
-
-              if (!isEmptyForSave) isAnyFieldFilled = true;
-            }
-
-            const isEmptyForSubmit =
-              value === "" ||
-              value === null ||
-              value === undefined ||
-              (Array.isArray(value) && value.length === 0);
-
-            if (isEmptyForSubmit) areAllFieldsFilled = true;
-          }
-        }
-      }
+      // Correct logic: allValid means no missing required fields in bondingMaterials
+      allValid = hasEmptyRatio && firstTwoInvalid && thirdInvalid;
     }
 
-    const shouldEnableSave =
-      isAnyFieldFilled && !hasAnyError && !laminationTableValueVaidation;
-    const shouldEnableSubmitAndPublish = hasAnyError || allValid  || laminationTableValueVaidation;
-     const shouldEnableSubmitAndPublishButton = areAllFieldsFilled && !shouldEnableSubmitAndPublish
-    dispatch(setLaminationSave(!shouldEnableSave));
-    dispatch(
-      setSubmitAndPublishButtonMasterLamination(shouldEnableSubmitAndPublishButton)
-    );
-  }, [errors, formData]);
+    const hasErrors = Object.values(errors).some((error) => error);
+    const shouldDisableButton =
+      !isAllFieldFilled ||
+      hasErrors ||
+      laminationTableValueVaidation ||
+      allValid;
+    dispatch(setSubmitAndPublishButtonMasterLamination(shouldDisableButton));
+  }, [errors, formData, laminationTableValueVaidation]);
 
   useEffect(() => {
-      if (formInitialized) return;
-    if (id && location.pathname.includes("/updateMasterData") && !laminationDataTouched) {
+    const importantFields = [
+      "zone1_temp",
+      "zone2_temp",
+      "nip_pressure_bar",
+      "speed",
+      "lami_set_tension",
+      "rewinder_tension",
+      "printed_film_tension",
+      "laminate_film_tension",
+      "viscosity_range",
+      "adhesive_gsm",
+
+      "substrate_type",
+
+      "dyne_level",
+      "width",
+      "thickness",
+      "density",
+    ] as (
+      | keyof LaminationFormData["laminationConditions"]
+      | keyof LaminationFormData["laminationSubstrate"]
+      | keyof LaminationFormData["bondingMaterials"][number]
+    )[];
+
+    const isAllFieldFilled = importantFields.some((field) => {
+      if (field in formData.laminationConditions) {
+        const value =
+          formData.laminationConditions[
+            field as keyof LaminationFormData["laminationConditions"]
+          ];
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
+      }
+
+      if (field in formData.laminationSubstrate) {
+        const value =
+          formData.laminationSubstrate[
+            field as keyof LaminationFormData["laminationSubstrate"]
+          ];
+
+        if (typeof value === "string") return value.trim() !== "";
+        return value !== null && value !== undefined;
+      }
+    });
+    let allValid = false;
+    const bondingMaterials = formData?.bondingMaterials || [];
+    if (bondingMaterials.length > 0) {
+      const hasEmptyRatio = bondingMaterials.some(
+        (item) =>
+          item.ratio === "" || item.ratio === null || item.ratio === undefined
+      );
+
+      const firstTwoInvalid = bondingMaterials
+        .slice(0, 1)
+        .some(
+          (item) =>
+            !item.code ||
+            !item.brand ||
+            item.ratio === "" ||
+            item.ratio === null ||
+            item.ratio === undefined
+        );
+
+      const thirdItem = bondingMaterials[2];
+      let thirdInvalid = false;
+      if (thirdItem) {
+        const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
+        if (isEthyl) {
+          thirdInvalid =
+            thirdItem.ratio === "" ||
+            thirdItem.ratio === null ||
+            thirdItem.ratio === undefined;
+        } else {
+          thirdInvalid =
+            !thirdItem.code ||
+            !thirdItem.brand ||
+            thirdItem.ratio === "" ||
+            thirdItem.ratio === null ||
+            thirdItem.ratio === undefined;
+        }
+      }
+
+      // Correct logic: allValid means no missing required fields in bondingMaterials
+      allValid = hasEmptyRatio && firstTwoInvalid && thirdInvalid;
+    }
+
+    const hasErrors = Object.values(errors).some((error) => error);
+    const shouldDisableButton =
+      !isAllFieldFilled ||
+      hasErrors ||
+      laminationTableValueVaidation ||
+      allValid;
+    dispatch(setLaminationSave(shouldDisableButton));
+  }, [errors, formData, laminationTableValueVaidation]);
+  useEffect(() => {
+    if (formInitialized) return;
+    if (
+      id &&
+      location.pathname.includes("/updateMasterData") &&
+      !laminationDataTouched
+    ) {
       setFormData(laminatingDetails);
       setTableData(laminatingDetails.bondingMaterials);
-        setFormInitialized(true);
+      setFormInitialized(true);
     }
-  }, [id,laminatingDetails,formInitialized]);
+  }, [id, laminatingDetails, formInitialized]);
 
   useEffect(() => {
-      if (formInitialized) return;
     if (!id && laminaionFormData) {
-        setFormData(laminaionFormData);
-          setFormInitialized(true);
+      setFormData(laminaionFormData);
+      // setFormInitialized(true);
       if (!id && laminaionFormData?.bondingMaterials) {
         setTableData(laminaionFormData?.bondingMaterials);
-          setFormInitialized(true);
-        }
+        // setFormInitialized(true);
       }
-    if(!id && saveButtonLaminatingData && saveLaminatingData ){
-      setFormData(saveLaminatingData)
-        setFormInitialized(true);
+    }
+    if (!id && saveButtonLaminatingData && saveLaminatingData) {
+      setFormData(saveLaminatingData);
+      //  setFormInitialized(true);
     }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
-        // setFormInitialized(true);
+      // setFormInitialized(true);
     }
-  }, [laminaionFormData, laminationFormErrors, id,saveLaminatingData,saveButtonLaminatingData,formInitialized]);
+  }, [
+    laminaionFormData,
+    laminationFormErrors,
+    id,
+    saveLaminatingData,
+    saveButtonLaminatingData,
+    formInitialized,
+  ]);
 
   useEffect(() => {
-        if (id && !laminationDataTouched) {
+    if (id && !laminationDataTouched) {
       const sanitizedLaminationData = sanitizeMasterData(laminationSettings);
       const sanitizedSubstrateData = sanitizeMasterData(
         laminatingSubstrateSettings
       );
-  
+
       const combinedValues: LaminationFormData = {
         ...sanitizedLaminationData,
         laminationSubstrate: sanitizedSubstrateData?.laminationSubstrate,
       };
       setFormData(combinedValues);
       dispatch(setLaminationFormData(combinedValues));
-  
+
       const sanitizedBondingMaterials = sanitizeMasterData(laminationAdhesive);
       const adhesiveDetails: LaminatingTableRow[] =
         sanitizedBondingMaterials?.bondingMaterials;
@@ -448,32 +551,33 @@ const Lamination: React.FC<LaminationProps> = ({
   ];
 
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-   const [supplierDropdown] = useSupplierDropdownMutation();
-  
-    useEffect(()=>{
-      const dropDown = async ()=>{
-        const response = await subStrateDropDown({
-          substrate : "",
-          substrateType:"lamination"
-      }).unwrap();
-      const substrateList = response?.data?.map((item:any) => item.substrate);
-      dispatch(setlaminationDropDownValues(substrateList))
-  
-      }
-    
-      dropDown()
-    
-    },[]);
+  const [supplierDropdown] = useSupplierDropdownMutation();
 
-      useEffect(() => {
-        const fetchDropdownValues = async () => {
-          const response = await supplierDropdown({ supplier: "", supplier_type: "lamination" }).unwrap();
-          const supplierList = response?.data?.map((item: any) => item.supplier);
-          dispatch(setSupplieraminationDropDownValues(supplierList));
-        };
-    
-        fetchDropdownValues();
-      }, [supplierDropdown, dispatch]);
+  useEffect(() => {
+    const dropDown = async () => {
+      const response = await subStrateDropDown({
+        substrate: "",
+        substrateType: "lamination",
+      }).unwrap();
+      const substrateList = response?.data?.map((item: any) => item.substrate);
+      dispatch(setlaminationDropDownValues(substrateList));
+    };
+
+    dropDown();
+  }, []);
+
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await supplierDropdown({
+        supplier: "",
+        supplier_type: "lamination",
+      }).unwrap();
+      const supplierList = response?.data?.map((item: any) => item.supplier);
+      dispatch(setSupplieraminationDropDownValues(supplierList));
+    };
+
+    fetchDropdownValues();
+  }, [supplierDropdown, dispatch]);
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -671,6 +775,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   checkbox={false}
                   required
                   allowNewOption
+                  error={!!errors.substrate_type}
+                  helperText={errors.substrate_type}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>

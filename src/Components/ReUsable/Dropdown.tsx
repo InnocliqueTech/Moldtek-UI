@@ -88,6 +88,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           value={selectedOptions}
           onChange={handleSelectChange}
           displayEmpty
+            error={error}
           renderValue={(selected) => {
             if (
               selected.length === 0 ||
