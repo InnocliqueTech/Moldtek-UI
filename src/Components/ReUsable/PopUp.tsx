@@ -47,11 +47,24 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   handleDownloadSampleFile
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+ const [error, setError] = useState<string | null>(null);
 
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const validTypes = [
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+      ];
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
+      if (!validTypes.includes(file.type)) {
+        setError("Only Excel files (.xls, .xlsx) are allowed.");
+        setSelectedFile(null);
+        return;
+      }
+
+      setSelectedFile(file);
+      setError(null);
     }
   };
 
@@ -131,26 +144,32 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
             </Box>
       
             {/* Upload button */}
-            <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
-              <Typography component="span" sx={{ fontSize: "14px" }}>
-                <span
-                  style={{
-                    color: "#007bff",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                  }}
-                >
-                  Click to upload
-                </span>{" "}
-                <span style={{ color: "#9e9e9e" }}>(max. 1MB)</span>
-              </Typography>
-              <input
-                type="file"
-                id="file-upload"
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-            </label>
+         <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
+        <Typography component="span" sx={{ fontSize: "14px" }}>
+          <span
+            style={{
+              color: "#007bff",
+              fontWeight: "500",
+              cursor: "pointer",
+            }}
+          >
+            Click to upload
+          </span>{" "}
+          <span style={{ color: "#9e9e9e" }}>(only .xls/.xlsx, max. 1MB)</span>
+        </Typography>
+        <input
+          type="file"
+          id="file-upload"
+          accept=".xls,.xlsx"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+      </label>
+      {error && (
+        <Typography color="error" sx={{ fontSize: "12px", mt: 1 }}>
+          {error}
+        </Typography>
+      )}
       
             {/* Show selected file name */}
             {selectedFile && (

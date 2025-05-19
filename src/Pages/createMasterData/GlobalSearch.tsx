@@ -153,7 +153,7 @@ const FilterForm: React.FC = () => {
     toast.success("Filters cleared!");
   };
 
-  console.log(localDates, "LOCALDATES");
+
 
   return (
     <>

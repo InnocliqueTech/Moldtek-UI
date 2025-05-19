@@ -298,25 +298,34 @@ segmentsDropdown({
   };
   
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setMasterDataDataTouched(true));
-    const file = e.target.files?.[0]; // Get the file from the event
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Image = reader.result as string;
-        const updatedFormData = {
-          ...formData,
-          customer_logo: base64Image, // <-- Set image
-        };
+const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  dispatch(setMasterDataDataTouched(true));
+  const file = e.target.files?.[0];
 
-        setFormData(updatedFormData);
-        dispatch(setSaveFormData(updatedFormData));
+  if (file) {
+    // Validate image type
+    const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    if (!validImageTypes.includes(file.type)) {
+      alert("Only image files (JPEG, PNG, WEBP) are allowed.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result as string;
+      const updatedFormData = {
+        ...formData,
+        customer_logo: base64Image,
       };
 
-      reader.readAsDataURL(file); // Read the file as DataURL
-    }
-  };
+      setFormData(updatedFormData);
+      dispatch(setSaveFormData(updatedFormData));
+    };
+
+    reader.readAsDataURL(file);
+  }
+};
+
 
   useEffect(() => {
     if (formInitialized) return;
