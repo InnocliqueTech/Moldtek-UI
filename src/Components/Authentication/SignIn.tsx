@@ -51,39 +51,45 @@ const SignInPage: React.FC = () => {
       return;
     }
 
-    try {
-      const response = await login({ username: email, password: trimmedPassword }).unwrap();
-      if (response?.data?.token) {
-        localStorage.setItem("token", response?.data?.token);
-        localStorage.setItem("auth", "true");
-        localStorage.setItem("role", response?.data?.userTypeName);
-        localStorage.setItem("userName",response?.data?.userName);
+try {
+  const response = await login({ username: email, password: trimmedPassword }).unwrap();
 
-        if (rememberMe) {
-          localStorage.setItem("rememberMeEmail", email);
-          localStorage.setItem("rememberMePassword", trimmedPassword);
-        } else {
-          localStorage.removeItem("rememberMeEmail");
-          localStorage.removeItem("rememberMePassword");
-        }
+  if (response?.data?.token) {
+    localStorage.setItem("token", response?.data?.token);
+    localStorage.setItem("auth", "true");
+    localStorage.setItem("role", response?.data?.userTypeName);
+    localStorage.setItem("userName", response?.data?.userName);
 
-        navigate(from, { replace: true });
-      } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("userName");
-        localStorage.setItem("auth", "false");
-        toast.error("Login failed: No token received");
-        navigate("/");
-      }
-    } catch (err: any) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("userName");
-      localStorage.setItem("auth", "false");
-      toast.error(err?.data?.message || "Login failed: No token received");
-      navigate("/");
+    if (rememberMe) {
+      localStorage.setItem("rememberMeEmail", email);
+      localStorage.setItem("rememberMePassword", trimmedPassword);
+    } else {
+      localStorage.removeItem("rememberMeEmail");
+      localStorage.removeItem("rememberMePassword");
     }
+
+    navigate(from, { replace: true });
+  } else {
+    localStorage.clear();
+    toast.error("Login failed: No token received");
+    navigate("/");
+  }
+} catch (err: any) {
+  localStorage.clear();
+  const statusCode = err?.status;
+  const errorMessage = err?.data?.message || "Login failed";
+
+  if (statusCode === 401) {
+    setErrors({
+      email: " ",
+      password: "Invalid email or password",
+    });
+  } else {
+    toast.error(errorMessage);
+    navigate("/");
+  }
+}
+
   };
 
   const isFormValid = () => {

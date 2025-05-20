@@ -56,16 +56,17 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   setFormData,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const { saveFormData, masterDataFormErrors,updateButton, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
+  useSelector((state: RootState) => state.masterData);
   const { id } = useParams();
   const location = useLocation();
   
-  const UEN = localStorage.getItem("actionSelectedUEN");
+  const UEN = localStorage.getItem(!updateButton?"selectedUEN":"actionSelectedUEN");
   let selectedUEN: any;
   if (UEN) {
     selectedUEN = UEN;
   }
-  const version = localStorage.getItem("actionVersionNo");
+  const version = localStorage.getItem(!updateButton?"selectedVersionNo":"actionVersionNo");
   let versionNo: any;
   if (version) {
     versionNo = version;
@@ -82,8 +83,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   );
 
-  const { saveFormData, masterDataFormErrors, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
-  useSelector((state: RootState) => state.masterData);
+
 
   const isUpdatePage = useMemo(
     () => location.pathname.includes("/updateMasterData"),

@@ -4,6 +4,7 @@ import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, Lab
 
 
 const initialState: MasterDataState = {
+  updateButton:false,
   dropDownValuesStructure:[],
   dropDownValuesMountingTape:[],
   dropDownValuesSupplierLamination:[],
@@ -709,6 +710,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setUpdateButton:(state,action:PayloadAction<boolean>)=>{
+state.updateButton = action.payload
+    },
     setPrintingDropDownValues:(state,action:PayloadAction<any>)=>{
      state.dropDownValuesPrinting = action.payload
     },
@@ -1632,6 +1636,7 @@ export const {
   setMountinTapeDropDownValues,
   setStructureDropDownValues,
   setSupplierPrintingDropDownValues,
-  setSupplieraminationDropDownValues
+  setSupplieraminationDropDownValues,
+  setUpdateButton
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

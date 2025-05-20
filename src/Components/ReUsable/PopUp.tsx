@@ -10,7 +10,7 @@ import {
 import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
-import { CloudUpload } from "@mui/icons-material";
+import { Close, CloudUpload } from "@mui/icons-material";
 
 
 interface ReusablePopupProps {
@@ -155,7 +155,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           >
             Click to upload
           </span>{" "}
-          <span style={{ color: "#9e9e9e" }}>(only .xls/.xlsx, max. 1MB)</span>
+          <span style={{ color: "#9e9e9e" }}>(only .xls/.xlsx)</span>
         </Typography>
         <input
           type="file"
@@ -172,11 +172,42 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       )}
       
             {/* Show selected file name */}
-            {selectedFile && (
-              <Typography variant="body2" color="green">
-                {selectedFile.name}
-              </Typography>
-            )}
+         {selectedFile && (
+  <Box
+    display="flex"
+    alignItems="center"
+    justifyContent="space-between"
+    width="100%"
+    bgcolor="#f1f1f1"
+    px={1.5}
+    py={0.5}
+    borderRadius="6px"
+  >
+    <Typography
+      variant="body2"
+      color="green"
+      sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "85%" }}
+    >
+      {selectedFile.name}
+    </Typography>
+    <Close
+      onClick={() => {
+        setSelectedFile(null);
+        setError(null);
+      }}
+      sx={{
+        color: "#d32f2f",
+        fontSize: 20,
+        cursor: "pointer",
+        ml: 1,
+        "&:hover": {
+          color: "#b71c1c",
+        },
+      }}
+    />
+  </Box>
+)}
+
           </Box>
           )}
           {textField && (

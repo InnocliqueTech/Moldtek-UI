@@ -21,6 +21,7 @@ import {
   setOpenSlider,
   setRequestPayload,
   setSelectedTab,
+  setUpdateButton,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector} from "react-redux";
@@ -294,6 +295,7 @@ const formattedDate = today
         onButton2Click: () => {
           navigate(`/updateMasterData/${selectedUEN}`);
           dispatch(setSelectedTab(0));
+          dispatch(setUpdateButton(false))
         },
       }),
       onButton1Click: () => dispatch(setVersionPopup(true)),

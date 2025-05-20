@@ -12,7 +12,7 @@ import {
   useGetMetricsQuery,
   useMasterFiltersMutation,
 } from "../../store/services/api";
-import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
+import { setIsSearchTriggered, setUpdateButton } from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
@@ -254,6 +254,7 @@ const MasterData: React.FC = () => {
                 localStorage.setItem("actionVersionNo", versionNoAction);
                 const actionSelectedUpdateUEN =
                   localStorage.getItem("actionSelectedUEN");
+                  dispatch(setUpdateButton(true))
                 navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
               },
             },
