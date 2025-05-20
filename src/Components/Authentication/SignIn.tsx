@@ -11,6 +11,7 @@ import { EmailOutlined, LockOutlined } from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
 import { useLoginMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
+import curveImage from "../../assets/Images/curves.png";
 
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -196,57 +197,104 @@ try {
       </Box>
 
       {/* Right Section - Image & Description */}
+<Box
+  sx={{
+    flex: 1,
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    p: 2,
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      maxWidth: 500,
+      height: "100%",
+      borderRadius: "16px",
+      overflow: "hidden",
+      boxShadow: 3,
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "white",
+    }}
+  >
+    {/* Top main image */}
+    <Box sx={{ flex: 0.4 }}>
+      <img
+        src={SignInImage}
+        alt="Sign In"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
+      />
+    </Box>
+
+    {/* Dark section with text and curve on top */}
+    <Box
+      sx={{
+        flex: 0.6,
+        position: "relative",
+        backgroundColor: "#2F4052",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        overflow: "hidden",
+      }}
+    >
+      {/* Curve Image positioned at top */}
       <Box
         sx={{
-          flex: 1,
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 2,
+          position: "absolute",
+          top: -1,
+          left: 0,
+          width: "100%",
+          height: {sm:'70%',md:"100%"},
+          zIndex: 4,
+          pointerEvents: "none",
+          display: { xs: "none", sm: "block" },
         }}
       >
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "16px",
-            overflow: "hidden",
-            boxShadow: 3,
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "white",
-          }}
-        >
-          <Box sx={{ flex: 0.2 }}>
-            <img src={SignInImage} alt="Sign In" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </Box>
+      <img
+  src={curveImage}
+  alt="Curve"
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "fill", // force-stretch both directions
+    display: "block",
+  }}
+/>
 
-          <Box
-            sx={{
-              flex: 0.8,
-              backgroundColor: "#2F4052",
-              color: "white",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              textAlign: "left",
-              p: 3,
-            }}
-          >
-            <Box sx={{ mb: 1 }}>
-              <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
-            </Box>
-            <Typography sx={{ color: '#ECECEC', fontWeight: 600, fontSize: '20px' }}>
-              Print & Lamination Data Hub
-            </Typography>
-            <Typography sx={{ mt: 1, color: '#ECECEC', fontWeight: 400, fontSize: '15px' }}>
-              Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
-            </Typography>
-          </Box>
-        </Box>
       </Box>
+
+      {/* Text content */}
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 2,
+          p: 3,
+          textAlign: "left",
+        }}
+      >
+        <Box sx={{ mb: 1 }}>
+          <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
+        </Box>
+        <Typography sx={{ color: "#ECECEC", fontWeight: 600, fontSize: "20px" }}>
+          Print & Lamination Data Hub
+        </Typography>
+        <Typography sx={{ mt: 1, color: "#ECECEC", fontWeight: 400, fontSize: "15px" }}>
+          Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
+        </Typography>
+      </Box>
+    </Box>
+  </Box>
+</Box>
     </Box>
   );
 };
