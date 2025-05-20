@@ -195,17 +195,27 @@ const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" ||
       gap={2}
       flexWrap="wrap"
     >
-      {selectedTab === 3 || ((saveFormData.label_type === "Thin Wall"||saveFormData.segment === "TW")||(viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW") && selectedTab===2 )? (
-        <ReusableButton
-          text={id ? "Update and Publish" : "Submit and Publish"}
-          color="#0073B7"
-          borderRadius="100px"
-          border="1px solid #0073B7"
-          textColor="white"
-          p={2}
-          onClick={handleSubmitAndPublishPopupOpen}
-          disabled={isSubmitDisabled()}
-        />
+      {
+  (selectedTab === 3 || (
+    selectedTab === 2 &&
+    (
+      saveFormData.label_type === "Thin Wall" ||
+      saveFormData.segment === "TW" ||
+      viewMasterDataDetails.label_type === "Thin Wall" ||
+      viewMasterDataDetails.segment === "TW"
+    )
+  )) ? (
+    <ReusableButton
+      text={id ? "Update and Publish" : "Submit and Publish"}
+      color="#0073B7"
+      borderRadius="100px"
+      border="1px solid #0073B7"
+      textColor="white"
+      p={2}
+      onClick={handleSubmitAndPublishPopupOpen}
+      disabled={isSubmitDisabled()}
+    />
+
       ) : (
         <>
           <ReusableButton
