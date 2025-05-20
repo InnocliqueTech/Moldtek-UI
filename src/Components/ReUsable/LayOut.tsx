@@ -39,7 +39,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const {isMasterDetaisData,isPrintingData,isLaminationData} = useSelector((state:RootState)=>state.masterData)
+  // const {isMasterDetaisData,isPrintingData,isLaminationData} = useSelector((state:RootState)=>state.masterData)
   const {hasUnsavedChanges} = useSelector((state:RootState)=>state.viewDailyPlan)
   const UEN = localStorage.getItem("selectedUEN");
    let selectedUEN :any;
@@ -201,18 +201,12 @@ const clearRequestPayoad ={
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());
     dispatch(clearDyeCuttingFormErrors());
-    if(isLaminationData){
     dispatch(clearLaminatingFormData());
     dispatch(clearLaminationFormErrors());
-    }
-    if(isPrintingData){
     dispatch(clearPrintingFormData());
     dispatch(clearPrintingFormErrors());
-    }
-    if(isMasterDetaisData){
     dispatch(clearMasterDetaisData());
     dispatch(clearMasterDataFormErrors());
-    }
     navigate("/createMasterData");
   };
   

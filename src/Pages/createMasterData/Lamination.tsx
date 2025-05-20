@@ -340,9 +340,9 @@ const Lamination: React.FC<LaminationProps> = ({
       }
     });
     let allValid = false;
-    const bondingMaterials = formData?.bondingMaterials || [];
+    const bondingMaterials = Array.isArray(formData?.bondingMaterials) ? formData.bondingMaterials : [];
     if (bondingMaterials.length > 0) {
-      const hasEmptyRatio = bondingMaterials.some(
+      const hasEmptyRatio = bondingMaterials?.some(
         (item) =>
           item.ratio === "" || item.ratio === null || item.ratio === undefined
       );
@@ -415,7 +415,7 @@ const Lamination: React.FC<LaminationProps> = ({
       | keyof LaminationFormData["bondingMaterials"][number]
     )[];
 
-    const bondingMaterials = formData?.bondingMaterials || [];
+     const bondingMaterials = Array.isArray(formData?.bondingMaterials) ? formData.bondingMaterials : [];
 
     const hasNonEmptyValue = bondingMaterials.some((item) =>
       Object.entries(item).some(
