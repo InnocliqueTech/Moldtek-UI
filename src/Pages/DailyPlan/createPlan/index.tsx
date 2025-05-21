@@ -104,31 +104,38 @@ useEffect(() => {
 
 
   
-  const fieldsToSkipForRepeat = [
-    'customerName',
-    'brandName',
-    'jarCap',
-    'width',
-    'thickness',
-    'subStrateType',
-    'gsm',
-    'repeatLength',
-    'ups',
-    'substrate',
-    'lamSubstrate',
-    'dyne',
-    'substrateType'
-  ];
+  // const fieldsToSkipForRepeat = [
+  //   'customerName',
+  //   'brandName',
+  //   'jarCap',
+  //   'width',
+  //   'thickness',
+  //   'subStrateType',
+  //   'gsm',
+  //   'repeatLength',
+  //   'ups',
+  //   'substrate',
+  //   'lamSubstrate',
+  //   'dyne',
+  //   'substrateType'
+  // ];
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
+  // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New'); // ⬅️ Commented
+  const jobType: 'Repeat' = 'Repeat'; // ⬅️ Hardcoded as Repeat
+
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
 
+  const allowedFields = [
+    'indentNumber',
+    'jobRunDate',
+    'unitEffectivityNumber',
+    'ppcIndentQtyNos',
+    'numberOfRolls',
+  ];
+
   const shouldShowField = (fieldId: string): boolean => {
-    if (jobType === 'Repeat') {
-      return !fieldsToSkipForRepeat.includes(fieldId);
-    }
-    return true;
+    return allowedFields.includes(fieldId); // ⬅️ Only show specified fields
   };
 
   const handleInputChange = (
@@ -163,23 +170,12 @@ useEffect(() => {
     const formData: any = {};
     
     formFields.forEach(field => {
-      if ([
-        'ppcIndentQtyNos',
-        'balanceIndentQtyPlanned',
-        'noOfColorsSetting',
-        'noOfSpecialColors',
-        'webLengthForColorMatch',
-        'numberOfRolls',
-        'ups',
-        'repeatLength',
-        'width',
-        'dyne',
-        'gsm',
-        'thickness'
-      ].includes(field.id)) {
-        formData[field.id] = Number(field.value) || 0;
-      } else {
-        formData[field.id] = field.value;
+      if (allowedFields.includes(field.id)) {
+        if (['ppcIndentQtyNos', 'numberOfRolls'].includes(field.id)) {
+          formData[field.id] = Number(field.value) || 0;
+        } else {
+          formData[field.id] = field.value;
+        }
       }
     });
 
@@ -250,29 +246,17 @@ useEffect(() => {
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
-        <Box sx={{}}>
-          {/* <Typography
-            sx={{ fontSize: "1rem", fontWeight: "600" }}
-            className="mb-3"
+        {/* <Box sx={{ mb: 3 }}>
+          <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
+          <RadioGroup
+            row
+            value={jobType}
+            onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
           >
-            Add New Job
-          </Typography> */}
-          <Box sx={{ mb: 3 }}>
-            <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
-            <RadioGroup
-              row
-              value={jobType}
-              onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
-            >
-              <FormControlLabel value="New" control={<Radio />} label="New" />
-              <FormControlLabel
-                value="Repeat"
-                control={<Radio />}
-                label="Repeat"
-              />
-            </RadioGroup>
-          </Box>
-        </Box>
+            <FormControlLabel value="New" control={<Radio />} label="New" />
+            <FormControlLabel value="Repeat" control={<Radio />} label="Repeat" />
+          </RadioGroup>
+        </Box> */}
         <Grid container spacing={2} pt={1}>
           {formFields
             .filter((f) => shouldShowField(f.id))
