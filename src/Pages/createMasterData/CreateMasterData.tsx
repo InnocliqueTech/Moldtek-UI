@@ -59,6 +59,7 @@ const CreateMasterData: React.FC = () => {
     saveButtonLaminatingData,
     saveLaminatingData,
     savePrintingData,
+    customerLogoFile
   } = useSelector((state: RootState) => state.masterData);
   const {
 viewMasterDataDetails
@@ -387,7 +388,7 @@ viewMasterDataDetails
       })),
     };
     
-const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number)}
+const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number),customer_logo:customerLogoFile?.name}
     const updatedPayload = {
       ...requestPayload,
        masterDataDetails,

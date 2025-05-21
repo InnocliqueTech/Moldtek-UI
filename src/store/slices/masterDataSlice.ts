@@ -5,6 +5,7 @@ import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, Lab
 
 const initialState: MasterDataState = {
   updateButton:false,
+  customerLogoFile:null,
   dropDownValuesStructure:[],
   dropDownValuesMountingTape:[],
   dropDownValuesSupplierLamination:[],
@@ -26,6 +27,7 @@ const initialState: MasterDataState = {
       viscosity_range: "",
       adhesive_gsm: "",
     },
+    
     laminationSubstrate: {
       substrate_id: 0,
       lamination_id: 0,
@@ -710,6 +712,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setCustomerLogoFile:(state,action:PayloadAction<any>)=>{
+state.customerLogoFile = action.payload
+    },
     setUpdateButton:(state,action:PayloadAction<boolean>)=>{
 state.updateButton = action.payload
     },
@@ -1637,6 +1642,7 @@ export const {
   setStructureDropDownValues,
   setSupplierPrintingDropDownValues,
   setSupplieraminationDropDownValues,
-  setUpdateButton
+  setUpdateButton,
+  setCustomerLogoFile
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

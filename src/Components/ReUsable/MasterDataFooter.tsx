@@ -22,7 +22,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCreateMasterDataMutation } from "../../store/services/api";
+import { useCreateMasterDataMutation, useUploadCustomerFileMutation } from "../../store/services/api";
 import { toast } from "react-toastify";
 import SuccessPopup from "./SuccessPopup";
 
@@ -55,8 +55,10 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     saveFormData,
     laminationTab,
     printingTab,
+    customerLogoFile
   } = useSelector((store: RootState) => store.masterData);
   const {viewMasterDataDetails} =  useSelector((store: RootState) => store.viewMasterData);
+  const [uploadCustomerFile,{ isLoading:uploadLoading }] = useUploadCustomerFileMutation();
   const skipLamination =
     saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
 const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"
@@ -82,56 +84,68 @@ const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" ||
   };
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
-  const handleSubmitPopupConfirmOpen = () => {
-    if (!submitTrue) {
-      createMasterData(requestPayload)
-        .then((response) => {
-          if (response && response.data && response.data.statusCode === 200) {
-            dispatch(setSubmitAndPublishPopup(false));
-            dispatch(setSubmitPopupConfirm(true));
+  const handleSubmitPopupConfirmOpen = async () => {
+if (!submitTrue) {
+    try {
+      const response = await createMasterData(requestPayload);
 
-            dispatch(clearDyeCuttingFormData());
-            dispatch(clearDyeCuttingFormErrors());
+      const isCreateSuccess =
+        response && response.data && response.data.statusCode === 200;
 
-            dispatch(clearLaminatingFormData());
-            dispatch(clearLaminationFormErrors());
+      if (!isCreateSuccess) {
+        const errorData = (response as any)?.error?.data;
+        const message =
+          errorData?.message ||
+          response?.data?.message ||
+          "Error saving master data";
 
-            dispatch(clearPrintingFormData());
-            dispatch(clearPrintingFormErrors());
+        toast.error(message);
+        return;
+      }
+      const unitNumber = requestPayload?.masterDataDetails?.unit_effectivity_number;
 
-            dispatch(clearMasterDetaisData());
-            dispatch(clearMasterDataFormErrors());
-            dispatch(setPrintingDataTouched(false));
-            dispatch(setDyeCuttingDataTouched(false));
-            dispatch(setLaminationDataTouched(false));
-            dispatch(setMasterDataDataTouched(false));
-          } else {
-            const errorData = (response as any)?.error?.data;
-            const message = errorData?.message
-              ? errorData?.message
-              : response.data.message
-              ? response.data.message
-              : "Error saving master data";
-
-            toast.error(message);
-          }
-        })
-        .catch((err) => {
-          console.error("Error in createMasterData:", err);
-
-          let message = "An unexpected error occurred while saving master data";
-
-          if ("data" in err && err.data) {
-            // Check if the error has a "data" field
-            message = err.data?.message || message;
-          } else if ("message" in err && err.message) {
-            // If the error is a SerializedError type, use its message
-            message = err.message;
-          }
-
+      if (customerLogoFile) {
+        try {
+          await uploadCustomerFile({
+            file: customerLogoFile,
+            unitNumber,
+            type: "customer",
+          }).unwrap();
+        } catch (uploadErr: any) {
+          const message =
+            uploadErr?.data?.message ||
+            uploadErr?.message ||
+            "Customer logo upload failed.";
           toast.error(message);
-        });
+          return;
+        }
+      }
+      dispatch(setSubmitAndPublishPopup(false));
+      dispatch(setSubmitPopupConfirm(true));
+      dispatch(clearDyeCuttingFormData());
+      dispatch(clearDyeCuttingFormErrors());
+
+      dispatch(clearLaminatingFormData());
+      dispatch(clearLaminationFormErrors());
+
+      dispatch(clearPrintingFormData());
+      dispatch(clearPrintingFormErrors());
+
+      dispatch(clearMasterDetaisData());
+      dispatch(clearMasterDataFormErrors());
+
+      dispatch(setPrintingDataTouched(false));
+      dispatch(setDyeCuttingDataTouched(false));
+      dispatch(setLaminationDataTouched(false));
+      dispatch(setMasterDataDataTouched(false));
+    } catch (err: any) {
+      // If createMasterData throws an unexpected error
+      const message =
+        err?.data?.message || err?.message || "Unexpected error during submission.";
+      toast.error(message);
     }
+  }
+
     if (submitTrue) {
       dispatch(setSubmitAndPublishPopup(false));
       dispatch(setSubmitPopupConfirm(true));
@@ -263,7 +277,7 @@ const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" ||
         gifSrc=""
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
-        isLoading={isLoading}
+        isLoading={isLoading||uploadLoading}
       />
 
       <SuccessPopup

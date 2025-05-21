@@ -11,6 +11,7 @@ import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
 import { Close, CloudUpload } from "@mui/icons-material";
+import { useUploadCustomerFileMutation } from "../../store/services/api";
 
 
 interface ReusablePopupProps {
@@ -48,25 +49,47 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
  const [error, setError] = useState<string | null>(null);
+ const [uploadCustomerFile] = useUploadCustomerFileMutation();
 
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const validTypes = [
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-      ];
+ let unitEffectiveNumberDaily:any 
+ const UEN = localStorage.getItem('unitEffectiveNumberDaily')
+ if(UEN){
+  unitEffectiveNumberDaily=UEN
+ }
 
-      if (!validTypes.includes(file.type)) {
-        setError("Only Excel files (.xls, .xlsx) are allowed.");
-        setSelectedFile(null);
-        return;
-      }
 
-      setSelectedFile(file);
-      setError(null);
+const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+
+  if (file) {
+    const validTypes = [
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+
+    if (!validTypes.includes(file.type)) {
+      setError("Only Excel files (.xls, .xlsx) are allowed.");
+      setSelectedFile(null);
+      return;
     }
-  };
+
+    setSelectedFile(file);
+    setError(null);
+
+    try {
+      const result = await uploadCustomerFile({
+        file,
+        unitNumber: sampleFile ?"":unitEffectiveNumberDaily,
+        type: sampleFile ? "master":"job",
+      }).unwrap();
+      alert("File uploaded successfully!");
+      setSelectedFile(null);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setError("Upload failed. Please try again.");
+    }
+  }
+};
 
   return (
     <Dialog

@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from "../../store";
 import { useEffect, useMemo, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
+  setCustomerLogoFile,
   setDyeCuttingDetails,
   setLaminatingDetails,
   setMasterDataDataTouched,
@@ -31,6 +32,7 @@ import {
   useGetLabelTypesQuery,
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
+  useUploadCustomerFileMutation,
   useViewMasterDataQuery,
 } from "../../store/services/api";
 import {
@@ -302,28 +304,29 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   dispatch(setMasterDataDataTouched(true));
   const file = e.target.files?.[0];
 
-  if (file) {
-    // Validate image type
-    const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
-    if (!validImageTypes.includes(file.type)) {
-      alert("Only image files (JPEG, PNG, WEBP) are allowed.");
-      return;
-    }
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Image = reader.result as string;
-      const updatedFormData = {
-        ...formData,
-        customer_logo: base64Image,
-      };
+  // Validate image type
+  const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+  if (!validImageTypes.includes(file.type)) {
+    alert("Only image files (JPEG, PNG, WEBP) are allowed.");
+    return;
+  }
+  dispatch(setCustomerLogoFile(file)); 
 
-      setFormData(updatedFormData);
-      dispatch(setSaveFormData(updatedFormData));
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const base64Image = reader.result as string;
+    const updatedFormData = {
+      ...formData,
+      customer_logo: base64Image,
     };
 
-    reader.readAsDataURL(file);
-  }
+    setFormData(updatedFormData);
+    dispatch(setSaveFormData(updatedFormData));
+  };
+
+  reader.readAsDataURL(file);
 };
 
 

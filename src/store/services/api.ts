@@ -168,6 +168,24 @@ export const apiSlice = createApi({
         params: { indentNumber, status },
       }),
     }),
+    
+uploadCustomerFile: builder.mutation<
+  any,
+  { file: File; unitNumber: string; type: string }
+>({
+  query: ({ file, unitNumber, type }) => {
+    const formData = new FormData();
+    formData.append("unitNumber", unitNumber);
+    formData.append("file", file);
+    formData.append("type", type);
+
+    return {
+      url: "dailyplan/uploadFile",
+      method: "POST",
+      body: formData,
+    };
+  },
+}),
 
     createMasterData: builder.mutation<any, any>({
       query: (newItem) => ({
@@ -367,5 +385,6 @@ export const {
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
   useSupplierDropdownMutation,
-  useMountingTapesDropdownMutation
+  useMountingTapesDropdownMutation,
+  useUploadCustomerFileMutation
 } = apiSlice;
