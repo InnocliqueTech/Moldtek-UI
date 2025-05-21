@@ -42,6 +42,8 @@ const MasterData: React.FC = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
+
+    const role = localStorage.getItem("role");
   
   const columns = [
     {
@@ -193,6 +195,38 @@ const MasterData: React.FC = () => {
     dispatch(setIsSearchTriggered(false));
     localStorage.setItem(storageKey, newPage.toString());
   };
+
+const baseActions = [
+  {
+    label: "View Job Data",
+    onClick: (row: any) => {
+      const selectedUENAction = row?.unit_effectivity_number;
+      const versionNoAction = row?.version_no;
+      localStorage.setItem("actionSelectedUEN", selectedUENAction);
+      localStorage.setItem("actionVersionNo", versionNoAction);
+      navigate(`/viewJobsList`);
+    },
+  },
+];
+
+const actions =
+  role === "Admin"
+    ? [
+        ...baseActions,
+        {
+          label: "Update",
+          onClick: (row: any) => {
+            const selectedUENActionUpdate = row?.unit_effectivity_number;
+            const versionNoAction = row?.version_no;
+            localStorage.setItem("actionSelectedUEN", selectedUENActionUpdate);
+            localStorage.setItem("actionVersionNo", versionNoAction);
+            dispatch(setUpdateButton(true));
+            navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+          },
+        },
+      ]
+    : baseActions;
+
   return (
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
@@ -231,34 +265,7 @@ const MasterData: React.FC = () => {
           info={true}
           searchVisible={false}
           action={true}
-          actions={[
-            {
-              label: "View Job Data",
-              onClick: (row: any) => {
-                const selectedUENAction = row?.unit_effectivity_number;
-                const versionNoAction = row?.version_no;
-                localStorage.setItem("actionSelectedUEN", selectedUENAction);
-                localStorage.setItem("actionVersionNo", versionNoAction);
-                navigate(`/viewJobsList`); // If you want this to depend on the row, add params here.
-              },
-            },
-            {
-              label: "Update",
-              onClick: (row: any) => {
-                const selectedUENActionUpdate = row?.unit_effectivity_number;
-                localStorage.setItem(
-                  "actionSelectedUEN",
-                  selectedUENActionUpdate
-                );
-                const versionNoAction = row?.version_no;
-                localStorage.setItem("actionVersionNo", versionNoAction);
-                const actionSelectedUpdateUEN =
-                  localStorage.getItem("actionSelectedUEN");
-                  dispatch(setUpdateButton(true))
-                navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
-              },
-            },
-          ]}
+          actions={actions}
           isLoading={listOfCompaniesLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}

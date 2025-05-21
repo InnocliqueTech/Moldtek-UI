@@ -2,7 +2,6 @@ import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
-import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   setLaminationDataTouched,
@@ -535,6 +534,10 @@ const Lamination: React.FC<LaminationProps> = ({
 
     dropDown();
   }, []);
+
+    useEffect(()=>{
+     dispatch(setLaminationDataTouched(false));
+    },[])
 
   useEffect(() => {
     const fetchDropdownValues = async () => {

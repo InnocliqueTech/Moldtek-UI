@@ -32,7 +32,6 @@ import {
   useGetLabelTypesQuery,
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
-  useUploadCustomerFileMutation,
   useViewMasterDataQuery,
 } from "../../store/services/api";
 import {
@@ -47,6 +46,7 @@ import {
 } from "../../store/slices/viewMasterDataSlice";
 import { MasterDataFormErrors, MasterFormData } from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
+import Loader from "../../Loader";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -74,7 +74,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     versionNo = version;
   }
 
-  const { data } = useViewMasterDataQuery(
+  const { data,isLoading } = useViewMasterDataQuery(
     {
       ueNumber: selectedUEN,
       versionNo: versionNo,
@@ -95,12 +95,17 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const masterData = useMemo(() => data?.data ?? null, [data]);
 
+useEffect(()=>{
+ dispatch(setMasterDataDataTouched(false));
+
+},[])
+
   useEffect(() => {
     if (
       id &&
       isUpdatePage &&
       !masterDataDataTouched &&
-      masterData
+      masterData 
     ) {
       dispatch(setViewMasterDataDetails(masterData.masterDataDetails));
       dispatch(setPrintingDetails(masterData.masterDataPrinting));
@@ -195,6 +200,9 @@ segmentsDropdown({
     brand_description: "",
     label_type: "",
     segment:"",
+    noOfColorsSetting:"",
+  noOfSpecialColors:"",
+
   });
 
   const numericFields: (keyof MasterFormData)[] = [
@@ -365,6 +373,8 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       ups: data?.ups || 0,
       tracks: data?.tracks || 0,
       segment:data?.segment || "",
+           noOfColorsSetting:data?.noOfColorsSetting||"",
+  noOfSpecialColors:data?.noOfSpecialColors||"",
     };
   }
 
@@ -426,6 +436,11 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   const row1HasError =
   !!errors.unit_effectivity_number || !!errors.customer_name;
   const row2HasError = !!errors.item_code  || !!errors.brand_description
+
+ if (id && isLoading) {
+  return <Loader />;
+}
+
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -728,6 +743,26 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               onChange={(e) => handleChange("tracks", e.target.value)}
               error={!!errors.tracks}
               helperText={errors.tracks}
+            />
+          </Grid>
+                    <Grid size={{ xs: 12, md: 3 }}>
+            <ReusableInput
+              label="No of Colors for setting"
+              value={formData.repeat_length}
+              onChange={(e) => handleChange("repeat_length", e.target.value)}
+              error={!!errors.repeat_length}
+              helperText={errors.repeat_length}
+              required
+            />
+          </Grid>
+                    <Grid size={{ xs: 12, md: 3 }}>
+            <ReusableInput
+              label="No of special colors"
+              value={formData.repeat_length}
+              onChange={(e) => handleChange("repeat_length", e.target.value)}
+              error={!!errors.repeat_length}
+              helperText={errors.repeat_length}
+              required
             />
           </Grid>
         </Grid>

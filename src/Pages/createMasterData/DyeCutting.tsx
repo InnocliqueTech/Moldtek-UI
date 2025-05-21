@@ -2,7 +2,6 @@ import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
-import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   setDyeCuttingDataTouched,
@@ -138,6 +137,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dispatch(setDyeCuttingFormErros(updatedErrors));
     dispatch(setDyeCuttingFormData(updated));
   };
+
+   useEffect(()=>{
+     dispatch(setDyeCuttingDataTouched(false));
+    },[])
 
   useEffect(() => {
     const hasAnyErrors = Object.values(errors).some((e) => e !== "");

@@ -79,6 +79,8 @@ viewMasterDataDetails
     ups: "",
     tracks: "",
     segment: "",
+         noOfColorsSetting:"",
+  noOfSpecialColors:"",
   });
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
@@ -388,7 +390,7 @@ viewMasterDataDetails
       })),
     };
     
-const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number),customer_logo:customerLogoFile?.name}
+const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number),customer_logo:id? data?.data.masterDataDetails.customer_logo:customerLogoFile?.name}
     const updatedPayload = {
       ...requestPayload,
        masterDataDetails,

@@ -152,7 +152,7 @@ if (!submitTrue) {
     if (submitTrue) {
             if (uploadFile) {
               try {
-                const result = await uploadCustomerFile({
+                await uploadCustomerFile({
                   file: uploadFile,
                   unitNumber: "", // <-- Replace with actual unit number if needed
                   type: "master",
@@ -266,7 +266,7 @@ if (!submitTrue) {
       textColor="white"
       p={2}
       onClick={handleSubmitAndPublishPopupOpen}
-      // disabled={isSubmitDisabled()}
+      disabled={isSubmitDisabled()}
     />
 
       ) : (

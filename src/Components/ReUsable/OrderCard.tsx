@@ -21,6 +21,8 @@ const OrderCard: React.FC = () => {
     { id: "ups", label: "UPs" },
     { id: "tracks", label: "Tracks" },
     { id: "labels", label: "# Labels/Meter" },
+    {id:"noOfColorsSetting",label:"No of Colors for settings"},
+    {id:'noOfSpecialColors',label:"No of special colors"}
   ];
 
   const maxChars = 20;
@@ -37,6 +39,19 @@ const OrderCard: React.FC = () => {
     return value ? value : "N/A";
   };
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+  const entries = Object.entries({
+  repeat: viewMasterDataDetails?.repeat_length,
+  ups: viewMasterDataDetails?.ups,
+  tracks: viewMasterDataDetails?.tracks,
+  labels: viewMasterDataDetails?.labels_per_meter,
+  noOfColorsSetting: viewMasterDataDetails?.noOfColorsSetting,
+  noOfSpecialColors: viewMasterDataDetails?.noOfSpecialColors,
+});
+
+// First 3 entries for the first row, rest for second row
+const firstRow = entries.slice(0, 3);
+const secondRow = entries.slice(3, 6);
+
 
   return (
     <Box>
@@ -173,7 +188,7 @@ const OrderCard: React.FC = () => {
               </Typography>
 
               {viewMasterDataDetails?.customer_logo ? (
-                <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <Box sx={{ display: "flex", flexDirection: "row",mt:1 }}>
                   <Box
                     component="img"
                     src={viewMasterDataDetails?.customer_logo}
@@ -199,7 +214,7 @@ const OrderCard: React.FC = () => {
                 <Typography variant="body1">N/A</Typography>
               )}
             </Box>
-            <Box sx={{ mt: 1 }}>
+            <Box sx={{ mt:viewMasterDataDetails?.customer_logo? 0:2 }}>
               <AutoTooltipText
                 content={"Brand Name & Pack-Description"}
                 maxLength={25}
@@ -216,7 +231,7 @@ const OrderCard: React.FC = () => {
                 <Typography
                   variant="body1"
                   sx={{
-                    mt: -1,
+                    mt: 0,
                     wordBreak: "break-word",
                     whiteSpace: "pre-line",
                   }}
@@ -225,7 +240,7 @@ const OrderCard: React.FC = () => {
                 </Typography>
               </Tooltip>
             </Box>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -266,36 +281,36 @@ const OrderCard: React.FC = () => {
           {/* <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            gap: 2,
-          }}
-        >
-          {Object.entries({
-            repeat: viewMasterDataDetails?.repeat_length,
-            ups: viewMasterDataDetails?.ups,
-            tracks: viewMasterDataDetails?.tracks,
-            labels: viewMasterDataDetails?.labels_per_meter,
-          }).map(([key, value]) => (
-            <Box
-              key={key}
-              sx={{
-                flex: "1 1 200px",
-                maxWidth: "calc(33.33% - 16px)",
-              }}
-            >
-              <Typography variant="body2" color="textSecondary">
-                {columns.find((col) => col.id === key)?.label || key}
-              </Typography>
-              <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {value ? value : "N/A"}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
+<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+  {/* First Row */}
+  <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between" }}>
+    {firstRow.map(([key, value]) => (
+      <Box key={key} sx={{ flex: "1 1 30%", maxWidth: "33.33%" }}>
+        <Typography variant="body2" color="textSecondary">
+          {columns.find((col) => col.id === key)?.label || key}
+        </Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          {value ? value : "N/A"}
+        </Typography>
+      </Box>
+    ))}
+  </Box>
+
+  {/* Second Row */}
+  <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between" }}>
+    {secondRow.map(([key, value]) => (
+      <Box key={key} sx={{ flex: "1 1 30%", maxWidth: "33.33%" }}>
+        <Typography variant="body2" color="textSecondary">
+          {columns.find((col) => col.id === key)?.label || key}
+        </Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          {value ? value : "N/A"}
+        </Typography>
+      </Box>
+    ))}
+  </Box>
+</Box>
+
       </Box>
       <Modal
         open={imagePreviewOpen}

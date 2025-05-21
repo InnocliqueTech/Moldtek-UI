@@ -204,7 +204,7 @@ const Header: React.FC<HeaderProps> = ({
   const handleSubmitPopupConfirmOpen = async () => {
                 if (uploadFile) {
               try {
-                const result = await uploadCustomerFile({
+                 await uploadCustomerFile({
                   file: uploadFile,
                   unitNumber: unitEffectiveNumberDaily?unitEffectiveNumberDaily:"", // <-- Replace with actual unit number if needed
                   type: "job",
