@@ -158,7 +158,7 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
   const rollColumns = rollKeys.map((roll) => ({
     id: roll,
     label: roll.replace("-", " "),
-     edit: true
+     edit: isEditing
   }));
 
   const rollKeysMetrics: string[] = [];
@@ -180,7 +180,7 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
   const rollColumnsMetrics = rollKeysMetrics.map((roll) => ({
     id: roll,
     label: roll.replace("-", " "),
-     edit: true
+     edit: isEditing
   }));
 
 

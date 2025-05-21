@@ -266,7 +266,7 @@ if (!submitTrue) {
       textColor="white"
       p={2}
       onClick={handleSubmitAndPublishPopupOpen}
-      disabled={isSubmitDisabled()}
+      // disabled={isSubmitDisabled()}
     />
 
       ) : (
