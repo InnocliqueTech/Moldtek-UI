@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from "../../store";
 import {
   setSubmitAndPublishPopup,
   setSubmitTrue,
+  setUploadedFile,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
 import { ReplayOutlined } from "@mui/icons-material";
@@ -34,7 +35,10 @@ import VersinDetails from "../../Pages/viewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
-import { useUpdateStatusJobMutation } from "../../store/services/api";
+import {
+  useUpdateStatusJobMutation,
+  useUploadCustomerFileMutation,
+} from "../../store/services/api";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
@@ -83,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
   editClick,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish } = useSelector(
+  const { updatePopup, submitAndPublish, uploadFile } = useSelector(
     (store: RootState) => store.masterData
   );
   const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
@@ -107,8 +111,15 @@ const Header: React.FC<HeaderProps> = ({
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const [uploadCustomerFile, { isLoading }] = useUploadCustomerFileMutation();
   const [statusChangeMessage, setStatusChangeMessage] =
     useState<React.ReactNode>("");
+
+  let unitEffectiveNumberDaily: any;
+  const UEN = localStorage.getItem("unitEffectiveNumberDaily");
+  if (UEN) {
+    unitEffectiveNumberDaily = UEN;
+  }
 
   const [updateStatusJob] = useUpdateStatusJobMutation();
   const performStatusUpdate = async () => {
@@ -170,16 +181,86 @@ const Header: React.FC<HeaderProps> = ({
     dispatch(setUploadPopup(false));
   };
 
-  const handleSubmitAndPublishPopupOpen = () => {
+  const handleSubmitAndPublishPopupOpen = async () => {
     dispatch(setSubmitTrue(true));
-    dispatch(setUploadPopup(false));
     if (
       location.pathname === "/viewDailyPlan" ||
       location.pathname === "/createPlan"
     ) {
-      setSubmitPopup(true);
+            if (uploadFile) {
+        try {
+          const result = await uploadCustomerFile({
+            file: uploadFile,
+            unitNumber: unitEffectiveNumberDaily?unitEffectiveNumberDaily:'', // <-- Replace with actual unit number if needed
+            type: "job",
+          }).unwrap();
+
+          dispatch(setUploadPopup(false));
+          setSubmitPopup(true);
+          dispatch(setUploadedFile(null));
+          alert("File uploaded successfully!");
+        } catch (err) {
+          console.error("Upload failed:", err);
+
+          let message = "Upload failed. Please try again.";
+
+          // Check for RTK Query error format
+          if (err && typeof err === "object") {
+            const errData = err as {
+              data?: { message?: string };
+              message?: string;
+            };
+
+            if (errData?.data?.message) {
+              message = errData.data.message;
+            } else if (errData?.message) {
+              message = errData.message;
+            }
+          }
+
+          toast.error(message);
+        }
+      } else {
+        toast.warn("No file selected to upload.");
+      }
+
     } else {
-      dispatch(setSubmitAndPublishPopup(true));
+      if (uploadFile) {
+        try {
+          const result = await uploadCustomerFile({
+            file: uploadFile,
+            unitNumber: "", // <-- Replace with actual unit number if needed
+            type: "master",
+          }).unwrap();
+
+          dispatch(setUploadPopup(false));
+          dispatch(setSubmitAndPublishPopup(true));
+          dispatch(setUploadedFile(null));
+          alert("File uploaded successfully!");
+        } catch (err) {
+          console.error("Upload failed:", err);
+
+          let message = "Upload failed. Please try again.";
+
+          // Check for RTK Query error format
+          if (err && typeof err === "object") {
+            const errData = err as {
+              data?: { message?: string };
+              message?: string;
+            };
+
+            if (errData?.data?.message) {
+              message = errData.data.message;
+            } else if (errData?.message) {
+              message = errData.message;
+            }
+          }
+
+          toast.error(message);
+        }
+      } else {
+        toast.warn("No file selected to upload.");
+      }
     }
   };
 
@@ -406,6 +487,8 @@ const Header: React.FC<HeaderProps> = ({
         handleDownloadSampleFile={() =>
           handleDownloadSampleFileMasterData(excelFile)
         }
+        isLoading={isLoading}
+        disable={uploadFile?false:true}
       />
       <ConfirmPopup
         open={

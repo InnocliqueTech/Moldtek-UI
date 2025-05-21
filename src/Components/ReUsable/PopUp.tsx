@@ -12,6 +12,8 @@ import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
 import { Close, CloudUpload } from "@mui/icons-material";
 import { useUploadCustomerFileMutation } from "../../store/services/api";
+import { useDispatch } from "react-redux";
+import { setUploadedFile } from "../../store/slices/masterDataSlice";
 
 
 interface ReusablePopupProps {
@@ -29,6 +31,8 @@ interface ReusablePopupProps {
   cancel?: boolean;
   sampleFile?:boolean;
   handleDownloadSampleFile?:()=> void;
+  isLoading?:boolean;
+  disable?:boolean
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -45,18 +49,14 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   cancel,
   dropdown,
   sampleFile,
-  handleDownloadSampleFile
+  handleDownloadSampleFile,
+  isLoading,
+  disable
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
  const [error, setError] = useState<string | null>(null);
- const [uploadCustomerFile] = useUploadCustomerFileMutation();
 
- let unitEffectiveNumberDaily:any 
- const UEN = localStorage.getItem('unitEffectiveNumberDaily')
- if(UEN){
-  unitEffectiveNumberDaily=UEN
- }
-
+const dispatch = useDispatch();
 
 const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
@@ -74,20 +74,8 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     }
 
     setSelectedFile(file);
+    dispatch(setUploadedFile(file))
     setError(null);
-
-    try {
-      const result = await uploadCustomerFile({
-        file,
-        unitNumber: sampleFile ?"":unitEffectiveNumberDaily,
-        type: sampleFile ? "master":"job",
-      }).unwrap();
-      alert("File uploaded successfully!");
-      setSelectedFile(null);
-    } catch (err) {
-      console.error("Upload failed:", err);
-      setError("Upload failed. Please try again.");
-    }
   }
 };
 
@@ -302,7 +290,10 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
           textColor="white"
           borderRadius="100px"
           width={cancel ? "" : "100%"}
+          loading={isLoading}
+          disabled={disable}
         />
+
 }
       </DialogActions>
     </Dialog>
