@@ -1,6 +1,6 @@
-import React from "react";
-import { Typography, Grid, Box, Tooltip } from "@mui/material";
-import { InfoOutlined } from "@mui/icons-material";
+import React, { useState } from "react";
+import { Typography, Grid, Box, Tooltip, Dialog, DialogTitle, DialogContent, IconButton, Modal } from "@mui/material";
+import { Close, InfoOutlined, Visibility } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import AutoTooltipText from "./AutoTooltipText";
@@ -29,6 +29,7 @@ const OrderCard: React.FC = () => {
   const renderValue = (value: string | undefined | null) => {
     return value ? value : "N/A";
   };
+  const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
 
   return (
     <Box>
@@ -155,18 +156,39 @@ const OrderCard: React.FC = () => {
 
           <Grid size={{ xs: 12, md: 4 }}>
             <Box />
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Customer Picture
-            </Typography>
-            {viewMasterDataDetails?.customer_logo ? (
-              <img
-                src={viewMasterDataDetails?.customer_logo}
-                alt="customer picture"
-              />
-            ) : (
-              <Typography variant="body1">N/A</Typography>
-            )}
-            <Box sx={{ mt: 2 }}>
+         <Box sx={{ mt: 0 }}>
+  <Typography variant="body2" color="text.secondary" fontWeight={500}>
+    Customer Picture
+  </Typography>
+
+  {viewMasterDataDetails?.customer_logo ? (
+    <Box sx={{display:'flex',flexDirection:'row'}}>
+    <Box
+                      component="img"
+                      src={viewMasterDataDetails?.customer_logo}
+                      alt="Uploaded"
+                      sx={{
+                        width: 150,
+                        height: 35,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                        flexShrink: 0,
+                      }}
+                    />
+        <Tooltip title="View">
+                        <IconButton
+                          onClick={() => setImagePreviewOpen(true)}
+                          color="primary"
+                        >
+                          <Visibility />
+                        </IconButton>
+                      </Tooltip>
+    </Box>
+  ) : (
+    <Typography variant="body1">N/A</Typography>
+  )}
+</Box> 
+            <Box sx={{ mt: 1 }}>
               <AutoTooltipText
                 content={"Brand Name & Pack-Description"}
                 maxLength={25}
@@ -183,7 +205,7 @@ const OrderCard: React.FC = () => {
                 <Typography
                   variant="body1"
                   sx={{
-                    mt: 0.5,
+                    mt: -1,
                     wordBreak: "break-word",
                     whiteSpace: "pre-line",
                   }}
@@ -264,6 +286,62 @@ const OrderCard: React.FC = () => {
           ))}
         </Box>
       </Box>
+  <Modal
+                      open={imagePreviewOpen}
+                      onClose={() => setImagePreviewOpen(false)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          bgcolor: "background.paper",
+                          borderRadius: 2,
+                          boxShadow: 24,
+                          p: 2,
+                          outline: "none",
+                          maxWidth: "90%",
+                          maxHeight: "90%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Modal Header */}
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          width="100%"
+                          mb={2}
+                        >
+                          <Typography variant="h6" component="h2">
+                            Preview of Image
+                          </Typography>
+                          <IconButton onClick={() => setImagePreviewOpen(false)}>
+                            <Close />
+                          </IconButton>
+                        </Box>
+
+                        {/* Image Preview */}
+                         {viewMasterDataDetails?.customer_logo ? (
+                        <Box
+                          component="img"
+                          src={viewMasterDataDetails?.customer_logo}
+                          alt="Full Image"
+                          sx={{
+                            maxWidth: "100%",
+                            maxHeight: "75vh",
+                            borderRadius: "8px",
+                            objectFit: "contain",
+                          }}
+                        />):(
+    <Typography variant="body1">N/A</Typography>
+  )}
+                      </Box>
+                    </Modal>
     </Box>
   );
 };

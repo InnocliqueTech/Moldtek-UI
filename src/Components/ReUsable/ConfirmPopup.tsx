@@ -16,8 +16,8 @@ interface ConfirmPopupProps {
   onClose: () => void;
   onConfirm?: () => void;
   buttonText2?: string;
-  onClick?:()=> void;
-  isLoading?:boolean;
+  onClick?: () => void;
+  isLoading?: boolean;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -28,7 +28,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   onClose,
   buttonText2,
   onClick,
-  isLoading
+  isLoading,
 }) => {
   return (
     <Dialog
@@ -45,7 +45,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
       }}
     >
       <DialogContent>
-      <HelpOutline sx={{color:"#0073B7", width:40,height:40,mb:1}}/>
+        <HelpOutline sx={{ color: "#0073B7", width: 40, height: 40, mb: 1 }} />
         <Typography variant="h6" fontWeight="bold">
           {title}
         </Typography>
@@ -72,7 +72,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             borderRadius="100px"
             color="#0073B7"
             textColor="white"
-            onClick={onClick }
+            onClick={onClick}
             p={2}
             loading={isLoading}
           />

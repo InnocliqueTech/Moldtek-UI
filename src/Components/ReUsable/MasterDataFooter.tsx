@@ -15,10 +15,12 @@ import {
   setLaminationDataTouched,
   setMasterDataDataTouched,
   setPrintingDataTouched,
+  setSelectedFile,
   setSelectedTab,
   setSubmitAndPublishPopup,
   setSubmitPopup,
   setSubmitPopupConfirm,
+  setUploadedFile,
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
@@ -55,7 +57,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     saveFormData,
     laminationTab,
     printingTab,
-    customerLogoFile
+    customerLogoFile,
+    uploadFile
   } = useSelector((store: RootState) => store.masterData);
   const {viewMasterDataDetails} =  useSelector((store: RootState) => store.viewMasterData);
   const [uploadCustomerFile,{ isLoading:uploadLoading }] = useUploadCustomerFileMutation();
@@ -147,8 +150,42 @@ if (!submitTrue) {
   }
 
     if (submitTrue) {
-      dispatch(setSubmitAndPublishPopup(false));
+            if (uploadFile) {
+              try {
+                const result = await uploadCustomerFile({
+                  file: uploadFile,
+                  unitNumber: "", // <-- Replace with actual unit number if needed
+                  type: "master",
+                }).unwrap();
+      
+                dispatch(setSubmitAndPublishPopup(false));
+                dispatch(setUploadedFile(null));
+              } catch (err) {
+                console.error("Upload failed:", err);
+      
+                let message = "Upload failed. Please try again.";
+      
+                // Check for RTK Query error format
+                if (err && typeof err === "object") {
+                  const errData = err as {
+                    data?: { message?: string };
+                    message?: string;
+                  };
+      
+                  if (errData?.data?.message) {
+                    message = errData.data.message;
+                  } else if (errData?.message) {
+                    message = errData.message;
+                  }
+                }
+      
+                toast.error(message);
+              }
+            } else {
+              toast.warn("No file selected to upload.");
+            }
       dispatch(setSubmitPopupConfirm(true));
+         dispatch(setSelectedFile(null))
     }
   };
 
@@ -156,6 +193,7 @@ if (!submitTrue) {
     dispatch(setSubmitAndPublishPopup(false));
     dispatch(setSubmitPopupConfirm(false));
     dispatch(setSubmitPopup(false));
+       dispatch(setSelectedFile(null))
   };
 
   const handleSubmitPopupConfirmClick = () => {
@@ -164,6 +202,7 @@ if (!submitTrue) {
     dispatch(setSubmitPopup(false));
     navigate("/masterData");
     localStorage.setItem('masterDataPage','0')
+       dispatch(setSelectedFile(null))
   };
 
   const UEN = localStorage.getItem("selectedUEN") ?? "";
@@ -177,7 +216,7 @@ if (!submitTrue) {
 
   const successTitle = id
     ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
-    : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+    : submitTrue ? `We are currently processing your data. Please wait a moment`:`You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const isSubmitDisabled = () => {
     if (!id && printingTab && laminationTab) {
@@ -285,7 +324,7 @@ if (!submitTrue) {
         message={successTitle}
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
-        subMessage="You’re all set! Let’s get started."
+        subMessage={submitTrue ?"":"You’re all set! Let’s get started."}
         buttonText="Go back to Master Data"
       />
 
@@ -296,9 +335,11 @@ if (!submitTrue) {
         buttonText="No"
         buttonText2="Yes, Publish it!"
         gifSrc=""
-        onClose={() => dispatch(setSubmitAndPublishPopup(false))}
+        onClose={() =>{dispatch(setSubmitAndPublishPopup(false));
+             dispatch(setSelectedFile(null))
+        }}
         onClick={handleSubmitPopupConfirmOpen}
-        isLoading={isLoading}
+        isLoading={isLoading||uploadLoading}
       />
     </Box>
   );

@@ -281,6 +281,7 @@ export interface PrintingTableRow {
     searchField :string;
   }
   export interface MasterDataState {
+    selectedFile:File|null;
     uploadFile:File |null;
     customerLogoFile:File |null;
     updateButton:boolean;

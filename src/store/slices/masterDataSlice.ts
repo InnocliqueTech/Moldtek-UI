@@ -5,6 +5,7 @@ import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, Lab
 
 const initialState: MasterDataState = {
   updateButton:false,
+  selectedFile:null,
   customerLogoFile:null,
   uploadFile:null,
   dropDownValuesStructure:[],
@@ -715,6 +716,9 @@ const masterDataSlice = createSlice({
   reducers: {
     setUploadedFile:(state,action:PayloadAction<any>)=>{
     state.uploadFile = action.payload
+    },
+    setSelectedFile:(state,action:PayloadAction<any>)=>{
+    state.selectedFile = action.payload
     },
     setCustomerLogoFile:(state,action:PayloadAction<any>)=>{
 state.customerLogoFile = action.payload
@@ -1648,6 +1652,7 @@ export const {
   setSupplieraminationDropDownValues,
   setUpdateButton,
   setCustomerLogoFile,
-  setUploadedFile
+  setUploadedFile,
+  setSelectedFile
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

@@ -12,9 +12,9 @@ import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
 import { Close, CloudUpload } from "@mui/icons-material";
 import { useUploadCustomerFileMutation } from "../../store/services/api";
-import { useDispatch } from "react-redux";
-import { setUploadedFile } from "../../store/slices/masterDataSlice";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedFile, setUploadedFile } from "../../store/slices/masterDataSlice";
+import { RootState } from "../../store";
 
 interface ReusablePopupProps {
   open: boolean;
@@ -24,15 +24,15 @@ interface ReusablePopupProps {
   onConfirm?: () => void;
   text?: string;
   subText?: string;
-  dropdownOptions?: string[]; 
+  dropdownOptions?: string[];
   upload?: boolean;
   textField?: boolean;
   dropdown?: boolean;
   cancel?: boolean;
-  sampleFile?:boolean;
-  handleDownloadSampleFile?:()=> void;
-  isLoading?:boolean;
-  disable?:boolean
+  sampleFile?: boolean;
+  handleDownloadSampleFile?: () => void;
+  isLoading?: boolean;
+  disable?: boolean;
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -43,7 +43,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   onConfirm,
   text,
   subText,
-  dropdownOptions = [], 
+  dropdownOptions = [],
   upload,
   textField,
   cancel,
@@ -51,175 +51,186 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   sampleFile,
   handleDownloadSampleFile,
   isLoading,
-  disable
+  disable,
 }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
- const [error, setError] = useState<string | null>(null);
 
-const dispatch = useDispatch();
+  const {selectedFile} = useSelector((state:RootState)=>state.masterData)
+  const [error, setError] = useState<string | null>(null);
 
-const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
+  const dispatch = useDispatch();
 
-  if (file) {
-    const validTypes = [
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    ];
+  const popUpClose = () => {
+    onClose();
+    dispatch(setSelectedFile(null));
+  };
 
-    if (!validTypes.includes(file.type)) {
-      setError("Only Excel files (.xls, .xlsx) are allowed.");
-      setSelectedFile(null);
-      return;
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const validTypes = [
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ];
+
+      if (!validTypes.includes(file.type)) {
+        setError("Only Excel files (.xls, .xlsx) are allowed.");
+          dispatch(setSelectedFile(null));
+        return;
+      }
+
+        dispatch(setSelectedFile(file));
+      dispatch(setUploadedFile(file));
+      setError(null);
     }
-
-    setSelectedFile(file);
-    dispatch(setUploadedFile(file))
-    setError(null);
-  }
-};
+  };
 
   return (
     <Dialog
-    open={open}
-    onClose={onClose}
-    maxWidth='xs' 
-    fullWidth
-    sx={{
-      "& .MuiPaper-root": {
-        borderRadius: "16px",
-      },
-    }}
-  >
+      open={open}
+      onClose={popUpClose}
+      maxWidth="xs"
+      fullWidth
+      sx={{
+        "& .MuiPaper-root": {
+          borderRadius: "16px",
+        },
+      }}
+    >
       {/* Popup Header */}
-      {title&&
-      <DialogTitle sx={{pb:'6px',ml:'-12px'}}>{title}</DialogTitle>
-}
+      {title && (
+        <DialogTitle sx={{ pb: "6px", ml: "-12px" }}>{title}</DialogTitle>
+      )}
 
       {/* Popup Body */}
-      <DialogContent sx={{p:"16px", mt:'0px'}}>
+      <DialogContent sx={{ p: "16px", mt: "0px" }}>
         <Box display="flex" flexDirection="column" gap="10px">
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
           {subText && (
-  <Box display="flex" alignItems="center" gap={'130px'}>
-    <Typography variant="body2" color="gray">
-      {subText}
-    </Typography>
-    {sampleFile && (
-      <Typography
-        variant="body2"
-        sx={{
-          color: "#007bff",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        onClick={handleDownloadSampleFile}
-      >
-        Download Sample File
-      </Typography>
-    )}
-  </Box>
-)}
-
+            <Box display="flex" alignItems="center" gap={"130px"}>
+              <Typography variant="body2" color="gray">
+                {subText}
+              </Typography>
+              {sampleFile && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#007bff",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleDownloadSampleFile}
+                >
+                  Download Sample File
+                </Typography>
+              )}
+            </Box>
+          )}
 
           {upload && (
             <Box
-            sx={{
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              padding: "16px",
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              cursor: "pointer",
-              maxWidth: 600,
-              width: "100%",
-              backgroundColor: "#fff",
-              flexDirection:'column'
-            }}
-          >
-            {/* Icon inside a rounded background */}
-            <Box
               sx={{
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                backgroundColor: "#f5f5f5",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "16px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
+                gap: 2,
+                cursor: "pointer",
+                maxWidth: 600,
+                width: "100%",
+                backgroundColor: "#fff",
+                flexDirection: "column",
               }}
             >
-              <CloudUpload sx={{ color: "#9e9e9e", fontSize: 30 }} />
-            </Box>
-      
-            {/* Upload button */}
-         <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
-        <Typography component="span" sx={{ fontSize: "14px" }}>
-          <span
-            style={{
-              color: "#007bff",
-              fontWeight: "500",
-              cursor: "pointer",
-            }}
-          >
-            Click to upload
-          </span>{" "}
-          <span style={{ color: "#9e9e9e" }}>(only .xls/.xlsx)</span>
-        </Typography>
-        <input
-          type="file"
-          id="file-upload"
-          accept=".xls,.xlsx"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-      </label>
-      {error && (
-        <Typography color="error" sx={{ fontSize: "12px", mt: 1 }}>
-          {error}
-        </Typography>
-      )}
-      
-            {/* Show selected file name */}
-         {selectedFile && (
-  <Box
-    display="flex"
-    alignItems="center"
-    justifyContent="space-between"
-    width="100%"
-    bgcolor="#f1f1f1"
-    px={1.5}
-    py={0.5}
-    borderRadius="6px"
-  >
-    <Typography
-      variant="body2"
-      color="green"
-      sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "85%" }}
-    >
-      {selectedFile.name}
-    </Typography>
-    <Close
-      onClick={() => {
-        setSelectedFile(null);
-        setError(null);
-      }}
-      sx={{
-        color: "#d32f2f",
-        fontSize: 20,
-        cursor: "pointer",
-        ml: 1,
-        "&:hover": {
-          color: "#b71c1c",
-        },
-      }}
-    />
-  </Box>
-)}
+              {/* Icon inside a rounded background */}
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  backgroundColor: "#f5f5f5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CloudUpload sx={{ color: "#9e9e9e", fontSize: 30 }} />
+              </Box>
 
-          </Box>
+              {/* Upload button */}
+              <label htmlFor="file-upload" style={{ flexGrow: 1 }}>
+                <Typography component="span" sx={{ fontSize: "14px" }}>
+                  <span
+                    style={{
+                      color: "#007bff",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Click to upload
+                  </span>{" "}
+                  <span style={{ color: "#9e9e9e" }}>(only .xls/.xlsx)</span>
+                </Typography>
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept=".xls,.xlsx"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+              </label>
+              {error && (
+                <Typography color="error" sx={{ fontSize: "12px", mt: 1 }}>
+                  {error}
+                </Typography>
+              )}
+
+              {/* Show selected file name */}
+              {selectedFile && (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  width="100%"
+                  bgcolor="#f1f1f1"
+                  px={1.5}
+                  py={0.5}
+                  borderRadius="6px"
+                >
+                  <Typography
+                    variant="body2"
+                    color="green"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "85%",
+                    }}
+                  >
+                    {selectedFile.name}
+                  </Typography>
+                  <Close
+                    onClick={() => {
+                        dispatch(setSelectedFile(null));
+                      setError(null);
+                    }}
+                    sx={{
+                      color: "#d32f2f",
+                      fontSize: 20,
+                      cursor: "pointer",
+                      ml: 1,
+                      "&:hover": {
+                        color: "#b71c1c",
+                      },
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
           )}
           {textField && (
             <>
@@ -273,7 +284,7 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
       </DialogContent>
 
       {/* Popup Actions (Confirm & Close) */}
-      <DialogActions sx={{ paddingBottom: "16px",mt:'-6px' }}>
+      <DialogActions sx={{ paddingBottom: "16px", mt: "-6px" }}>
         {cancel && (
           <ButtonComponent
             onClick={onClose}
@@ -282,19 +293,18 @@ const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
             textColor="#0E0E0E"
           />
         )}
-        {confirmText &&
-        <ButtonComponent
-          onClick={onConfirm}
-          text={confirmText}
-          color="#0073B7"
-          textColor="white"
-          borderRadius="100px"
-          width={cancel ? "" : "100%"}
-          loading={isLoading}
-          disabled={disable}
-        />
-
-}
+        {confirmText && (
+          <ButtonComponent
+            onClick={onConfirm}
+            text={confirmText}
+            color="#0073B7"
+            textColor="white"
+            borderRadius="100px"
+            width={cancel ? "" : "100%"}
+            loading={isLoading}
+            disabled={disable}
+          />
+        )}
       </DialogActions>
     </Dialog>
   );
