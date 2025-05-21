@@ -281,10 +281,13 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
           setData={(data: any) =>
             handleDataUpdate("printingProcessReport", data)
           }
-          rowEditable={(row) =>
-            row.particular === "Input Plain Film For Printing Mtrs" ||
-            row.particular === "Input Film For Printing Kgs"
-          }
+          rowEditable={(row, column) => {
+            return (
+              row.particular === "Input Plain Film For Printing Mtrs" ||
+              row.particular === "Input Film For Printing Kgs" ||
+              column.includes("Roll")
+            );
+          }}
         />
       </Box>
 
