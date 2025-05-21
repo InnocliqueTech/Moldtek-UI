@@ -18,7 +18,7 @@ const MasterData: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data, isLoading, isError } = useGetMetricsQuery();
+  const { data, isLoading } = useGetMetricsQuery();
   const storageKey = "masterDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
@@ -154,7 +154,6 @@ const MasterData: React.FC = () => {
     {
       data: listOfCompaniesData,
       isLoading: listOfCompaniesLoading,
-      isError: companiesError,
     },
   ] = useMasterFiltersMutation();
 
@@ -180,16 +179,6 @@ const MasterData: React.FC = () => {
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   }, [page,rowsPerPage]);
   
-
-  if (isError || companiesError) {
-    return (
-      <Box sx={{ textAlign: "center", color: "error.main" }}>
-        <Typography variant="h6">
-          There was an error fetching the data. Please try again later.
-        </Typography>
-      </Box>
-    );
-  }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     dispatch(setIsSearchTriggered(false));

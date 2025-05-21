@@ -64,11 +64,15 @@ const path = location.pathname.includes("/versionDetails")
     versionNo: path ? versionNumber : versionNo,
   });
 
-  const tabs = [
-    "Master Data - Printing",
-    ...(data?.data.masterDataDetails.label_type ==='Thin Wall'||data?.data.masterDataDetails.segment ==='TW' ? []:["Master Data - Lamination"]),
-    "Master Data - Dye Cutting",
-  ];
+const tabs = [
+  "Master Data - Printing",
+  ...((data?.data?.masterDataDetails &&
+    (data.data.masterDataDetails?.label_type !== "Thin Wall" &&
+     data.data.masterDataDetails?.segment !== "TW"))
+    ? ["Master Data - Lamination"]
+    : []),
+  "Master Data - Dye Cutting",
+];
 
   useEffect(() => {
     if (data) {
