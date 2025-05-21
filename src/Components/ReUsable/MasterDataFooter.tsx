@@ -142,7 +142,7 @@ if (!submitTrue) {
       dispatch(setLaminationDataTouched(false));
       dispatch(setMasterDataDataTouched(false));
     } catch (err: any) {
-      // If createMasterData throws an unexpected error
+  
       const message =
         err?.data?.message || err?.message || "Unexpected error during submission.";
       toast.error(message);
@@ -154,7 +154,7 @@ if (!submitTrue) {
               try {
                 await uploadCustomerFile({
                   file: uploadFile,
-                  unitNumber: "", // <-- Replace with actual unit number if needed
+                  unitNumber: "", 
                   type: "master",
                 }).unwrap();
       
