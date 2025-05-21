@@ -559,9 +559,9 @@ const Lamination: React.FC<LaminationProps> = ({
             >
               Lamination Zone Settings
             </Typography>
-            <InfoOutline
+            {/* <InfoOutline
               sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-            />
+            /> */}
           </Box>
           <Grid container spacing={2} pt={1}>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -865,7 +865,7 @@ const Lamination: React.FC<LaminationProps> = ({
           >
             Bonding Material Specifications
           </Typography>
-          <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+          {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
         <DataTable
           columns={bondingMaterialColumns}
@@ -887,9 +887,9 @@ const Lamination: React.FC<LaminationProps> = ({
           >
             Material Details
           </Typography>
-          <InfoOutline
+          {/* <InfoOutline
             sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-          />
+          /> */}
         </Box>
 
         <Grid container spacing={2} pt={1}>

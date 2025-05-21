@@ -58,7 +58,7 @@ const ViewMasterDataDetails: React.FC = () => {
         >
           Repeat & Label Metrics
         </Typography>
-        <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} />
+        {/* <InfoOutline sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
       </Box>
       {/* <DataTable columns={columns} data={repeatTableData} /> */}
       <Box

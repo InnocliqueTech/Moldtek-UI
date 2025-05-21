@@ -422,6 +422,7 @@ const Printing: React.FC<PrintingProps> = ({
           checkbox={false}
           allowNewOption
           dropdown={field.label === "Supplier" ? "supplier" : ""}
+           required={field.label === "Supplier" ? false : true}
         />
       );
     }

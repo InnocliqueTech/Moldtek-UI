@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, SelectChangeEvent, Skeleton, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Modal, SelectChangeEvent, Skeleton, Tooltip, Typography } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
@@ -11,6 +11,7 @@ import {
 } from "../../store/slices/viewMasterDataSlice";
 import { useGetJobsListQuery, useViewMasterDataQuery } from "../../store/services/api";
 import { setBackButtonNavigationAllowed, setIsEditing, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
+import { Close, Visibility } from "@mui/icons-material";
 
 
 
@@ -225,6 +226,8 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
         ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
         : viewMasterDataDetails?.label_type;
 
+        const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
@@ -302,12 +305,40 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
 
     <Grid size={{xs:12,md:4}}>
       <Box />
-      <Typography variant="body2" color="text.secondary" fontWeight={500}>Customer Picture</Typography>
-      {viewMasterDataDetails?.customer_logo ? (
-        <img src={viewMasterDataDetails?.customer_logo} alt="customerPicture" />
-      ) : "N/A"}
+            <Box sx={{ mt: 0 }}>
+  <Typography variant="body2" color="text.secondary" fontWeight={500}>
+    Customer Picture
+  </Typography>
 
-      <Box sx={{ mt: 2 }}>
+  {viewMasterDataDetails?.customer_logo ? (
+    <Box sx={{display:'flex',flexDirection:'row'}}>
+    <Box
+                      component="img"
+                      src={viewMasterDataDetails?.customer_logo}
+                      alt="Uploaded"
+                      sx={{
+                        width: 150,
+                        height: 35,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                        flexShrink: 0,
+                      }}
+                    />
+        <Tooltip title="View">
+                        <IconButton
+                          onClick={() => setImagePreviewOpen(true)}
+                          color="primary"
+                        >
+                          <Visibility />
+                        </IconButton>
+                      </Tooltip>
+    </Box>
+  ) : (
+    <Typography variant="body1">N/A</Typography>
+  )}
+</Box> 
+
+      <Box sx={{ mt: 1}}>
         <Typography variant="body2" color="text.secondary" fontWeight={500}>
           Brand Name & Pack-Description
         </Typography>
@@ -339,7 +370,7 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
               columns={columns}
               data={jobListData?jobListData:[]}
               selectable={false}
-              label={`${data?.totalRecords?data.totalRecords:0} Versions`}
+              label={`${data?.totalRecords?data.totalRecords:0} Jobs`}
               title="List of executed jobs"
               info={true}
               searchVisible={true}
@@ -356,6 +387,62 @@ const {jobListData} = useSelector((state:RootState)=>state.viewMasterData)
           </Box>
         </Box>
       </Box>
+        <Modal
+                            open={imagePreviewOpen}
+                            onClose={() => setImagePreviewOpen(false)}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                bgcolor: "background.paper",
+                                borderRadius: 2,
+                                boxShadow: 24,
+                                p: 2,
+                                outline: "none",
+                                maxWidth: "90%",
+                                maxHeight: "90%",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
+                            >
+                              {/* Modal Header */}
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                width="100%"
+                                mb={2}
+                              >
+                                <Typography variant="h6" component="h2">
+                                  Preview of Image
+                                </Typography>
+                                <IconButton onClick={() => setImagePreviewOpen(false)}>
+                                  <Close />
+                                </IconButton>
+                              </Box>
+      
+                              {/* Image Preview */}
+                               {viewMasterDataDetails?.customer_logo ? (
+                              <Box
+                                component="img"
+                                src={viewMasterDataDetails?.customer_logo}
+                                alt="Full Image"
+                                sx={{
+                                  maxWidth: "100%",
+                                  maxHeight: "75vh",
+                                  borderRadius: "8px",
+                                  objectFit: "contain",
+                                }}
+                              />):(
+          <Typography variant="body1">N/A</Typography>
+        )}
+                            </Box>
+                          </Modal>
     </Box>
   );
 };

@@ -157,7 +157,8 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   ];
   const rollColumns = rollKeys.map((roll) => ({
     id: roll,
-    label: roll.replace("-", " ")
+    label: roll.replace("-", " "),
+     edit: true
   }));
 
   const rollKeysMetrics: string[] = [];
@@ -178,7 +179,8 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
   ];
   const rollColumnsMetrics = rollKeysMetrics.map((roll) => ({
     id: roll,
-    label: roll.replace("-", " ")
+    label: roll.replace("-", " "),
+     edit: true
   }));
 
 

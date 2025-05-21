@@ -181,9 +181,9 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
             >
               Dye Cutting Data Entry
             </Typography>
-            <InfoOutline
+            {/* <InfoOutline
               sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-            />
+            /> */}
           </Box>
 
           <Grid container spacing={2} pt={1}>

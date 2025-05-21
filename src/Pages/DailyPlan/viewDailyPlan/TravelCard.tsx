@@ -38,10 +38,12 @@ const TravelCard: React.FC<TravelCardProps> = ({
   onDataChange,
 }) => {
   const dispatch = useDispatch();
-  const { data, isLoading, isError, error } = useGetTravelCardDetailsQuery(indentNumber);
+  const { data, isLoading, isError } =
+    useGetTravelCardDetailsQuery(indentNumber);
 
-  const [editableData, setEditableData] = useState<EditableTravelCardData | null>(null);
-  const {dailyPlan} = useSelector((state:RootState)=>state.viewDailyPlan)
+  const [editableData, setEditableData] =
+    useState<EditableTravelCardData | null>(null);
+  const { dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // infoItems state for editing job details
   const [printingInfo, setPrintingInfo] = useState<InfoItem[]>([]);
@@ -60,7 +62,10 @@ const TravelCard: React.FC<TravelCardProps> = ({
     }
   }, [data]);
 
-  const handleDataUpdate = (section: keyof EditableTravelCardData, newData: any[]) => {
+  const handleDataUpdate = (
+    section: keyof EditableTravelCardData,
+    newData: any[]
+  ) => {
     if (!editableData) return;
 
     const updated: EditableTravelCardData = { ...editableData };
@@ -84,7 +89,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
     updatedItems: InfoItem[]
   ) => {
     if (!editableData) return;
-  
+
     if (
       section !== "printingMachine" &&
       section !== "laminationMachine" &&
@@ -93,17 +98,17 @@ const TravelCard: React.FC<TravelCardProps> = ({
       console.warn("handleInfoUpdate not supported for:", section);
       return;
     }
-  
+
     const updated: EditableTravelCardData = { ...editableData };
     const machine = { ...updated[section] } as MachineDetails;
-  
+
     updatedItems.forEach((item) => {
       if (item.keyName && item.value !== undefined) {
         (machine as any)[item.keyName] = item.value;
       }
     });
-  
-    updated[section] = machine; 
+
+    updated[section] = machine;
     setEditableData(updated);
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();
@@ -120,10 +125,9 @@ const TravelCard: React.FC<TravelCardProps> = ({
         break;
     }
   };
-  
 
   if (isLoading) return <Loader />;
-  if (isError) return <div>Error loading details: {JSON.stringify(error)}</div>;
+  if (isError) return <div>No Data Available</div>;
   if (!editableData) return <div>data Loading...</div>;
 
   return (
@@ -135,18 +139,18 @@ const TravelCard: React.FC<TravelCardProps> = ({
             if (col.id === "actuals") {
               return { ...col, edit: isEditing }; // actual column always editable
             }
-          
+
             if (col.id === "target") {
               return {
                 ...col,
                 edit: isEditing,
-                rowEditable: (row:any) => row.category === "Inspection Wastage",
+                rowEditable: (row: any) =>
+                  row.category === "Inspection Wastage",
               }; // target column editable only for Inspection Wastage
             }
-          
+
             return { ...col, edit: false };
           })}
-          
           data={editableData.printingMachine.categories}
           setData={(newData: any[]) =>
             handleDataUpdate("printingMachine", newData)
@@ -160,51 +164,53 @@ const TravelCard: React.FC<TravelCardProps> = ({
           showInfoSection
           rowEditable={(row, columnId) => {
             if (columnId === "actuals") return true;
-            if (columnId === "target") return row.category === "Inspection Wastage";
+            if (columnId === "target")
+              return row.category === "Inspection Wastage";
             return false;
           }}
         />
       </Box>
-{(dailyPlan.labelType !== "THINWALL" ||dailyPlan.segment !=='TW') &&
-      <Box sx={{ borderRadius: "0px", p: 1 }}>
-        <TitledDataTable
-          title="Lamination Machine"
-          columns={laminationColumns.map((col) => {
-            if (col.id === "actuals") {
-              return { ...col, edit: isEditing };
+      {(dailyPlan.labelType !== "THINWALL" || dailyPlan.segment !== "TW") && (
+        <Box sx={{ borderRadius: "0px", p: 1 }}>
+          <TitledDataTable
+            title="Lamination Machine"
+            columns={laminationColumns.map((col) => {
+              if (col.id === "actuals") {
+                return { ...col, edit: isEditing };
+              }
+
+              if (col.id === "target") {
+                return {
+                  ...col,
+                  edit: isEditing,
+                  rowEditable: (row: any) =>
+                    row.category === "Inspection Wastage",
+                };
+              }
+
+              return { ...col, edit: false };
+            })}
+            data={editableData.laminationMachine.categories}
+            setData={(newData: any[]) =>
+              handleDataUpdate("laminationMachine", newData)
             }
-          
-            if (col.id === "target") {
-              return {
-                ...col,
-                edit: isEditing,
-                rowEditable: (row:any) => row.category === "Inspection Wastage",
-              };
+            firstRow
+            infoItems={laminationInfo}
+            setInfoItems={(updatedItems) =>
+              handleInfoUpdate("laminationMachine", updatedItems)
             }
-          
-            return { ...col, edit: false };
-          })}
-          
-          data={editableData.laminationMachine.categories}
-          setData={(newData: any[]) =>
-            handleDataUpdate("laminationMachine", newData)
-          }
-          firstRow
-          infoItems={laminationInfo}
-          setInfoItems={(updatedItems) =>
-            handleInfoUpdate("laminationMachine", updatedItems)
-          }
-          isEditing={isEditing}
-          showInfoSection
-          rowEditable={(row, columnId) => {
-            if (columnId === "actuals") return true;
-            if (columnId === "target") return row.category === "Inspection Wastage";
-            return false;
-          }}
-          //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
-        />
-      </Box>
-}
+            isEditing={isEditing}
+            showInfoSection
+            rowEditable={(row, columnId) => {
+              if (columnId === "actuals") return true;
+              if (columnId === "target")
+                return row.category === "Inspection Wastage";
+              return false;
+            }}
+            //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
+          />
+        </Box>
+      )}
 
       <Box sx={{ borderRadius: "0px", p: 1 }}>
         <TitledDataTable

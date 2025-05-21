@@ -100,10 +100,14 @@ const VersinDetails: React.FC = () => {
     dispatch(setVersionPopup(false));
   };
 
-  const { data, isLoading } = useVersionHistoryQuery(
-    { unitEffectiveNumber: selectedUEN },
-    { refetchOnMountOrArgChange: true }
-  );
+ const { data, isLoading } = useVersionHistoryQuery(
+  { unitEffectiveNumber: selectedUEN },
+  {
+    skip: !versionPopup, // skip query if popup is not open
+    refetchOnMountOrArgChange: true,
+  }
+);
+
   
   return (
     <VersionPopup
