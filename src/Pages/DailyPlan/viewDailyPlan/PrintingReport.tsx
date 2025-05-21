@@ -56,6 +56,8 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
 
   switch (section) {
     case "printingProcessReport":
+          updated[section] = revertPrintingProcessData(newData) as ProcessReportItem[];
+      break;
     case "printingRunMetrics":
       updated[section] = revertPrintingProcessData(newData) as ProcessReportItem[];
       break;
