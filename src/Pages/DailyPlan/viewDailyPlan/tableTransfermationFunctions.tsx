@@ -136,21 +136,26 @@ type TensionApiResponse = {
     });
   };
 
-  export const revertPrintingProcessData = (uiData: any[]): ProcessReportItem[] => {
-    return uiData.map((item) => {
-      const { particular, target, roll1, roll2 } = item;
-  
-      const rollValues: Record<string, string | number> = {};
-      if (roll1 !== undefined) rollValues["Roll-1"] = roll1;
-      if (roll2 !== undefined) rollValues["Roll-2"] = roll2;
-  
-      return {
-        particular,
-        target: target === "" ? null : target, 
-        rollValues,
-      };
+export const revertPrintingProcessData = (uiData: any[]): ProcessReportItem[] => {
+  return uiData.map((item) => {
+    const { particular, target, ...rest } = item;
+
+    // Extract all roll keys dynamically, e.g., "Roll-1", "Roll-2", ...
+    const rollValues: Record<string, string | number> = {};
+    Object.keys(rest).forEach((key) => {
+      if (key.startsWith("Roll-")) {
+        rollValues[key] = rest[key];
+      }
     });
-  };
+
+    return {
+      particular,
+      target: target === "" ? null : target,
+      rollValues,
+    };
+  });
+};
+
   
 
   export const printingMCMapping = {

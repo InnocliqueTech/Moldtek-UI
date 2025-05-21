@@ -49,51 +49,51 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
     }
   }, [printingReportsData]);
 
-  const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData: any[]) => {
-    if (!editableData) return;
+const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData: any[]) => {
+  if (!editableData) return;
 
-    const updated = { ...editableData };
+  const updated = { ...editableData };
 
-    switch (section) {
-      case "printingProcessReport":
-        case "printingRunMetrics":
-          updated[section] = revertPrintingProcessData(newData) as ProcessReportItem[];
-          break;
-    
-        case "inkCoatingSpecifications":
-          updated[section] = [...newData];
-          break;
+  switch (section) {
+    case "printingProcessReport":
+    case "printingRunMetrics":
+      updated[section] = revertPrintingProcessData(newData) as ProcessReportItem[];
+      break;
 
-      case "tensionControl": {
-        const actualsRow = newData.find((row: any) => row.label === "Actuals");
-        if (actualsRow) {
-          updated.tensionControl = {
-            ...updated.tensionControl,
-            actuals: {
-              unwinder: actualsRow.unwinder ? Number(actualsRow.unwinder) : null,
-              infeed: actualsRow.infeed ? Number(actualsRow.infeed) : null,
-              outfeed: actualsRow.outfeed ? Number(actualsRow.outfeed) : null,
-              rewinder: actualsRow.rewinder ? Number(actualsRow.rewinder) : null,
-            },
-          };
-        }
-        break;
+    case "inkCoatingSpecifications":
+      updated[section] = [...newData];
+      break;
+
+    case "tensionControl": {
+      const actualsRow = newData.find((row: any) => row.label === "Actuals");
+      if (actualsRow) {
+        updated.tensionControl = {
+          ...updated.tensionControl,
+          actuals: {
+            unwinder: actualsRow.unwinder ? Number(actualsRow.unwinder) : null,
+            infeed: actualsRow.infeed ? Number(actualsRow.infeed) : null,
+            outfeed: actualsRow.outfeed ? Number(actualsRow.outfeed) : null,
+            rewinder: actualsRow.rewinder ? Number(actualsRow.rewinder) : null,
+          },
+        };
       }
-
-      case "printRepeatLabellingDetails":
-      case "materialSpecifications":
-      case "foilRollConsumptionDetails":
-        updated[section] = newData[0];
-        break;
-
-      default:
-        return;
+      break;
     }
-   
-    setEditableData(updated);
-    dispatch(setUpdateDailyPlanPayload({ ...updated }));
-    onDataChange();
-  };
+
+    case "printRepeatLabellingDetails":
+    case "materialSpecifications":
+    case "foilRollConsumptionDetails":
+      updated[section] = newData[0];
+      break;
+
+    default:
+      return;
+  }
+
+  setEditableData(updated);
+  dispatch(setUpdateDailyPlanPayload({ ...updated }));
+  onDataChange();
+};
 
   const handleInfoUpdate = (updatedItems: InfoItem[]) => {
     if (!editableData) return;
@@ -289,12 +289,12 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
       </Box>
 
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
-        <TitledDataTable
-          title="Printing Run Metrics"
+       <TitledDataTable
+  title="Printing Run Metrics"
           columns={[...baseColumnsMetrics, ...rollColumnsMetrics]}
-          data={printingRunMetricsRows}
-          setData={(data: any) => handleDataUpdate("printingRunMetrics", data)}
-        />
+  data={printingRunMetricsRows}
+  setData={(data: any) => handleDataUpdate("printingRunMetrics", data)}
+/>
       </Box>
 
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
