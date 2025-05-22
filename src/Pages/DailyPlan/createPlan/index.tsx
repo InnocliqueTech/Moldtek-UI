@@ -46,19 +46,7 @@ const CreatePlan: React.FC = () => {
   const [subStrateDropDown] = useSubStrateDropDownMutation();
   const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
   const [unitEffectivityOptions] = useState<string[]>(unitEffectiveNoList);
-  useEffect(() => {
-    const fetchDropdownValues = async () => {
-      const response = await subStrateDropDown({
-        substrate: "",
-        substrateType: "printing",
-      }).unwrap();
-      const substrateList = response?.data?.map((item: any) => item.substrate);
-      dispatch(setPrintingDropDownValues(substrateList));
-    };
-
-    fetchDropdownValues();
-  }, [subStrateDropDown, dispatch]);
-
+  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(null);
   const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
   const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
@@ -68,6 +56,19 @@ const CreatePlan: React.FC = () => {
         segment: "",
       });
     }, []);
+
+  useEffect(() => {
+      const fetchDropdownValues = async () => {
+        const response = await subStrateDropDown({
+          substrate: "",
+          substrateType: "printing",
+        }).unwrap();
+        const substrateList = response?.data?.map((item: any) => item.substrate);
+        dispatch(setPrintingDropDownValues(substrateList));
+      };
+  
+      fetchDropdownValues();
+    }, [subStrateDropDown, dispatch]);
   const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
 
 const initialFormFields: FormField[] = [
@@ -148,7 +149,7 @@ useEffect(() => {
   ];
 
   const shouldShowField = (fieldId: string): boolean => {
-    return allowedFields.includes(fieldId); // ⬅️ Only show specified fields
+    return allowedFields.includes(fieldId); 
   };
 
   const handleInputChange = (
@@ -163,6 +164,10 @@ useEffect(() => {
     }
   
     if (fieldId === 'unitEffectivityNumber') {
+      const selected = unitEffectiveNoData.find(
+        (item) => item.unitEffectiveNumber === extractedValue
+      );
+      setSelectedUnitMeta(selected || null);
       setSelectedUnitNumber(extractedValue as string);
     }
   
@@ -329,6 +334,29 @@ useEffect(() => {
                 )}
               </Grid>
             ))}
+            {selectedUnitMeta && (
+  <>
+    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+      <ReusableInput
+        label="Customer Name"
+        value={selectedUnitMeta.customerName}
+        type="text"
+        onChange={() => {}}
+        disabled
+      />
+    </Grid>
+    <Grid  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+      <ReusableInput
+        label="Brand Description"
+        value={selectedUnitMeta.brandDescription}
+        type="text"
+        onChange={() => {}}
+        disabled
+      />
+    </Grid>
+  </>
+)}
+
         </Grid>
         <Typography
           sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
