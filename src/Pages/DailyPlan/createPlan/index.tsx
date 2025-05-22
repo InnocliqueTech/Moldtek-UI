@@ -13,6 +13,8 @@ import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
+import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
+import { indentNumbersResp } from './mockData';
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -26,8 +28,16 @@ export interface FormField {
   allowTextFiled?:boolean
 }
 
+interface ProductUnit {
+  unitEffectiveNumber: string;
+  customerName: string;
+  brandDescription: string;
+}
 
-
+const indentNoList : ProductUnit[] = indentNumbersResp
+const indentNoOptions = indentNoList.map((item:ProductUnit)=>{
+  return  item.unitEffectiveNumber
+})
 const CreatePlan: React.FC = () => {
   
   const dispatch = useDispatch<AppDispatch>();
@@ -48,14 +58,15 @@ const CreatePlan: React.FC = () => {
 
   const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
   const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
-   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  const [selectedCustomer,setSelectedCustomer] = useState<string>('');
   
-    useEffect(()=>{
-  segmentsDropdown({
-    segment: ""
-  })
-    },[])
-    const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+  useEffect(() => {
+      segmentsDropdown({
+        segment: "",
+      });
+    }, []);
+  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
 
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
@@ -121,8 +132,8 @@ useEffect(() => {
   // ];
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New'); // ⬅️ Commented
-  const jobType: 'Repeat' = 'Repeat'; // ⬅️ Hardcoded as Repeat
+  // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
+  const jobType: 'Repeat' = 'Repeat'; 
 
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
 
@@ -301,6 +312,13 @@ useEffect(() => {
               </Grid>
             ))}
         </Grid>
+        {/* <AutoSuggest
+          label="Indent Number"
+          value={selectedCustomer}
+          onChange={(val) => setSelectedCustomer(val)}
+          //fetchOptions={fetchCustomerOptions} // Optional
+          staticOptions={indentNoOptions} // Optional
+        /> */}
         <Typography
           sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
         >
