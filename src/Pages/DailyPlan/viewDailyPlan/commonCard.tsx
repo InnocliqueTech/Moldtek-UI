@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useDispatch } from "react-redux";
 import ReusableInput from "../../../Components/ReUsable/TextField";
-import { setUpdateCommonCard } from "../../../store/slices/viewDailyPlanSlice";
+import { setDailyPlanCancel, setDailyPlanSave, setUpdateCommonCard } from "../../../store/slices/viewDailyPlanSlice";
 
 interface Props {
   isLoading: boolean;
@@ -18,7 +18,7 @@ const CommenCard: React.FC<Props> = ({
   onDataChange,
 }) => {
   const dispatch = useDispatch();
-  const { dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { dailyPlan,dailyPlanSave,dailyPlanCancel } = useSelector((state: RootState) => state.viewDailyPlan);
   const [editValues, setEditValues] = useState({
     shift: dailyPlan?.shift || "",
     workOrderNumber: dailyPlan?.workOrderNumber || "",
@@ -53,6 +53,29 @@ const CommenCard: React.FC<Props> = ({
       workOrderNumber: dailyPlan?.workOrderNumber || "",
     });
   }, [dailyPlan]);
+
+    useEffect(()=>{
+    dispatch(setDailyPlanSave(false));
+    dispatch(setDailyPlanCancel(false))
+    },[])
+    
+  useEffect(() => {
+    if (dailyPlanCancel && !dailyPlanSave) {
+  
+      if (dailyPlan) {
+        setEditValues({
+      shift: dailyPlan?.shift || "",
+      workOrderNumber: dailyPlan?.workOrderNumber || "",
+    });
+      }
+  
+      // 🔁 Reset flags after handling cancel
+      dispatch(setDailyPlanCancel(false));
+      dispatch(setDailyPlanSave(false));
+    }
+  }, [dailyPlanCancel, dailyPlanSave]);
+
+
   return (
     <Box>
       {isLoading ? (

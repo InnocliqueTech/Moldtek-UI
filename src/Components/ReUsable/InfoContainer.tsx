@@ -33,12 +33,34 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
   isEditing = false,
   setInfoItems,
 }) => {
+
   const handleChange = (index: number, newValue: string) => {
     if (!setInfoItems) return;
     const updated = [...infoItems];
     updated[index] = { ...updated[index], value: newValue };
     setInfoItems(updated);
   };
+
+ const parseDateSafe = (value: string | null | undefined): Date | null => {
+  if (!value) return null;
+
+  // Check if value matches dd/MM/yyyy or dd/MM/yyyy HH:mm (basic)
+  const dateParts = value.split(" ")[0].split("/");
+  if (dateParts.length === 3) {
+    const day = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // months are 0-based
+    const year = parseInt(dateParts[2], 10);
+    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+      return new Date(year, month, day);
+    }
+  }
+
+  // fallback: try default JS parse (ISO etc)
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? null : date;
+};
+
+
   return (
     <Box className="px-4 pb-4">
       <Grid container spacing={2} pt={1}>
@@ -59,14 +81,13 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {item.type === "date" ? (
                   <DateTimePicker
-                    value={item.value ? new Date(item.value) : null}
+                    value={parseDateSafe(item.value)}
                     onChange={(newValue) =>
                       handleChange(
                         index,
                         newValue ? format(newValue, "yyyy-MM-dd'T'HH:mm") : ""
                       )
                     }
-                    
                     format="dd/MM/yyyy hh:mm a"
                     slots={{
                       openPickerIcon: CalendarToday,

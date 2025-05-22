@@ -8,10 +8,15 @@ import {
 } from "./tableTransfermationFunctions";
 import { LaminationReportResponse } from "../../../store/Interfaces/createDailyPlanTypes";
 import { useEffect, useState } from "react";
-import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
-import { useDispatch } from "react-redux";
+import {
+  setDailyPlanCancel,
+  setDailyPlanSave,
+  setUpdateDailyPlanPayload,
+} from "../../../store/slices/viewDailyPlanSlice";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../Loader";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
+import { RootState } from "../../../store";
 
 const zoneTempPressingColumns = [
   { id: "particular", label: "" },
@@ -50,14 +55,13 @@ const bondingMaterialColumns = [
 ];
 
 const viscosityWeightColumns = [
-  // { id: 'metric', label: '' },
   { id: "viscosityRange", label: "Viscosity Range" },
   { id: "actualViscosity", label: "Actual", edit: true },
   { id: "gsmRange", label: "GSM Range" },
   { id: "gsmRangeActual", label: "Actual", edit: true },
   { id: "mixingComposition", label: "Mixing Composition", edit: true },
   { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true },
-  { id: "compositeGsm", label: "Composite gsm ",edit:true },
+  { id: "compositeGsm", label: "Composite gsm ", edit: true },
 ];
 
 const laminationProcessColumns = [
@@ -95,44 +99,64 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const { data, isLoading, isError, error } =
     useGetLaminationReportDetailsQuery(indentNumber);
 
+  const { dailyPlanSave, dailyPlanCancel } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
+
+  const dispatch = useDispatch();
   const [editableData, setEditableData] = useState<
     LaminationReportResponse["data"] | null
   >(null);
-  const [infoItems, setInfoItems] = useState<any>([]);
+  const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
+  const usage = data && data.data.plainFilmLeftOverRoll;
+  const info: InfoItem[] = [
+    {
+      label: "Plain Film LeftOverRoll Meters",
+      value: usage?.plainFilmLeftOverRollMeters?.toString() ?? "",
+      editable: true,
+      keyName: "plainFilmLeftOverRollMeters",
+    },
+    {
+      label: "Plain Film LeftOverRoll Kgs",
+      value: usage?.plainFilmLeftOverRollKgs?.toString() ?? "",
+      editable: true,
+      keyName: "plainFilmLeftOverRollKgs",
+    },
+    {
+      label: "Qc Approval",
+      value: usage?.qcApproval?.toString() ?? "",
+      editable: true,
+      keyName: "qcApproval",
+    },
+    {
+      label: "Incharge Comments",
+      value: usage?.inchargeComments ?? "",
+      editable: true,
+      keyName: "inchargeComments",
+    },
+  ];
+
   useEffect(() => {
     if (data?.data) {
       setEditableData(data?.data);
-      const usage = data.data.plainFilmLeftOverRoll;
-      const info: InfoItem[] = [
-        {
-          label: "Plain Film LeftOverRoll Meters",
-          value: usage?.plainFilmLeftOverRollMeters?.toString(),
-          editable: true,
-          keyName: "plainFilmLeftOverRollMeters",
-        },
-        {
-          label: "Plain Film LeftOverRoll Kgs",
-          value: usage?.plainFilmLeftOverRollKgs?.toString(),
-          editable: true,
-          keyName: "plainFilmLeftOverRollKgs",
-        },
-        {
-          label: "Qc Approval",
-          value: usage?.qcApproval?.toString(),
-          editable: true,
-          keyName: "qcApproval",
-        },
-        {
-          label: "Incharge Comments",
-          value: usage?.inchargeComments,
-          editable: true,
-          keyName: "inchargeComments",
-        },
-      ];
+
       setInfoItems(info);
     }
   }, [data]);
-  
+
+  useEffect(() => {
+    dispatch(setDailyPlanSave(false));
+    dispatch(setDailyPlanCancel(false));
+  }, []);
+
+  useEffect(() => {
+    if (dailyPlanCancel && !dailyPlanSave && data?.data) {
+      setEditableData(structuredClone(data.data));
+      setInfoItems(info)
+      dispatch(setDailyPlanCancel(false));
+      dispatch(setDailyPlanSave(false));
+    }
+  }, [dailyPlanCancel, dailyPlanSave]);
 
   const handleInfoUpdate = (updatedItems: InfoItem[]) => {
     if (!editableData) return;
@@ -155,14 +179,12 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();
   };
-  const dispatch = useDispatch();
 
   const handleDataUpdate = (
     section: keyof LaminationReportResponse["data"],
     newData: any[]
   ) => {
     if (!editableData) return;
-
     const updated = { ...editableData };
 
     switch (section) {
@@ -224,9 +246,9 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       }
       case "bondingMaterialSpecifications": {
         updated.bondingMaterialSpecifications = newData.map((item: any) => ({
-          bondingMaterial: item.bondingMaterial || "", 
+          bondingMaterial: item.bondingMaterial || "",
           code: item.code || "",
-          brand: item.brand || "", 
+          brand: item.brand || "",
           mixingRatio: item.mixingRatio || "",
           actual: item.actual !== undefined ? String(item.actual) : null,
         }));
@@ -250,7 +272,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
       case "laminationProcessReport": {
         updated.laminationProcessReport = newData.map((item: any) => ({
           particular: item.particular,
-          target: item.target || "", 
+          target: item.target || "",
           actual: item.actual || "",
         }));
         break;
@@ -273,7 +295,19 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
     dispatch(setUpdateDailyPlanPayload({ ...updated }));
     onDataChange();
   };
+
   if (isLoading || !editableData) return <Loader />;
+  if (error || isError)
+    return (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Failed to load Make Ready data
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          An unexpected error occurred. Please try again later.
+        </Typography>
+      </Box>
+    );
   const zoneTempPressingData = transformZoneTempData(
     editableData.zoneTemperatureAndPressing
   );
@@ -289,20 +323,6 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   const viscosityWeightData = [{ ...editableData.viscosityWeightMetrics }];
   const laminationProcessData = editableData.laminationProcessReport;
   const qcCheckData = editableData.qcCheckList;
-
-
-  if (error || isError) {
-    return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography variant="h6" color="error" gutterBottom>
-          Failed to load Make Ready data
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          An unexpected error occurred. Please try again later
-        </Typography>
-      </Box>
-    );
-  }
 
   return (
     <>

@@ -13,8 +13,7 @@ import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
-import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
-import { indentNumbersResp } from './mockData';
+
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -28,16 +27,6 @@ export interface FormField {
   allowTextFiled?:boolean
 }
 
-interface ProductUnit {
-  unitEffectiveNumber: string;
-  customerName: string;
-  brandDescription: string;
-}
-
-const indentNoList : ProductUnit[] = indentNumbersResp
-const indentNoOptions = indentNoList.map((item:ProductUnit)=>{
-  return  item.unitEffectiveNumber
-})
 const CreatePlan: React.FC = () => {
   
   const dispatch = useDispatch<AppDispatch>();
@@ -59,7 +48,6 @@ const CreatePlan: React.FC = () => {
   const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
   const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
-  const [selectedCustomer,setSelectedCustomer] = useState<string>('');
   
   useEffect(() => {
       segmentsDropdown({

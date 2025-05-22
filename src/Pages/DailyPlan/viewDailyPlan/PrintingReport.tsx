@@ -9,11 +9,12 @@ import {
   revertPrintingProcessData,
 } from "./tableTransfermationFunctions";
 import Loader from "../../../Loader";
-import { useDispatch } from "react-redux";
-import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setDailyPlanCancel, setDailyPlanSave, setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
 import { PrintingReportResponse, } from "../../../store/Interfaces/createDailyPlanTypes";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 import { ProcessReportItem } from "../../../store/Interfaces/createDailyPlanTypes";
+import { RootState } from "../../../store";
 
 
 interface PrintingReportsProps {
@@ -28,26 +29,48 @@ const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, o
 
   const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
+  const {dailyPlanCancel,dailyPlanSave} = useSelector((state:RootState)=>state.viewDailyPlan)
+
+      const usage = printingReportsData?.data && printingReportsData.data.materialUsageShiftDetails;
+const info: InfoItem[] = [
+  { label: "Plain Film Weight/Repeat", value: usage?.plainFilmWeightPerRepeat?.toString() ?? "", editable: true, keyName: "plainFilmWeightPerRepeat" },
+  { label: "Printed Film Weight/Repeat", value: usage?.printedFilmWeightPerRepeat?.toString() ?? "", editable: true, keyName: "printedFilmWeightPerRepeat" },
+  { label: "Ink Weight/Repeat", value: usage?.inkWeightPerRepeat?.toString() ?? "", editable: true, keyName: "inkWeightPerRepeat" },
+  { label: "Machine Name", value: usage?.printingMCName ?? "", editable: true, keyName: "printingMCName" },
+  { label: "Left Over Roll (m)", value: usage?.leftOverRollMeters?.toString() ?? "", editable: true, keyName: "leftOverRollMeters" },
+  { label: "Left Over Roll (kg)", value: usage?.leftOverRollKgs?.toString() ?? "", editable: true, keyName: "leftOverRollKgs" },
+  { label: "Operator", value: usage?.operator ?? "", editable: true, keyName: "operator" },
+  { label: "Shift QC", value: usage?.shiftQc ?? "", editable: true, keyName: "shiftQc" },
+  { label: "Supervisor", value: usage?.supervisor ?? "", editable: true, keyName: "supervisor" },
+  { label: "Remarks", value: usage?.remarks ?? "", editable: true, keyName: "remarks" },
+];
+
 
   useEffect(() => {
     if (printingReportsData?.data) {
       setEditableData(printingReportsData.data);
-      const usage = printingReportsData.data.materialUsageShiftDetails;
-      const info: InfoItem[] = [
-        { label: "Plain Film Weight/Repeat", value: usage?.plainFilmWeightPerRepeat?.toString(), editable: true, keyName: "plainFilmWeightPerRepeat" },
-        { label: "Printed Film Weight/Repeat", value: usage?.printedFilmWeightPerRepeat?.toString(), editable: true, keyName: "printedFilmWeightPerRepeat" },
-        { label: "Ink Weight/Repeat", value: usage?.inkWeightPerRepeat?.toString(), editable: true, keyName: "inkWeightPerRepeat" },
-        { label: "Machine Name", value: usage?.printingMCName, editable: true, keyName: "printingMCName" },
-        { label: "Left Over Roll (m)", value: usage?.leftOverRollMeters?.toString() || "", editable: true, keyName: "leftOverRollMeters" },
-        { label: "Left Over Roll (kg)", value: usage?.leftOverRollKgs, editable: true, keyName: "leftOverRollKgs" },
-        { label: "Operator", value: usage?.operator, editable: true, keyName: "operator" },
-        { label: "Shift QC", value: usage?.shiftQc, editable: true, keyName: "shiftQc" },
-        { label: "Supervisor", value: usage?.supervisor, editable: true, keyName: "supervisor" },
-        { label: "Remarks", value: usage?.remarks, editable: true, keyName: "remarks" },
-      ];
       setInfoItems(info);
     }
   }, [printingReportsData]);
+
+  useEffect(()=>{
+  dispatch(setDailyPlanSave(false));
+  dispatch(setDailyPlanCancel(false))
+  },[])
+
+useEffect(() => {
+  if (dailyPlanCancel && !dailyPlanSave) {
+
+    if (printingReportsData?.data) {
+      setEditableData(structuredClone(printingReportsData.data));
+      setInfoItems(info);
+    }
+
+    // 🔁 Reset flags after handling cancel
+    dispatch(setDailyPlanCancel(false));
+    dispatch(setDailyPlanSave(false));
+  }
+}, [dailyPlanCancel, dailyPlanSave]);
 
 const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData: any[]) => {
   if (!editableData) return;

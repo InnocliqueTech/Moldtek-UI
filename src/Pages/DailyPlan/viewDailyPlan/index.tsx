@@ -31,6 +31,8 @@ import {
   clearUpdateDailyPlanPayload,
   setHasUnsavedChanges,
   setShowTabChangeDialog,
+  setDailyPlanSave,
+  setDailyPlanCancel,
 } from "../../../store/slices/viewDailyPlanSlice";
 import {
   useGetMakeReadyDetailsQuery,
@@ -205,6 +207,7 @@ const ViewDailyPlan: React.FC = () => {
   };
 
   const handleSave = async () => {
+    dispatch(setDailyPlanSave(true));
     try {
       const commonPayload = {
         ...updateDailyPlanPayload,
@@ -229,6 +232,9 @@ const ViewDailyPlan: React.FC = () => {
 
       //dispatch(setIsEditing(false));
       dispatch(setHasUnsavedChanges(false));
+        dispatch(setDailyPlanCancel(false));
+           dispatch(setDailyPlanSave(false));
+
     } catch (error) {
       toast.error("Failed to save data. Please try again.");
       console.error("Save error:", error);
@@ -236,6 +242,7 @@ const ViewDailyPlan: React.FC = () => {
   };
 
   const handleCancel = () => {
+    dispatch(setDailyPlanCancel(true))
     dispatch(setIsEditing(false));
     dispatch(setHasUnsavedChanges(false));
   };

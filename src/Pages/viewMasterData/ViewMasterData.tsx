@@ -110,9 +110,7 @@ const tabs = [
       );
     }
   }, [data, dispatch]);
-  console.log(selectedTab,"SELECTEDTAB")
-
-
+  
   return (
     <Box
       sx={{

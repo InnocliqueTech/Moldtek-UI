@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { machineSpecsColumns, productionColumns, approvalColumns } from "../data";
+import {
+  machineSpecsColumns,
+  productionColumns,
+  approvalColumns,
+} from "../data";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
 import { useGetLabelCuttingDetailsQuery } from "../../../store/services/api";
-import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
-import { useDispatch } from "react-redux";
+import {
+  setDailyPlanCancel,
+  setDailyPlanSave,
+  setUpdateDailyPlanPayload,
+} from "../../../store/slices/viewDailyPlanSlice";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../Loader";
+import { RootState } from "../../../store";
 
 interface LabelCuttingDetailsProps {
   indentNumber: string;
@@ -19,53 +28,93 @@ interface LabelCuttingData {
   approvalRemarks: any;
 }
 
-const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({ 
-  indentNumber, 
+const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
+  indentNumber,
   isEditing,
-  onDataChange 
+  onDataChange,
 }) => {
   const dispatch = useDispatch();
-  const { data: labelCuttingData, isLoading, isError, error } = 
-    useGetLabelCuttingDetailsQuery(indentNumber);
+  const {
+    data: labelCuttingData,
+    isLoading,
+    isError,
+    error,
+  } = useGetLabelCuttingDetailsQuery(indentNumber);
 
   // State to manage editable data
-  const [editableData, setEditableData] = useState<LabelCuttingData | null>(null);
-
+  const [editableData, setEditableData] = useState<LabelCuttingData | null>(
+    null
+  );
+  const { dailyPlanCancel, dailyPlanSave } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
   // Initialize editable data when API data loads
   React.useEffect(() => {
     if (labelCuttingData) {
       setEditableData({
-        machineConfiguration: [{...labelCuttingData.data.machineConfiguration}],
-        labelCuttingProcessReport: [...labelCuttingData.data.labelCuttingProcessReport],
-        approvalRemarks: [{...labelCuttingData.data.approvalRemarks}]
+        machineConfiguration: [
+          { ...labelCuttingData.data.machineConfiguration },
+        ],
+        labelCuttingProcessReport: [
+          ...labelCuttingData.data.labelCuttingProcessReport,
+        ],
+        approvalRemarks: [{ ...labelCuttingData.data.approvalRemarks }],
       });
     }
   }, [labelCuttingData]);
+  useEffect(() => {
+    dispatch(setDailyPlanSave(false));
+    dispatch(setDailyPlanCancel(false));
+  }, []);
+
+  useEffect(() => {
+    if (dailyPlanCancel && !dailyPlanSave) {
+      if (labelCuttingData) {
+        setEditableData({
+          machineConfiguration: [
+            { ...labelCuttingData.data.machineConfiguration },
+          ],
+          labelCuttingProcessReport: [
+            ...labelCuttingData.data.labelCuttingProcessReport,
+          ],
+          approvalRemarks: [{ ...labelCuttingData.data.approvalRemarks }],
+        });
+      }
+      dispatch(setDailyPlanCancel(false));
+      dispatch(setDailyPlanSave(false));
+    }
+  }, [dailyPlanCancel, dailyPlanSave]);
 
   const handleDataUpdate = (table: string, newData: any) => {
     if (!editableData) return;
-    setEditableData(prev => {
+    setEditableData((prev) => {
       if (!prev) return null;
-      
-      const updatedData = {...prev};
-      
+
+      const updatedData = { ...prev };
+
       switch (table) {
-        case 'machineConfig':
+        case "machineConfig":
           updatedData.machineConfiguration = [...newData];
           break;
-        case 'production':
-          updatedData.labelCuttingProcessReport = Array.isArray(newData) 
-            ? [...newData] 
-            : [{...newData}];
+        case "production":
+          updatedData.labelCuttingProcessReport = Array.isArray(newData)
+            ? [...newData]
+            : [{ ...newData }];
           break;
-        case 'approval':
+        case "approval":
           updatedData.approvalRemarks = [...newData];
           break;
         default:
           break;
       }
-      dispatch(setUpdateDailyPlanPayload({...updatedData,machineConfiguration:updatedData.machineConfiguration[0],approvalRemarks:updatedData.approvalRemarks[0]}));
-      
+      dispatch(
+        setUpdateDailyPlanPayload({
+          ...updatedData,
+          machineConfiguration: updatedData.machineConfiguration[0],
+          approvalRemarks: updatedData.approvalRemarks[0],
+        })
+      );
+
       return updatedData;
     });
     onDataChange();
@@ -79,35 +128,35 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Machine Configuration Table"
-          columns={machineSpecsColumns.map(col => ({
+          columns={machineSpecsColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.edit
+            edit: isEditing && col.edit,
           }))}
           data={editableData.machineConfiguration}
-          setData={(newData:any) => handleDataUpdate('machineConfig', newData)}
+          setData={(newData: any) => handleDataUpdate("machineConfig", newData)}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Label cutting process report"
-          columns={productionColumns.map(col => ({
+          columns={productionColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.edit
+            edit: isEditing && col.edit,
           }))}
           data={editableData.labelCuttingProcessReport}
-          setData={(newData:any) => handleDataUpdate('production', newData)}
+          setData={(newData: any) => handleDataUpdate("production", newData)}
           firstRow={true}
         />
       </Box>
       <Box sx={{ borderRadius: "0px ", p: 1 }}>
         <TitledDataTable
           title="Approval and Remarks Section"
-          columns={approvalColumns.map(col => ({
+          columns={approvalColumns.map((col) => ({
             ...col,
-            edit: isEditing && col.edit
+            edit: isEditing && col.edit,
           }))}
           data={editableData.approvalRemarks}
-          setData={(newData:any) => handleDataUpdate('approval', newData)}
+          setData={(newData: any) => handleDataUpdate("approval", newData)}
           firstRow={false}
         />
       </Box>
