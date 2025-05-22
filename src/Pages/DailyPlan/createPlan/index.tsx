@@ -13,6 +13,8 @@ import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
+import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
+import { unitEffectiveNumbersResp } from './mockData';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
@@ -27,11 +29,23 @@ export interface FormField {
   allowTextFiled?:boolean
 }
 
+interface ProductUnit {
+  unitEffectiveNumber: string;
+  customerName: string;
+  brandDescription: string;
+}
+
+const unitEffectiveNoData : ProductUnit[] = unitEffectiveNumbersResp;
+const unitEffectiveNoList = unitEffectiveNoData.map((item:ProductUnit)=>{
+  return  item.unitEffectiveNumber
+})
+
 const CreatePlan: React.FC = () => {
   
   const dispatch = useDispatch<AppDispatch>();
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-  
+  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
+  const [unitEffectivityOptions] = useState<string[]>(unitEffectiveNoList);
   useEffect(() => {
     const fetchDropdownValues = async () => {
       const response = await subStrateDropDown({
@@ -143,19 +157,21 @@ useEffect(() => {
   ) => {
     let extractedValue =
       typeof value === 'object' && 'target' in value ? value.target.value : value;
-      if (fieldId==="substrateType") {
-        if (Array.isArray(extractedValue)) {
-          // Remove empty strings, trim, then join if needed
-          extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
-        }
-      }
+  
+    if (fieldId === "substrateType" && Array.isArray(extractedValue)) {
+      extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
+    }
+  
+    if (fieldId === 'unitEffectivityNumber') {
+      setSelectedUnitNumber(extractedValue as string);
+    }
+  
     setFormFields(prevFields =>
       prevFields.map(field =>
         field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
   
-    // Clear error when user starts typing
     if (errors[fieldId]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -163,7 +179,8 @@ useEffect(() => {
         return newErrors;
       });
     }
-  }
+  };
+  
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
@@ -233,12 +250,14 @@ useEffect(() => {
             };
           });
           setFormFields(loadedFields);
+          setSelectedUnitNumber(parsedData['unitEffectivityNumber'] || '');
         }
       } catch (error) {
         console.error('Failed to parse saved data:', error);
       }
     }
   }, []);
+  
 
 
 
@@ -261,7 +280,18 @@ useEffect(() => {
             .filter((f) => shouldShowField(f.id))
             .map((field) => (
               <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-                {field.component === "dropdown" && !field.allowTextFiled ? (
+                {
+                field.id === 'unitEffectivityNumber' ? (
+                  <AutoSuggest
+                    label="Unit Effective Number"
+                    value={selectedUnitNumber}
+                    onChange={(val) => handleInputChange('unitEffectivityNumber', val)}
+                    staticOptions={unitEffectivityOptions}
+                    error={!!errors[field.id]}
+                    helperText={errors[field.id]}
+                  />
+                ):
+                field.component === "dropdown" && !field.allowTextFiled ? (
                   <DropdownComponent
                     label={field.label}
                     options={field.options || []}
@@ -300,13 +330,6 @@ useEffect(() => {
               </Grid>
             ))}
         </Grid>
-        {/* <AutoSuggest
-          label="Indent Number"
-          value={selectedCustomer}
-          onChange={(val) => setSelectedCustomer(val)}
-          //fetchOptions={fetchCustomerOptions} // Optional
-          staticOptions={indentNoOptions} // Optional
-        /> */}
         <Typography
           sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
         >
