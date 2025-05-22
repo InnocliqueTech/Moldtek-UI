@@ -25,6 +25,7 @@ const SignInPage: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
 
   useEffect(() => {
+    //Added the signIn comments
     const savedEmail = localStorage.getItem("rememberMeEmail");
     const savedPassword = localStorage.getItem("rememberMePassword");
 
