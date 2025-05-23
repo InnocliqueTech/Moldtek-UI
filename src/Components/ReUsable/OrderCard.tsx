@@ -258,7 +258,7 @@ const secondRow = entries.slice(3, 6);
                   {renderValue(viewMasterDataDetails?.brand_description,maxChars)}
                 </Typography>
             </Box>
-            <Box sx={{ mt: 1 }}>
+            <Box sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
