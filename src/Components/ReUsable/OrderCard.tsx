@@ -79,8 +79,8 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
 });
 
 // First 3 entries for the first row, rest for second row
-const firstRow = entries.slice(0, 3);
-const secondRow = entries.slice(3, 6);
+const firstRow = entries.slice(0, 4);
+const secondRow = entries.slice(4, 6);
 
 
   return (
