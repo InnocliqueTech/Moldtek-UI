@@ -63,8 +63,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const {viewMasterDataDetails} =  useSelector((store: RootState) => store.viewMasterData);
   const [uploadCustomerFile,{ isLoading:uploadLoading }] = useUploadCustomerFileMutation();
   const skipLamination =
-    saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
-const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"
+    saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW";
+const skipLaminationButton = viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"
   const buttonText = [
     "Next: Master Data - Printing",
     skipLamination || skipLaminationButton
@@ -252,9 +252,9 @@ if (!submitTrue) {
   (selectedTab === 3 || (
     selectedTab === 2 &&
     (
-      saveFormData.label_type === "Thin Wall" ||
+      saveFormData.label_type === "THINWALL" ||
       saveFormData.segment === "TW" ||
-      viewMasterDataDetails.label_type === "Thin Wall" ||
+      viewMasterDataDetails.label_type === "THINWALL" ||
       viewMasterDataDetails.segment === "TW"
     )
   )) ? (

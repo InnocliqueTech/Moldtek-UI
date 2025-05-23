@@ -67,7 +67,7 @@ const path = location.pathname.includes("/versionDetails")
 const tabs = [
   "Master Data - Printing",
   ...((data?.data?.masterDataDetails &&
-    (data.data.masterDataDetails?.label_type !== "Thin Wall" &&
+    (data.data.masterDataDetails?.label_type !== "THINWALL" &&
      data.data.masterDataDetails?.segment !== "TW"))
     ? ["Master Data - Lamination"]
     : []),
@@ -116,8 +116,8 @@ const tabs = [
       sx={{
         height:
         (
-          (data?.data.masterDataDetails.label_type !== 'Thin Wall' && data?.data.masterDataDetails.label_type !== 'TW' && selectedTab !== 2) ||
-          (data?.data.masterDataDetails.label_type === 'Thin Wall' || data?.data.masterDataDetails.label_type === 'TW') && selectedTab !== 1
+          (data?.data.masterDataDetails.label_type !== 'THINWALL' && data?.data.masterDataDetails.label_type !== 'TW' && selectedTab !== 2) ||
+          (data?.data.masterDataDetails.label_type === 'THINWALL' || data?.data.masterDataDetails.label_type === 'TW') && selectedTab !== 1
         )
           ? {
               xl: "136vh",
@@ -185,7 +185,7 @@ const tabs = [
             <Box sx={{ padding: 2 }}>
               {selectedTab === 0 && <ViewPrinting />}
               {selectedTab === 1 && !(
-               data?.data.masterDataDetails.label_type ==='Thin Wall'||
+               data?.data.masterDataDetails.label_type ==='THINWALL'||
                data?.data.masterDataDetails.label_type === "TW"
               ) ? <ViewLamination />:selectedTab !== 0 &&<ViewDyeCutting />}
 

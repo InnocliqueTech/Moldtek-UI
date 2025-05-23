@@ -265,7 +265,7 @@ viewMasterDataDetails
         ? data?.data.masterDataDyeCutting
         : dyeCuttingFormData;
     const skipLamination =
-      finalMasterDataDetails.label_type === "Thin Wall" ||
+      finalMasterDataDetails.label_type === "THINWALL" ||
       finalMasterDataDetails.segment === "TW";
 
     let masterDataLamination;
@@ -413,7 +413,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   const tabs = [
     "Master Data Details",
     "Master Data - Printing",
-    ...((saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW") ||(id &&viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW")
+    ...((saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW") ||(id &&viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW")
       ? []
       : ["Master Data - Lamination"]),
     "Master Data - Dye Cutting",
@@ -565,8 +565,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
               />
             )}
             {selectedTab === 2 &&
-              !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
-                (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"  )) ? (
+              !(saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW" ||
+                (id && viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"  )) ? (
                 <Lamination
                   tableData={LaminationTableData}
                   setTableData={setLaminationTableData}
@@ -597,8 +597,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
                     ? handleSaveMasterData
                     : selectedTab === 1
                     ? handleSavePrinting
-                    : selectedTab === 2 &&               !(saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW" ||
-                      (id && viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"  ))
+                    : selectedTab === 2 &&               !(saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW" ||
+                      (id && viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"  ))
                     ? handleSaveLamination
                     : handleSaveDyeCutting
                 }

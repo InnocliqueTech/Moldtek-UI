@@ -134,6 +134,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "8px",
+                paddingTop:'2px !important',
                 "& input": {
                   padding: "6px 12px",
                   color: "black",
