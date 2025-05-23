@@ -8,13 +8,14 @@ import SubmitPopups from './submitPopups';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from '../../../store';
 import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
-import { listOfLables } from '../../CreateMasterData/data';
+import { listOfLables } from '../../createMasterData/data';
 import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
 import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
 import { unitEffectiveNumbersResp } from './mockData';
+import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
@@ -34,42 +35,6 @@ interface ProductUnit {
   customerName: string;
   brandDescription: string;
 }
-
-const unitEffectiveNoData : ProductUnit[] = unitEffectiveNumbersResp;
-const unitEffectiveNoList = unitEffectiveNoData.map((item:ProductUnit)=>{
-  return  item.unitEffectiveNumber
-})
-
-const CreatePlan: React.FC = () => {
-  
-  const dispatch = useDispatch<AppDispatch>();
-  const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
-  const [unitEffectivityOptions] = useState<string[]>(unitEffectiveNoList);
-  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(null);
-  const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
-  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
-  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
-  
-  useEffect(() => {
-      segmentsDropdown({
-        segment: "",
-      });
-    }, []);
-
-  useEffect(() => {
-      const fetchDropdownValues = async () => {
-        const response = await subStrateDropDown({
-          substrate: "",
-          substrateType: "printing",
-        }).unwrap();
-        const substrateList = response?.data?.map((item: any) => item.substrate);
-        dispatch(setPrintingDropDownValues(substrateList));
-      };
-  
-      fetchDropdownValues();
-    }, [subStrateDropDown, dispatch]);
-  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
 
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
@@ -97,7 +62,43 @@ const initialFormFields: FormField[] = [
   { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
 ];
 
-const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
+const unitEffectiveNoData : ProductUnit[] = unitEffectiveNumbersResp;
+const unitEffectiveNoList = unitEffectiveNoData.map((item:ProductUnit)=>{
+  return  item.unitEffectiveNumber
+})
+
+const CreatePlan: React.FC = () => {
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
+  const [unitEffectivityOptions] = useState<string[]>(unitEffectiveNoList);
+  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(null);
+  const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
+  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
+  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
+  
+  useEffect(() => {
+      segmentsDropdown({
+        segment: "",
+      });
+    }, []);
+
+  useEffect(() => {
+      const fetchDropdownValues = async () => {
+        const response = await subStrateDropDown({
+          substrate: "",
+          substrateType: "printing",
+        }).unwrap();
+        const substrateList = response?.data?.map((item: any) => item.substrate);
+        dispatch(setPrintingDropDownValues(substrateList));
+      };
+  
+      fetchDropdownValues();
+    }, [subStrateDropDown, dispatch]);
+  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+
 
 useEffect(() => {
   setFormFields(prevFields =>
@@ -136,7 +137,7 @@ useEffect(() => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
-  const jobType: 'Repeat' = 'Repeat'; 
+  // const jobType: 'Repeat' = 'Repeat'; 
 
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
 
@@ -204,7 +205,7 @@ useEffect(() => {
       formData.jobRunDate = new Date(formData.jobRunDate).toISOString().split('T')[0];
     }
 
-    formData.jobType = jobType;
+    //formData.jobType = jobType;
 
     return formData as SaveDailyJobRequest;
   };
@@ -227,8 +228,10 @@ useEffect(() => {
     try {
       const data = await saveDailyJob(formData).unwrap();
       if (data?.statusCode === 201) {
+        dispatch(setRecentlyCreatedIndentNumber(formData.indentNumber));
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setFormFields(initialFormFields);
+        setSelectedUnitNumber('');
         return { success: true };
       } else {
         toast.error(data?.message?data?.message:"Error Fetching Data");

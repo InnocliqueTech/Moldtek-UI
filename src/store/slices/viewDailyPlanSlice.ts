@@ -97,6 +97,7 @@ export interface viewDailyPlan {
   showTabChangeDialog:boolean;
   sideNavigationAllowed:boolean;
   backButtonNavigationAllowed:boolean;
+  recentlyCreatedIndentNumber:string;
 }
 
 const initialState: viewDailyPlan = {
@@ -165,6 +166,7 @@ const initialState: viewDailyPlan = {
   },
   isEditing:false,
   dailyPlanCancel:false,
+  recentlyCreatedIndentNumber:""
 };
 
 const ViewDailyPanSlice = createSlice({
@@ -272,6 +274,9 @@ const ViewDailyPanSlice = createSlice({
     setBackButtonNavigationAllowed:(state,action:PayloadAction<boolean>)=>{
       state.backButtonNavigationAllowed = action.payload
     },
+    setRecentlyCreatedIndentNumber:(state, action:PayloadAction<string>)=>{
+      state.recentlyCreatedIndentNumber = action.payload;
+    }
    },
 });
 
@@ -301,6 +306,7 @@ export const {
   setHasUnsavedChanges,
   setShowTabChangeDialog,
   setDailyPlanSave,
-  setDailyPlanCancel
+  setDailyPlanCancel,
+  setRecentlyCreatedIndentNumber
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;
