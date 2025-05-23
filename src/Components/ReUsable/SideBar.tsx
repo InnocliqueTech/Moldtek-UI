@@ -107,7 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       text: "Production Operators",
       icon: <ManageAccountsOutlined />,
       selectedIcon: <ManageAccountsOutlined />,
-      path: "/invoices",
+      path: "/productionOperators",
     },
     {
       text: "Reports",

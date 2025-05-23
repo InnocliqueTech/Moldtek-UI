@@ -2,7 +2,6 @@ import { Box, Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import ReusableInput from "../../Components/ReUsable/TextField";
-import { InfoOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   setLaminationDataTouched,
@@ -470,21 +469,22 @@ const Lamination: React.FC<LaminationProps> = ({
   }, [id, laminatingDetails, formInitialized]);
 
   useEffect(() => {
+       if (formInitialized) return;
     if (!id && laminaionFormData) {
       setFormData(laminaionFormData);
-      // setFormInitialized(true);
+       setFormInitialized(true);
       if (!id && laminaionFormData?.bondingMaterials) {
         setTableData(laminaionFormData?.bondingMaterials);
-        // setFormInitialized(true);
+        setFormInitialized(true);
       }
     }
     if (!id && saveButtonLaminatingData && saveLaminatingData) {
       setFormData(saveLaminatingData);
-      //  setFormInitialized(true);
+      setFormInitialized(true);
     }
     if (laminationFormErrors) {
       setErrors(laminationFormErrors);
-      // setFormInitialized(true);
+      setFormInitialized(true);
     }
   }, [
     laminaionFormData,
@@ -535,6 +535,10 @@ const Lamination: React.FC<LaminationProps> = ({
 
     dropDown();
   }, []);
+
+    useEffect(()=>{
+     dispatch(setLaminationDataTouched(false));
+    },[])
 
   useEffect(() => {
     const fetchDropdownValues = async () => {
@@ -874,6 +878,7 @@ const Lamination: React.FC<LaminationProps> = ({
           setData={setTableData}
           firstRow={true}
           id={"lamination"}
+          setFormDataLaminaton={setFormData}
         />
       </Box>
       <Box

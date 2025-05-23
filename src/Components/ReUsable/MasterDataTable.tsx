@@ -25,7 +25,7 @@ import {
   setPrintingTableValueVaidation,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
-import { LaminatingTableRow, PrintingTableRow } from "../../store/slices/masterDataInterface";
+import { LaminatingTableRow, LaminationFormData, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
 
 interface Column {
   id: string;
@@ -47,6 +47,9 @@ interface DataTableProps<T> {
   firstRow?: boolean;
   id?: string;
   rowEditable?: (row: T, columnId: string) => boolean;
+  setFormData?: React.Dispatch<React.SetStateAction<PrintingFormValues>>;
+setFormDataLaminaton?:React.Dispatch<React.SetStateAction<LaminationFormData>>;
+
   // rowEditable?: (row: T) => boolean;
 }
 
@@ -57,7 +60,9 @@ const DataTable = <T extends Record<string, any>>({
   tableTitle = false,
   firstRow = false,
   id,
-  rowEditable
+  setFormData,
+  rowEditable,
+  setFormDataLaminaton
 }: DataTableProps<T>) => {
   const dispatch = useDispatch<AppDispatch>();
   const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
@@ -147,6 +152,12 @@ const DataTable = <T extends Record<string, any>>({
           stationWiseMetrics: updated as unknown as PrintingTableRow[],
         })
       );
+      if (setFormData ) {
+    setFormData(prev => ({
+  ...prev,
+  stationWiseMetrics: updated as unknown as PrintingTableRow[],
+}));
+  }
     }
   
     if (id === "lamination") {
@@ -156,7 +167,14 @@ const DataTable = <T extends Record<string, any>>({
           bondingMaterials: updated as unknown as LaminatingTableRow[],
         })
       );
+      if(setFormDataLaminaton){
+      setFormDataLaminaton(prev => ({
+  ...prev,
+   bondingMaterials: updated as unknown as LaminatingTableRow[],
+   }));
+  }
     }
+
   };
   
 

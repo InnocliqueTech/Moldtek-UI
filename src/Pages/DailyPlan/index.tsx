@@ -107,12 +107,12 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
     return savedPage !==null ? Number(savedPage):10;
   }); 
-  const { 
-    data: metricsData, 
-    isLoading: isMetricsLoading, 
-    // isError: isMetricsError, 
-    // error: metricsError 
-  } = useGetDailyJobMetricsQuery();
+const {
+  data: metricsData,
+  isLoading: isMetricsLoading,
+} = useGetDailyJobMetricsQuery(undefined, {
+  refetchOnMountOrArgChange: true,
+});
 
     const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
       setPage(0);

@@ -8,7 +8,6 @@ const DashboardPage: React.FC = () => {
       sx={{
         p: 4,
         height: "80vh",
-        bgcolor: "#f4f6f8",
         borderRadius: 3,
         display: "flex",
         flexDirection: "column",
@@ -22,7 +21,7 @@ const DashboardPage: React.FC = () => {
         Welcome to Your Dashboard
       </Typography>
       <Typography variant="body1" color="text.secondary">
-        You don’t have any data yet. Navigating from the sidebar.
+        You don’t have any data yet. Please go through the sidebar navigation.
       </Typography>
     </Box>
   );

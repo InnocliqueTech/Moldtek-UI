@@ -11,7 +11,7 @@ import { useGetTravelCardDetailsQuery } from "../../../store/services/api";
 import Loader from "../../../Loader";
 import { transformJobDetails } from "./tableTransfermationFunctions";
 import { useDispatch, useSelector } from "react-redux";
-import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import { setDailyPlanCancel, setDailyPlanSave, setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
 import {
   MachineDetails,
   LabelDispatchSummary,
@@ -43,17 +43,39 @@ const TravelCard: React.FC<TravelCardProps> = ({
 
   const [editableData, setEditableData] =
     useState<EditableTravelCardData | null>(null);
-  const { dailyPlan } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { dailyPlan,dailyPlanCancel,dailyPlanSave } = useSelector((state: RootState) => state.viewDailyPlan);
 
   // infoItems state for editing job details
   const [printingInfo, setPrintingInfo] = useState<InfoItem[]>([]);
   const [laminationInfo, setLaminationInfo] = useState<InfoItem[]>([]);
   const [cuttingInfo, setCuttingInfo] = useState<InfoItem[]>([]);
 
+    useEffect(()=>{
+    dispatch(setDailyPlanSave(false));
+    dispatch(setDailyPlanCancel(false))
+    },[])
+  
+  useEffect(() => {
+    if (dailyPlanCancel && !dailyPlanSave) {
+
+      if (data?.data) {
+        const clearData = { ...data.data }
+        setEditableData(data.data);
+        
+      setPrintingInfo(transformJobDetails(clearData.printingMachine, true));
+      setLaminationInfo(transformJobDetails(clearData.laminationMachine, true));
+      setCuttingInfo(transformJobDetails(clearData.labelCuttingMachine, true));
+      }
+
+      dispatch(setDailyPlanCancel(false));
+      dispatch(setDailyPlanSave(false));
+    }
+  }, [dailyPlanCancel, dailyPlanSave]);
+
   // On data load, set editable states
   useEffect(() => {
     if (data?.data) {
-      const newData = { ...data.data };
+     const newData =  { ...data.data }
       setEditableData(newData);
 
       setPrintingInfo(transformJobDetails(newData.printingMachine, true));

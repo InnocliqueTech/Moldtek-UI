@@ -375,6 +375,10 @@ const Printing: React.FC<PrintingProps> = ({
     dispatch(setSavePrintingFormData(updatedFormData));
   };
 
+  useEffect(()=>{
+   dispatch(setPrintingDataTouched(false));
+  },[])
+
   const renderField = (field: {
     id: string;
     label: string;
@@ -696,6 +700,7 @@ const Printing: React.FC<PrintingProps> = ({
             setData={setTableData}
             tableTitle={true}
             id={"printing"}
+            setFormData={setFormValues}
           />
         </Box>
       </Box>

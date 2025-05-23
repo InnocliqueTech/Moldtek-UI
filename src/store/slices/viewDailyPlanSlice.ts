@@ -68,6 +68,8 @@ export interface FiltersPayload {
   status:string[]
 }
 export interface viewDailyPlan {
+  dailyPlanCancel:boolean;
+  dailyPlanSave:boolean;
   customers: Customer[];
   labelTypes: LabelType[];
   selectedLabelTypeIds: LabelType[];
@@ -95,9 +97,11 @@ export interface viewDailyPlan {
   showTabChangeDialog:boolean;
   sideNavigationAllowed:boolean;
   backButtonNavigationAllowed:boolean;
+  recentlyCreatedIndentNumber:string;
 }
 
 const initialState: viewDailyPlan = {
+  dailyPlanSave:false,
   sideNavigationAllowed:false,
   backButtonNavigationAllowed:false,
   hasUnsavedChanges:false,
@@ -160,13 +164,21 @@ const initialState: viewDailyPlan = {
     shift: "",
     workOrderNumber: ""
   },
-  isEditing:false
+  isEditing:false,
+  dailyPlanCancel:false,
+  recentlyCreatedIndentNumber:""
 };
 
 const ViewDailyPanSlice = createSlice({
   name: "viewDailyPanSlice",
   initialState,
   reducers: {
+    setDailyPlanSave:(state,action:PayloadAction<boolean>)=>{
+     state.dailyPlanSave = action.payload
+    },
+    setDailyPlanCancel:(state,action:PayloadAction<boolean>)=>{
+     state.dailyPlanCancel = action.payload
+    },
     setDailyPlan: (state, action: PayloadAction<DailyPlan>) => {
       state.dailyPlan = action.payload;
     },
@@ -262,6 +274,9 @@ const ViewDailyPanSlice = createSlice({
     setBackButtonNavigationAllowed:(state,action:PayloadAction<boolean>)=>{
       state.backButtonNavigationAllowed = action.payload
     },
+    setRecentlyCreatedIndentNumber:(state, action:PayloadAction<string>)=>{
+      state.recentlyCreatedIndentNumber = action.payload;
+    }
    },
 });
 
@@ -289,6 +304,9 @@ export const {
   setDropDown,
   setIsEditing,
   setHasUnsavedChanges,
-  setShowTabChangeDialog
+  setShowTabChangeDialog,
+  setDailyPlanSave,
+  setDailyPlanCancel,
+  setRecentlyCreatedIndentNumber
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

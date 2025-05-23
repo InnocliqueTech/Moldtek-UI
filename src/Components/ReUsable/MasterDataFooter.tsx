@@ -63,8 +63,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const {viewMasterDataDetails} =  useSelector((store: RootState) => store.viewMasterData);
   const [uploadCustomerFile,{ isLoading:uploadLoading }] = useUploadCustomerFileMutation();
   const skipLamination =
-    saveFormData.label_type === "Thin Wall" || saveFormData.segment === "TW";
-const skipLaminationButton = viewMasterDataDetails.label_type === "Thin Wall" || viewMasterDataDetails.segment === "TW"
+    saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW";
+const skipLaminationButton = viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"
   const buttonText = [
     "Next: Master Data - Printing",
     skipLamination || skipLaminationButton
@@ -142,7 +142,7 @@ if (!submitTrue) {
       dispatch(setLaminationDataTouched(false));
       dispatch(setMasterDataDataTouched(false));
     } catch (err: any) {
-      // If createMasterData throws an unexpected error
+  
       const message =
         err?.data?.message || err?.message || "Unexpected error during submission.";
       toast.error(message);
@@ -152,9 +152,9 @@ if (!submitTrue) {
     if (submitTrue) {
             if (uploadFile) {
               try {
-                const result = await uploadCustomerFile({
+                await uploadCustomerFile({
                   file: uploadFile,
-                  unitNumber: "", // <-- Replace with actual unit number if needed
+                  unitNumber: "", 
                   type: "master",
                 }).unwrap();
       
@@ -252,9 +252,9 @@ if (!submitTrue) {
   (selectedTab === 3 || (
     selectedTab === 2 &&
     (
-      saveFormData.label_type === "Thin Wall" ||
+      saveFormData.label_type === "THINWALL" ||
       saveFormData.segment === "TW" ||
-      viewMasterDataDetails.label_type === "Thin Wall" ||
+      viewMasterDataDetails.label_type === "THINWALL" ||
       viewMasterDataDetails.segment === "TW"
     )
   )) ? (
@@ -266,7 +266,7 @@ if (!submitTrue) {
       textColor="white"
       p={2}
       onClick={handleSubmitAndPublishPopupOpen}
-      // disabled={isSubmitDisabled()}
+      disabled={isSubmitDisabled()}
     />
 
       ) : (

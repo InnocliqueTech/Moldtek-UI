@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import {  materialColumns } from "../data";
+import { materialColumns } from "../data";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store";
 import Loader from "../../../Loader";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
-import { setUpdateDailyPlanPayload } from "../../../store/slices/viewDailyPlanSlice";
+import {
+  setDailyPlanCancel,
+  setDailyPlanSave,
+  setUpdateDailyPlanPayload,
+} from "../../../store/slices/viewDailyPlanSlice";
 import { InkCoatingSpecification } from "../../../store/slices/viewDailyPlanSlice";
 import { useParams } from "react-router-dom";
 
@@ -16,9 +20,8 @@ const inkCoatingColumns = [
   { id: "mixingOnGec", label: "Mixing on GEC" },
   { id: "mtplCode", label: "MTPL Code" },
   { id: "lfValue", label: "LF Value" },
-  { id: "supplierBatchNo", label: "Supplier Batch No" , edit: true},
+  { id: "supplierBatchNo", label: "Supplier Batch No", edit: true },
 ];
-
 
 const generateAnaloxColumns = (specs: any[]) => {
   const maxStation = Math.max(...specs.map((s) => s.stationNo || 0));
@@ -41,8 +44,8 @@ const transformAnaloxData = (specs: any[]) => {
   const parameters = ["lpcm", "vol", "stationSpec"];
 
   return parameters.map((param) => {
-    const row: Record<string, string | number> = { 
-      parameter: parameterLabels[param] || param  
+    const row: Record<string, string | number> = {
+      parameter: parameterLabels[param] || param,
     };
     specs.forEach((station) => {
       row[`station${station.stationNo}`] = station[param];
@@ -72,64 +75,104 @@ const MakeReady: React.FC<MakeReadyProps> = ({
     mountingTapeSpecifications,
     plateMountingSupervisorReport,
     analoxSpecifications = [],
+    dailyPlanCancel,
+    dailyPlanSave,
   } = useSelector((state: RootState) => state.viewDailyPlan);
 
-  const [editableMaterialSpec, setEditableMaterialSpec] = useState(materialSpecification || {});
+  const [editableMaterialSpec, setEditableMaterialSpec] = useState(
+    materialSpecification || {}
+  );
   const [plateReportItems, setPlateReportItems] = useState<InfoItem[]>([]);
-  const [editableInkCoatingSpecifications, setEditableInkCoatingSpecifications] = useState(inkCoatingSpecifications || []);
+  const [
+    editableInkCoatingSpecifications,
+    setEditableInkCoatingSpecifications,
+  ] = useState(inkCoatingSpecifications || []);
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
+
+  useEffect(() => {
+    dispatch(setDailyPlanSave(false));
+    dispatch(setDailyPlanCancel(false));
+  }, []);
+
+  const report: InfoItem[] = [
+    {
+      label: "Plates Inspection",
+      value: plateMountingSupervisorReport.platesInspection ?? "",
+      editable: true,
+      keyName: "platesInspection",
+    },
+    {
+      label: "Mounter",
+      value: plateMountingSupervisorReport.mounter,
+      editable: true,
+      keyName: "mounter",
+    },
+    {
+      label: "Approver",
+      value: plateMountingSupervisorReport.approver,
+      editable: true,
+      keyName: "approver",
+    },
+    {
+      label: "Ink Kitchen Supervisor",
+      value: plateMountingSupervisorReport.inkKitchenSupervisor,
+      editable: true,
+      keyName: "inkKitchenSupervisor",
+    },
+    {
+      label: "Plate Mounting Supervisor Report",
+      value: plateMountingSupervisorReport.plateMountingSupervisor,
+      editable: true,
+      keyName: "plateMountingSupervisor",
+    },
+    {
+      label: "Shift QC Incharge",
+      value: plateMountingSupervisorReport.shiftQcIncharge,
+      editable: true,
+      keyName: "shiftQcIncharge",
+    },
+  ];
+  useEffect(() => {
+    if (dailyPlanCancel && !dailyPlanSave) {
+
+      if (
+        materialSpecification ||
+        inkCoatingSpecifications ||
+        plateMountingSupervisorReport
+      ) {
+        setEditableMaterialSpec(structuredClone(materialSpecification));
+        setEditableInkCoatingSpecifications(
+          structuredClone(inkCoatingSpecifications)
+        );
+
+        setPlateReportItems(report);
+      }
+
+      // 🔁 Reset flags after handling cancel
+      dispatch(setDailyPlanCancel(false));
+      dispatch(setDailyPlanSave(false));
+    }
+  }, [dailyPlanCancel, dailyPlanSave]);
+
   useEffect(() => {
     if (inkCoatingSpecifications && inkCoatingSpecifications.length > 0) {
       setEditableInkCoatingSpecifications(inkCoatingSpecifications);
     }
-  
+
     if (materialSpecification) {
       setEditableMaterialSpec(materialSpecification);
     }
-  
+
     if (plateMountingSupervisorReport) {
-      const report: InfoItem[] = [
-        {
-          label: "Plates Inspection",
-          value: plateMountingSupervisorReport.platesInspection ?? "",
-          editable: true,
-          keyName: "platesInspection",
-        },
-        {
-          label: "Mounter",
-          value: plateMountingSupervisorReport.mounter,
-          editable: true,
-          keyName: "mounter",
-        },
-        {
-          label: "Approver",
-          value: plateMountingSupervisorReport.approver,
-          editable: true,
-          keyName: "approver",
-        },
-        {
-          label: "Ink Kitchen Supervisor",
-          value: plateMountingSupervisorReport.inkKitchenSupervisor,
-          editable: true,
-          keyName: "inkKitchenSupervisor",
-        },
-        {
-          label: "Plate Mounting Supervisor Report",
-          value: plateMountingSupervisorReport.plateMountingSupervisor,
-          editable: true,
-          keyName: "plateMountingSupervisor",
-        },
-        {
-          label: "Shift QC Incharge",
-          value: plateMountingSupervisorReport.shiftQcIncharge,
-          editable: true,
-          keyName: "shiftQcIncharge",
-        },
-      ];
       setPlateReportItems(report);
     }
-  }, [inkCoatingSpecifications, materialSpecification, plateMountingSupervisorReport,decodedIndentNo]);
+  }, [
+    inkCoatingSpecifications,
+    materialSpecification,
+    plateMountingSupervisorReport,
+    decodedIndentNo,
+  ]);
 
   // const handleShiftReportUpdate = (items: InfoItem[]) => {
   //   setPlateReportItems(items);
@@ -165,7 +208,6 @@ const MakeReady: React.FC<MakeReadyProps> = ({
   // };
 
   // const handleInkCoatingChange = (newData: any[]) => {
-  //   console.log(newData,"inside change");
   //   dispatch(setUpdateDailyPlanPayload({
   //     plateMountingSupervisorReport: Object.fromEntries(plateReportItems.map(item => [item.keyName!, item.value])),
   //     materialSpecification: editableMaterialSpec,
@@ -177,25 +219,28 @@ const MakeReady: React.FC<MakeReadyProps> = ({
   // };
 
   const handleDataUpdate = (
-    section: 'materialSpecification' | 'plateMountingSupervisorReport' | 'inkCoatingSpecifications',
+    section:
+      | "materialSpecification"
+      | "plateMountingSupervisorReport"
+      | "inkCoatingSpecifications",
     newData: any[] | InfoItem[]
   ) => {
     let updatedPayload: any = {
       analoxSpecifications,
       mountingTapeSpecifications,
     };
-  
+
     switch (section) {
-      case 'materialSpecification':
+      case "materialSpecification":
         setEditableMaterialSpec(newData[0]);
         updatedPayload.materialSpecification = newData[0];
         updatedPayload.plateMountingSupervisorReport = Object.fromEntries(
-          plateReportItems.map(item => [item.keyName!, item.value])
+          plateReportItems.map((item) => [item.keyName!, item.value])
         );
         updatedPayload.inkCoatingSpecifications = inkCoatingSpecifications;
         break;
-  
-      case 'plateMountingSupervisorReport':
+
+      case "plateMountingSupervisorReport":
         const updatedReport: any = {};
         (newData as InfoItem[]).forEach((item) => {
           updatedReport[item.keyName!] = item.value;
@@ -205,20 +250,22 @@ const MakeReady: React.FC<MakeReadyProps> = ({
         updatedPayload.materialSpecification = editableMaterialSpec;
         updatedPayload.inkCoatingSpecifications = inkCoatingSpecifications;
         break;
-  
-        case 'inkCoatingSpecifications':
-          setEditableInkCoatingSpecifications(newData as InkCoatingSpecification[]);
-          updatedPayload.inkCoatingSpecifications = newData;
-          updatedPayload.materialSpecification = editableMaterialSpec;
-          updatedPayload.plateMountingSupervisorReport = Object.fromEntries(
-            plateReportItems.map(item => [item.keyName!, item.value])
-          );
-          break;
-  
+
+      case "inkCoatingSpecifications":
+        setEditableInkCoatingSpecifications(
+          newData as InkCoatingSpecification[]
+        );
+        updatedPayload.inkCoatingSpecifications = newData;
+        updatedPayload.materialSpecification = editableMaterialSpec;
+        updatedPayload.plateMountingSupervisorReport = Object.fromEntries(
+          plateReportItems.map((item) => [item.keyName!, item.value])
+        );
+        break;
+
       default:
         return;
     }
-  
+
     dispatch(setUpdateDailyPlanPayload(updatedPayload));
     onDataChange();
   };

@@ -11,7 +11,6 @@ import ButtonComponent from "./Button";
 import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
 import { Close, CloudUpload } from "@mui/icons-material";
-import { useUploadCustomerFileMutation } from "../../store/services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedFile, setUploadedFile } from "../../store/slices/masterDataSlice";
 import { RootState } from "../../store";

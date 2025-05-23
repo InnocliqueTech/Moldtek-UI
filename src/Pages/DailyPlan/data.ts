@@ -30,7 +30,7 @@ export const dailyJobsListMockResp= {
             "updatedAt": "2025-04-15T12:57:06",
             "masterVersionNo": 1,
             "jobType": "Repeat",
-            "labelType": "Thin Walls",
+            "labelType": "THINWALLs",
             "status": "Completed",
             "indentNumber": "1962",
             "customerName": null,

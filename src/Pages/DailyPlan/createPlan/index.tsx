@@ -1,5 +1,5 @@
 import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio ,SelectChangeEvent} from '@mui/material';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
@@ -13,6 +13,7 @@ import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
+import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -25,8 +26,6 @@ export interface FormField {
   options?: string[];
   allowTextFiled?:boolean
 }
-
-
 
 const CreatePlan: React.FC = () => {
   
@@ -210,6 +209,7 @@ useEffect(() => {
     try {
       const data = await saveDailyJob(formData).unwrap();
       if (data?.statusCode === 201) {
+        dispatch(setRecentlyCreatedIndentNumber(formData.indentNumber));
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setFormFields(initialFormFields);
         return { success: true };

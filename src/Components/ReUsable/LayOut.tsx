@@ -24,12 +24,18 @@ import {
   setUpdateButton,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import { useDispatch, useSelector} from "react-redux";
-import { AppDispatch, RootState} from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
-import { setOpenSliderDaily,setIsEditing, setShowTabChangeDialog, setBackButtonNavigationAllowed, setSideNavigationAllowed } from "../../store/slices/viewDailyPlanSlice";
+import {
+  setOpenSliderDaily,
+  setIsEditing,
+  setShowTabChangeDialog,
+  setBackButtonNavigationAllowed,
+  setSideNavigationAllowed,
+} from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
-import { BASE_API_URL } from './../../api.config';
+import { BASE_API_URL } from "./../../api.config";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -39,129 +45,133 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  // const {isMasterDetaisData,isPrintingData,isLaminationData} = useSelector((state:RootState)=>state.masterData)
-  const {hasUnsavedChanges} = useSelector((state:RootState)=>state.viewDailyPlan)
+  const { updateButton } = useSelector((state: RootState) => state.masterData);
+  const { hasUnsavedChanges } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
   const UEN = localStorage.getItem("selectedUEN");
-   let selectedUEN :any;
-   if(UEN){
-     selectedUEN =  UEN;
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
   }
-  const UENAction= localStorage.getItem("actionSelectedUEN")
-  let selectedUENList :any;
-  if(UENAction){
-    selectedUENList =  UENAction;
- }
- const UnitEffectiveNumber = localStorage.getItem("UEN");
- const VersionNumber = localStorage.getItem("VersionNumber")
-const clearRequestPayoad ={    
-  masterDataDetails: {
-    job_master_id: 0,
-    unit_effectivity_number: "",
-    customer_name: "",
-    customer_logo: "",
-    item_code: "",
-    brand_description: "",
-    jar_cap: "",
-    structure: "",
-    label_type: "",
-    repeat_length: 0,
-    ups: 0,
-    tracks: 0,
-    segment:''
-  },
-  masterDataPrinting: {
-    printingDetails: {
-      machine_settings_id: 0,
+  const UENAction = localStorage.getItem("actionSelectedUEN");
+  let selectedUENList: any;
+  if (UENAction) {
+    selectedUENList = UENAction;
+  }
+  const UnitEffectiveNumber = localStorage.getItem("UEN");
+  const VersionNumber = localStorage.getItem("VersionNumber");
+  const clearRequestPayoad = {
+    masterDataDetails: {
       job_master_id: 0,
-      printing_machine_name: "",
-      cylinder_teeth: 0,
-      tension: 0,
-      unwinder: 0,
-      rewinder: 0,
-      infeed: 0,
-      outfeed: 0,
-      static_charge: 0,
-      format_correct: 0,
+      unit_effectivity_number: "",
+      customer_name: "",
+      customer_logo: "",
+      item_code: "",
+      brand_description: "",
+      jar_cap: "",
+      structure: "",
+      label_type: "",
+      repeat_length: 0,
+      ups: 0,
+      tracks: 0,
+      segment: "",
     },
-    printingSubstrateSettings: {
-      print_substrate_id:0, machine_settings_id:0,
-      substrate_type: "",
-      supplier: "",
-      dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
-    },
-    stationWiseMetrics: [
-      {
-        station_id: 0,
-        station_no: 0,
-        color_pantone: "",
-        lf_value: 0,
-        ink_supplier: "",
-        lpcm: 0,
-        volume: "",
-        uv_led: "",
-        uv_led_intensity: "",
-        mounting_tape: "",
-        mptl_code: 0,
-        mixing_on_gec: 0,
+    masterDataPrinting: {
+      printingDetails: {
+        machine_settings_id: 0,
+        job_master_id: 0,
+        printing_machine_name: "",
+        cylinder_teeth: 0,
+        tension: 0,
+        unwinder: 0,
+        rewinder: 0,
+        infeed: 0,
+        outfeed: 0,
+        static_charge: 0,
+        format_correct: 0,
       },
-    ],
-  },
-  masterDataLamination: {
-    laminationConditions: {
-      lamination_id: 0,
-      job_master_id: 0,
-      zone1_temp: 0,
-      zone2_temp: 0,
-      nip_pressure_bar: 0,
-      speed: 0,
-      lami_set_tension: "",
-      rewinder_tension: "",
-      printed_film_tension: "",
-      laminate_film_tension: "",
-      viscosity_range: "",
-      adhesive_gsm: "",
+      printingSubstrateSettings: {
+        print_substrate_id: 0,
+        machine_settings_id: 0,
+        substrate_type: "",
+        supplier: "",
+        dyne_level: "",
+        width: 0,
+        thickness: 0,
+        density: 0,
+      },
+      stationWiseMetrics: [
+        {
+          station_id: 0,
+          station_no: 0,
+          color_pantone: "",
+          lf_value: 0,
+          ink_supplier: "",
+          lpcm: 0,
+          volume: "",
+          uv_led: "",
+          uv_led_intensity: "",
+          mounting_tape: "",
+          mptl_code: 0,
+          mixing_on_gec: 0,
+        },
+      ],
     },
-    laminationSubstrate: {
-      substrate_id: 0,
-      lamination_id: 0,
-      substrate_type: "",
-      supplier: "",
-      dyne_level: "",
-      width: 0,
-      thickness: 0,
-      density: 0,
-    },
-    bondingMaterials: [
-      {
-        bonding_id: 0,
+    masterDataLamination: {
+      laminationConditions: {
         lamination_id: 0,
-        type: "",
-        code: "",
-        brand: "",
-        ratio: 0,
+        job_master_id: 0,
+        zone1_temp: 0,
+        zone2_temp: 0,
+        nip_pressure_bar: 0,
+        speed: 0,
+        lami_set_tension: "",
+        rewinder_tension: "",
+        printed_film_tension: "",
+        laminate_film_tension: "",
+        viscosity_range: "",
+        adhesive_gsm: "",
       },
-    ],
-  },
-  masterDataDyeCutting: {
-    dye_cutting_id: 0,
-    job_master_id: 0,
-    machine_type: "",
-    machine_name: "",
-    dye_code: "",
-    run_speed: 0,
-  },}
+      laminationSubstrate: {
+        substrate_id: 0,
+        lamination_id: 0,
+        substrate_type: "",
+        supplier: "",
+        dyne_level: "",
+        width: 0,
+        thickness: 0,
+        density: 0,
+      },
+      bondingMaterials: [
+        {
+          bonding_id: 0,
+          lamination_id: 0,
+          type: "",
+          code: "",
+          brand: "",
+          ratio: 0,
+        },
+      ],
+    },
+    masterDataDyeCutting: {
+      dye_cutting_id: 0,
+      job_master_id: 0,
+      machine_type: "",
+      machine_name: "",
+      dye_code: "",
+      run_speed: 0,
+    },
+  };
   const { indentNo } = useParams();
   // const decodedIndentNo = indentNo
   let unitEffectiveNumberDaily: number | undefined = undefined;
 
-  const uen = localStorage.getItem('unitEffectiveNumberDaily');
+  const uen = localStorage.getItem("unitEffectiveNumberDaily");
   if (uen !== null) {
     unitEffectiveNumberDaily = Number(uen);
   }
-  
+
   const decodedIndentNo = decodeURIComponent(indentNo || "");
 
   const downloadFile = async () => {
@@ -170,29 +180,29 @@ const clearRequestPayoad ={
     const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
     setLoading(true);
     try {
-      const response = await fetch(url, { method: 'GET' });
-  
+      const response = await fetch(url, { method: "GET" });
+
       if (!response.ok) {
-        const errorData = await response.json(); 
-        const errorMessage = errorData?.message || 'Error downloading the file. Please try again later.';
+        const errorData = await response.json();
+        const errorMessage =
+          errorData?.message ||
+          "Error downloading the file. Please try again later.";
         toast.error(errorMessage);
         throw new Error(errorMessage);
       }
-  
+
       const blob = await response.blob();
-      
-      const downloadLink = document.createElement('a');
+
+      const downloadLink = document.createElement("a");
       const fileUrl = URL.createObjectURL(blob);
       downloadLink.href = fileUrl;
-      downloadLink.download = `${decodedIndentNo}.xlsx`; 
+      downloadLink.download = `${decodedIndentNo}.xlsx`;
       downloadLink.click();
 
       URL.revokeObjectURL(fileUrl);
-  
     } catch (error) {
-      console.error('Error downloading the file:', error);
-    }
-    finally {
+      console.error("Error downloading the file:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -209,12 +219,9 @@ const clearRequestPayoad ={
     dispatch(clearMasterDataFormErrors());
     navigate("/createMasterData");
   };
-  
 
-const today = new Date();
-const formattedDate = today
-  .toLocaleDateString("en-GB")  
-  .replace(/\//g, "-");         
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
 
   const role = localStorage.getItem("role");
   const pageData: Record<
@@ -232,10 +239,10 @@ const formattedDate = today
       uploadTitle?: string;
       uploadSubTitle?: string;
       headerButtonColor?: boolean;
-      dropDown?:boolean;
-      dropDownOptions?:string[],
-      editButton?: boolean,
-      editClick?: () => void
+      dropDown?: boolean;
+      dropDownOptions?: string[];
+      editButton?: boolean;
+      editClick?: () => void;
     }
   > = {
     "/dashboard": {
@@ -280,6 +287,14 @@ const formattedDate = today
       onButton2Click: () => dispatch(setUploadPopup(true)),
       uploadTitle: "Update Master Data",
       uploadSubTitle: "Upload Master Data",
+      onBack: () => {
+        if (!updateButton) {
+          navigate(`/viewMasterData/${selectedUEN}`);
+        } else {
+          navigate("/masterData");
+        }
+      },
+      headerButton: true,
     },
     "/viewMasterData/:id": {
       title: selectedUEN,
@@ -289,7 +304,7 @@ const formattedDate = today
         onButton2Click: () => {
           navigate(`/updateMasterData/${selectedUEN}`);
           dispatch(setSelectedTab(0));
-          dispatch(setUpdateButton(false))
+          dispatch(setUpdateButton(false));
         },
       }),
       onButton1Click: () => dispatch(setVersionPopup(true)),
@@ -316,10 +331,24 @@ const formattedDate = today
     },
     "/settings": {
       title: "Settings",
-      button1Text: "Save Changes",
-      button2Text: "Reset",
-      onButton1Click: () => alert("Save Changes Clicked"),
-      onButton2Click: () => alert("Reset Clicked"),
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
+    },
+     "/productionOperators": {
+      title: "Production Operators",
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
+    },
+     "/reports": {
+      title: "Reports",
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
     },
     "/dailyPlan": {
       title: "Daily Plan",
@@ -331,22 +360,26 @@ const formattedDate = today
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
-      button1Text: loading ? 'Downloading...' : 'Download Template',
+      button1Text: loading ? "Downloading..." : "Download Template",
       button2Text: "Upload Job Data",
       onButton1Click: () => {
-        downloadFile(); 
+        downloadFile();
       },
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
-      onBack: hasUnsavedChanges 
-      ? () => {dispatch(setShowTabChangeDialog(true)),dispatch(setBackButtonNavigationAllowed(true)),dispatch(setSideNavigationAllowed(false))}
-      : () => navigate("/dailyPlan"),    
+      onBack: hasUnsavedChanges
+        ? () => {
+            dispatch(setShowTabChangeDialog(true)),
+              dispatch(setBackButtonNavigationAllowed(true)),
+              dispatch(setSideNavigationAllowed(false));
+          }
+        : () => navigate("/dailyPlan"),
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "",
-      dropDown:true,
-      dropDownOptions:["Completed","Inactive","Active","Inprogress"],
+      dropDown: true,
+      dropDownOptions: ["Completed", "Inactive", "Active", "Inprogress"],
       editButton: true,
-      editClick: () => dispatch(setIsEditing(true))
+      editClick: () => dispatch(setIsEditing(true)),
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -379,7 +412,7 @@ const formattedDate = today
   }
   const onClosePopup = () => setMasterDataCreatePopup(false);
 
-const hideSideBar = location.pathname.includes('/versionDetails')
+  const hideSideBar = location.pathname.includes("/versionDetails");
 
   return (
     <Box
@@ -392,9 +425,8 @@ const hideSideBar = location.pathname.includes('/versionDetails')
     >
       {/* Sidebar */}
       {!hideSideBar && (
-      <Sidebar open={sidebarOpen} toggleMobileSidebar={toggleSidebar} />
-    )}
-  
+        <Sidebar open={sidebarOpen} toggleMobileSidebar={toggleSidebar} />
+      )}
 
       {/* Main Content */}
       <Box
@@ -426,7 +458,7 @@ const hideSideBar = location.pathname.includes('/versionDetails')
           dropDown={headerData.dropDown}
           dropDownOptions={headerData.dropDownOptions}
           editButton={headerData.editButton}
-          editClick = {headerData.editClick}
+          editClick={headerData.editClick}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

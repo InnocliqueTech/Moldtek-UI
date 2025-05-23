@@ -53,45 +53,44 @@ const SignInPage: React.FC = () => {
       return;
     }
 
-try {
-  const response = await login({ username: email, password: trimmedPassword }).unwrap();
+    try {
+      const response = await login({ username: email, password: trimmedPassword }).unwrap();
 
-  if (response?.data?.token) {
-    localStorage.setItem("token", response?.data?.token);
-    localStorage.setItem("auth", "true");
-    localStorage.setItem("role", response?.data?.userTypeName);
-    localStorage.setItem("userName", response?.data?.userName);
+      if (response?.data?.token) {
+        localStorage.setItem("token", response?.data?.token);
+        localStorage.setItem("auth", "true");
+        localStorage.setItem("role", response?.data?.userTypeName);
+        localStorage.setItem("userName", response?.data?.userName);
 
-    if (rememberMe) {
-      localStorage.setItem("rememberMeEmail", email);
-      localStorage.setItem("rememberMePassword", trimmedPassword);
-    } else {
-      localStorage.removeItem("rememberMeEmail");
-      localStorage.removeItem("rememberMePassword");
+        if (rememberMe) {
+          localStorage.setItem("rememberMeEmail", email);
+          localStorage.setItem("rememberMePassword", trimmedPassword);
+        } else {
+          localStorage.removeItem("rememberMeEmail");
+          localStorage.removeItem("rememberMePassword");
+        }
+
+        navigate(from, { replace: true });
+      } else {
+        localStorage.clear();
+        toast.error("Login failed: No token received");
+        navigate("/");
+      }
+    } catch (err: any) {
+      localStorage.clear();
+      const statusCode = err?.status;
+      const errorMessage = err?.data?.message || "Login failed";
+
+      if (statusCode === 401) {
+        setErrors({
+          email: " ",
+          password: "Invalid email or password",
+        });
+      } else {
+        toast.error(errorMessage);
+        navigate("/");
+      }
     }
-
-    navigate(from, { replace: true });
-  } else {
-    localStorage.clear();
-    toast.error("Login failed: No token received");
-    navigate("/");
-  }
-} catch (err: any) {
-  localStorage.clear();
-  const statusCode = err?.status;
-  const errorMessage = err?.data?.message || "Login failed";
-
-  if (statusCode === 401) {
-    setErrors({
-      email: " ",
-      password: "Invalid email or password",
-    });
-  } else {
-    toast.error(errorMessage);
-    navigate("/");
-  }
-}
-
   };
 
   const isFormValid = () => {
@@ -128,7 +127,13 @@ try {
         </Box>
 
         {/* Sign In Form */}
-        <Box sx={{ width: "100%", maxWidth: "500px", textAlign: "center", mt: 20 }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          style={{ width: "100%", maxWidth: "500px", textAlign: "center", marginTop: "5rem" }}
+        >
           <Typography fontWeight={600} color="#2F2F2F" fontSize={32}>
             Sign In
           </Typography>
@@ -185,6 +190,7 @@ try {
 
           <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
             <ReusableButton 
+              type="submit"
               text="Sign In"
               onClick={handleLogin}
               width="100%"
@@ -194,108 +200,107 @@ try {
               loading={isLoading}
             />
           </Box>
-        </Box>
+        </form>
       </Box>
 
       {/* Right Section - Image & Description */}
-<Box
-  sx={{
-    flex: 1,
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    p: 2,
-  }}
->
-  <Box
-    sx={{
-      width: "100%",
-      maxWidth: 500,
-      height: "100%",
-      borderRadius: "16px",
-      overflow: "hidden",
-      boxShadow: 3,
-      display: "flex",
-      flexDirection: "column",
-      backgroundColor: "white",
-    }}
-  >
-    {/* Top main image */}
-    <Box sx={{ flex: 0.4 }}>
-      <img
-        src={SignInImage}
-        alt="Sign In"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
-        }}
-      />
-    </Box>
-
-    {/* Dark section with text and curve on top */}
-    <Box
-      sx={{
-        flex: 0.6,
-        position: "relative",
-        backgroundColor: "#2F4052",
-        color: "white",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-        overflow: "hidden",
-      }}
-    >
-      {/* Curve Image positioned at top */}
       <Box
         sx={{
-          position: "absolute",
-          top: -1,
-          left: 0,
-          width: "100%",
-          height: {sm:'70%',md:"100%"},
-          zIndex: 4,
-          pointerEvents: "none",
-          display: { xs: "none", sm: "block" },
+          flex: 1,
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 2,
         }}
       >
-      <img
-  src={curveImage}
-  alt="Curve"
-  style={{
-    width: "100%",
-    height: "100%",
-    objectFit: "fill", // force-stretch both directions
-    display: "block",
-  }}
-/>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 500,
+            height: "100%",
+            borderRadius: "16px",
+            overflow: "hidden",
+            boxShadow: 3,
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "white",
+          }}
+        >
+          {/* Top main image */}
+          <Box sx={{ flex: 0.4 }}>
+            <img
+              src={SignInImage}
+              alt="Sign In"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+          </Box>
 
-      </Box>
+          {/* Dark section with text and curve on top */}
+          <Box
+            sx={{
+              flex: 0.6,
+              position: "relative",
+              backgroundColor: "#2F4052",
+              color: "white",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              overflow: "hidden",
+            }}
+          >
+            {/* Curve Image */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: -1,
+                left: 0,
+                width: "100%",
+                height: { sm: "70%", md: "100%" },
+                zIndex: 4,
+                pointerEvents: "none",
+                display: { xs: "none", sm: "block" },
+              }}
+            >
+              <img
+                src={curveImage}
+                alt="Curve"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "fill",
+                  display: "block",
+                }}
+              />
+            </Box>
 
-      {/* Text content */}
-      <Box
-        sx={{
-          position: "relative",
-          zIndex: 2,
-          p: 3,
-          textAlign: "left",
-        }}
-      >
-        <Box sx={{ mb: 1 }}>
-          <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
+            {/* Text content */}
+            <Box
+              sx={{
+                position: "relative",
+                zIndex: 2,
+                p: 3,
+                textAlign: "left",
+              }}
+            >
+              <Box sx={{ mb: 1 }}>
+                <img src={indicator} alt="Indicator Icon" style={{ height: "4px" }} />
+              </Box>
+              <Typography sx={{ color: "#ECECEC", fontWeight: 600, fontSize: "20px" }}>
+                Print & Lamination Data Hub
+              </Typography>
+              <Typography sx={{ mt: 1, color: "#ECECEC", fontWeight: 400, fontSize: "15px" }}>
+                Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
+              </Typography>
+            </Box>
+          </Box>
         </Box>
-        <Typography sx={{ color: "#ECECEC", fontWeight: 600, fontSize: "20px" }}>
-          Print & Lamination Data Hub
-        </Typography>
-        <Typography sx={{ mt: 1, color: "#ECECEC", fontWeight: 400, fontSize: "15px" }}>
-          Enhance productivity with seamless data entry. Log in to access and update manufacturing records.
-        </Typography>
       </Box>
-    </Box>
-  </Box>
-</Box>
     </Box>
   );
 };

@@ -18,7 +18,7 @@ const MasterData: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data, isLoading, isError } = useGetMetricsQuery();
+  const { data, isLoading } = useGetMetricsQuery();
   const storageKey = "masterDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
@@ -42,6 +42,8 @@ const MasterData: React.FC = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
+
+    const role = localStorage.getItem("role");
   
   const columns = [
     {
@@ -152,7 +154,6 @@ const MasterData: React.FC = () => {
     {
       data: listOfCompaniesData,
       isLoading: listOfCompaniesLoading,
-      isError: companiesError,
     },
   ] = useMasterFiltersMutation();
 
@@ -178,21 +179,43 @@ const MasterData: React.FC = () => {
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   }, [page,rowsPerPage]);
   
-
-  if (isError || companiesError) {
-    return (
-      <Box sx={{ textAlign: "center", color: "error.main" }}>
-        <Typography variant="h6">
-          There was an error fetching the data. Please try again later.
-        </Typography>
-      </Box>
-    );
-  }
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     dispatch(setIsSearchTriggered(false));
     localStorage.setItem(storageKey, newPage.toString());
   };
+
+const baseActions = [
+  {
+    label: "View Job Data",
+    onClick: (row: any) => {
+      const selectedUENAction = row?.unit_effectivity_number;
+      const versionNoAction = row?.version_no;
+      localStorage.setItem("actionSelectedUEN", selectedUENAction);
+      localStorage.setItem("actionVersionNo", versionNoAction);
+      navigate(`/viewJobsList`);
+    },
+  },
+];
+
+const actions =
+  role === "Admin"
+    ? [
+        ...baseActions,
+        {
+          label: "Update",
+          onClick: (row: any) => {
+            const selectedUENActionUpdate = row?.unit_effectivity_number;
+            const versionNoAction = row?.version_no;
+            localStorage.setItem("actionSelectedUEN", selectedUENActionUpdate);
+            localStorage.setItem("actionVersionNo", versionNoAction);
+            dispatch(setUpdateButton(true));
+            navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+          },
+        },
+      ]
+    : baseActions;
+
   return (
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
@@ -231,34 +254,7 @@ const MasterData: React.FC = () => {
           info={true}
           searchVisible={false}
           action={true}
-          actions={[
-            {
-              label: "View Job Data",
-              onClick: (row: any) => {
-                const selectedUENAction = row?.unit_effectivity_number;
-                const versionNoAction = row?.version_no;
-                localStorage.setItem("actionSelectedUEN", selectedUENAction);
-                localStorage.setItem("actionVersionNo", versionNoAction);
-                navigate(`/viewJobsList`); // If you want this to depend on the row, add params here.
-              },
-            },
-            {
-              label: "Update",
-              onClick: (row: any) => {
-                const selectedUENActionUpdate = row?.unit_effectivity_number;
-                localStorage.setItem(
-                  "actionSelectedUEN",
-                  selectedUENActionUpdate
-                );
-                const versionNoAction = row?.version_no;
-                localStorage.setItem("actionVersionNo", versionNoAction);
-                const actionSelectedUpdateUEN =
-                  localStorage.getItem("actionSelectedUEN");
-                  dispatch(setUpdateButton(true))
-                navigate(`/updateMasterData/${actionSelectedUpdateUEN}`);
-              },
-            },
-          ]}
+          actions={actions}
           isLoading={listOfCompaniesLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}

@@ -9,6 +9,7 @@ import {
 } from "../../store/slices/viewMasterDataSlice";
 
 
+
 const data = [
   {
     repeat: 53,
@@ -48,6 +49,8 @@ const ViewMasterDataDetails: React.FC = () => {
       dispatch(setSubstrateTableData(substrateData));
     }
   }, [dispatch, data, substrateData]);
+
+
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

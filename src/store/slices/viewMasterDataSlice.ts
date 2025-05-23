@@ -117,6 +117,8 @@ export interface ViewMasterDataDetails {
   label_type: string;
   segment:string;
   labels_per_meter:number;
+  // noOfColorsSetting:string;
+  // noOfSpecialColors:string;
 }
 
 interface ViewMasterDataState {
@@ -216,6 +218,8 @@ const initialState: ViewMasterDataState = {
   viewMasterDataDetails: {
     job_master_id: 0,
     unit_effectivity_number: "--",
+  //    noOfColorsSetting:"--",
+  // noOfSpecialColors:"--",
     customer_name: "--",
     segment:"--",
     customer_logo: "--",

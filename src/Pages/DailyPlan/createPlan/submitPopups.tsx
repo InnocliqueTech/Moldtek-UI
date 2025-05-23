@@ -18,6 +18,9 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const { submitAndPublish } = useSelector(
     (store: RootState) => store.masterData
   );
+  const { recentlyCreatedIndentNumber } = useSelector(
+    (store: RootState) => store.viewDailyPlan
+  );
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
   const handleSubmitPopupClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -33,7 +36,8 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopupConfirm(false);
-    navigate("/dailyPlan");
+    // navigate("/dailyPlan");
+    navigate(`/viewDailyPlan/${recentlyCreatedIndentNumber}`);
     localStorage.setItem('dailyPlanDataPage','0')
   };
   return (
@@ -51,8 +55,8 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
       />
       <SuccessPopup
         open={submitPopupConfirm}
-        message="You have successfully add a daily job"
-        buttonText="Go back to Daily Plan"
+        message="You have successfully added a daily job"
+        buttonText="View Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
       />

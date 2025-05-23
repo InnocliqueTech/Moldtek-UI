@@ -1,8 +1,8 @@
 import React from "react";
-import { Box, Typography,  } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 // import InfoOutline from "@mui/icons-material/InfoOutlined";
 import DataTable from "./MasterDataTable"; // Adjust the import path as needed
-import InfoContainer,{InfoItem} from "./InfoContainer";
+import InfoContainer, { InfoItem } from "./InfoContainer";
 
 interface Column {
   id: string;
@@ -25,7 +25,7 @@ interface TitledDataTableProps<T> {
   firstRow?: boolean;
   infoItems?: InfoItem[];
   showInfoSection?: boolean;
-  showTableSection?:boolean;
+  showTableSection?: boolean;
   isEditing?: boolean;
   setInfoItems?: (items: InfoItem[]) => void;
   // rowEditable?: (row: T) => boolean;
@@ -47,7 +47,7 @@ const TitledDataTable = <T extends Record<string, any>>({
   showTableSection = true,
   isEditing,
   setInfoItems,
-  rowEditable
+  rowEditable,
 }: TitledDataTableProps<T>) => {
   return (
     <Box
@@ -105,6 +105,10 @@ const TitledDataTable = <T extends Record<string, any>>({
           isEditing={isEditing}
           setInfoItems={setInfoItems}
           borderColor={borderColor}
+          startingTimeValue={
+            infoItems.find((item) => item.label === "Job Starting Time")
+              ?.value || ""
+          }
         />
       )}
     </Box>
