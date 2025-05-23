@@ -700,6 +700,7 @@ const Printing: React.FC<PrintingProps> = ({
             setData={setTableData}
             tableTitle={true}
             id={"printing"}
+            setFormData={setFormValues}
           />
         </Box>
       </Box>

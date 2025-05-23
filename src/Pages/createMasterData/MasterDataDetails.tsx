@@ -274,14 +274,19 @@ segmentsDropdown({
           : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
       }
     }
-     else if (characterFields.includes(field)) {
-      const onlyLettersRegex = /^[A-Za-z\s]+$/;
-      if (isImportant && trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
-        errorMessage = "Only letters and spaces are allowed.";
-      }
-    } else if (freeTextFields.includes(field)) {
+else if (characterFields.includes(field)) {
+  const onlyLettersRegex = /^[A-Za-z\s]+$/;
+  console.log("Validating field:", field, "with value:", trimmed);
+
+  if (isImportant && trimmed === "") {
+    errorMessage = "This field cannot be empty.";
+  } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
+    console.log("Validation failed for field:", field);
+    errorMessage = "Only letters and spaces are allowed.";
+  }
+}
+
+     else if (freeTextFields.includes(field)) {
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
       }
@@ -302,6 +307,7 @@ segmentsDropdown({
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
     dispatch(setMasterDataFormErros(updatedErrors));
+    setErrors(updatedErrors);
     if(!id){
       dispatch(setSaveMasterDataDetailsData(updatedFormData));
     }
@@ -532,7 +538,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 Customer Picture
               </Typography>
 
-              <Box display="flex" alignItems="center" gap={2} mt={0.4}>
+              <Box display="flex" alignItems="center" gap={2} mt={0}>
                 {formData.customer_logo ? (
                   <>
                     {/* Uploaded Image Preview */}
@@ -542,7 +548,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                       alt="Uploaded"
                       sx={{
                         width: 150,
-                        height: 35,
+                        height: 30,
                         borderRadius: "8px",
                         objectFit: "cover",
                         flexShrink: 0,
