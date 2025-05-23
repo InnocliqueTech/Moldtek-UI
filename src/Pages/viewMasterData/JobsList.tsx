@@ -8,6 +8,7 @@ import {
   Skeleton,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,8 @@ import {
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
 import { Close, Visibility } from "@mui/icons-material";
+import theme from "../../theme";
+import AutoTooltipText from "../../Components/ReUsable/AutoTooltipText";
 
 const JobsList: React.FC = () => {
   const navigate = useNavigate();
@@ -242,25 +245,54 @@ const JobsList: React.FC = () => {
   const viewMasterDataDetails =
     viewMasterDataDetailsData?.data?.masterDataDetails;
 
-  const maxChars = 30;
-  const isLong = viewMasterDataDetails?.brand_description?.length > maxChars;
-  const displayText = isLong
-    ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
-    : viewMasterDataDetails?.brand_description;
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isMd = useMediaQuery(theme.breakpoints.between("md", "lg"));
+  const isLg = useMediaQuery(theme.breakpoints.between("lg", "xl"));
+  const isXl = useMediaQuery(theme.breakpoints.up("xl"));
+  let maxChars = 90;
 
-  const renderValue = (value: string | undefined | null) => {
-    return value ? value : "N/A";
+  if (isXs) maxChars = 50;
+  else if (isSm) maxChars = 50;
+  else if (isMd) maxChars = 32;
+  else if (isLg) maxChars = 45;
+  else if (isXl) maxChars = 50;
+
+  let maxCharsLabel = 20;
+
+  if (isXs) maxCharsLabel = 50;
+  else if (isSm) maxCharsLabel = 70;
+  else if (isMd) maxCharsLabel = 25;
+  else if (isLg) maxCharsLabel = 38;
+  else if (isXl) maxCharsLabel = 90;
+
+  const renderValue = (
+    value: string | number | null | undefined,
+    MAX_LENGTH: number
+  ) => {
+    const displayValue =
+      value !== null && value !== undefined ? String(value) : "N/A";
+
+    // Check if truncation is needed
+    const isTruncated = displayValue.length > MAX_LENGTH;
+    const truncatedValue = isTruncated
+      ? displayValue.slice(0, MAX_LENGTH) + "..."
+      : displayValue;
+
+    // If truncated, show tooltip on hover with full value
+    return (
+      <Tooltip title={isTruncated ? displayValue : ""} arrow>
+        <span style={{ cursor: isTruncated ? "pointer" : "default" }}>
+          {truncatedValue ? truncatedValue : "N/A"}
+        </span>
+      </Tooltip>
+    );
   };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     localStorage.setItem(storageKey, newPage.toString());
   };
-  const maxCharsLabel = 20;
-  const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
-  const displayTextLabel = isLongLabel
-    ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
-    : viewMasterDataDetails?.label_type;
 
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
 
@@ -323,7 +355,10 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
+                {renderValue(
+                  viewMasterDataDetails?.unit_effectivity_number,
+                  maxChars
+                )}
               </Typography>
 
               <Box sx={{ mt: 2 }}>
@@ -342,7 +377,7 @@ const JobsList: React.FC = () => {
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(viewMasterDataDetails?.item_code)}
+                  {renderValue(viewMasterDataDetails?.item_code, maxChars)}
                 </Typography>
               </Box>
 
@@ -362,7 +397,7 @@ const JobsList: React.FC = () => {
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(viewMasterDataDetails?.jar_cap)}
+                  {renderValue(viewMasterDataDetails?.jar_cap, maxChars)}
                 </Typography>
               </Box>
             </Grid>
@@ -383,7 +418,7 @@ const JobsList: React.FC = () => {
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.customer_name)}
+                {renderValue(viewMasterDataDetails?.customer_name, maxChars)}
               </Typography>
 
               <Box sx={{ mt: 2 }}>
@@ -402,7 +437,7 @@ const JobsList: React.FC = () => {
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(viewMasterDataDetails?.structure)}
+                  {renderValue(viewMasterDataDetails?.structure, maxChars)}
                 </Typography>
 
                 <Box
@@ -418,22 +453,19 @@ const JobsList: React.FC = () => {
                   >
                     Type Of Label
                   </Typography>
-                  <Tooltip
-                    title={isLongLabel ? viewMasterDataDetails?.label_type : ""}
-                    placement="top"
-                    arrow
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      mt: 0.5,
+                      wordBreak: "break-word",
+                      whiteSpace: "pre-line",
+                    }}
                   >
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        mt: 0.5,
-                        wordBreak: "break-word",
-                        whiteSpace: "pre-line",
-                      }}
-                    >
-                      {renderValue(displayTextLabel)}
-                    </Typography>
-                  </Tooltip>
+                    {renderValue(
+                      viewMasterDataDetails?.label_type,
+                      maxCharsLabel
+                    )}
+                  </Typography>
                 </Box>
               </Box>
             </Grid>
@@ -478,29 +510,27 @@ const JobsList: React.FC = () => {
               </Box>
 
               <Box sx={{ mt: viewMasterDataDetails?.customer_logo ? 0 : 2 }}>
-                <Typography
+                <AutoTooltipText
+                  content={"Brand Name & Pack-Description"}
+                  maxLength={30}
                   variant="body2"
-                  color="text.secondary"
-                  fontWeight={500}
+                  sx={{ color: "#656565" }}
+                  tooltipPlacement="bottom"
+                  TooltipProps={{ arrow: false }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    mt: 0.5,
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-line",
+                  }}
                 >
-                  Brand Name & Pack-Description
+                  {renderValue(
+                    viewMasterDataDetails?.brand_description,
+                    maxChars
+                  )}
                 </Typography>
-                <Tooltip
-                  title={isLong ? viewMasterDataDetails?.brand_description : ""}
-                  placement="top"
-                  arrow
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      mt: 0.5,
-                      wordBreak: "break-word",
-                      whiteSpace: "pre-line",
-                    }}
-                  >
-                    {renderValue(displayText)}
-                  </Typography>
-                </Tooltip>
               </Box>
             </Grid>
           </Grid>

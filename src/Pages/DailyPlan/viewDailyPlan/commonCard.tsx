@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Grid, Box, Tooltip, Skeleton } from "@mui/material";
+import { Typography, Grid, Box, Tooltip, Skeleton, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useDispatch } from "react-redux";
 import ReusableInput from "../../../Components/ReUsable/TextField";
 import { setDailyPlanCancel, setDailyPlanSave, setUpdateCommonCard } from "../../../store/slices/viewDailyPlanSlice";
+import theme from "../../../theme";
 
 interface Props {
   isLoading: boolean;
@@ -24,15 +25,36 @@ const CommenCard: React.FC<Props> = ({
     workOrderNumber: dailyPlan?.workOrderNumber || "",
   });
 
-  const maxChars = 20;
-  const isLong = dailyPlan?.brandNamePack?.length > maxChars;
-  const displayText = isLong
-    ? dailyPlan.brandNamePack.slice(0, maxChars) + "..."
-    : dailyPlan?.brandNamePack;
+ const isXs = useMediaQuery(theme.breakpoints.down('sm'));      
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isLg = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+ let maxChars = 90;
 
-  const renderValue = (value: string | undefined | null | number) => {
-    return value ? value : "N/A";
-  };
+  if (isXs) maxChars = 50;
+  else if (isSm) maxChars = 50;
+  else if (isMd) maxChars = 20;
+  else if (isLg) maxChars = 30;
+  else if (isXl) maxChars = 70;
+const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number) => {
+   const displayValue = value !== null && value !== undefined ? String(value) : "N/A";
+
+  // Check if truncation is needed
+  const isTruncated = displayValue.length > MAX_LENGTH;
+  const truncatedValue = isTruncated
+    ? displayValue.slice(0, MAX_LENGTH) + "..."
+    : displayValue;
+
+  // If truncated, show tooltip on hover with full value
+  return (
+    <Tooltip title={isTruncated ? displayValue : ""} arrow>
+      <span style={{ cursor: isTruncated ? 'pointer' : 'default' }}>
+        {truncatedValue?truncatedValue:'N/A'}
+      </span>
+    </Tooltip>
+  );
+};
 
   const handleChange =
     (field: "shift" | "workOrderNumber") =>
@@ -118,7 +140,7 @@ const CommenCard: React.FC<Props> = ({
                 Unit Effective Number{" "}
               </Typography>
               <Typography variant="body1" mt={0.5}>
-                {renderValue(dailyPlan?.unitEffectivityNumber || "N/A")}
+                {renderValue(dailyPlan?.unitEffectivityNumber || "N/A",maxChars)}
               </Typography>
 
               <Box mt={2}>
@@ -130,7 +152,7 @@ const CommenCard: React.FC<Props> = ({
                   PPC Indent Qty
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.ppcIndentQty || "N/A")}
+                  {renderValue(dailyPlan?.ppcIndentQty || "N/A",maxChars)}
                 </Typography>
               </Box>
 
@@ -143,7 +165,7 @@ const CommenCard: React.FC<Props> = ({
                   JAR/CAP
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.jarCap || "N/A")}
+                  {renderValue(dailyPlan?.jarCap || "N/A",maxChars)}
                 </Typography>
               </Box>
             </Grid>
@@ -157,7 +179,7 @@ const CommenCard: React.FC<Props> = ({
                 Indent Number
               </Typography>
               <Typography variant="body1" mt={0.5}>
-                {renderValue(dailyPlan?.indentNumber || "N/A")}
+                {renderValue(dailyPlan?.indentNumber || "N/A",maxChars)}
               </Typography>
 
               <Box mt={2}>
@@ -169,7 +191,7 @@ const CommenCard: React.FC<Props> = ({
                   Target Labels Qty
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.targetLabelsQty || "N/A")}
+                  {renderValue(dailyPlan?.targetLabelsQty || "N/A",maxChars)}
                 </Typography>
               </Box>
 
@@ -198,7 +220,7 @@ const CommenCard: React.FC<Props> = ({
                 Customer Name
               </Typography>
               <Typography variant="body1" mt={0.5}>
-                {renderValue(dailyPlan?.customerName || "N/A")}
+                {renderValue(dailyPlan?.customerName || "N/A",maxChars)}
               </Typography>
 
               <Box mt={2}>
@@ -210,7 +232,7 @@ const CommenCard: React.FC<Props> = ({
                   Target Film Mtrs
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.targetFilmMtrs || "N/A")}
+                  {renderValue(dailyPlan?.targetFilmMtrs || "N/A",maxChars)}
                 </Typography>
               </Box>
 
@@ -231,7 +253,7 @@ const CommenCard: React.FC<Props> = ({
                   />
                 ) : (
                   <Typography variant="body1" mt={0.5}>
-                    {renderValue(dailyPlan?.shift || "N/A")}
+                    {renderValue(dailyPlan?.shift || "N/A",maxChars)}
                   </Typography>
                 )}
               </Box>
@@ -245,11 +267,6 @@ const CommenCard: React.FC<Props> = ({
               >
                 Brand Name and Pack Size
               </Typography>
-              <Tooltip
-                title={isLong ? dailyPlan.brandNamePack : ""}
-                placement="top"
-                arrow
-              >
                 <Typography
                   variant="body1"
                   sx={{
@@ -258,9 +275,8 @@ const CommenCard: React.FC<Props> = ({
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(displayText || "N/A")}
+                  {renderValue(dailyPlan.brandNamePack || "N/A",maxChars)}
                 </Typography>
-              </Tooltip>
 
               <Box mt={2}>
                 <Typography
@@ -271,7 +287,7 @@ const CommenCard: React.FC<Props> = ({
                   Film Required For Printing
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.filmRequiredPrintingMtrs || "N/A")}
+                  {renderValue(dailyPlan?.filmRequiredPrintingMtrs || "N/A",maxChars)}
                 </Typography>
               </Box>
 
@@ -292,7 +308,7 @@ const CommenCard: React.FC<Props> = ({
                   />
                 ) : (
                   <Typography variant="body1" mt={0.5}>
-                    {renderValue(dailyPlan?.workOrderNumber || "N/A")}
+                    {renderValue(dailyPlan?.workOrderNumber || "N/A",maxChars)}
                   </Typography>
                 )}
               </Box>

@@ -6,11 +6,13 @@ import {
   Tooltip,
   IconButton,
   Modal,
+  useMediaQuery,
 } from "@mui/material";
 import { Close,  Visibility } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import AutoTooltipText from "./AutoTooltipText";
+import theme from "../../theme";
 
 const OrderCard: React.FC = () => {
   const { viewMasterDataDetails } = useSelector(
@@ -25,19 +27,47 @@ const OrderCard: React.FC = () => {
     {id:'noOfSpecialColors',label:"No of special colors"}
   ];
 
-  const maxChars = 20;
-  const maxCharsLabel = 20;
-  const isLong = viewMasterDataDetails?.brand_description.length > maxChars;
-  const displayText = isLong
-    ? viewMasterDataDetails?.brand_description.slice(0, maxChars) + "..."
-    : viewMasterDataDetails?.brand_description;
-  const isLongLabel = viewMasterDataDetails?.label_type.length > maxCharsLabel;
-  const displayTextLabel = isLongLabel
-    ? viewMasterDataDetails?.label_type.slice(0, maxCharsLabel) + "..."
-    : viewMasterDataDetails?.label_type;
-  const renderValue = (value: string | undefined | null) => {
-    return value ? value : "N/A";
-  };
+
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));      
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isLg = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+ let maxChars = 90;
+
+  if (isXs) maxChars = 50;
+  else if (isSm) maxChars = 50;
+  else if (isMd) maxChars = 32;
+  else if (isLg) maxChars = 45;
+  else if (isXl) maxChars = 50;
+
+  let maxCharsLabel = 20;
+  
+  if (isXs) maxCharsLabel = 50;
+  else if (isSm) maxCharsLabel = 70;
+  else if (isMd) maxCharsLabel = 25;
+  else if (isLg) maxCharsLabel = 38;
+  else if (isXl) maxCharsLabel = 90;
+
+const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number) => {
+   const displayValue = value !== null && value !== undefined ? String(value) : "N/A";
+
+  // Check if truncation is needed
+  const isTruncated = displayValue.length > MAX_LENGTH;
+  const truncatedValue = isTruncated
+    ? displayValue.slice(0, MAX_LENGTH) + "..."
+    : displayValue;
+
+  // If truncated, show tooltip on hover with full value
+  return (
+    <Tooltip title={isTruncated ? displayValue : ""} arrow>
+      <span style={{ cursor: isTruncated ? 'pointer' : 'default' }}>
+        {truncatedValue?truncatedValue:'N/A'}
+      </span>
+    </Tooltip>
+  );
+};
+
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
   const entries = Object.entries({
   repeat: viewMasterDataDetails?.repeat_length,
@@ -69,7 +99,7 @@ const secondRow = entries.slice(3, 6);
                 whiteSpace: "pre-line",
               }}
             >
-              {renderValue(viewMasterDataDetails?.unit_effectivity_number)}
+              {renderValue(viewMasterDataDetails?.unit_effectivity_number,maxChars)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -87,7 +117,7 @@ const secondRow = entries.slice(3, 6);
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.item_code)}
+                {renderValue(viewMasterDataDetails?.item_code,maxChars)}
               </Typography>
             </Box>
             <Box sx={{ mt: 2 }}>
@@ -106,7 +136,7 @@ const secondRow = entries.slice(3, 6);
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.jar_cap)}
+                {renderValue(viewMasterDataDetails?.jar_cap,maxChars)}
               </Typography>
             </Box>
           </Grid>
@@ -123,7 +153,7 @@ const secondRow = entries.slice(3, 6);
                 whiteSpace: "pre-line",
               }}
             >
-              {renderValue(viewMasterDataDetails?.customer_name)}
+              {renderValue(viewMasterDataDetails?.customer_name,maxChars)}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -141,7 +171,7 @@ const secondRow = entries.slice(3, 6);
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.structure)}
+                {renderValue(viewMasterDataDetails?.structure,maxChars)}
               </Typography>
             </Box>
             <Box
@@ -157,11 +187,6 @@ const secondRow = entries.slice(3, 6);
               >
                 Type Of Label
               </Typography>
-              <Tooltip
-                title={isLongLabel ? viewMasterDataDetails?.label_type : ""}
-                placement="top"
-                arrow
-              >
                 <Typography
                   variant="body1"
                   sx={{
@@ -170,9 +195,8 @@ const secondRow = entries.slice(3, 6);
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(displayTextLabel)}
+                  {renderValue(viewMasterDataDetails?.label_type,maxCharsLabel)}
                 </Typography>
-              </Tooltip>
             </Box>
           </Grid>
 
@@ -217,17 +241,12 @@ const secondRow = entries.slice(3, 6);
             <Box sx={{ mt:viewMasterDataDetails?.customer_logo? 0:2 }}>
               <AutoTooltipText
                 content={"Brand Name & Pack-Description"}
-                maxLength={25}
+                maxLength={30}
                 variant="body2"
                 sx={{ color: "#656565" }}
                 tooltipPlacement="bottom"
                 TooltipProps={{ arrow: false }}
               />
-              <Tooltip
-                title={isLong ? viewMasterDataDetails?.brand_description : ""}
-                placement="top"
-                arrow
-              >
                 <Typography
                   variant="body1"
                   sx={{
@@ -236,9 +255,8 @@ const secondRow = entries.slice(3, 6);
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(displayText)}
+                  {renderValue(viewMasterDataDetails?.brand_description,maxChars)}
                 </Typography>
-              </Tooltip>
             </Box>
             <Box sx={{ mt: 1 }}>
               <Typography
@@ -256,7 +274,7 @@ const secondRow = entries.slice(3, 6);
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.segment)}
+                {renderValue(viewMasterDataDetails?.segment,maxChars)}
               </Typography>
             </Box>
           </Grid>
@@ -290,7 +308,7 @@ const secondRow = entries.slice(3, 6);
           {columns.find((col) => col.id === key)?.label || key}
         </Typography>
         <Typography variant="body1" sx={{ fontWeight: 500 }}>
-          {value ? value : "N/A"}
+           {renderValue(value,maxChars)}
         </Typography>
       </Box>
     ))}
@@ -304,7 +322,7 @@ const secondRow = entries.slice(3, 6);
           {columns.find((col) => col.id === key)?.label || key}
         </Typography>
         <Typography variant="body1" sx={{ fontWeight: 500 }}>
-          {value ? value : "N/A"}
+         {renderValue(value,maxChars)}
         </Typography>
       </Box>
     ))}
