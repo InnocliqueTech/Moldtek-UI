@@ -79,8 +79,8 @@ viewMasterDataDetails
     ups: "",
     tracks: "",
     segment: "",
-         noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //        noOfColorsSetting:"",
+  // noOfSpecialColors:"",
   });
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);

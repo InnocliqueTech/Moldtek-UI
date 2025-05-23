@@ -23,8 +23,8 @@ const OrderCard: React.FC = () => {
     { id: "ups", label: "UPs" },
     { id: "tracks", label: "Tracks" },
     { id: "labels", label: "# Labels/Meter" },
-    {id:"noOfColorsSetting",label:"No of Colors for settings"},
-    {id:'noOfSpecialColors',label:"No of special colors"}
+    // {id:"noOfColorsSetting",label:"No of Colors for settings"},
+    // {id:'noOfSpecialColors',label:"No of special colors"}
   ];
 
 
@@ -74,8 +74,8 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
   ups: viewMasterDataDetails?.ups,
   tracks: viewMasterDataDetails?.tracks,
   labels: viewMasterDataDetails?.labels_per_meter,
-  noOfColorsSetting: viewMasterDataDetails?.noOfColorsSetting,
-  noOfSpecialColors: viewMasterDataDetails?.noOfSpecialColors,
+  // noOfColorsSetting: viewMasterDataDetails?.noOfColorsSetting,
+  // noOfSpecialColors: viewMasterDataDetails?.noOfSpecialColors,
 });
 
 // First 3 entries for the first row, rest for second row

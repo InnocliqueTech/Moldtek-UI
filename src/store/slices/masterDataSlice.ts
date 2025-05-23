@@ -4,8 +4,8 @@ import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, Lab
 
 
 const initialState: MasterDataState = {
-       noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //      noOfColorsSetting:"",
+  // noOfSpecialColors:"",
   updateButton:false,
   selectedFile:null,
   customerLogoFile:null,
@@ -316,8 +316,8 @@ const initialState: MasterDataState = {
     structure: "",
     brand_description: "",
     label_type: "",
-                 noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //                noOfColorsSetting:"",
+  // noOfSpecialColors:"",
   },
   invalidFieldsTable: {},
   dyeCuttingErrors: {
@@ -360,16 +360,16 @@ const initialState: MasterDataState = {
     repeat_length: "",
     ups: "",
     tracks: "",
-         noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //        noOfColorsSetting:"",
+  // noOfSpecialColors:"",
   },
   saveMasterDataDetailsData: {
     job_master_id: 0,
     unit_effectivity_number: "",
     customer_name: "",
     customer_logo: "",
-     noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //    noOfColorsSetting:"",
+  // noOfSpecialColors:"",
     jar_cap: "",
     segment:"",
     item_code: "",
@@ -930,16 +930,16 @@ state.updateButton = action.payload
         repeat_length: "",
         ups: "",
         tracks: "",
-             noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //            noOfColorsSetting:"",
+  // noOfSpecialColors:"",
       };
     },
     clearSaveMasterDetailsData: (state) => {
       state.saveMasterDataDetailsData = {
         job_master_id: 0,
         unit_effectivity_number: "",
-             noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //            noOfColorsSetting:"",
+  // noOfSpecialColors:"",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
@@ -1019,8 +1019,8 @@ state.updateButton = action.payload
         structure: "",
         brand_description: "",
         label_type: "",
-                     noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //                    noOfColorsSetting:"",
+  // noOfSpecialColors:"",
       };
     },
     clearDyeCuttingFormErrors: (state) => {

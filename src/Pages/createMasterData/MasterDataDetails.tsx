@@ -200,8 +200,8 @@ segmentsDropdown({
     brand_description: "",
     label_type: "",
     segment:"",
-    noOfColorsSetting:"",
-  noOfSpecialColors:"",
+  //   noOfColorsSetting:"",
+  // noOfSpecialColors:"",
 
   });
 
@@ -379,8 +379,8 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       ups: data?.ups || 0,
       tracks: data?.tracks || 0,
       segment:data?.segment || "",
-           noOfColorsSetting:data?.noOfColorsSetting||"",
-  noOfSpecialColors:data?.noOfSpecialColors||"",
+  //          noOfColorsSetting:data?.noOfColorsSetting||"",
+  // noOfSpecialColors:data?.noOfSpecialColors||"",
     };
   }
 
@@ -751,7 +751,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               helperText={errors.tracks}
             />
           </Grid>
-                    <Grid size={{ xs: 12, md: 3 }}>
+                    {/* <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="No of Colors for setting"
               value={formData.noOfColorsSetting}
@@ -770,7 +770,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               helperText={errors.noOfSpecialColors}
               required
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
     </Box>

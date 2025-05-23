@@ -162,8 +162,8 @@ export interface PrintingTableRow {
     repeat_length: string;
     ups: string;
     tracks: string;
-         noOfColorsSetting:string;
-  noOfSpecialColors:string;
+  //        noOfColorsSetting:string;
+  // noOfSpecialColors:string;
   }
   
   export interface DyeCuttingFormData {
@@ -188,8 +188,8 @@ export interface PrintingTableRow {
     structure: string;
     brand_description: string;
     label_type: string;
-                 noOfColorsSetting:string,
-  noOfSpecialColors:string,
+  //                noOfColorsSetting:string,
+  // noOfSpecialColors:string,
   }
   export interface DyeCuttingFormErrors {
     job_master_id: string;
@@ -288,8 +288,8 @@ export interface PrintingTableRow {
     selectedFile:File|null;
     uploadFile:File |null;
     customerLogoFile:File |null;
-     noOfColorsSetting:string;
-  noOfSpecialColors:string;
+  //    noOfColorsSetting:string;
+  // noOfSpecialColors:string;
     updateButton:boolean;
     customers: Customer[];
     labelTypes: LabelType[];
