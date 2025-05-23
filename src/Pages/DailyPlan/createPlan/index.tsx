@@ -1,4 +1,4 @@
-import { Box, Typography, Grid,SelectChangeEvent} from '@mui/material';
+import { Box, Typography, Grid, RadioGroup, FormControlLabel, Radio ,SelectChangeEvent} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
@@ -8,15 +8,12 @@ import SubmitPopups from './submitPopups';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from '../../../store';
 import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
-import { listOfLables } from '../../CreateMasterData/data';
+import { listOfLables } from '../../createMasterData/data';
 import { validateFormFields } from './formValidation';
 import { useSaveDailyJobMutation, useSegmentsDropdownMutation, useSubStrateDropDownMutation } from '../../../store/services/api';
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
-import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
-import { unitEffectiveNumbersResp } from './mockData';
 import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
-
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
 
@@ -30,11 +27,34 @@ export interface FormField {
   allowTextFiled?:boolean
 }
 
-interface ProductUnit {
-  unitEffectiveNumber: string;
-  customerName: string;
-  brandDescription: string;
-}
+const CreatePlan: React.FC = () => {
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const [subStrateDropDown] = useSubStrateDropDownMutation();
+  
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await subStrateDropDown({
+        substrate: "",
+        substrateType: "printing",
+      }).unwrap();
+      const substrateList = response?.data?.map((item: any) => item.substrate);
+      dispatch(setPrintingDropDownValues(substrateList));
+    };
+
+    fetchDropdownValues();
+  }, [subStrateDropDown, dispatch]);
+
+  const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
+  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
+   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  
+    useEffect(()=>{
+  segmentsDropdown({
+    segment: ""
+  })
+    },[])
+    const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
 
 const initialFormFields: FormField[] = [
   { id: 'indentNumber', label: 'Indent Number:', value: '' },
@@ -62,43 +82,7 @@ const initialFormFields: FormField[] = [
   { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
 ];
 
-const unitEffectiveNoData : ProductUnit[] = unitEffectiveNumbersResp;
-const unitEffectiveNoList = unitEffectiveNoData.map((item:ProductUnit)=>{
-  return  item.unitEffectiveNumber
-})
-
-const CreatePlan: React.FC = () => {
-  
-  const dispatch = useDispatch<AppDispatch>();
-  const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
-  const [unitEffectivityOptions] = useState<string[]>(unitEffectiveNoList);
-  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(null);
-  const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
-  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
-  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
-  const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
-  
-  useEffect(() => {
-      segmentsDropdown({
-        segment: "",
-      });
-    }, []);
-
-  useEffect(() => {
-      const fetchDropdownValues = async () => {
-        const response = await subStrateDropDown({
-          substrate: "",
-          substrateType: "printing",
-        }).unwrap();
-        const substrateList = response?.data?.map((item: any) => item.substrate);
-        dispatch(setPrintingDropDownValues(substrateList));
-      };
-  
-      fetchDropdownValues();
-    }, [subStrateDropDown, dispatch]);
-  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
-
+const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
 
 useEffect(() => {
   setFormFields(prevFields =>
@@ -119,38 +103,31 @@ useEffect(() => {
 
 
   
-  // const fieldsToSkipForRepeat = [
-  //   'customerName',
-  //   'brandName',
-  //   'jarCap',
-  //   'width',
-  //   'thickness',
-  //   'subStrateType',
-  //   'gsm',
-  //   'repeatLength',
-  //   'ups',
-  //   'substrate',
-  //   'lamSubstrate',
-  //   'dyne',
-  //   'substrateType'
-  // ];
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
-  // const jobType: 'Repeat' = 'Repeat'; 
-
-  const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
-
-  const allowedFields = [
-    'indentNumber',
-    'jobRunDate',
-    'unitEffectivityNumber',
-    'ppcIndentQtyNos',
-    'numberOfRolls',
+  const fieldsToSkipForRepeat = [
+    'customerName',
+    'brandName',
+    'jarCap',
+    'width',
+    'thickness',
+    'subStrateType',
+    'gsm',
+    'repeatLength',
+    'ups',
+    'substrate',
+    'lamSubstrate',
+    'dyne',
+    'substrateType'
   ];
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
+  const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
+
   const shouldShowField = (fieldId: string): boolean => {
-    return allowedFields.includes(fieldId); 
+    if (jobType === 'Repeat') {
+      return !fieldsToSkipForRepeat.includes(fieldId);
+    }
+    return true;
   };
 
   const handleInputChange = (
@@ -159,25 +136,19 @@ useEffect(() => {
   ) => {
     let extractedValue =
       typeof value === 'object' && 'target' in value ? value.target.value : value;
-  
-    if (fieldId === "substrateType" && Array.isArray(extractedValue)) {
-      extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
-    }
-  
-    if (fieldId === 'unitEffectivityNumber') {
-      const selected = unitEffectiveNoData.find(
-        (item) => item.unitEffectiveNumber === extractedValue
-      );
-      setSelectedUnitMeta(selected || null);
-      setSelectedUnitNumber(extractedValue as string);
-    }
-  
+      if (fieldId==="substrateType") {
+        if (Array.isArray(extractedValue)) {
+          // Remove empty strings, trim, then join if needed
+          extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
+        }
+      }
     setFormFields(prevFields =>
       prevFields.map(field =>
         field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
   
+    // Clear error when user starts typing
     if (errors[fieldId]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -185,19 +156,29 @@ useEffect(() => {
         return newErrors;
       });
     }
-  };
-  
+  }
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
     
     formFields.forEach(field => {
-      if (allowedFields.includes(field.id)) {
-        if (['ppcIndentQtyNos', 'numberOfRolls'].includes(field.id)) {
-          formData[field.id] = Number(field.value) || 0;
-        } else {
-          formData[field.id] = field.value;
-        }
+      if ([
+        'ppcIndentQtyNos',
+        'balanceIndentQtyPlanned',
+        'noOfColorsSetting',
+        'noOfSpecialColors',
+        'webLengthForColorMatch',
+        'numberOfRolls',
+        'ups',
+        'repeatLength',
+        'width',
+        'dyne',
+        'gsm',
+        'thickness'
+      ].includes(field.id)) {
+        formData[field.id] = Number(field.value) || 0;
+      } else {
+        formData[field.id] = field.value;
       }
     });
 
@@ -205,7 +186,7 @@ useEffect(() => {
       formData.jobRunDate = new Date(formData.jobRunDate).toISOString().split('T')[0];
     }
 
-    //formData.jobType = jobType;
+    formData.jobType = jobType;
 
     return formData as SaveDailyJobRequest;
   };
@@ -231,7 +212,6 @@ useEffect(() => {
         dispatch(setRecentlyCreatedIndentNumber(formData.indentNumber));
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setFormFields(initialFormFields);
-        setSelectedUnitNumber('');
         return { success: true };
       } else {
         toast.error(data?.message?data?.message:"Error Fetching Data");
@@ -258,48 +238,47 @@ useEffect(() => {
             };
           });
           setFormFields(loadedFields);
-          setSelectedUnitNumber(parsedData['unitEffectivityNumber'] || '');
         }
       } catch (error) {
         console.error('Failed to parse saved data:', error);
       }
     }
   }, []);
-  
 
 
 
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
-        {/* <Box sx={{ mb: 3 }}>
-          <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
-          <RadioGroup
-            row
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
+        <Box sx={{}}>
+          {/* <Typography
+            sx={{ fontSize: "1rem", fontWeight: "600" }}
+            className="mb-3"
           >
-            <FormControlLabel value="New" control={<Radio />} label="New" />
-            <FormControlLabel value="Repeat" control={<Radio />} label="Repeat" />
-          </RadioGroup>
-        </Box> */}
+            Add New Job
+          </Typography> */}
+          <Box sx={{ mb: 3 }}>
+            <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
+            <RadioGroup
+              row
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
+            >
+              <FormControlLabel value="New" control={<Radio />} label="New" />
+              <FormControlLabel
+                value="Repeat"
+                control={<Radio />}
+                label="Repeat"
+              />
+            </RadioGroup>
+          </Box>
+        </Box>
         <Grid container spacing={2} pt={1}>
           {formFields
             .filter((f) => shouldShowField(f.id))
             .map((field) => (
               <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-                {
-                field.id === 'unitEffectivityNumber' ? (
-                  <AutoSuggest
-                    label="Unit Effective Number"
-                    value={selectedUnitNumber}
-                    onChange={(val) => handleInputChange('unitEffectivityNumber', val)}
-                    staticOptions={unitEffectivityOptions}
-                    error={!!errors[field.id]}
-                    helperText={errors[field.id]}
-                  />
-                ):
-                field.component === "dropdown" && !field.allowTextFiled ? (
+                {field.component === "dropdown" && !field.allowTextFiled ? (
                   <DropdownComponent
                     label={field.label}
                     options={field.options || []}
@@ -337,29 +316,6 @@ useEffect(() => {
                 )}
               </Grid>
             ))}
-            {selectedUnitMeta && (
-  <>
-    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-      <ReusableInput
-        label="Customer Name"
-        value={selectedUnitMeta.customerName}
-        type="text"
-        onChange={() => {}}
-        disabled
-      />
-    </Grid>
-    <Grid  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-      <ReusableInput
-        label="Brand Description"
-        value={selectedUnitMeta.brandDescription}
-        type="text"
-        onChange={() => {}}
-        disabled
-      />
-    </Grid>
-  </>
-)}
-
         </Grid>
         <Typography
           sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
