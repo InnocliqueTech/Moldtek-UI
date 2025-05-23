@@ -331,10 +331,24 @@ const Layout = () => {
     },
     "/settings": {
       title: "Settings",
-      button1Text: "Save Changes",
-      button2Text: "Reset",
-      onButton1Click: () => alert("Save Changes Clicked"),
-      onButton2Click: () => alert("Reset Clicked"),
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
+    },
+     "/productionOperators": {
+      title: "Production Operators",
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
+    },
+     "/reports": {
+      title: "Reports",
+      // button1Text: "Save Changes",
+      // button2Text: "Reset",
+      // onButton1Click: () => alert("Save Changes Clicked"),
+      // onButton2Click: () => alert("Reset Clicked"),
     },
     "/dailyPlan": {
       title: "Daily Plan",

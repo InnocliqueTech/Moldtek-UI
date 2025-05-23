@@ -5,16 +5,20 @@ import './App.css'
 import ScrollToTop from "./Components/ReUsable/ScrollTop";
 
 
+
 const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));
-const DashboardPage = lazy(() => import("./Pages/createMasterData/Dashboard"));
-const MasterData = lazy(() => import("./Pages/createMasterData/MasterData"));
-const CreateMasterData = lazy(() => import("./Pages/createMasterData/CreateMasterData"));
+const DashboardPage = lazy(() => import("./Pages/Dashboard/Dashboard"));
+const ProductionOperatorsPage = lazy(() => import("./Pages/ProductionOperators/ProductionOperators"));
+const ReportsPage = lazy(() => import("./Pages/Reports/Reports"));
+const SettingsPage = lazy(() => import("./Pages/Settings/Settings"));
+const MasterData = lazy(() => import("./Pages/CreateMasterData/MasterData"));
+const CreateMasterData = lazy(() => import("./Pages/CreateMasterData/CreateMasterData"));
 const Layout = lazy(() => import("./Components/ReUsable/LayOut"));
 const ProtectedRoute = lazy(() => import("./Components/Authentication/ProtectedRoute"));
 const NotFoundPage = lazy(() => import("./Components/Authentication/NotFoundPage"));
-const ViewMasterData = lazy(()=>import("./Pages/viewMasterData/ViewMasterData"));
+const ViewMasterData = lazy(()=>import("./Pages/ViewMasterData/ViewMasterData"));
 const DailyPlan = lazy(()=>import("./Pages/DailyPlan"));
-const JobsList = lazy(()=>import("./Pages/viewMasterData/JobsList"));
+const JobsList = lazy(()=>import("./Pages/ViewMasterData/JobsList"));
 const CreatePlan = lazy(()=>import("./Pages/DailyPlan/createPlan"));
 const ViewDailyPlan = lazy(()=>import("./Pages/DailyPlan/viewDailyPlan"));
 const ForgotPassword = lazy(()=>import("./Components/Authentication/ForgotPassword"));
@@ -31,6 +35,9 @@ const App: React.FC = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/productionOperators" element={<ProductionOperatorsPage/>} />
+              <Route path="/settings" element={<SettingsPage/>}/>
               <Route path="/masterData" element={<MasterData />} />
               <Route path="/createMasterData" element={<CreateMasterData />} />
               <Route path="/updateMasterData/:id" element={<CreateMasterData />} />
