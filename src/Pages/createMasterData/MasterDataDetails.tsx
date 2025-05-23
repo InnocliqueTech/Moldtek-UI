@@ -538,7 +538,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 Customer Picture
               </Typography>
 
-              <Box display="flex" alignItems="center" gap={2} mt={0}>
+              <Box display="flex" alignItems="center" gap={2} mt={formData.customer_logo?0:0.4}>
                 {formData.customer_logo ? (
                   <>
                     {/* Uploaded Image Preview */}
@@ -754,20 +754,20 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                     <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="No of Colors for setting"
-              value={formData.repeat_length}
-              onChange={(e) => handleChange("repeat_length", e.target.value)}
-              error={!!errors.repeat_length}
-              helperText={errors.repeat_length}
+              value={formData.noOfColorsSetting}
+              onChange={(e) => handleChange("noOfColorsSetting", e.target.value)}
+              error={!!errors.noOfColorsSetting}
+              helperText={errors.noOfColorsSetting}
               required
             />
           </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="No of special colors"
-              value={formData.repeat_length}
-              onChange={(e) => handleChange("repeat_length", e.target.value)}
-              error={!!errors.repeat_length}
-              helperText={errors.repeat_length}
+              value={formData.noOfSpecialColors}
+              onChange={(e) => handleChange("noOfSpecialColors", e.target.value)}
+              error={!!errors.noOfSpecialColors}
+              helperText={errors.noOfSpecialColors}
               required
             />
           </Grid>
