@@ -38,7 +38,14 @@ import { toast } from "react-toastify";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 import { useParams } from "react-router-dom";
-import { DyeCuttingFormData, LaminatingTableRow, LaminationFormData, MasterFormData, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
+import {
+  DyeCuttingFormData,
+  LaminatingTableRow,
+  LaminationFormData,
+  MasterFormData,
+  PrintingFormValues,
+  PrintingTableRow,
+} from "../../store/slices/masterDataInterface";
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,11 +66,11 @@ const CreateMasterData: React.FC = () => {
     saveButtonLaminatingData,
     saveLaminatingData,
     savePrintingData,
-    customerLogoFile
+    customerLogoFile,
   } = useSelector((state: RootState) => state.masterData);
-  const {
-viewMasterDataDetails
-  } = useSelector((state: RootState) => state.viewMasterData);
+  const { viewMasterDataDetails } = useSelector(
+    (state: RootState) => state.viewMasterData
+  );
 
   const [formData, setFormData] = useState<MasterFormData>({
     job_master_id: 0,
@@ -79,8 +86,8 @@ viewMasterDataDetails
     ups: "",
     tracks: "",
     segment: "",
-  //        noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
   });
 
   const [tableData, setTableData] = useState<PrintingTableRow[]>([]);
@@ -369,7 +376,9 @@ viewMasterDataDetails
       ...finalPrintingData,
       printingDetails: {
         ...finalPrintingData.printingDetails,
-        cylinder_teeth: String(finalPrintingData.printingDetails.cylinder_teeth),
+        cylinder_teeth: String(
+          finalPrintingData.printingDetails.cylinder_teeth
+        ),
         tension: Number(finalPrintingData.printingDetails.tension),
         infeed: Number(finalPrintingData.printingDetails.infeed),
         outfeed: Number(finalPrintingData.printingDetails.outfeed),
@@ -378,23 +387,37 @@ viewMasterDataDetails
       },
       printingSubstrateSettings: {
         ...finalPrintingData.printingSubstrateSettings,
-        dyne_level: Number(finalPrintingData.printingSubstrateSettings.dyne_level),
-        thickness: String(finalPrintingData.printingSubstrateSettings.thickness),
+        dyne_level: Number(
+          finalPrintingData.printingSubstrateSettings.dyne_level
+        ),
+        thickness: String(
+          finalPrintingData.printingSubstrateSettings.thickness
+        ),
         width: Number(finalPrintingData.printingSubstrateSettings.width),
         density: Number(finalPrintingData.printingSubstrateSettings.density),
       },
-      stationWiseMetrics: finalPrintingData.stationWiseMetrics.map((station:any) => ({
-        ...station,
-        volume: Number(station.volume) || "",
-        uv_led_intensity: Number(station.uv_led_intensity) || "",
-        lf_value: Number(station.lf_value) || "",
-      })),
+      stationWiseMetrics: finalPrintingData.stationWiseMetrics.map(
+        (station: any) => ({
+          ...station,
+          volume: Number(station.volume) || "",
+          uv_led_intensity: Number(station.uv_led_intensity) || "",
+          lf_value: Number(station.lf_value) || "",
+        })
+      ),
     };
-    
-const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Number(finalMasterDataDetails.unit_effectivity_number),customer_logo:id? data?.data.masterDataDetails.customer_logo:customerLogoFile?.name}
+
+    const masterDataDetails = {
+      ...finalMasterDataDetails,
+      unit_effectivity_number: Number(
+        finalMasterDataDetails.unit_effectivity_number
+      ),
+      customer_logo: id
+        ? data?.data.masterDataDetails.customer_logo
+        : customerLogoFile?.name,
+    };
     const updatedPayload = {
       ...requestPayload,
-       masterDataDetails,
+      masterDataDetails,
       masterDataPrinting: convertedMasterDataPrinting,
       masterDataLamination,
       masterDataDyeCutting: finalDyeCuttingData,
@@ -414,12 +437,14 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   const tabs = [
     "Master Data Details",
     "Master Data - Printing",
-    ...((saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW") ||(id &&viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW")
+    ...(saveFormData.label_type === "THINWALL" ||
+    saveFormData.segment === "TW" ||
+    (id && viewMasterDataDetails.label_type === "THINWALL") ||
+    viewMasterDataDetails.segment === "TW"
       ? []
       : ["Master Data - Lamination"]),
     "Master Data - Dye Cutting",
   ];
-
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -430,13 +455,12 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
       dispatch(setLaminationTab(true));
     }
     dispatch(setSelectedTab(newValue));
-  
+
     // Reset the scroll position to top
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
     }
   };
-  
 
   useEffect(() => {
     if (id && data) {
@@ -505,7 +529,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
   }, [id, data, dispatch]);
 
   return (
-    <Box 
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -526,7 +550,7 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
         </Box>
       ) : (
         <>
-          <Box 
+          <Box
             sx={{
               position: "sticky",
               top: { xs: "96.5px", sm: "52.5px", md: "50.9px" },
@@ -541,7 +565,8 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
             />
           </Box>
 
-          <Box  ref={contentRef}
+          <Box
+            ref={contentRef}
             sx={{
               flexGrow: 1,
               overflowY: "auto",
@@ -566,15 +591,27 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
               />
             )}
             {selectedTab === 2 &&
-              !(saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW" ||
-                (id && viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"  )) ? (
-                <Lamination
-                  tableData={LaminationTableData}
-                  setTableData={setLaminationTableData}
-                  formData={lamiFormData}
-                  setFormData={setLamiFormData}
+            !(
+              saveFormData.label_type === "THINWALL" ||
+              saveFormData.segment === "TW" ||
+              (id && viewMasterDataDetails.label_type === "THINWALL") ||
+              viewMasterDataDetails.segment === "TW"
+            ) ? (
+              <Lamination
+                tableData={LaminationTableData}
+                setTableData={setLaminationTableData}
+                formData={lamiFormData}
+                setFormData={setLamiFormData}
+              />
+            ) : (
+              selectedTab !== 0 &&
+              selectedTab !== 1 && (
+                <DyeCutting
+                  formData={dyeFormData}
+                  setFormData={setDyeFormData}
                 />
-              ):selectedTab !== 0  && selectedTab !== 1&& <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />}
+              )
+            )}
 
             {/* {selectedTab === 3 && (
               <DyeCutting formData={dyeFormData} setFormData={setDyeFormData} />
@@ -598,8 +635,14 @@ const masterDataDetails = {...finalMasterDataDetails,unit_effectivity_number:Num
                     ? handleSaveMasterData
                     : selectedTab === 1
                     ? handleSavePrinting
-                    : selectedTab === 2 &&               !(saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW" ||
-                      (id && viewMasterDataDetails.label_type === "THINWALL" || viewMasterDataDetails.segment === "TW"  ))
+                    : selectedTab === 2 &&
+                      !(
+                        saveFormData.label_type === "THINWALL" ||
+                        saveFormData.segment === "TW" ||
+                        (id &&
+                          viewMasterDataDetails.label_type === "THINWALL") ||
+                        viewMasterDataDetails.segment === "TW"
+                      )
                     ? handleSaveLamination
                     : handleSaveDyeCutting
                 }

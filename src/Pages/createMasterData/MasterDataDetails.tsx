@@ -44,7 +44,10 @@ import {
   setPrintingSubstrate,
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
-import { MasterDataFormErrors, MasterFormData } from "../../store/slices/masterDataInterface";
+import {
+  MasterDataFormErrors,
+  MasterFormData,
+} from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
 
@@ -58,23 +61,34 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   setFormData,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { saveFormData, masterDataFormErrors,updateButton, masterDataDataTouched,saveMasterDataDetailsData,saveButtonMasterData,dropDownValuesStructure } =
-  useSelector((state: RootState) => state.masterData);
+  const {
+    saveFormData,
+    masterDataFormErrors,
+    updateButton,
+    masterDataDataTouched,
+    saveMasterDataDetailsData,
+    saveButtonMasterData,
+    dropDownValuesStructure,
+  } = useSelector((state: RootState) => state.masterData);
   const { id } = useParams();
   const location = useLocation();
-  
-  const UEN = localStorage.getItem(!updateButton?"selectedUEN":"actionSelectedUEN");
+
+  const UEN = localStorage.getItem(
+    !updateButton ? "selectedUEN" : "actionSelectedUEN"
+  );
   let selectedUEN: any;
   if (UEN) {
     selectedUEN = UEN;
   }
-  const version = localStorage.getItem(!updateButton?"selectedVersionNo":"actionVersionNo");
+  const version = localStorage.getItem(
+    !updateButton ? "selectedVersionNo" : "actionVersionNo"
+  );
   let versionNo: any;
   if (version) {
     versionNo = version;
   }
 
-  const { data,isLoading } = useViewMasterDataQuery(
+  const { data, isLoading } = useViewMasterDataQuery(
     {
       ueNumber: selectedUEN,
       versionNo: versionNo,
@@ -85,28 +99,19 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   );
 
-
-
   const isUpdatePage = useMemo(
     () => location.pathname.includes("/updateMasterData"),
     [location.pathname]
   );
 
-
   const masterData = useMemo(() => data?.data ?? null, [data]);
 
-useEffect(()=>{
- dispatch(setMasterDataDataTouched(false));
-
-},[])
+  useEffect(() => {
+    dispatch(setMasterDataDataTouched(false));
+  }, []);
 
   useEffect(() => {
-    if (
-      id &&
-      isUpdatePage &&
-      !masterDataDataTouched &&
-      masterData 
-    ) {
+    if (id && isUpdatePage && !masterDataDataTouched && masterData) {
       dispatch(setViewMasterDataDetails(masterData.masterDataDetails));
       dispatch(setPrintingDetails(masterData.masterDataPrinting));
       dispatch(setLaminatingDetails(masterData.masterDataLamination));
@@ -147,44 +152,38 @@ useEffect(()=>{
 
       setFormData(masterData.masterDataDetails);
     }
-  }, [
-    id,
-    isUpdatePage,
-    masterDataDataTouched,
-    masterData,
-    dispatch,
-  ]);
+  }, [id, isUpdatePage, masterDataDataTouched, masterData, dispatch]);
   const { viewMasterDataDetails } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  const [segmentsDropdown, { data: segmentData }] =
+    useSegmentsDropdownMutation();
 
-  useEffect(()=>{
-segmentsDropdown({
-  segment: ""
-})
-  },[])
-  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+  useEffect(() => {
+    segmentsDropdown({
+      segment: "",
+    });
+  }, []);
+  const segmentNames =
+    segmentData?.statusCode === 200
+      ? segmentData?.data?.map((item: any) => item.segment)
+      : [];
   const [structureDropdown] = useStructureDropdownMutation();
 
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      const response = await structureDropdown({
+        structure: "",
+      }).unwrap();
+      const structureList = response?.data?.map((item: any) => item.structure);
+      dispatch(setStructureDropDownValues(structureList));
+    };
 
-  
-    useEffect(() => {
-      const fetchDropdownValues = async () => {
-        const response = await structureDropdown({
-          structure: ""
-    }).unwrap();
-        const structureList = response?.data?.map((item: any) => item.structure);
-        dispatch(setStructureDropDownValues(structureList));
-      };
-  
-      fetchDropdownValues();
-    }, [structureDropdown, dispatch]);
-
-
+    fetchDropdownValues();
+  }, [structureDropdown, dispatch]);
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [formInitialized, setFormInitialized] = useState(false); 
+  const [formInitialized, setFormInitialized] = useState(false);
 
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     job_master_id: "",
@@ -199,19 +198,18 @@ segmentsDropdown({
     structure: "",
     brand_description: "",
     label_type: "",
-    segment:"",
-  //   noOfColorsSetting:"",
-  // noOfSpecialColors:"",
-
+    segment: "",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
   });
 
   const numericFields: (keyof MasterFormData)[] = [
     "repeat_length",
     "ups",
     "unit_effectivity_number",
-    "tracks"
+    "tracks",
   ];
-  
+
   const importantFields: (keyof MasterFormData)[] = [
     "unit_effectivity_number",
     "customer_name",
@@ -235,114 +233,125 @@ segmentsDropdown({
       dispatch(setMasterDataDataTouched(true));
     }
 
-    let newValue: string | string[] =
-      Array.isArray(value) ? value : typeof value === "string" ? value : value.target.value;
-    
+    let newValue: string | string[] = Array.isArray(value)
+      ? value
+      : typeof value === "string"
+      ? value
+      : value.target.value;
+
     // Convert to string if it's an array (especially for 'structure' field)
     if (field === "structure") {
       if (Array.isArray(newValue)) {
         // Remove empty strings, trim, then join if needed
-        newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
+        newValue = newValue
+          .filter(Boolean)
+          .map((v) => v.trim())
+          .join(" ");
       } else {
         newValue = newValue.trim();
       }
     }
-    
+
     let finalValue: string | number = newValue as string;
     let errorMessage = "";
-    
+
     const trimmed = (newValue as string).trim();
-    
+
     const isImportant = importantFields.includes(field);
-  
+
     if (numericFields.includes(field)) {
-      const numericValue = trimmed.replace('%', ''); // Remove percentage sign if it exists
-    
+      const numericValue = trimmed.replace("%", ""); // Remove percentage sign if it exists
+
       // Handle empty fields with `isImportant`
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
-      } 
+      }
       // Ensure the value is a valid number or percentage, including `0` and decimals
       else if (trimmed !== "" && isNaN(Number(numericValue))) {
         errorMessage = "Please enter a valid number.";
       } else {
         // If the field is empty, set finalValue to an empty string
-        finalValue = trimmed === ""
-          ? ""
-          : trimmed.includes('%') // If there's a '%' sign, keep it as percentage
-          ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
-          : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
+        finalValue =
+          trimmed === ""
+            ? ""
+            : trimmed.includes("%") // If there's a '%' sign, keep it as percentage
+            ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
+            : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
       }
-    }
-else if (characterFields.includes(field)) {
-  const onlyLettersRegex = /^[A-Za-z\s]+$/;
-  console.log("Validating field:", field, "with value:", trimmed);
+    } else if (characterFields.includes(field)) {
+      const onlyLettersRegex = /^[A-Za-z\s]+$/;
+      console.log("Validating field:", field, "with value:", trimmed);
 
-  if (isImportant && trimmed === "") {
-    errorMessage = "This field cannot be empty.";
-  } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
-    console.log("Validation failed for field:", field);
-    errorMessage = "Only letters and spaces are allowed.";
-  }
-}
-
-     else if (freeTextFields.includes(field)) {
+      if (isImportant && trimmed === "") {
+        errorMessage = "This field cannot be empty.";
+      } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
+        console.log("Validation failed for field:", field);
+        errorMessage = "Only letters and spaces are allowed.";
+      }
+    } else if (freeTextFields.includes(field)) {
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
       }
-    } else if (field === "label_type" || field === "jar_cap" || field === "structure") {
+    } else if (
+      field === "label_type" ||
+      field === "jar_cap" ||
+      field === "structure"
+    ) {
       finalValue = Array.isArray(newValue) ? newValue[0] : newValue;
     }
-  
+
     const updatedErrors = {
       ...errors,
       [field]: errorMessage,
     };
-  
+
     const updatedFormData = {
       ...formData,
       [field]: finalValue,
     };
-  
+
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
     dispatch(setMasterDataFormErros(updatedErrors));
     setErrors(updatedErrors);
-    if(!id){
+    if (!id) {
       dispatch(setSaveMasterDataDetailsData(updatedFormData));
     }
   };
-  
 
-const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  dispatch(setMasterDataDataTouched(true));
-  const file = e.target.files?.[0];
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setMasterDataDataTouched(true));
+    const file = e.target.files?.[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  // Validate image type
-  const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
-  if (!validImageTypes.includes(file.type)) {
-    alert("Only image files (JPEG, PNG, WEBP) are allowed.");
-    return;
-  }
-  dispatch(setCustomerLogoFile(file)); 
+    // Validate image type
+    const validImageTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
+    if (!validImageTypes.includes(file.type)) {
+      alert("Only image files (JPEG, PNG, WEBP) are allowed.");
+      return;
+    }
+    dispatch(setCustomerLogoFile(file));
 
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    const base64Image = reader.result as string;
-    const updatedFormData = {
-      ...formData,
-      customer_logo: base64Image,
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result as string;
+      const updatedFormData = {
+        ...formData,
+        customer_logo: base64Image,
+      };
+
+      setFormData(updatedFormData);
+      dispatch(setSaveFormData(updatedFormData));
     };
 
-    setFormData(updatedFormData);
-    dispatch(setSaveFormData(updatedFormData));
+    reader.readAsDataURL(file);
   };
-
-  reader.readAsDataURL(file);
-};
-
 
   useEffect(() => {
     if (formInitialized) return;
@@ -353,16 +362,18 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (masterDataFormErrors) {
       setErrors(masterDataFormErrors);
     }
-    if(!id && saveButtonMasterData && saveMasterDataDetailsData ){
-      setFormData(saveMasterDataDetailsData)
+    if (!id && saveButtonMasterData && saveMasterDataDetailsData) {
+      setFormData(saveMasterDataDetailsData);
       setFormInitialized(true);
     }
-  }, [ id,
+  }, [
+    id,
     saveFormData,
     saveButtonMasterData,
     saveMasterDataDetailsData,
     masterDataFormErrors,
-    formInitialized]);
+    formInitialized,
+  ]);
 
   function sanitizeMasterData(data: any): MasterFormData {
     return {
@@ -378,9 +389,9 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       repeat_length: data?.repeat_length || 0,
       ups: data?.ups || 0,
       tracks: data?.tracks || 0,
-      segment:data?.segment || "",
-  //          noOfColorsSetting:data?.noOfColorsSetting||"",
-  // noOfSpecialColors:data?.noOfSpecialColors||"",
+      segment: data?.segment || "",
+      noOfColorsSetting: data?.noOfColorsSetting || "",
+      noOfSpecialColors: data?.noOfSpecialColors || "",
     };
   }
 
@@ -394,7 +405,6 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     LabelTyepsData &&
     LabelTyepsData?.map((option: any) => option.labelTypeName);
   useEffect(() => {
-
     const hasErrors = importantFields.some(
       (field) =>
         errors[field] !== "" ||
@@ -423,29 +433,26 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       (value) => value !== "" && value !== null && value !== undefined
     );
 
-
     const anyErrors = importantFields.some((field) => errors[field] !== "");
 
     const canSubmit = anyValuePresent && !anyErrors;
 
     dispatch(setMasterDataDetailsSave(!canSubmit));
-
   }, [formData, errors, dispatch]);
 
   const handleRemoveImage = () => {
-
     setFormData((prev) => ({
       ...prev,
       customer_logo: "",
     }));
   };
   const row1HasError =
-  !!errors.unit_effectivity_number || !!errors.customer_name;
-  const row2HasError = !!errors.item_code  || !!errors.brand_description
+    !!errors.unit_effectivity_number || !!errors.customer_name;
+  const row2HasError = !!errors.item_code || !!errors.brand_description;
 
- if (id && isLoading) {
-  return <Loader />;
-}
+  if (id && isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -470,8 +477,17 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               disabled={id ? true : false}
               required
             />
-            <Box sx={{ minHeight: row1HasError && !errors.unit_effectivity_number ? 8 : 0 }} />
-            <Box sx={{ mt: (row1HasError&&!!errors.unit_effectivity_number) ? 0 : 2 }}>
+            <Box
+              sx={{
+                minHeight:
+                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+              }}
+            />
+            <Box
+              sx={{
+                mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
+              }}
+            >
               <DropdownComponent
                 label="Type of Label"
                 options={dropdownOptions ? dropdownOptions : []}
@@ -485,7 +501,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
             <Box sx={{ mt: 2 }}>
               <DropdownComponent
                 label="Jar/Cap"
-                options={["JAR", "CAP","JAR&CAP"]}
+                options={["JAR", "CAP", "JAR&CAP"]}
                 value={formData.jar_cap}
                 onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}
@@ -504,8 +520,10 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               helperText={errors.customer_name}
               required
             />
-           <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
-           <Box sx={{ mt: (row1HasError&&!!errors.customer_name) ? 0 : 2 }}/>
+            <Box
+              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
+            />
+            <Box sx={{ mt: row1HasError && !!errors.customer_name ? 0 : 2 }} />
             <ReusableInput
               label="ITEM Code"
               value={formData.item_code}
@@ -513,8 +531,10 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               error={!!errors.item_code}
               helperText={errors.item_code}
             />
-            <Box sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }} />
-            <Box sx={{ mt: (row2HasError&&!!errors.item_code) ? 0 : 2 }}>
+            <Box
+              sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
+            />
+            <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
               <DropdownTextComponent
                 label="Structure"
                 options={dropDownValuesStructure}
@@ -523,7 +543,7 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 isMultiSelect={false}
                 checkbox={false}
                 allowNewOption
-                dropdown='structure'
+                dropdown="structure"
               />
             </Box>
           </Grid>
@@ -538,7 +558,12 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 Customer Picture
               </Typography>
 
-              <Box display="flex" alignItems="center" gap={2} mt={formData.customer_logo?0:0.4}>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={2}
+                mt={formData.customer_logo ? 0 : 0.4}
+              >
                 {formData.customer_logo ? (
                   <>
                     {/* Uploaded Image Preview */}
@@ -645,7 +670,6 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                         />
                       </Box>
                     </Modal>
-
                   </>
                 ) : (
                   // Upload button when no image
@@ -681,7 +705,9 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 )}
               </Box>
             </Box>
-            <Box sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }} />
+            <Box
+              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
+            />
 
             <Box sx={{ mt: 2 }}>
               <TextArea
@@ -698,7 +724,9 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
                 multiline={false}
               />
             </Box>
-            <Box sx={{ mt: (row2HasError&&!!errors.brand_description) ? 0 : 2 }}>
+            <Box
+              sx={{ mt: row2HasError && !!errors.brand_description ? 0 : 2 }}
+            >
               <DropdownComponent
                 label="Segment"
                 options={segmentNames}
@@ -751,26 +779,30 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
               helperText={errors.tracks}
             />
           </Grid>
-                    {/* <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="No of Colors for setting"
               value={formData.noOfColorsSetting}
-              onChange={(e) => handleChange("noOfColorsSetting", e.target.value)}
+              onChange={(e) =>
+                handleChange("noOfColorsSetting", e.target.value)
+              }
               error={!!errors.noOfColorsSetting}
               helperText={errors.noOfColorsSetting}
               required
             />
           </Grid>
-                    <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <ReusableInput
               label="No of special colors"
               value={formData.noOfSpecialColors}
-              onChange={(e) => handleChange("noOfSpecialColors", e.target.value)}
+              onChange={(e) =>
+                handleChange("noOfSpecialColors", e.target.value)
+              }
               error={!!errors.noOfSpecialColors}
               helperText={errors.noOfSpecialColors}
               required
             />
-          </Grid> */}
+          </Grid>
         </Grid>
       </Box>
     </Box>
