@@ -5,6 +5,7 @@ import {
   InputAdornment,
   IconButton,
   Typography,
+  Tooltip
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
@@ -64,7 +65,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
               if (newValue) {
                 const syntheticEvent = {
                   target: {
-                    value:format(newValue, "yyyy-MM-dd")
+                    value: format(newValue, "yyyy-MM-dd"),
                   },
                 } as React.ChangeEvent<HTMLInputElement>;
                 onChange(syntheticEvent);
@@ -107,62 +108,64 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
           />
         </LocalizationProvider>
       ) : (
-        <TextField
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          type={showPassword && type === "password" ? "text" : type}
-          fullWidth
-          variant="outlined"
-          error={error}
-          helperText={helperText}
-          disabled={disabled}
-          InputProps={{
-            startAdornment: icon ? (
-              <InputAdornment position="start">{icon}</InputAdornment>
-            ) : null,
-            endAdornment:
-              type === "password" ? (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                    disableRipple
-                    disableFocusRipple
-                    sx={{
-                      pointerEvents: "auto",
-                      "&:focus": { outline: "none" },
-                    }}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+        <Tooltip title={value}>
+          <TextField
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            type={showPassword && type === "password" ? "text" : type}
+            fullWidth
+            variant="outlined"
+            error={error}
+            helperText={helperText}
+            disabled={disabled}
+            InputProps={{
+              startAdornment: icon ? (
+                <InputAdornment position="start">{icon}</InputAdornment>
               ) : null,
-          }}
-          inputProps={{
-            autoComplete: "new-password",
-            style: {
-              appearance: "none",
-              MozAppearance: "textfield",
-              WebkitAppearance: "none",
-            },
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-              "& input": {
-                padding: "6px 12px",
-                color: "black",
-                "&::-ms-reveal": {
-                  display: "none",
-                },
-                "&::-ms-clear": {
-                  display: "none",
+              endAdornment:
+                type === "password" ? (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                      disableRipple
+                      disableFocusRipple
+                      sx={{
+                        pointerEvents: "auto",
+                        "&:focus": { outline: "none" },
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+            }}
+            inputProps={{
+              autoComplete: "new-password",
+              style: {
+                appearance: "none",
+                MozAppearance: "textfield",
+                WebkitAppearance: "none",
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+                "& input": {
+                  padding: "6px 12px",
+                  color: "black",
+                  "&::-ms-reveal": {
+                    display: "none",
+                  },
+                  "&::-ms-clear": {
+                    display: "none",
+                  },
                 },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </Tooltip>
       )}
     </Box>
   );
