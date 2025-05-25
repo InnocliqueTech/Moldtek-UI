@@ -14,7 +14,7 @@ import {
   useSaveDailyJobMutation,
   useSegmentsDropdownMutation,
   useSubStrateDropDownMutation,
-  // useGenerateIndentQuery,
+  useGenerateIndentQuery,
   useGetAllUnitEffectiveNumbersQuery,
 } from "../../../store/services/api";
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
@@ -89,6 +89,12 @@ const CreatePlan: React.FC = () => {
   const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
   const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
+  const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
+  const {
+    data: generatedIndentNumber,
+    // error: generateIndentNoError,
+    isLoading: generateIndentNoLoading,
+  } = useGenerateIndentQuery(selectedUnitNumber);
   
   useEffect(() => {
       segmentsDropdown({
@@ -131,6 +137,20 @@ useEffect(() => {
   }
 }, [segmentNames.join(), typeOfLabelOptions.join(), dropDownValuesPrinting.join(),unitEffNumData]);
 
+useEffect(() => {
+  if (generateIndentNoLoading) {
+    handleInputChange("indentNumber", "Loading...");
+  }else{
+    handleInputChange("indentNumber", "");
+  }
+  if (formFields.find((form) => form.id == "unitEffectivityNumber")?.value) {
+    handleInputChange(
+      "indentNumber",
+      generatedIndentNumber?.generatedIndentNumber
+    );
+  }
+}, [generatedIndentNumber, selectedUnitNumber, generateIndentNoLoading]);
+
 
   
   // const fieldsToSkipForRepeat = [
@@ -153,7 +173,9 @@ useEffect(() => {
   // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
   // const jobType: 'Repeat' = 'Repeat'; 
 
-  const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
+
+
+  
 
   const allowedFields = [
     'unitEffectivityNumber',
@@ -308,18 +330,18 @@ if (error) return <div>Error: Something Went Wrong...</div>;
             .filter((f) => shouldShowField(f.id))
             .map((field) => (
               <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-                {
-                field.id === 'unitEffectivityNumber' ? (
+                {field.id === "unitEffectivityNumber" ? (
                   <AutoSuggest
                     label="Unit Effective Number"
                     value={selectedUnitNumber}
-                    onChange={(val) => handleInputChange('unitEffectivityNumber', val)}
+                    onChange={(val) =>
+                      handleInputChange("unitEffectivityNumber", val)
+                    }
                     staticOptions={unitEffectivityOptions}
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
                   />
-                ):
-                field.component === "dropdown" && !field.allowTextFiled ? (
+                ) : field.component === "dropdown" && !field.allowTextFiled ? (
                   <DropdownComponent
                     label={field.label}
                     options={field.options || []}
@@ -330,7 +352,7 @@ if (error) return <div>Error: Something Went Wrong...</div>;
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
                   />
-                ) :field.component === "dropdown" && field.allowTextFiled ? (
+                ) : field.component === "dropdown" && field.allowTextFiled ? (
                   <DropdownTextComponent
                     label={field.label}
                     options={field.options || []}
@@ -340,10 +362,10 @@ if (error) return <div>Error: Something Went Wrong...</div>;
                     checkbox={false}
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
-                    dropdown='printingDailyPlan'
+                    dropdown="printingDailyPlan"
                     allowNewOption
                   />
-                ): (
+                ) : (
                   <ReusableInput
                     label={field.label}
                     value={field.value}
@@ -353,33 +375,33 @@ if (error) return <div>Error: Something Went Wrong...</div>;
                     }
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
+                    disabled={field.id == "indentNumber"}
                   />
                 )}
               </Grid>
             ))}
-            {selectedUnitMeta && (
-  <>
-    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-      <ReusableInput
-        label="Customer Name"
-        value={selectedUnitMeta.customerName}
-        type="text"
-        onChange={() => {}}
-        disabled
-      />
-    </Grid>
-    <Grid  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-      <ReusableInput
-        label="Brand Description"
-        value={selectedUnitMeta.brandDescription}
-        type="text"
-        onChange={() => {}}
-        disabled
-      />
-    </Grid>
-  </>
-)}
-
+          {selectedUnitMeta && (
+            <>
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <ReusableInput
+                  label="Customer Name"
+                  value={selectedUnitMeta.customerName}
+                  type="text"
+                  onChange={() => {}}
+                  disabled
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <ReusableInput
+                  label="Brand Description"
+                  value={selectedUnitMeta.brandDescription}
+                  type="text"
+                  onChange={() => {}}
+                  disabled
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
         <Typography
           sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}

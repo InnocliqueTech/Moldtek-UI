@@ -359,12 +359,11 @@ uploadCustomerFile: builder.mutation<
     }),
     getAllUnitEffectiveNumbers: builder.query<UnitEffectiveNumber[], void>({
       query: () => "/master/getAllUnitEffectiveNumbers",
-      providesTags: ["UnitEffectiveNumbers"], // Tag for caching
+      providesTags: ["UnitEffectiveNumbers"],
     }),
-    generateIndent: builder.query<any, string>({ // Adjust 'any' and argument type as per your actual response/request
+    generateIndent: builder.query<any, string>({ 
       query: (unitEffectiveNumber) =>
-        `/master/generateIndent=${unitEffectiveNumber}`,
-      // You might want to add providesTags or invalidatesTags if this data needs caching or invalidation
+        `/master/generateIndent?unitEffectiveNumber=${unitEffectiveNumber}`,
     }),
   }),
 });
