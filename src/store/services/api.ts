@@ -31,6 +31,12 @@ interface UpdateStatusResponse {
   statusCode: number;
   message: string;
 }
+
+interface UnitEffectiveNumber {
+  unitEffectiveNumber: string;
+  customerName: string;
+  brandDescription: string;
+}
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -48,6 +54,7 @@ export const apiSlice = createApi({
     "SaveDailyJobs",
     "LaminationReport",
     "LaminationReportDetails",
+    "UnitEffectiveNumbers",
   ],
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
@@ -350,6 +357,15 @@ uploadCustomerFile: builder.mutation<
         },
       ],
     }),
+    getAllUnitEffectiveNumbers: builder.query<UnitEffectiveNumber[], void>({
+      query: () => "/master/getAllUnitEffectiveNumbers",
+      providesTags: ["UnitEffectiveNumbers"], // Tag for caching
+    }),
+    generateIndent: builder.query<any, string>({ // Adjust 'any' and argument type as per your actual response/request
+      query: (unitEffectiveNumber) =>
+        `/master/generateIndent=${unitEffectiveNumber}`,
+      // You might want to add providesTags or invalidatesTags if this data needs caching or invalidation
+    }),
   }),
 });
 
@@ -386,5 +402,7 @@ export const {
   useStructureDropdownMutation,
   useSupplierDropdownMutation,
   useMountingTapesDropdownMutation,
-  useUploadCustomerFileMutation
+  useUploadCustomerFileMutation,
+  useGetAllUnitEffectiveNumbersQuery,
+  useGenerateIndentQuery,
 } = apiSlice;
