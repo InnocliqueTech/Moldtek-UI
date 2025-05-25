@@ -1,21 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Customer, DyeCuttingFormData, DyeCuttingFormErrors, FiltersPayload, LabelType, LaminationFormData, LaminationFormErrors, MasterDataFormErrors, MasterDataState, MasterFormData, PrintingFormErrors, PrintingFormValues, RequestPayload } from "./masterDataInterface";
-
-
+import {
+  Customer,
+  DyeCuttingFormData,
+  DyeCuttingFormErrors,
+  FiltersPayload,
+  LabelType,
+  LaminationFormData,
+  LaminationFormErrors,
+  MasterDataFormErrors,
+  MasterDataState,
+  MasterFormData,
+  PrintingFormErrors,
+  PrintingFormValues,
+  RequestPayload,
+} from "./masterDataInterface";
 
 const initialState: MasterDataState = {
-  //      noOfColorsSetting:"",
-  // noOfSpecialColors:"",
-  updateButton:false,
-  selectedFile:null,
-  customerLogoFile:null,
-  uploadFile:null,
-  dropDownValuesStructure:[],
-  dropDownValuesMountingTape:[],
-  dropDownValuesSupplierLamination:[],
-  dropDownValuesSupplierPrinting:[],
-  dropDownValuesPrinting:[],
-  dropDownValuesLamination:[],
+  noOfColorsSetting: "",
+  noOfSpecialColors: "",
+  updateButton: false,
+  selectedFile: null,
+  customerLogoFile: null,
+  uploadFile: null,
+  dropDownValuesStructure: [],
+  dropDownValuesMountingTape: [],
+  dropDownValuesSupplierLamination: [],
+  dropDownValuesSupplierPrinting: [],
+  dropDownValuesPrinting: [],
+  dropDownValuesLamination: [],
   saveLaminatingData: {
     laminationConditions: {
       lamination_id: 0,
@@ -31,7 +43,7 @@ const initialState: MasterDataState = {
       viscosity_range: "",
       adhesive_gsm: "",
     },
-    
+
     laminationSubstrate: {
       substrate_id: 0,
       lamination_id: 0,
@@ -276,7 +288,7 @@ const initialState: MasterDataState = {
     toDate: "",
     customerName: [],
     labelType: [],
-    searchField :''
+    searchField: "",
   },
   laminationDataTouched: false,
   printingDataTouched: false,
@@ -311,13 +323,13 @@ const initialState: MasterDataState = {
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
-    segment:"",
+    segment: "",
     item_code: "",
     structure: "",
     brand_description: "",
     label_type: "",
-  //                noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
   },
   invalidFieldsTable: {},
   dyeCuttingErrors: {
@@ -352,7 +364,7 @@ const initialState: MasterDataState = {
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
-    segment:"",
+    segment: "",
     item_code: "",
     structure: "",
     brand_description: "",
@@ -360,18 +372,18 @@ const initialState: MasterDataState = {
     repeat_length: "",
     ups: "",
     tracks: "",
-  //        noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
   },
   saveMasterDataDetailsData: {
     job_master_id: 0,
     unit_effectivity_number: "",
     customer_name: "",
     customer_logo: "",
-  //    noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
     jar_cap: "",
-    segment:"",
+    segment: "",
     item_code: "",
     structure: "",
     brand_description: "",
@@ -623,7 +635,7 @@ const initialState: MasterDataState = {
       item_code: "",
       brand_description: "",
       jar_cap: "",
-      segment:"",
+      segment: "",
       structure: "",
       label_type: "",
       repeat_length: 0,
@@ -722,36 +734,36 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
-    setUploadedFile:(state,action:PayloadAction<any>)=>{
-    state.uploadFile = action.payload
+    setUploadedFile: (state, action: PayloadAction<any>) => {
+      state.uploadFile = action.payload;
     },
-    setSelectedFile:(state,action:PayloadAction<any>)=>{
-    state.selectedFile = action.payload
+    setSelectedFile: (state, action: PayloadAction<any>) => {
+      state.selectedFile = action.payload;
     },
-    setCustomerLogoFile:(state,action:PayloadAction<any>)=>{
-state.customerLogoFile = action.payload
+    setCustomerLogoFile: (state, action: PayloadAction<any>) => {
+      state.customerLogoFile = action.payload;
     },
-    setUpdateButton:(state,action:PayloadAction<boolean>)=>{
-state.updateButton = action.payload
+    setUpdateButton: (state, action: PayloadAction<boolean>) => {
+      state.updateButton = action.payload;
     },
-    setPrintingDropDownValues:(state,action:PayloadAction<any>)=>{
-     state.dropDownValuesPrinting = action.payload
+    setPrintingDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesPrinting = action.payload;
     },
-    setStructureDropDownValues:(state,action:PayloadAction<any>)=>{
-      state.dropDownValuesStructure = action.payload
-     },
-     setMountinTapeDropDownValues:(state,action:PayloadAction<any>)=>{
-      state.dropDownValuesMountingTape = action.payload
-     },
-     setSupplierPrintingDropDownValues:(state,action:PayloadAction<any>)=>{
-      state.dropDownValuesSupplierPrinting = action.payload
-     },
-     setSupplieraminationDropDownValues:(state,action:PayloadAction<any>)=>{
-      state.dropDownValuesSupplierLamination = action.payload
-     },
-    setlaminationDropDownValues:(state,action:PayloadAction<any>)=>{
-      state.dropDownValuesLamination = action.payload
-     },
+    setStructureDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesStructure = action.payload;
+    },
+    setMountinTapeDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesMountingTape = action.payload;
+    },
+    setSupplierPrintingDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesSupplierPrinting = action.payload;
+    },
+    setSupplieraminationDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesSupplierLamination = action.payload;
+    },
+    setlaminationDropDownValues: (state, action: PayloadAction<any>) => {
+      state.dropDownValuesLamination = action.payload;
+    },
     setSelectedTab: (state, action: PayloadAction<number>) => {
       state.selectedTab = action.payload;
     },
@@ -797,10 +809,7 @@ state.updateButton = action.payload
     setSaveButtonPrintingData: (state, action: PayloadAction<boolean>) => {
       state.saveButtonPrintingData = action.payload;
     },
-    setSavePrintingData: (
-      state,
-      action: PayloadAction<PrintingFormValues>
-    ) => {
+    setSavePrintingData: (state, action: PayloadAction<PrintingFormValues>) => {
       state.savePrintingData = {
         ...state.savePrintingData,
         ...action.payload,
@@ -922,7 +931,7 @@ state.updateButton = action.payload
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
-        segment:"",
+        segment: "",
         item_code: "",
         structure: "",
         brand_description: "",
@@ -930,20 +939,20 @@ state.updateButton = action.payload
         repeat_length: "",
         ups: "",
         tracks: "",
-  //            noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+        noOfColorsSetting: "",
+        noOfSpecialColors: "",
       };
     },
     clearSaveMasterDetailsData: (state) => {
       state.saveMasterDataDetailsData = {
         job_master_id: 0,
         unit_effectivity_number: "",
-  //            noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+        noOfColorsSetting: "",
+        noOfSpecialColors: "",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
-        segment:"",
+        segment: "",
         item_code: "",
         structure: "",
         brand_description: "",
@@ -1014,13 +1023,13 @@ state.updateButton = action.payload
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
-        segment:"",
+        segment: "",
         item_code: "",
         structure: "",
         brand_description: "",
         label_type: "",
-  //                    noOfColorsSetting:"",
-  // noOfSpecialColors:"",
+        noOfColorsSetting: "",
+        noOfSpecialColors: "",
       };
     },
     clearDyeCuttingFormErrors: (state) => {
@@ -1667,6 +1676,6 @@ export const {
   setUpdateButton,
   setCustomerLogoFile,
   setUploadedFile,
-  setSelectedFile
+  setSelectedFile,
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

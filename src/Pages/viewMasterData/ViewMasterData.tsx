@@ -21,15 +21,11 @@ import { useEffect, useRef } from "react";
 import { useViewMasterDataQuery } from "../../store/services/api";
 import Loader from "../../Loader";
 
-
-
-
 const ViewMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTab } = useSelector(
     (state: RootState) => state.viewMasterData
   );
-
 
   const contentRef = useRef<HTMLDivElement>(null);
   const UEN = localStorage.getItem("selectedUEN");
@@ -45,34 +41,33 @@ const ViewMasterData: React.FC = () => {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     dispatch(setSelectedTab(newValue));
-  
+
     // Also scroll internal content (like the tab content area)
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
     }
   };
-  
 
-const UnitEffectiveNumber = localStorage.getItem("UEN");
-const VersionNumber = localStorage.getItem("VersionNumber")
+  const UnitEffectiveNumber = localStorage.getItem("UEN");
+  const VersionNumber = localStorage.getItem("VersionNumber");
   const versionNumber = VersionNumber
     ? VersionNumber.replace(/[^\d]/g, "")
     : undefined;
-const path = location.pathname.includes("/versionDetails")
+  const path = location.pathname.includes("/versionDetails");
   const { data, isLoading } = useViewMasterDataQuery({
     ueNumber: path ? UnitEffectiveNumber : selectedUEN,
     versionNo: path ? versionNumber : versionNo,
   });
 
-const tabs = [
-  "Master Data - Printing",
-  ...((data?.data?.masterDataDetails &&
-    (data.data.masterDataDetails?.label_type !== "THINWALL" &&
-     data.data.masterDataDetails?.segment !== "TW"))
-    ? ["Master Data - Lamination"]
-    : []),
-  "Master Data - Dye Cutting",
-];
+  const tabs = [
+    "Master Data - Printing",
+    ...(data?.data?.masterDataDetails &&
+    data.data.masterDataDetails?.label_type !== "THINWALL" &&
+    data.data.masterDataDetails?.segment !== "TW"
+      ? ["Master Data - Lamination"]
+      : []),
+    "Master Data - Dye Cutting",
+  ];
 
   useEffect(() => {
     if (data) {
@@ -110,24 +105,26 @@ const tabs = [
       );
     }
   }, [data, dispatch]);
-  
+
   return (
     <Box
       sx={{
         height:
-        (
-          (data?.data.masterDataDetails.label_type !== 'THINWALL' && data?.data.masterDataDetails.label_type !== 'TW' && selectedTab !== 2) ||
-          (data?.data.masterDataDetails.label_type === 'THINWALL' || data?.data.masterDataDetails.label_type === 'TW') && selectedTab !== 1
-        )
-          ? {
-              xl: "136vh",
-              lg: "144vh",
-              md: "152vh",
-              sm: "310vh",
-              xs: "400vh",
-            }
-          : { xl: "auto", lg: "auto", md: "auto", sm: "auto", xs: "auto" },
-        
+          (data?.data.masterDataDetails.label_type !== "THINWALL" &&
+            data?.data.masterDataDetails.label_type !== "TW" &&
+            selectedTab !== 2) ||
+          ((data?.data.masterDataDetails.label_type === "THINWALL" ||
+            data?.data.masterDataDetails.label_type === "TW") &&
+            selectedTab !== 1)
+            ? {
+                xl: "136vh",
+                lg: "144vh",
+                md: "152vh",
+                sm: "310vh",
+                xs: "400vh",
+              }
+            : { xl: "auto", lg: "auto", md: "auto", sm: "auto", xs: "auto" },
+
         display: "flex",
         flexDirection: "column",
       }}
@@ -156,7 +153,8 @@ const tabs = [
             <OrderCard />
           </Box>
 
-          <Box ref={contentRef}
+          <Box
+            ref={contentRef}
             sx={{
               flex: 1,
               overflow: "auto",
@@ -166,7 +164,7 @@ const tabs = [
               flexDirection: "column",
             }}
           >
-            <Box 
+            <Box
               sx={{
                 position: "sticky",
                 top: 0,
@@ -184,11 +182,15 @@ const tabs = [
 
             <Box sx={{ padding: 2 }}>
               {selectedTab === 0 && <ViewPrinting />}
-              {selectedTab === 1 && !(
-               data?.data.masterDataDetails.label_type ==='THINWALL'||
-               data?.data.masterDataDetails.label_type === "TW"
-              ) ? <ViewLamination />:selectedTab !== 0 &&<ViewDyeCutting />}
-
+              {selectedTab === 1 &&
+              !(
+                data?.data.masterDataDetails.label_type === "THINWALL" ||
+                data?.data.masterDataDetails.segment === "TW"
+              ) ? (
+                <ViewLamination />
+              ) : (
+                selectedTab !== 0 && <ViewDyeCutting />
+              )}
             </Box>
           </Box>
         </>
