@@ -375,7 +375,7 @@ if (error) return <div>Error: Something Went Wrong...</div>;
                     }
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
-                    disabled={field.id == "indentNumber"}
+                    disabled={field.id == "indentNumber" && generateIndentNoLoading}
                   />
                 )}
               </Grid>
