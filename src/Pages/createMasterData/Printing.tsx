@@ -28,7 +28,7 @@ import {
   useMountingTapesDropdownMutation,
   useSubStrateDropDownMutation,
   useSupplierDropdownMutation,
-} from "../../store/services/api";
+} from "../../store/apis/genericApis";
 
 interface PrintingProps {
   tableData: PrintingTableRow[];

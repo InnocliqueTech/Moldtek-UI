@@ -11,7 +11,7 @@ import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetMetricsQuery,
   useMasterFiltersMutation,
-} from "../../store/services/api";
+} from "../../store/apis/masterDataApis";
 import { setIsSearchTriggered, setUpdateButton } from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {

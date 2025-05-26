@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box , Typography} from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetPrintingReportDetailsQuery } from "../../../store/services/api";
+import { useGetPrintingReportDetailsQuery } from "../../../store/apis/dailyPlanApis";
 import {
   transformTensionData,
   transformPrintingProcessDataList,

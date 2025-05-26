@@ -23,7 +23,7 @@ import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import {
   useSubStrateDropDownMutation,
   useSupplierDropdownMutation,
-} from "../../store/services/api";
+} from "../../store/apis/genericApis";
 
 interface LaminationProps {
   tableData: LaminatingTableRow[];

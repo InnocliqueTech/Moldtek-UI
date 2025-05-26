@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetLaminationReportDetailsQuery } from "../../../store/services/api";
+import { useGetLaminationReportDetailsQuery } from "../../../store/apis/dailyPlanApis";
 import {
   transformZoneTempData,
   transformUnwindRewindData,

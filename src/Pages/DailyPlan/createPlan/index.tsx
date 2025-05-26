@@ -8,20 +8,20 @@ import SubmitPopups from './submitPopups';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from '../../../store';
 import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
-import { listOfLables } from '../../createMasterData/data';
+import { listOfLables } from '../../CreateMasterData/data';
 import { validateFormFields } from './formValidation';
 import {
-  useSaveDailyJobMutation,
   useSegmentsDropdownMutation,
   useSubStrateDropDownMutation,
   useGenerateIndentQuery,
   useGetAllUnitEffectiveNumbersQuery,
-} from "../../../store/services/api";
+} from "../../../store/apis/genericApis";
 import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
 import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
 import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
 // import { unitEffectiveNumbersResp } from './mockData';
 import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
+import { useSaveDailyJobMutation } from '../../../store/apis/dailyPlanApis';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';

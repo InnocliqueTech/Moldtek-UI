@@ -24,7 +24,7 @@ import {
   setSelectedLabelTypeIds,
   toggleLabelType,
 } from "../../store/slices/masterDataSlice";
-import { useGetLabelTypesQuery } from "../../store/services/api";
+import { useGetLabelTypesQuery } from "../../store/apis/genericApis";
 
 interface LabelType {
   labelTypeId: number;

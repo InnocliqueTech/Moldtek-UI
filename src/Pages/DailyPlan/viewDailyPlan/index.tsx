@@ -41,7 +41,7 @@ import {
   useSaveTravelCardDetailsMutation,
   useSavePrintingReportDetailsMutation,
   useSaveMakeReadyDetailsMutation,
-} from "../../../store/services/api";
+} from "../../../store/apis/dailyPlanApis";
 import ButtonComponent from "../../../Components/ReUsable/Button";
 
 const ViewDailyPlan: React.FC = () => {

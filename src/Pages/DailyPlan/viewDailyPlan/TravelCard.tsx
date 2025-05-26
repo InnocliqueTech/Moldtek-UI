@@ -7,7 +7,7 @@ import {
   labelCuttingColumns,
   labelDispatchColums,
 } from "../data";
-import { useGetTravelCardDetailsQuery } from "../../../store/services/api";
+import { useGetTravelCardDetailsQuery } from "../../../store/apis/dailyPlanApis";
 import Loader from "../../../Loader";
 import { transformJobDetails } from "./tableTransfermationFunctions";
 import { useDispatch, useSelector } from "react-redux";

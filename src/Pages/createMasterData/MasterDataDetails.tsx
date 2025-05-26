@@ -32,8 +32,7 @@ import {
   useGetLabelTypesQuery,
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
-  useViewMasterDataQuery,
-} from "../../store/services/api";
+} from "../../store/apis/genericApis";
 import {
   setDyeCuttingSettings,
   setLaminatingSubstrate,
@@ -50,6 +49,7 @@ import {
 } from "../../store/slices/masterDataInterface";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
+import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
 
 interface MasterDataProps {
   formData: MasterFormData;

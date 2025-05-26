@@ -18,7 +18,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetLabelTypesQuery } from "../../../store/services/api";
+import { useGetLabelTypesQuery } from "../../../store/apis/genericApis";
 import { AppDispatch, RootState } from "../../../store";
 import { setLabelTypes, setSelectedLabelTypeIds, toggleLabelType } from "../../../store/slices/viewDailyPlanSlice";
 

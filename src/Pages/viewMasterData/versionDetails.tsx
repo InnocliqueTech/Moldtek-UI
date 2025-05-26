@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setVersionPopup } from "../../store/slices/viewMasterDataSlice";
 import VersionPopup from "./versionPopUp";
-import { useVersionHistoryQuery } from "../../store/services/api";
+import { useVersionHistoryQuery } from "../../store/apis/masterDataApis";
 
 const VersinDetails: React.FC = () => {
     const tableColumns = [

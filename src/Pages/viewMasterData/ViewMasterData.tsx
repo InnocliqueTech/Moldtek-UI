@@ -18,7 +18,7 @@ import ViewPrinting from "./ViewPrinting";
 import ViewLamination from "./ViewLamination";
 import ViewDyeCutting from "./ViewDyeCutting";
 import { useEffect, useRef } from "react";
-import { useViewMasterDataQuery } from "../../store/services/api";
+import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
 import Loader from "../../Loader";
 
 const ViewMasterData: React.FC = () => {

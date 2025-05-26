@@ -35,7 +35,7 @@ import Printing from "./Printing";
 import Lamination from "./Lamination";
 import MasterDataFooter from "../../Components/ReUsable/MasterDataFooter";
 import { toast } from "react-toastify";
-import { useViewMasterDataQuery } from "../../store/services/api";
+import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
 import Loader from "../../Loader";
 import { useParams } from "react-router-dom";
 import {

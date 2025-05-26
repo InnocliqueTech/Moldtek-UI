@@ -9,7 +9,7 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import { EmailOutlined} from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
-import { useForGotPasswordMutation } from "../../store/services/api";
+import { useForGotPasswordMutation } from "../../store/apis/authenticationApis";
 import { toast } from "react-toastify";
 
 const ForgotPassword: React.FC = () => {

@@ -22,7 +22,7 @@ import {
 import {
   useGetJobsListQuery,
   useViewMasterDataQuery,
-} from "../../store/services/api";
+} from "../../store/apis/masterDataApis";
 import {
   setBackButtonNavigationAllowed,
   setIsEditing,

@@ -24,9 +24,10 @@ import {
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCreateMasterDataMutation, useUploadCustomerFileMutation } from "../../store/services/api";
+import { useCreateMasterDataMutation } from "../../store/apis/masterDataApis";
 import { toast } from "react-toastify";
 import SuccessPopup from "./SuccessPopup";
+import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 
 interface MasterDataFooterProps {
   selectedTab: number;

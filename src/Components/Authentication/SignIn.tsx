@@ -9,7 +9,7 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import { EmailOutlined, LockOutlined } from "@mui/icons-material";
 import indicator from "../../assets/Images/indicator.png";
-import { useLoginMutation } from "../../store/services/api";
+import { useLoginMutation } from "../../store/apis/authenticationApis";
 import { toast } from "react-toastify";
 import curveImage from "../../assets/Images/curves.png";
 

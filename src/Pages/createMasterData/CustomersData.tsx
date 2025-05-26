@@ -25,7 +25,7 @@ import {
   setSelectedCustomers,
   toggleCustomerSelection,
 } from "../../store/slices/masterDataSlice";
-import { useGetCustomerDtailsQuery } from "../../store/services/api";
+import { useGetCustomerDtailsQuery } from "../../store/apis/genericApis";
 
 const CustomerSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

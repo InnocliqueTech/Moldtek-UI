@@ -37,7 +37,7 @@ const OrderCard: React.FC = () => {
   if (isXs) maxChars = 50;
   else if (isSm) maxChars = 50;
   else if (isMd) maxChars = 32;
-  else if (isLg) maxChars = 45;
+  else if (isLg) maxChars = 40;
   else if (isXl) maxChars = 50;
 
   let maxCharsLabel = 20;

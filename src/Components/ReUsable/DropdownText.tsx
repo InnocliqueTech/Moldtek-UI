@@ -18,7 +18,7 @@ import {
   useStructureDropdownMutation,
   useSubStrateDropDownMutation,
   useSupplierDropdownMutation,
-} from "../../store/services/api";
+} from "../../store/apis/genericApis";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {

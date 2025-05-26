@@ -32,21 +32,15 @@ interface UpdateStatusResponse {
   message: string;
 }
 
-interface UnitEffectiveNumber {
-  unitEffectiveNumber: string;
-  customerName: string;
-  brandDescription: string;
-}
-export const apiSlice = createApi({
-  reducerPath: "api",
+
+export const dailyPlanApi = createApi({
+  reducerPath: "dailyPlanApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
   tagTypes: [
-    "MasterDataMetrics",
     "DailyJobMetrics",
     "DailyJobs",
-    "MasterDataList",
     "PrintingReport",
     "MakeReadyDetails",
     "LabelCuttingDetails",
@@ -57,114 +51,6 @@ export const apiSlice = createApi({
     "UnitEffectiveNumbers",
   ],
   endpoints: (builder) => ({
-    login: builder.mutation<any, any>({
-      query: (newItem) => ({
-        url: "/auth/login",
-        method: "POST",
-        body: newItem,
-      }),
-    }),
-    forGotPassword: builder.mutation<any, any>({
-      query: (newItem) => ({
-        url: "auth/forgotPassword",
-        method: "POST",
-        body: newItem,
-      }),
-    }),
-    subStrateDropDown:builder.mutation<any,any>({
-     query:(newItem)=>({
-     url:'dailyplan/substrateDropdown',
-     method:'POST',
-     body:newItem
-     }),
-    }),
-    structureDropdown:builder.mutation<any,any>({
-      query:(newItem)=>({
-      url:'dailyplan/structureDropdown',
-      method:'POST',
-      body:newItem
-      }),
-     }),
-     supplierDropdown:builder.mutation<any,any>({
-      query:(newItem)=>({
-      url:'dailyplan/suppliersDropdown',
-      method:'POST',
-      body:newItem
-      }),
-     }),
-     mountingTapesDropdown:builder.mutation<any,any>({
-      query:(newItem)=>({
-      url:'dailyplan/mountingTapesDropdown',
-      method:'POST',
-      body:newItem
-      }),
-     }),
-     segmentsDropdown:builder.mutation<any,any>({
-      query:(newItem)=>({
-      url:'dailyplan/segmentsDropdown',
-      method:'POST',
-      body:newItem
-      }),
-     }),
-
-     getMachinesByType: builder.query<any, string>({
-    query: (machineName) =>
-      `/dailyplan/getMachinesByType?machineType=${machineName}`,
-  }),
-    getMetrics: builder.query<any, void>({
-      query: () => "/master/masterDataMetrics",
-      providesTags: ["MasterDataMetrics"],
-    }),
-    listOfCompanies: builder.query<any, string>({
-      query: (newItem) => ({
-        url: `/master/masterDataList?${newItem}`,
-        method: "GET",
-      }),
-      providesTags: ["MasterDataList"],
-    }),
-    versionHistory: builder.query<
-      any,
-      { [key: string]: string | number | boolean }
-    >({
-      query: (newItem) => {
-        const queryString = Object.entries(newItem).map(
-          ([key, value]) => `${key}=${encodeURIComponent(value)}`
-        );
-        return {
-          url: `/master/getVersionHistory?${queryString}`,
-          method: "GET",
-        };
-      },
-    }),
-    getJobsList: builder.query<
-      any,
-      { [key: string]: string | number | boolean }
-    >({
-      query: (newItem) => {
-        const queryString = Object.entries(newItem).map(
-          ([key, value]) => `${key}=${encodeURIComponent(value)}`
-        );
-        return {
-          url: `/master/getJobsInMasterData?${queryString}`,
-          method: "GET",
-        };
-      },
-    }),
-    viewMasterData: builder.query<
-      any,
-      { [key: string]: string | number | boolean }
-    >({
-      query: (newItem) => {
-        const queryString = Object.entries(newItem)
-          .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-          .join("&");
-
-        return {
-          url: `/master/getMasterDetails?${queryString}`,
-          method: "GET",
-        };
-      },
-    }),
     updateStatusJob: builder.mutation<
       UpdateStatusResponse,
       UpdateStatusRequest
@@ -175,40 +61,7 @@ export const apiSlice = createApi({
         params: { indentNumber, status },
       }),
     }),
-    
-uploadCustomerFile: builder.mutation<
-  any,
-  { file: File; unitNumber: string; type: string }
->({
-  query: ({ file, unitNumber, type }) => {
-    const formData = new FormData();
-    formData.append("unitNumber", unitNumber);
-    formData.append("file", file);
-    formData.append("type", type);
 
-    return {
-      url: "dailyplan/uploadFile",
-      method: "POST",
-      body: formData,
-    };
-  },
-}),
-
-    createMasterData: builder.mutation<any, any>({
-      query: (newItem) => ({
-        url: "/master/save",
-        method: "POST",
-        body: newItem,
-      }),
-      invalidatesTags: ["MasterDataMetrics", "MasterDataList"],
-    }),
-    masterFilters: builder.mutation<any, any>({
-      query: (newItem) => ({
-        url: "/master/masterDataFilter",
-        method: "POST",
-        body: newItem,
-      }),
-    }),
     dailyPlanFilters: builder.mutation<any, any>({
       query: (newItem) => ({
         url: "/dailyplan/getDailyJobsDataFilters",
@@ -217,12 +70,6 @@ uploadCustomerFile: builder.mutation<
       }),
     }),
 
-    getCustomerDtails: builder.query<any, void>({
-      query: () => "/master/getCustomerDetails",
-    }),
-    getLabelTypes: builder.query<any, void>({
-      query: () => "/master/getLabelTypeDetails",
-    }),
     getDailyJobMetrics: builder.query<DailyJobMetricsResponse, void>({
       query: () => "/dailyplan/dailyJobMetrics",
       providesTags: ["DailyJobMetrics"],
@@ -357,32 +204,15 @@ uploadCustomerFile: builder.mutation<
         },
       ],
     }),
-    getAllUnitEffectiveNumbers: builder.query<UnitEffectiveNumber[], void>({
-      query: () => "/master/getAllUnitEffectiveNumbers",
-      providesTags: ["UnitEffectiveNumbers"],
-    }),
-    generateIndent: builder.query<any, string>({ 
-      query: (unitEffectiveNumber) =>
-        `/master/generateIndent?unitEffectiveNumber=${unitEffectiveNumber}`,
-    }),
+
   }),
 });
 
 export const {
-  useGetMetricsQuery,
   useGetDailyJobMetricsQuery,
   useGetDailyJobsListQuery,
-  useListOfCompaniesQuery,
-  useLoginMutation,
-  useViewMasterDataQuery,
-  useCreateMasterDataMutation,
-  useVersionHistoryQuery,
-  useGetJobsListQuery,
-  useGetCustomerDtailsQuery,
-  useGetLabelTypesQuery,
   useGetPrintingReportDetailsQuery,
   useGetMakeReadyDetailsQuery,
-  useMasterFiltersMutation,
   useGetLabelCuttingDetailsQuery,
   useGetTravelCardDetailsQuery,
   useDailyPlanFiltersMutation,
@@ -394,14 +224,4 @@ export const {
   useSavePrintingReportDetailsMutation,
   useSaveLaminationReportDetailsMutation,
   useSaveMakeReadyDetailsMutation,
-  useForGotPasswordMutation,
-  useSubStrateDropDownMutation,
-  useGetMachinesByTypeQuery,
-  useSegmentsDropdownMutation,
-  useStructureDropdownMutation,
-  useSupplierDropdownMutation,
-  useMountingTapesDropdownMutation,
-  useUploadCustomerFileMutation,
-  useGetAllUnitEffectiveNumbersQuery,
-  useGenerateIndentQuery,
-} = apiSlice;
+} = dailyPlanApi;

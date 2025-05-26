@@ -37,12 +37,12 @@ import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
 import {
-  useUpdateStatusJobMutation,
   useUploadCustomerFileMutation,
-} from "../../store/services/api";
+} from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
+import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
 
 interface HeaderProps {
   title: string;

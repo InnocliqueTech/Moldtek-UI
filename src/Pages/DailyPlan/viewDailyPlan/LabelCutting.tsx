@@ -6,7 +6,7 @@ import {
   approvalColumns,
 } from "../data";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetLabelCuttingDetailsQuery } from "../../../store/services/api";
+import { useGetLabelCuttingDetailsQuery } from "../../../store/apis/dailyPlanApis";
 import {
   setDailyPlanCancel,
   setDailyPlanSave,

@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useMountingTapesDropdownMutation, useSupplierDropdownMutation } from "../store/services/api";
+import { useMountingTapesDropdownMutation, useSupplierDropdownMutation } from "../store/apis/genericApis";
 import { setMountinTapeDropDownValues, setSupplierPrintingDropDownValues } from "../store/slices/masterDataSlice";
 import { useDispatch } from "react-redux";
 

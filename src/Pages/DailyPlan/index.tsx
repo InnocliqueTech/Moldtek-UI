@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import {
   useDailyPlanFiltersMutation,
   useGetDailyJobMetricsQuery,
-} from "../../store/services/api";
+} from "../../store/apis/dailyPlanApis";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
 import { generateId,formatDate } from '../../Components/helpers';
 // import { toast } from "react-toastify";
