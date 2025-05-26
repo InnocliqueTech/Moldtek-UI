@@ -106,9 +106,18 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const masterData = useMemo(() => data?.data ?? null, [data]);
 
-  useEffect(() => {
+useEffect(() => {
+  const hasVisited = localStorage.getItem('hasVisitedMasterDataDetails');
+
+  if (!hasVisited && id) {
     dispatch(setMasterDataDataTouched(false));
-  }, []);
+    localStorage.setItem('hasVisitedMasterDataDetails', 'true');
+  } else if (hasVisited && !id) {
+    dispatch(setMasterDataDataTouched(false));
+  }
+}, [id]);
+
+
 
   useEffect(() => {
     if (id && isUpdatePage && !masterDataDataTouched && masterData) {
@@ -403,9 +412,11 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }
   }, [id, viewMasterDataDetails]);
   const { data: LabelTyepsData } = useGetLabelTypesQuery();
+  
   const dropdownOptions =
     LabelTyepsData &&
     LabelTyepsData?.map((option: any) => option.labelTypeName);
+
   useEffect(() => {
     const hasErrors = importantFields.some(
       (field) =>
@@ -455,6 +466,12 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   if (id && isLoading) {
     return <Loader />;
   }
+
+    useEffect(()=>{
+      if(isPreviewOpen){
+        setIsPreviewOpen(false)
+      }
+    },[location])
 
   return (
     <Box sx={{ borderRadius: "0px " }}>
@@ -621,7 +638,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                     {/* Image Preview Modal */}
                     <Modal
                       open={isPreviewOpen}
-                      onClose={() => setIsPreviewOpen(false)}
+                      onClose={() => {}}
                       sx={{
                         display: "flex",
                         alignItems: "center",

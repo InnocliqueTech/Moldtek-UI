@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
@@ -84,6 +84,12 @@ const OrderCard: React.FC = () => {
   // First 3 entries for the first row, rest for second row
   const firstRow = entries.slice(0, 3);
   const secondRow = entries.slice(3, 6);
+
+  useEffect(()=>{
+    if(imagePreviewOpen){
+      setImagePreviewOpen(false)
+    }
+  },[location])
 
   return (
     <Box>
@@ -343,7 +349,7 @@ const OrderCard: React.FC = () => {
       </Box>
       <Modal
         open={imagePreviewOpen}
-        onClose={() => setImagePreviewOpen(false)}
+        onClose={() => {}}
         sx={{
           display: "flex",
           alignItems: "center",

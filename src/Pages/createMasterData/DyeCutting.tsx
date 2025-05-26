@@ -138,9 +138,16 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dispatch(setDyeCuttingFormData(updated));
   };
 
-   useEffect(()=>{
-     dispatch(setDyeCuttingDataTouched(false));
-    },[])
+useEffect(() => {
+  const hasVisited = localStorage.getItem('hasVisitedDyeCuttingDetails');
+
+  if (!hasVisited && id) {
+    dispatch(setDyeCuttingDataTouched(false));
+    localStorage.setItem('hasVisitedDyeCuttingDetails', 'true');
+  } else if (hasVisited && !id) {
+    dispatch(setDyeCuttingDataTouched(false));
+  }
+}, [id]);
 
   useEffect(() => {
     const hasAnyErrors = Object.values(errors).some((e) => e !== "");

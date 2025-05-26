@@ -536,9 +536,16 @@ const Lamination: React.FC<LaminationProps> = ({
     dropDown();
   }, []);
 
-    useEffect(()=>{
-     dispatch(setLaminationDataTouched(false));
-    },[])
+useEffect(() => {
+  const hasVisited = localStorage.getItem('hasVisitedLaminationDetails');
+
+  if (!hasVisited && id) {
+    dispatch(setLaminationDataTouched(false));
+    localStorage.setItem('hasVisitedLaminationDetails', 'true');
+  } else if (hasVisited && !id) {
+    dispatch(setLaminationDataTouched(false));
+  }
+}, [id]);
 
   useEffect(() => {
     const fetchDropdownValues = async () => {
