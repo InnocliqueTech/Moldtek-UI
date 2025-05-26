@@ -39,7 +39,8 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
     setSubmitPopupConfirm(false);
     navigate(`/viewDailyPlan/${recentlyCreatedIndentNumber}`);
     localStorage.setItem('dailyPlanDataPage','0')
-    dispatch(setSelectedTab(0))
+    dispatch(setSelectedTab(0));
+    localStorage.setItem("status","Active");
   };
   return (
     <>
