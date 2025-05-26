@@ -35,7 +35,7 @@ const CommenCard: React.FC<Props> = ({
   if (isXs) maxChars = 50;
   else if (isSm) maxChars = 50;
   else if (isMd) maxChars = 20;
-  else if (isLg) maxChars = 30;
+  else if (isLg) maxChars = 25;
   else if (isXl) maxChars = 70;
 const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number) => {
    const displayValue = value !== null && value !== undefined ? String(value) : "N/A";
