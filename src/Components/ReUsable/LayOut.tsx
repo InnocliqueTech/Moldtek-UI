@@ -243,6 +243,7 @@ const Layout = () => {
       dropDownOptions?: string[];
       editButton?: boolean;
       editClick?: () => void;
+      button1Disable?:boolean;
     }
   > = {
     "/dashboard": {
@@ -380,6 +381,7 @@ const Layout = () => {
       dropDownOptions: ["Completed", "Inactive", "Active", "Inprogress"],
       editButton: true,
       editClick: () => dispatch(setIsEditing(true)),
+      button1Disable:loading?true:false
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -459,6 +461,7 @@ const Layout = () => {
           dropDownOptions={headerData.dropDownOptions}
           editButton={headerData.editButton}
           editClick={headerData.editClick}
+          button1Disable={headerData.button1Disable}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

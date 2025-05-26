@@ -64,6 +64,7 @@ interface HeaderProps {
   dropDownOptions?: string[];
   editButton?: boolean;
   editClick?: () => void;
+  button1Disable?:boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -86,6 +87,7 @@ const Header: React.FC<HeaderProps> = ({
   dropDownOptions = [],
   editButton = false,
   editClick,
+  button1Disable
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const { updatePopup, submitAndPublish, uploadFile,submitTrue } = useSelector(
@@ -392,6 +394,7 @@ const Header: React.FC<HeaderProps> = ({
                   borderRadius="100px"
                   border="1px solid #E5E5E5"
                   p={"14px"}
+                  disabled={button1Disable?true:false}
                 />
               )}
               {lastUpdate && (

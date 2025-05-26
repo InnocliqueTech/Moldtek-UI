@@ -42,6 +42,7 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
     dispatch(setSelectedTab(0));
     localStorage.setItem("status","Active");
   };
+  
   return (
     <>
       <ConfirmPopup
