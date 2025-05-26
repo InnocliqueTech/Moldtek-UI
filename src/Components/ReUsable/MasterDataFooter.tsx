@@ -321,6 +321,7 @@ if (!submitTrue) {
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading||uploadLoading}
+        noButton={isLoading||uploadLoading?true:false}
       />
 
       <SuccessPopup
@@ -348,6 +349,7 @@ if (!submitTrue) {
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading||uploadLoading}
         popUpClosed={false}
+        noButton={isLoading||uploadLoading?true:false}
       />
     </Box>
   );

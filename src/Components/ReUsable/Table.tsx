@@ -1,4 +1,4 @@
-import React, { useState, JSX } from "react";
+import React, { useState, JSX, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -58,6 +58,7 @@ import { toast } from "react-toastify";
 import { BASE_API_URL } from "../../api.config";
 import ErrorIcon from "@mui/icons-material/Error";
 import Loader from "../../Loader";
+import { useLocation } from "react-router-dom";
 
 interface Column {
   id: string;
@@ -362,6 +363,8 @@ function ReusableTable<T extends Record<string, any>>({
   //   localStorage.setItem(storageKey, page.toString());
   // }, [page]);
 
+  
+
   const [downloadSummary, setDownloadSummary] = useState<null | {
     total: number;
     downloaded: string[];
@@ -486,6 +489,17 @@ function ReusableTable<T extends Record<string, any>>({
         };
     }
   };
+
+  const location = useLocation();
+
+   useEffect(() => {
+      if (!!downloadSummary) {
+         setDownloadSummary(null)
+      }
+      if(confirmDialogOpen){
+        setConfirmDialogOpen(false)
+      }
+    }, [location]);
 
   return (
     <Paper
@@ -1131,7 +1145,7 @@ function ReusableTable<T extends Record<string, any>>({
             )}
             <Dialog
               open={!!downloadSummary}
-              onClose={() => setDownloadSummary(null)}
+              onClose={() => {}}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 3 } }}
@@ -1292,7 +1306,7 @@ function ReusableTable<T extends Record<string, any>>({
             </Dialog>
             <Dialog
               open={confirmDialogOpen}
-              onClose={() => setConfirmDialogOpen(false)}
+              onClose={() =>{}}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 5, p: 0.5 } }}

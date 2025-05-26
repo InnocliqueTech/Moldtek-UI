@@ -36,9 +36,7 @@ import VersinDetails from "../../Pages/ViewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
-import {
-  useUploadCustomerFileMutation,
-} from "../../store/apis/genericApis";
+import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
@@ -64,7 +62,7 @@ interface HeaderProps {
   dropDownOptions?: string[];
   editButton?: boolean;
   editClick?: () => void;
-  button1Disable?:boolean;
+  button1Disable?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -87,10 +85,10 @@ const Header: React.FC<HeaderProps> = ({
   dropDownOptions = [],
   editButton = false,
   editClick,
-  button1Disable
+  button1Disable,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish, uploadFile,submitTrue,needUpload } = useSelector(
+  const { updatePopup, submitAndPublish, uploadFile, submitTrue } = useSelector(
     (store: RootState) => store.masterData
   );
   const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
@@ -116,7 +114,8 @@ const Header: React.FC<HeaderProps> = ({
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [statusChangeMessage, setStatusChangeMessage] =
     useState<React.ReactNode>("");
- const [uploadCustomerFile,{ isLoading:uploadLoading }] = useUploadCustomerFileMutation();
+  const [uploadCustomerFile, { isLoading: uploadLoading }] =
+    useUploadCustomerFileMutation();
   let unitEffectiveNumberDaily: any;
   const UEN = localStorage.getItem("unitEffectiveNumberDaily");
   if (UEN) {
@@ -186,7 +185,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleSubmitAndPublishPopupOpen = async () => {
     dispatch(setSubmitTrue(true));
-     dispatch(setUploadPopup(false));
+    dispatch(setUploadPopup(false));
     if (
       location.pathname.includes("/viewDailyPlan") ||
       location.pathname === "/createPlan"
@@ -198,54 +197,55 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleSubmitPopupClose = () => {
+    if (submitTrue) {
+      dispatch(setUploadPopup(true));
+    }
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false);
-       dispatch(setSelectedFile(null))
   };
 
   const handleSubmitPopupConfirmOpen = async () => {
-                if (uploadFile) {
-              try {
-                 await uploadCustomerFile({
-                  file: uploadFile,
-                  unitNumber: unitEffectiveNumberDaily?unitEffectiveNumberDaily:"", // <-- Replace with actual unit number if needed
-                  type: "job",
-                }).unwrap();
-      
-                    setSubmitPopupConfirm(true);
-                dispatch(setUploadedFile(null));
-              } catch (err) {
-                console.error("Upload failed:", err);
-      
-                let message = "Upload failed. Please try again.";
-      
-                // Check for RTK Query error format
-                if (err && typeof err === "object") {
-                  const errData = err as {
-                    data?: { message?: string };
-                    message?: string;
-                  };
-      
-                  if (errData?.data?.message) {
-                    message = errData.data.message;
-                  } else if (errData?.message) {
-                    message = errData.message;
-                  }
-                }
-      
-                toast.error(message);
-              }
-            } else {
-              toast.warn("No file selected to upload.");
-            }
+    if (uploadFile) {
+      try {
+        await uploadCustomerFile({
+          file: uploadFile,
+          unitNumber: unitEffectiveNumberDaily ? unitEffectiveNumberDaily : "", // <-- Replace with actual unit number if needed
+          type: "job",
+        }).unwrap();
 
+        setSubmitPopupConfirm(true);
+        dispatch(setUploadedFile(null));
+      } catch (err) {
+        console.error("Upload failed:", err);
+
+        let message = "Upload failed. Please try again.";
+
+        // Check for RTK Query error format
+        if (err && typeof err === "object") {
+          const errData = err as {
+            data?: { message?: string };
+            message?: string;
+          };
+
+          if (errData?.data?.message) {
+            message = errData.data.message;
+          } else if (errData?.message) {
+            message = errData.message;
+          }
+        }
+
+        toast.error(message);
+      }
+    } else {
+      toast.warn("No file selected to upload.");
+    }
   };
 
   const handleSubmitPopupConfirmClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false);
     setSubmitPopupConfirm(false);
-       dispatch(setSelectedFile(null))
+    dispatch(setSelectedFile(null));
   };
 
   const handleSubmitPopupConfirmClick = () => {
@@ -253,7 +253,7 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopup(false);
     setSubmitPopupConfirm(false);
     navigate("/dailyPlan");
-       dispatch(setSelectedFile(null))
+    dispatch(setSelectedFile(null));
   };
 
   const handleDownloadSampleFileMasterData = (filePath: string) => {
@@ -272,6 +272,12 @@ const Header: React.FC<HeaderProps> = ({
       })
       .catch((error) => console.error("Error downloading the file:", error));
   };
+
+  useEffect(() => {
+    if (confirmDialogOpen) {
+       setConfirmDialogOpen(false)
+    }
+  }, [location]);
 
   return (
     <>
@@ -393,7 +399,7 @@ const Header: React.FC<HeaderProps> = ({
                   borderRadius="100px"
                   border="1px solid #E5E5E5"
                   p={"14px"}
-                  disabled={button1Disable?true:false}
+                  disabled={button1Disable ? true : false}
                 />
               )}
               {lastUpdate && (
@@ -476,10 +482,15 @@ const Header: React.FC<HeaderProps> = ({
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={uploadLoading}
         popUpClosed={false}
+        noButton={uploadLoading?true:false}
       />
       <SuccessPopup
         open={submitPopupConfirm}
-        message={submitTrue?"We are currently processing your data. Please wait a moment":"You have successfully add a daily job"}
+        message={
+          submitTrue
+            ? "We are currently processing your data. Please wait a moment"
+            : "You have successfully add a daily job"
+        }
         buttonText="Go back to Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
@@ -490,7 +501,7 @@ const Header: React.FC<HeaderProps> = ({
       <VersinDetails />
       <Dialog
         open={confirmDialogOpen}
-        onClose={() => setConfirmDialogOpen(false)}
+        onClose={() => {}} 
         PaperProps={{
           sx: {
             borderRadius: 5,

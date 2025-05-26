@@ -352,6 +352,12 @@ const ViewDailyPlan: React.FC = () => {
     }
   }, [isEditing]);
 
+  useEffect(()=>{
+    if(showTabChangeDialog){
+      handleCancel()
+    }
+  },[location])
+
   return (
     <Box
       sx={{
@@ -470,7 +476,7 @@ const ViewDailyPlan: React.FC = () => {
       {/* Tab Change Confirmation Dialog */}
       <Dialog
         open={showTabChangeDialog}
-        onClose={handleDialogCancel}
+        onClose={()=>{}}
         sx={{
           "& .MuiPaper-root": {
             borderRadius: "16px",

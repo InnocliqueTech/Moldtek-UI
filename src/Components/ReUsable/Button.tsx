@@ -13,6 +13,7 @@ interface ButtonComponentProps extends Omit<ButtonProps, "color"> {
   p?: string | number;
   styles?:{},
   disabled?:boolean;
+  noButton?:boolean;
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -27,6 +28,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   p = "2px",
   styles = {},
   disabled = false,
+  noButton=false,
   ...props
 }) => {
 
@@ -64,7 +66,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
         ...styles,
       }}
     >
-      {loading ? "Loading...." : text}
+      {loading && !noButton ? "Loading...." : text}
     </MUIButton>
   );
 };

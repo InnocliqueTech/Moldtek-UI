@@ -23,6 +23,7 @@ interface ConfirmPopupProps {
   onClick?: () => void;
   isLoading?: boolean;
   popUpClosed?:boolean;
+  noButton?:boolean;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -34,7 +35,8 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   buttonText2,
   onClick,
   isLoading,
-  popUpClosed
+  popUpClosed,
+  noButton
 }) => {
 
 const dispatch = useDispatch();
@@ -94,7 +96,8 @@ useEffect(() => {
             textColor="#0A0A0A"
             onClick={onClose}
             p={2}
-            // loading={isLoading}
+            loading={isLoading&&noButton}
+            noButton={noButton}
           />
         )}
         {buttonText2 && (
