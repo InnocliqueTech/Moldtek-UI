@@ -375,9 +375,16 @@ const Printing: React.FC<PrintingProps> = ({
     dispatch(setSavePrintingFormData(updatedFormData));
   };
 
-  useEffect(()=>{
-   dispatch(setPrintingDataTouched(false));
-  },[])
+useEffect(() => {
+  const hasVisited = localStorage.getItem('hasVisitedPrintingDetails');
+
+  if (!hasVisited && id) {
+    dispatch(setPrintingDataTouched(false));
+    localStorage.setItem('hasVisitedPrintingDetails', 'true');
+  } else if (hasVisited && !id) {
+    dispatch(setPrintingDataTouched(false));
+  }
+}, [id]);
 
   const renderField = (field: {
     id: string;
