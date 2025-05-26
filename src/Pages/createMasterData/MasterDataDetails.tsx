@@ -218,6 +218,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     "jar_cap",
     "repeat_length",
     "ups",
+     "noOfColorsSetting",
+    "noOfSpecialColors",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   const freeTextFields: (keyof MasterFormData)[] = [
@@ -747,7 +749,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
           sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
           gutterBottom
         >
-          Repeat & Label Metrics
+          Repeat & Print Details
         </Typography>
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 3 }}>

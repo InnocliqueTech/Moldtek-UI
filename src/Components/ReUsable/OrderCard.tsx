@@ -302,7 +302,7 @@ const OrderCard: React.FC = () => {
             sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
             gutterBottom
           >
-            Repeat & Label Metrics
+            Repeat & Print Details
           </Typography>
           {/* <InfoOutlined sx={{ color: "#9F9F9F", width: 20, height: 20 }} /> */}
         </Box>
