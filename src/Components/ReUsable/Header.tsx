@@ -90,7 +90,7 @@ const Header: React.FC<HeaderProps> = ({
   button1Disable
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish, uploadFile,submitTrue } = useSelector(
+  const { updatePopup, submitAndPublish, uploadFile,submitTrue,needUpload } = useSelector(
     (store: RootState) => store.masterData
   );
   const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
@@ -186,7 +186,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleSubmitAndPublishPopupOpen = async () => {
     dispatch(setSubmitTrue(true));
-    dispatch(setUploadPopup(false));
+     dispatch(setUploadPopup(false));
     if (
       location.pathname.includes("/viewDailyPlan") ||
       location.pathname === "/createPlan"
@@ -214,7 +214,6 @@ const Header: React.FC<HeaderProps> = ({
       
                     setSubmitPopupConfirm(true);
                 dispatch(setUploadedFile(null));
-                   dispatch(setSelectedFile(null))
               } catch (err) {
                 console.error("Upload failed:", err);
       
@@ -446,6 +445,7 @@ const Header: React.FC<HeaderProps> = ({
         upload={true}
         textField={true}
         dropdown={true}
+        popUpClosed={false}
       />
       <ReusablePopup
         open={updatePopup}
@@ -460,6 +460,7 @@ const Header: React.FC<HeaderProps> = ({
           handleDownloadSampleFileMasterData(excelFile)
         }
         disable={uploadFile ? false : true}
+        popUpClosed={false}
       />
       <ConfirmPopup
         open={
@@ -474,6 +475,7 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={uploadLoading}
+        popUpClosed={false}
       />
       <SuccessPopup
         open={submitPopupConfirm}
@@ -481,6 +483,7 @@ const Header: React.FC<HeaderProps> = ({
         buttonText="Go back to Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
+        popUpClosed={false}
       />
       <Filter filterTitle={filterTitle || ""} />
       <FilterDailyPlan filterTitle="Daily Plan Filter" />

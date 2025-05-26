@@ -6,6 +6,10 @@ import {
 } from "@mui/material";
 import ButtonComponent from "./Button";
 import { HelpOutline } from "@mui/icons-material";
+import { setSelectedFile } from "../../store/slices/masterDataSlice";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 interface ConfirmPopupProps {
   open: boolean;
@@ -18,6 +22,7 @@ interface ConfirmPopupProps {
   buttonText2?: string;
   onClick?: () => void;
   isLoading?: boolean;
+  popUpClosed?:boolean;
 }
 
 const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
@@ -29,12 +34,38 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
   buttonText2,
   onClick,
   isLoading,
+  popUpClosed
 }) => {
+
+const dispatch = useDispatch();
+
+const popUpClose = ()=>{
+  onClose();
+}
+
+const confirmClick = ()=>{
+  if(onClick){
+  onClick();
+  dispatch(setSelectedFile(null));
+  }
+
+}
+
+  const location = useLocation();
+
+useEffect(() => {
+  if (open) {
+    popUpClose();
+  }
+}, [location]);
+
   return (
     <Dialog
       open={open}
       keepMounted
-      onClose={onClose}
+      onClose={()=>{if(popUpClosed){
+        onClose()
+      }}}
       PaperProps={{
         sx: {
           borderRadius: "16px",
@@ -72,7 +103,7 @@ const ConfirmPopup: React.FC<ConfirmPopupProps> = ({
             borderRadius="100px"
             color="#0073B7"
             textColor="white"
-            onClick={onClick}
+            onClick={confirmClick}
             p={2}
             loading={isLoading}
           />

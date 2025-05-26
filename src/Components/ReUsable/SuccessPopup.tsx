@@ -1,6 +1,8 @@
 import { Dialog, DialogContent, DialogActions, Typography } from "@mui/material";
 import ButtonComponent from "./Button";
 import { TaskAlt } from "@mui/icons-material";
+import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
 
 interface SuccessPopupProps {
   open: boolean;
@@ -11,6 +13,7 @@ interface SuccessPopupProps {
   isLoading?: boolean;
   subMessage?:string;
   onClick?: ()=> void;
+  popUpClosed?:boolean
 }
 
 const SuccessPopup: React.FC<SuccessPopupProps> = ({
@@ -21,12 +24,24 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({
   buttonText = "Continue",
   subMessage,
   isLoading,
-  onClick
+  onClick,
+  popUpClosed
 }) => {
+
+  const location = useLocation();
+
+useEffect(() => {
+  if (open) {
+    onClose()
+  }
+}, [location]);
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={()=>{if(popUpClosed){
+        onClose()
+      }}}
       PaperProps={{
         sx: {
           borderRadius: "16px",

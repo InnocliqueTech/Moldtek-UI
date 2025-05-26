@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -14,6 +14,7 @@ import { Close, CloudUpload } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedFile, setUploadedFile } from "../../store/slices/masterDataSlice";
 import { RootState } from "../../store";
+import { useLocation } from "react-router-dom";
 
 interface ReusablePopupProps {
   open: boolean;
@@ -32,6 +33,7 @@ interface ReusablePopupProps {
   handleDownloadSampleFile?: () => void;
   isLoading?: boolean;
   disable?: boolean;
+  popUpClosed?:boolean;
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -50,18 +52,26 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   sampleFile,
   handleDownloadSampleFile,
   isLoading,
-  disable,
+  popUpClosed
 }) => {
 
   const {selectedFile} = useSelector((state:RootState)=>state.masterData)
   const [error, setError] = useState<string | null>(null);
-
+  
   const dispatch = useDispatch();
 
   const popUpClose = () => {
     onClose();
     dispatch(setSelectedFile(null));
   };
+
+  const location = useLocation();
+
+useEffect(() => {
+  if (open) {
+    popUpClose();
+  }
+}, [location]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -89,7 +99,11 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   return (
     <Dialog
       open={open}
-      onClose={popUpClose}
+      onClose={()=>{
+        if(popUpClosed){
+          popUpClose()
+        }
+      }}
       maxWidth="xs"
       fullWidth
       sx={{
@@ -97,10 +111,34 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
           borderRadius: "16px",
         },
       }}
+      disableEscapeKeyDown
     >
       {/* Popup Header */}
       {title && (
-        <DialogTitle sx={{ pb: "6px", ml: "-12px" }}>{title}</DialogTitle>
+      <Box
+  sx={{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center", // vertically center them
+     px: 2, // horizontal padding if needed
+     pt:1,
+     mb:'-10px'
+  }}
+>
+  <DialogTitle sx={{ p:0 }}>{title}</DialogTitle>
+  <Close
+    onClick={popUpClose}
+    sx={{
+      cursor: "pointer",
+      color: "#6e6e6e",
+      "&:hover": {
+        color: "#000",
+      },
+    }}
+  />
+</Box>
+
       )}
 
       {/* Popup Body */}
@@ -301,7 +339,7 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
             borderRadius="100px"
             width={cancel ? "" : "100%"}
             loading={isLoading}
-            disabled={disable}
+            disabled={selectedFile ? false:true}
           />
         )}
       </DialogActions>

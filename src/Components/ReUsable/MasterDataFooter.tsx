@@ -20,7 +20,9 @@ import {
   setSubmitAndPublishPopup,
   setSubmitPopup,
   setSubmitPopupConfirm,
+  setSubmitTrue,
   setUploadedFile,
+  setUploadPopup,
 } from "../../store/slices/masterDataSlice";
 import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
@@ -81,6 +83,7 @@ const skipLaminationButton = viewMasterDataDetails.label_type === "THINWALL" || 
   };
 
   const handleSubmitAndPublishPopupOpen = () => {
+    dispatch(setSubmitTrue(false))
     if ((!skipLamination||!skipLaminationButton) && selectedTab === 3 || (skipLamination||skipLaminationButton)&&selectedTab===2 ) {
       dispatch(setSubmitAndPublishPopup(true));
       if (handleSave) handleSave();
@@ -327,6 +330,7 @@ if (!submitTrue) {
         onClick={handleSubmitPopupConfirmClick}
         subMessage={submitTrue ?"":"You’re all set! Let’s get started."}
         buttonText="Go back to Master Data"
+        popUpClosed={false}
       />
 
       <ConfirmPopup
@@ -337,10 +341,13 @@ if (!submitTrue) {
         buttonText2="Yes, Publish it!"
         gifSrc=""
         onClose={() =>{dispatch(setSubmitAndPublishPopup(false));
-             dispatch(setSelectedFile(null))
+          if(submitTrue){
+          dispatch(setUploadPopup(true))
+          }
         }}
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading||uploadLoading}
+        popUpClosed={false}
       />
     </Box>
   );

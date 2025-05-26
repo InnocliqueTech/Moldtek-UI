@@ -55,6 +55,7 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={isLoading}
+        popUpClosed={false}
       />
       <SuccessPopup
         open={submitPopupConfirm}
@@ -62,6 +63,7 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
         buttonText="View Daily Plan"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}
+        popUpClosed={false}
       />
     </>
   );

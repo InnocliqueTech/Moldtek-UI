@@ -285,6 +285,7 @@ export interface FiltersPayload {
   searchField: string;
 }
 export interface MasterDataState {
+  needUpload:boolean;
   selectedFile: File | null;
   uploadFile: File | null;
   customerLogoFile: File | null;
