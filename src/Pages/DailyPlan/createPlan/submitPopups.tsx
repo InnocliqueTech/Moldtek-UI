@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store";
 import { useLocation, useNavigate } from "react-router-dom";
 import SuccessPopup from "../../../Components/ReUsable/SuccessPopup";
+import { setSelectedTab } from "../../../store/slices/viewMasterDataSlice";
 
 interface SubmitPopupsProps {
   onSubmit: () => Promise<{ success: boolean; error?: any }>;
@@ -36,9 +37,9 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopupConfirm(false);
-    // navigate("/dailyPlan");
     navigate(`/viewDailyPlan/${recentlyCreatedIndentNumber}`);
     localStorage.setItem('dailyPlanDataPage','0')
+    dispatch(setSelectedTab(0))
   };
   return (
     <>
