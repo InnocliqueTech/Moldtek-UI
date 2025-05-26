@@ -456,6 +456,12 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     return <Loader />;
   }
 
+    useEffect(()=>{
+      if(isPreviewOpen){
+        setIsPreviewOpen(false)
+      }
+    },[location])
+
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
@@ -621,7 +627,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                     {/* Image Preview Modal */}
                     <Modal
                       open={isPreviewOpen}
-                      onClose={() => setIsPreviewOpen(false)}
+                      onClose={() => {}}
                       sx={{
                         display: "flex",
                         alignItems: "center",

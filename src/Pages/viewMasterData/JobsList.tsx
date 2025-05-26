@@ -296,6 +296,12 @@ const JobsList: React.FC = () => {
 
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
 
+    useEffect(()=>{
+      if(imagePreviewOpen){
+        setImagePreviewOpen(false)
+      }
+    },[location])
+
   return (
     <Box sx={{ p: 0 }}>
       <Box p={2} sx={{ backgroundColor: "#fff", borderRadius: 2, mb: 2 }}>
@@ -569,7 +575,7 @@ const JobsList: React.FC = () => {
       </Box>
       <Modal
         open={imagePreviewOpen}
-        onClose={() => setImagePreviewOpen(false)}
+        onClose={() =>{}}
         sx={{
           display: "flex",
           alignItems: "center",
