@@ -68,7 +68,7 @@ const NotificationPopover: React.FC<NotificationPopoverProps> = ({
           {notifications.map((notif, index) => (
             <Box key={notif.id}>
               <Box
-                onClick={() => onClickNotification(notif.id)}
+                onClick={() => onClickNotification(index)}
                 sx={{
                   px: 0,
                   py: 0.5,
