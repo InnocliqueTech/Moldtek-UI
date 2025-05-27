@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.5173.ts"]
+  "include": [ "vite.config.5174.ts","vite.config.5173.ts","vite.config.5175.ts"]
 }

@@ -80,37 +80,60 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
             {isEditing && item.editable ? (
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {item.type === "date" ? (
-                  <DateTimePicker
-                    value={parseDateSafe(item.value)}
-                    onChange={(newValue) =>
-                      handleChange(
-                        index,
-                        newValue ? format(newValue, "yyyy-MM-dd'T'HH:mm") : ""
-                      )
-                    }
-                    format="dd/MM/yyyy hh:mm a"
-                    minDateTime={
-                      item.label === "Completion Time" && startingTimeValue
-                        ? parseDateSafe(startingTimeValue) ?? undefined
-                        : undefined
-                    }
-                    slots={{
-                      openPickerIcon: CalendarToday,
-                      clearIcon: ClearIcon,
-                    }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        size: "small",
-                        variant: "outlined",
-                        placeholder: "dd/MM/yyyy hh:mm a",
-                        sx: { mt: 0.5 },
-                      },
-                      actionBar: {
-                        actions: ["clear", "cancel", "accept"],
-                      },
-                    }}
-                  />
+<DateTimePicker
+  value={parseDateSafe(item.value)}
+  onChange={(newValue) =>
+    handleChange(
+      index,
+      newValue ? format(newValue, "yyyy-MM-dd'T'HH:mm") : ""
+    )
+  }
+  format="dd/MM/yyyy hh:mm a"
+  minDateTime={
+    item.label === "Completion Time" && startingTimeValue
+      ? parseDateSafe(startingTimeValue) ?? undefined
+      : undefined
+  }
+  slots={{
+    openPickerIcon: CalendarToday,
+    clearIcon: ClearIcon,
+  }}
+  slotProps={{
+    textField: {
+      fullWidth: true,
+      size: "small",
+      variant: "outlined",
+      placeholder: "dd/MM/yyyy hh:mm a",
+      sx: { mt: 0.5 },
+    },
+    actionBar: {
+      actions: ['clear', 'cancel', 'accept'],
+    },
+    popper: {
+      modifiers: [
+        {
+          name: 'flip',
+          enabled: true,
+          options: {
+            altBoundary: true,
+            rootBoundary: 'viewport',
+            padding: 8,
+          },
+        },
+        {
+          name: 'preventOverflow',
+          enabled: true,
+          options: {
+            altAxis: true,
+            tether: true,
+            rootBoundary: 'document',
+            padding: 8,
+          },
+        },
+      ],
+    },
+  }}
+/>
                 ) : (
                   <TextField
                     fullWidth
