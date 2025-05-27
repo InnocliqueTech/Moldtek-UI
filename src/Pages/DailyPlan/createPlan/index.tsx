@@ -22,6 +22,7 @@ import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
 // import { unitEffectiveNumbersResp } from './mockData';
 import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
 import { useSaveDailyJobMutation } from '../../../store/apis/dailyPlanApis';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const LOCAL_STORAGE_KEY = 'savedPlansData';
@@ -308,7 +309,11 @@ useEffect(() => {
   
 
 
-if (unitEffNumLoading) return <div>Loading unit effective numbers...</div>;
+if (unitEffNumLoading) return (
+  <Box className="w-full h-full flex justify-center items-center">
+    <CircularProgress />
+  </Box>
+);
 if (error) return <div>Error: Something Went Wrong...</div>;
 
   return (
