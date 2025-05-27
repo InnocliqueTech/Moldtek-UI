@@ -284,7 +284,16 @@ export interface FiltersPayload {
   labelType: string[];
   searchField: string;
 }
+export interface MasterDataNotifications {
+exceptionMessage: string|null;
+fileName: string;
+fileReadStatus:string;
+id: number;
+processedOn: string;
+unitEffectiveNumbers: string
+}
 export interface MasterDataState {
+  masterDataNotifications:MasterDataNotifications[]
   popOver:boolean
   needUpload:boolean;
   selectedFile: File | null;

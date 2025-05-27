@@ -8,7 +8,7 @@ import {
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   clearDyeCuttingFormData,
   clearDyeCuttingFormErrors,
@@ -18,6 +18,7 @@ import {
   clearMasterDetaisData,
   clearPrintingFormData,
   clearPrintingFormErrors,
+  setMasterDataNotifications,
   setOpenSlider,
   setPopOver,
   setRequestPayload,
@@ -39,6 +40,7 @@ import {
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
+import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -48,7 +50,9 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const { updateButton } = useSelector((state: RootState) => state.masterData);
+  const { updateButton, popOver } = useSelector(
+    (state: RootState) => state.masterData
+  );
   const { hasUnsavedChanges } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
@@ -177,8 +181,6 @@ const Layout = () => {
 
   const decodedIndentNo = decodeURIComponent(indentNo || "");
 
-  
-
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
@@ -227,12 +229,20 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
-  const handleMasterNotification=()=>{
-    dispatch(setPopOver(true))
-  }
- const handleDailyPlanNotification=()=>{
-    dispatch(setPopOverDailyPlan(true))
-  }
+
+  const { data } = useMasterDataNotificationsQuery();
+
+  useEffect(() => {
+    const notifications = data?.notifications?.map((item: any) => item);
+    dispatch(setMasterDataNotifications(notifications));
+  }, [data]);
+
+  const handleMasterNotification = () => {
+    dispatch(setPopOver(true));
+  };
+  const handleDailyPlanNotification = () => {
+    dispatch(setPopOverDailyPlan(true));
+  };
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -253,9 +263,9 @@ const Layout = () => {
       dropDownOptions?: string[];
       editButton?: boolean;
       editClick?: () => void;
-      button1Disable?:boolean;
-      notificationIcon?:boolean;
-      notificationIconOnClick?:()=>void;
+      button1Disable?: boolean;
+      notificationIcon?: boolean;
+      notificationIconOnClick?: () => void;
     }
   > = {
     "/dashboard": {
@@ -279,15 +289,19 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
-      notificationIcon:true,
-      notificationIconOnClick:()=>{handleMasterNotification()}
+      notificationIcon: true,
+      notificationIconOnClick: () => {
+        handleMasterNotification();
+      },
     },
     "/createMasterData": {
       title: "Create Master Data",
       button1Text: `Created on: ${formattedDate}`,
       button2Text: "Upload Master Data",
       // onButton1Click: () => alert("Edit Profile Clicked"),
-      onButton2Click: () => {dispatch(setUploadPopup(true)),dispatch(setSelectedFile(null))},
+      onButton2Click: () => {
+        dispatch(setUploadPopup(true)), dispatch(setSelectedFile(null));
+      },
       uploadTitle: "Create Master Data",
       uploadSubTitle: "Upload Master Data",
       headerButton: true,
@@ -351,14 +365,14 @@ const Layout = () => {
       // onButton1Click: () => alert("Save Changes Clicked"),
       // onButton2Click: () => alert("Reset Clicked"),
     },
-     "/productionOperators": {
+    "/productionOperators": {
       title: "Production Operators",
       // button1Text: "Save Changes",
       // button2Text: "Reset",
       // onButton1Click: () => alert("Save Changes Clicked"),
       // onButton2Click: () => alert("Reset Clicked"),
     },
-     "/reports": {
+    "/reports": {
       title: "Reports",
       // button1Text: "Save Changes",
       // button2Text: "Reset",
@@ -372,8 +386,10 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
-       notificationIcon:true,
-      notificationIconOnClick:()=>{handleDailyPlanNotification()}
+      notificationIcon: true,
+      notificationIconOnClick: () => {
+        handleDailyPlanNotification();
+      },
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
@@ -397,7 +413,7 @@ const Layout = () => {
       dropDownOptions: ["Completed", "Inactive", "Active", "Inprogress"],
       editButton: true,
       editClick: () => dispatch(setIsEditing(true)),
-      button1Disable:loading?true:false
+      button1Disable: loading ? true : false,
     },
     "/createPlan": {
       title: "Create Daily Plan",

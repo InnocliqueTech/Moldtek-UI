@@ -25,6 +25,7 @@ import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
+  setMasterDataNotifications,
   setPopOver,
   setSelectedFile,
   setSubmitAndPublishPopup,
@@ -37,7 +38,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/ViewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import excelFile from "../../assets/Master_Data_Upload_template.xlsx";
+// import excelFile from "/Master_Data_Upload_template.xlsx";
 import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
@@ -96,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({
   notificationIconOnClick,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish, uploadFile, submitTrue,popOver } = useSelector(
+  const { updatePopup, submitAndPublish, uploadFile, submitTrue,popOver,masterDataNotifications } = useSelector(
     (store: RootState) => store.masterData
   );
    const { popOverDailyPlan } = useSelector(
@@ -126,7 +127,10 @@ const [notifications, setNotifications] = useState<any[]>([
 
 
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = Array.isArray(masterDataNotifications)
+  ? masterDataNotifications.filter((n: any) => !n.read).length
+  : [];
+
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -317,9 +321,9 @@ const [notifications, setNotifications] = useState<any[]>([
   };
 
   const handleNotificationItemClick = (index: number) => {
-  const newNotifs = [...notifications];
+  const newNotifs = [...masterDataNotifications];
   newNotifs.splice(index, 1); // remove notification (simulate "mark as read")
-  setNotifications(newNotifs);
+  dispatch(setMasterDataNotifications(newNotifs));
 };
 
   return (
@@ -524,9 +528,11 @@ const [notifications, setNotifications] = useState<any[]>([
         onClose={handleClosePopUp}
         subText={uploadSubTitle || ""}
         sampleFile={true}
-        handleDownloadSampleFile={() =>
-          handleDownloadSampleFileMasterData(excelFile)
-        }
+      // Header.tsx or wherever you need it
+handleDownloadSampleFile={() =>
+  handleDownloadSampleFileMasterData("/Master_Data_Upload_template.xlsx")
+}
+
         disable={uploadFile ? false : true}
         popUpClosed={false}
       />
@@ -613,7 +619,7 @@ const [notifications, setNotifications] = useState<any[]>([
       <NotificationPopover
         open={popOver}
         onClose={handleMasterDataPopoverClose}
-        notifications={notifications}
+        notifications={masterDataNotifications}
         popUpTitle='Master Data Upload Details'
         onClickNotification={handleNotificationItemClick}
       />

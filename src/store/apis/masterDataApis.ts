@@ -80,6 +80,13 @@ export const masterDataApi = createApi({
         body: newItem,
       }),
     }),
+   masterDataNotifications: builder.query<any, void>({   // <-- use void here
+  query: () => ({
+    url: `/master/getNotificationForUpload`,
+    method: "GET",
+  }),
+}),
+
 }),
 });
 
@@ -91,4 +98,6 @@ export const {
   useVersionHistoryQuery,
   useGetJobsListQuery,
   useMasterFiltersMutation,
+  useMasterDataNotificationsQuery,
+  useLazyMasterDataNotificationsQuery
 } = masterDataApi;

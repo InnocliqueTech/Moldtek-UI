@@ -8,6 +8,7 @@ import {
   LaminationFormData,
   LaminationFormErrors,
   MasterDataFormErrors,
+  MasterDataNotifications,
   MasterDataState,
   MasterFormData,
   PrintingFormErrors,
@@ -16,6 +17,13 @@ import {
 } from "./masterDataInterface";
 
 const initialState: MasterDataState = {
+  masterDataNotifications:[{
+exceptionMessage: "",
+fileName: "",
+fileReadStatus: "",
+id: 0,
+processedOn: "",
+unitEffectiveNumbers: ""}],
   popOver:false,
   needUpload:false,
   noOfColorsSetting: "",
@@ -736,6 +744,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setMasterDataNotifications:(state,action:PayloadAction<MasterDataNotifications[]>)=>{
+    state.masterDataNotifications=action.payload
+    },
     setPopOver:(state,action:PayloadAction<boolean>)=>{
     state.popOver = action.payload
     },
@@ -1686,6 +1697,7 @@ export const {
   setUploadedFile,
   setSelectedFile,
   setNeedUpload,
-  setPopOver
+  setPopOver,
+  setMasterDataNotifications
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

@@ -291,12 +291,10 @@ useEffect(() => {
       }
     } else if (characterFields.includes(field)) {
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
-      console.log("Validating field:", field, "with value:", trimmed);
 
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
       } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
-        console.log("Validation failed for field:", field);
         errorMessage = "Only letters and spaces are allowed.";
       }
     } else if (freeTextFields.includes(field)) {
