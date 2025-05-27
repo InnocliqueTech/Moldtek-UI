@@ -19,6 +19,7 @@ import {
   clearPrintingFormData,
   clearPrintingFormErrors,
   setOpenSlider,
+  setPopOver,
   setRequestPayload,
   setSelectedFile,
   setSelectedTab,
@@ -34,6 +35,7 @@ import {
   setShowTabChangeDialog,
   setBackButtonNavigationAllowed,
   setSideNavigationAllowed,
+  setPopOverDailyPlan,
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
@@ -175,6 +177,8 @@ const Layout = () => {
 
   const decodedIndentNo = decodeURIComponent(indentNo || "");
 
+  
+
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
@@ -223,7 +227,12 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
-
+  const handleMasterNotification=()=>{
+    dispatch(setPopOver(true))
+  }
+ const handleDailyPlanNotification=()=>{
+    dispatch(setPopOverDailyPlan(true))
+  }
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -245,6 +254,8 @@ const Layout = () => {
       editButton?: boolean;
       editClick?: () => void;
       button1Disable?:boolean;
+      notificationIcon?:boolean;
+      notificationIconOnClick?:()=>void;
     }
   > = {
     "/dashboard": {
@@ -268,6 +279,8 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
+      notificationIcon:true,
+      notificationIconOnClick:()=>{handleMasterNotification()}
     },
     "/createMasterData": {
       title: "Create Master Data",
@@ -359,6 +372,8 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
+       notificationIcon:true,
+      notificationIconOnClick:()=>{handleDailyPlanNotification()}
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
@@ -463,6 +478,8 @@ const Layout = () => {
           editButton={headerData.editButton}
           editClick={headerData.editClick}
           button1Disable={headerData.button1Disable}
+          notificationIcon={headerData.notificationIcon}
+          notificationIconOnClick={headerData.notificationIconOnClick}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

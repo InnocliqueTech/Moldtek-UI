@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { setPopOver } from "./masterDataSlice";
 
 interface DailyPlan {
   unitEffectivityNumber: string;
@@ -98,9 +99,11 @@ export interface viewDailyPlan {
   sideNavigationAllowed:boolean;
   backButtonNavigationAllowed:boolean;
   recentlyCreatedIndentNumber:string;
+  popOverDailyPlan:boolean
 }
 
 const initialState: viewDailyPlan = {
+  popOverDailyPlan:false,
   dailyPlanSave:false,
   sideNavigationAllowed:false,
   backButtonNavigationAllowed:false,
@@ -173,6 +176,9 @@ const ViewDailyPanSlice = createSlice({
   name: "viewDailyPanSlice",
   initialState,
   reducers: {
+    setPopOverDailyPlan:(state,action:PayloadAction<boolean>)=>{
+     state.popOverDailyPlan = action.payload
+    },
     setDailyPlanSave:(state,action:PayloadAction<boolean>)=>{
      state.dailyPlanSave = action.payload
     },
@@ -307,6 +313,7 @@ export const {
   setShowTabChangeDialog,
   setDailyPlanSave,
   setDailyPlanCancel,
-  setRecentlyCreatedIndentNumber
+  setRecentlyCreatedIndentNumber,
+  setPopOverDailyPlan
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

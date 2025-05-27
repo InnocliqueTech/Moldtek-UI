@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
@@ -24,13 +25,14 @@ import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
+  setPopOver,
   setSelectedFile,
   setSubmitAndPublishPopup,
   setSubmitTrue,
   setUploadedFile,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import { ReplayOutlined } from "@mui/icons-material";
+import { Notifications, ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/ViewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
@@ -41,6 +43,8 @@ import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
+import NotificationPopover from "./NotificationPopOver";
+import { setPopOverDailyPlan } from "../../store/slices/viewDailyPlanSlice";
 
 interface HeaderProps {
   title: string;
@@ -63,6 +67,8 @@ interface HeaderProps {
   editButton?: boolean;
   editClick?: () => void;
   button1Disable?: boolean;
+  notificationIcon?: boolean;
+  notificationIconOnClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -86,10 +92,15 @@ const Header: React.FC<HeaderProps> = ({
   editButton = false,
   editClick,
   button1Disable,
+  notificationIcon,
+  notificationIconOnClick,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish, uploadFile, submitTrue } = useSelector(
+  const { updatePopup, submitAndPublish, uploadFile, submitTrue,popOver } = useSelector(
     (store: RootState) => store.masterData
+  );
+   const { popOverDailyPlan } = useSelector(
+    (store: RootState) => store.viewDailyPlan
   );
   const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
@@ -97,6 +108,25 @@ const Header: React.FC<HeaderProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<string>(() => {
     return localStorage.getItem("status") || "";
   });
+
+const [notifications, setNotifications] = useState<any[]>([
+  {
+    filename: 'Invoice_123.pdf',
+    status: 'success',
+    message: 'File processed successfully',
+    processedOn: '2025-05-27T14:25:00',
+  },
+    {
+    filename: 'Invoice_1234.pdf',
+    status: 'success',
+    message: 'File processed successfully',
+    processedOn: '2025-05-27T14:25:00',
+  },
+]);
+
+
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -275,9 +305,22 @@ const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     if (confirmDialogOpen) {
-       setConfirmDialogOpen(false)
+      setConfirmDialogOpen(false);
     }
   }, [location]);
+
+    const handleMasterDataPopoverClose = () => {
+    dispatch(setPopOver(false));
+  };
+     const handleDailyPlanDataPopoverClose = () => {
+    dispatch(setPopOverDailyPlan(false));
+  };
+
+  const handleNotificationItemClick = (index: number) => {
+  const newNotifs = [...notifications];
+  newNotifs.splice(index, 1); // remove notification (simulate "mark as read")
+  setNotifications(newNotifs);
+};
 
   return (
     <>
@@ -390,6 +433,25 @@ const Header: React.FC<HeaderProps> = ({
                   </Select>
                 </Box>
               )}
+              {notificationIcon && (
+                <IconButton
+                  onClick={notificationIconOnClick}
+                  sx={{
+                    borderRadius: "50%",
+                    border: "1px solid #E0E0E0",
+                    padding: "8px",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                      border: "1px solid #E0E0E0",
+                    },
+                  }}
+                >
+                  <Badge badgeContent={unreadCount} color="error">
+          <Notifications />
+        </Badge>
+                </IconButton>
+              )}
+
               {button1Text && (
                 <ButtonComponent
                   {...(onButton1Click && { onClick: onButton1Click })}
@@ -482,7 +544,7 @@ const Header: React.FC<HeaderProps> = ({
         onClick={handleSubmitPopupConfirmOpen}
         isLoading={uploadLoading}
         popUpClosed={false}
-        noButton={uploadLoading?true:false}
+        noButton={uploadLoading ? true : false}
       />
       <SuccessPopup
         open={submitPopupConfirm}
@@ -501,7 +563,7 @@ const Header: React.FC<HeaderProps> = ({
       <VersinDetails />
       <Dialog
         open={confirmDialogOpen}
-        onClose={() => {}} 
+        onClose={() => {}}
         PaperProps={{
           sx: {
             borderRadius: 5,
@@ -548,6 +610,20 @@ const Header: React.FC<HeaderProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      <NotificationPopover
+        open={popOver}
+        onClose={handleMasterDataPopoverClose}
+        notifications={notifications}
+        popUpTitle='Master Data Upload Details'
+        onClickNotification={handleNotificationItemClick}
+      />
+        <NotificationPopover
+        open={popOverDailyPlan}
+        onClose={handleDailyPlanDataPopoverClose}
+        notifications={notifications}
+        popUpTitle='DailyPlan Data Upload Details'
+        onClickNotification={handleNotificationItemClick}
+      />
     </>
   );
 };

@@ -16,6 +16,7 @@ import {
 } from "./masterDataInterface";
 
 const initialState: MasterDataState = {
+  popOver:false,
   needUpload:false,
   noOfColorsSetting: "",
   noOfSpecialColors: "",
@@ -735,6 +736,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setPopOver:(state,action:PayloadAction<boolean>)=>{
+    state.popOver = action.payload
+    },
     setNeedUpload:(state,action:PayloadAction<boolean>)=>{
     state.needUpload=action.payload
     },
@@ -1681,6 +1685,7 @@ export const {
   setCustomerLogoFile,
   setUploadedFile,
   setSelectedFile,
-  setNeedUpload
+  setNeedUpload,
+  setPopOver
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;
