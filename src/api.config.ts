@@ -1,20 +1,37 @@
 
 
-const getBaseUrl = () => {
-    const env = import.meta.env.MODE;
-console.log(env,"ENVIRONMENT")
+const apiMap = {
+  development: {
+    '5173': 'http://183.82.55.190:8880/MOLD-TEK/api',
+    '5174': 'http://10.10.25.5:8880/MOLD-TEK/api',
+    '5175': 'http://183.82.55.190:8880/MOLD-TEK/api',
+    default: 'http://183.82.55.190:8880/MOLD-TEK/api',
+  },
+  staging: {
+    '5173': 'http://183.82.55.190:8880/MOLD-TEK/api',
+    '5174': 'http://10.10.25.5:8880/MOLD-TEK/api',
+    '5175': 'http://10.10.25.5:8880/MOLD-TEK/api',
+    default: 'http://10.10.25.5:8880/MOLD-TEK/api',
+  },
+  production: {
+    '5173': 'http://183.82.55.190:8880/MOLD-TEK/api',
+    '5174': 'http://10.10.25.5:8880/MOLD-TEK/api',
+    '5175': 'http://10.10.25.5:8880/MOLD-TEK/api',
+    default: 'http://10.10.25.5:8880/MOLD-TEK/api',
+  }
+} as const;
+
+type Env = keyof typeof apiMap;
+
+function getBaseApiUrl(): string {
+  const env = import.meta.env.MODE as Env;
+  const port = window.location.port;
+
+  const envApiUrls = apiMap[env] ?? apiMap.production;
+
+  return envApiUrls[port as keyof typeof envApiUrls] ?? envApiUrls.default;
+}
+
   
-    switch (env) {
-      case 'development':
-        return 'http://183.82.55.190:8880/MOLD-TEK/api';
-      case 'staging':
-        return 'http://183.82.55.190:8880/MOLD-TEK/api';
-      case 'production':
-        return 'http://183.82.55.190:8880/MOLD-TEK/api';
-      default:
-        return 'http://183.82.55.190:8880/MOLD-TEK/api';
-    }
-  };
-  
-  export const BASE_API_URL = getBaseUrl();
+  export const BASE_API_URL = getBaseApiUrl();
   
