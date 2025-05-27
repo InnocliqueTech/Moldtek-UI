@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
 "scripts": {
-  "dev": "vite --mode development",
+   "dev:5173": "vite --config vite.config.5173.ts",
+  "dev:5174": "vite --config vite.config.5174.ts",
+  "dev:5175": "vite --port 5175",
+  "dev": "vite", 
   "build": "tsc -b && vite build",             
   "build:dev": "tsc -b && vite build --mode development",
   "build:staging": "tsc -b && vite build --mode staging",
