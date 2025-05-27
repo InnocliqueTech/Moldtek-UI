@@ -9,7 +9,7 @@ export default defineConfig({
   assetsInclude: ['**/*.xlsx'],
   server: {
     host: '0.0.0.0',     // Allows access via LAN IP
-    port: 5173,          // Or any other port you prefer
+    port: 5174,          // Or any other port you prefer
     strictPort: true     // Fails if port is already taken
   }
 })
