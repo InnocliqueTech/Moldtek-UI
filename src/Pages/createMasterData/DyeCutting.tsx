@@ -11,7 +11,10 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
-import { DyeCuttingFormData, DyeCuttingFormErrors } from "../../store/slices/masterDataInterface";
+import {
+  DyeCuttingFormData,
+  DyeCuttingFormErrors,
+} from "../../store/slices/masterDataInterface";
 
 interface DyeCuttingProps {
   formData: DyeCuttingFormData;
@@ -27,13 +30,14 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dye_code: "",
     run_speed: "",
   });
-   const [formInitialized, setFormInitialized] = useState(false); 
+  const [formInitialized, setFormInitialized] = useState(false);
 
   const {
     dyeCuttingFormData,
     dyeCuttingErrors,
     dyeCuttingDataTouched,
     dyeCuttingDetails,
+    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
@@ -81,29 +85,27 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
       if (typeof newValue === "string") {
         const trimmed = newValue.trim().replace("%", ""); // Remove any percentage sign
         finalValue = newValue; // Default final value is the original value
-    
+
         // If the field is empty, set the final value to an empty string and clear the error message
         if (trimmed === "") {
           errorMessage = "";
-        } 
+        }
         // If the value is invalid (non-numeric and not a valid percentage), show an error
         else if (!/^\d+(\.\d+)?$/.test(trimmed)) {
           errorMessage = "Please enter a valid number or percentage";
-        } 
-        else {
+        } else {
           // If the value contains a percentage, keep it as a string with the percentage sign
           finalValue = newValue.includes("%")
             ? `${parseFloat(trimmed)}%`
             : Number(trimmed); // Otherwise, keep it as a number
-    
+
           errorMessage = ""; // Clear the error message for valid input
         }
       } else {
         finalValue = "";
         errorMessage = "Invalid input"; // Error for non-string values
       }
-    }
-    else {
+    } else {
       if (typeof newValue === "string") {
         const trimmedValue = newValue.trim();
         finalValue = newValue;
@@ -138,16 +140,20 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dispatch(setDyeCuttingFormData(updated));
   };
 
-useEffect(() => {
-  const hasVisited = localStorage.getItem('hasVisitedDyeCuttingDetails');
+  const hasVisited = localStorage.getItem("hasVisitedDyeCuttingDetails");
 
-  if (!hasVisited && id) {
-    dispatch(setDyeCuttingDataTouched(false));
-    localStorage.setItem('hasVisitedDyeCuttingDetails', 'true');
-  } else if (hasVisited && !id) {
-    dispatch(setDyeCuttingDataTouched(false));
-  }
-}, [id]);
+  useEffect(() => {
+    localStorage.setItem("hasVisitedDyeCuttingDetails", "false");
+    if (!hasVisited && id && !updateButton) {
+      dispatch(setDyeCuttingDataTouched(false));
+      localStorage.setItem("hasVisitedDyeCuttingDetails", "true");
+    } else if (hasVisited && !id) {
+      dispatch(setDyeCuttingDataTouched(false));
+    } else if (updateButton && !hasVisited && id) {
+      dispatch(setDyeCuttingDataTouched(false));
+      localStorage.setItem("hasVisitedDyeCuttingDetails", "true");
+    }
+  }, [id]);
 
   useEffect(() => {
     const hasAnyErrors = Object.values(errors).some((e) => e !== "");
@@ -155,24 +161,28 @@ useEffect(() => {
   }, [errors]);
 
   useEffect(() => {
-      if (formInitialized) return;
-    if (id && location.pathname.includes("/updateMasterData") && !dyeCuttingDataTouched) {
+    if (formInitialized) return;
+    if (
+      id &&
+      location.pathname.includes("/updateMasterData") &&
+      !dyeCuttingDataTouched
+    ) {
       setFormData(dyeCuttingDetails);
-        setFormInitialized(true);
+      setFormInitialized(true);
     }
-  }, [id,dyeCuttingDetails,formInitialized]);
+  }, [id, dyeCuttingDetails, formInitialized]);
 
   useEffect(() => {
-      if (formInitialized) return;
+    if (formInitialized) return;
     if (!id && dyeCuttingFormData) {
       setFormData(dyeCuttingFormData);
-        setFormInitialized(true);
+      setFormInitialized(true);
     }
     if (dyeCuttingErrors) {
       setErrors(dyeCuttingErrors);
-        setFormInitialized(true);
+      setFormInitialized(true);
     }
-  }, [dyeCuttingFormData, dyeCuttingErrors, id,formInitialized]);
+  }, [dyeCuttingFormData, dyeCuttingErrors, id, formInitialized]);
 
   useEffect(() => {
     if (id && dyeCuttingSettings && !dyeCuttingDataTouched) {

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { setPopOver } from "./masterDataSlice";
 
 interface DailyPlan {
   unitEffectivityNumber: string;

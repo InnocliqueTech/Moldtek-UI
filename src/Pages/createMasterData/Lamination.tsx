@@ -48,6 +48,7 @@ const Lamination: React.FC<LaminationProps> = ({
     saveLaminatingData,
     dropDownValuesLamination,
     dropDownValuesSupplierLamination,
+    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -339,7 +340,9 @@ const Lamination: React.FC<LaminationProps> = ({
       }
     });
     let allValid = false;
-    const bondingMaterials = Array.isArray(formData?.bondingMaterials) ? formData.bondingMaterials : [];
+    const bondingMaterials = Array.isArray(formData?.bondingMaterials)
+      ? formData.bondingMaterials
+      : [];
     if (bondingMaterials.length > 0) {
       const hasEmptyRatio = bondingMaterials?.some(
         (item) =>
@@ -414,7 +417,9 @@ const Lamination: React.FC<LaminationProps> = ({
       | keyof LaminationFormData["bondingMaterials"][number]
     )[];
 
-     const bondingMaterials = Array.isArray(formData?.bondingMaterials) ? formData.bondingMaterials : [];
+    const bondingMaterials = Array.isArray(formData?.bondingMaterials)
+      ? formData.bondingMaterials
+      : [];
 
     const hasNonEmptyValue = bondingMaterials.some((item) =>
       Object.entries(item).some(
@@ -469,10 +474,10 @@ const Lamination: React.FC<LaminationProps> = ({
   }, [id, laminatingDetails, formInitialized]);
 
   useEffect(() => {
-       if (formInitialized) return;
+    if (formInitialized) return;
     if (!id && laminaionFormData) {
       setFormData(laminaionFormData);
-       setFormInitialized(true);
+      setFormInitialized(true);
       if (!id && laminaionFormData?.bondingMaterials) {
         setTableData(laminaionFormData?.bondingMaterials);
         setFormInitialized(true);
@@ -536,16 +541,20 @@ const Lamination: React.FC<LaminationProps> = ({
     dropDown();
   }, []);
 
-useEffect(() => {
-  const hasVisited = localStorage.getItem('hasVisitedLaminationDetails');
+  const hasVisited = localStorage.getItem("hasVisitedLaminationDetails");
 
-  if (!hasVisited && id) {
-    dispatch(setLaminationDataTouched(false));
-    localStorage.setItem('hasVisitedLaminationDetails', 'true');
-  } else if (hasVisited && !id) {
-    dispatch(setLaminationDataTouched(false));
-  }
-}, [id]);
+  useEffect(() => {
+    localStorage.setItem("hasVisitedLaminationDetails", "false");
+    if (!hasVisited && id && !updateButton) {
+      dispatch(setLaminationDataTouched(false));
+      localStorage.setItem("hasVisitedLaminationDetails", "true");
+    } else if (hasVisited && !id) {
+      dispatch(setLaminationDataTouched(false));
+    } else if (updateButton && !hasVisited && id) {
+      dispatch(setLaminationDataTouched(false));
+      localStorage.setItem("hasVisitedLaminationDetails", "true");
+    }
+  }, [id]);
 
   useEffect(() => {
     const fetchDropdownValues = async () => {

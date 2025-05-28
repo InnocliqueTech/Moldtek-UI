@@ -27,8 +27,6 @@ const NotificationPopover: React.FC<NotificationPopoverProps> = ({
   onClickNotification,
 }) => {
 
-console.log(notifications,"NOTIFICATIONSOFDAILYPLAN")
-
 const isEmptyNotification = (notif: Notification) =>
   !notif.fileName &&
   !notif.fileReadStatus &&

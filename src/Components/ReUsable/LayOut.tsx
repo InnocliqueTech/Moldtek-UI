@@ -52,7 +52,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const { updateButton, popOver } = useSelector(
+  const { updateButton } = useSelector(
     (state: RootState) => state.masterData
   );
   const { hasUnsavedChanges } = useSelector(

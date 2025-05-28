@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Box, Grid, SelectChangeEvent, Tooltip, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Grid,
+  SelectChangeEvent,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
@@ -12,7 +19,14 @@ import {
   useGetMetricsQuery,
   useMasterFiltersMutation,
 } from "../../store/apis/masterDataApis";
-import { setIsSearchTriggered, setUpdateButton } from "../../store/slices/masterDataSlice";
+import {
+  setDyeCuttingDataTouched,
+  setIsSearchTriggered,
+  setLaminationDataTouched,
+  setMasterDataDataTouched,
+  setPrintingDataTouched,
+  setUpdateButton,
+} from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {
   const navigate = useNavigate();
@@ -24,18 +38,36 @@ const MasterData: React.FC = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-    const rowsPerPageStorageKey = "masterDataRowsPerPage"
-    const [rowsPerPage, setRowsPerPage] = useState(()=>{
-      const savedPage = localStorage.getItem(rowsPerPageStorageKey);
-      return savedPage !==null ? Number(savedPage):10;
-    }); 
+  const rowsPerPageStorageKey = "masterDataRowsPerPage";
+  const [rowsPerPage, setRowsPerPage] = useState(() => {
+    const savedPage = localStorage.getItem(rowsPerPageStorageKey);
+    return savedPage !== null ? Number(savedPage) : 10;
+  });
   const stats = [
-    { title: "Total Jobs", value: data?.data.totalJobs||0,infoText:'Displays the count of master data jobs with the latest version'},
-    { title: "Lamination Jobs", value: data?.data.laminationJobs||0 ,infoText:'Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW'},
-    { title: "Non-Lamination Jobs", value: data?.data.nonLaminationJobs||0,infoText:'Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW' },
-    { title: "Total Customers", value: data?.data.totalCustomers||0,infoText:'Displays the total count of customers' },
+    {
+      title: "Total Jobs",
+      value: data?.data.totalJobs || 0,
+      infoText:
+        "Displays the count of master data jobs with the latest version",
+    },
+    {
+      title: "Lamination Jobs",
+      value: data?.data.laminationJobs || 0,
+      infoText:
+        "Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW",
+    },
+    {
+      title: "Non-Lamination Jobs",
+      value: data?.data.nonLaminationJobs || 0,
+      infoText:
+        "Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW",
+    },
+    {
+      title: "Total Customers",
+      value: data?.data.totalCustomers || 0,
+      infoText: "Displays the total count of customers",
+    },
   ];
-
 
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
     setPage(0);
@@ -43,8 +75,8 @@ const MasterData: React.FC = () => {
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
 
-    const role = localStorage.getItem("role");
-  
+  const role = localStorage.getItem("role");
+
   const columns = [
     {
       id: "unit_effectivity_number",
@@ -104,24 +136,23 @@ const MasterData: React.FC = () => {
           <Tooltip title={value}>
             <Box
               sx={{
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-                padding: '4px 8px',
-                display: 'inline-block',
-                backgroundColor: '#F8F9FA',
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "4px 8px",
+                display: "inline-block",
+                backgroundColor: "#F8F9FA",
                 maxWidth: 150,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
               {value}
             </Box>
           </Tooltip>
         ) : (
-          'N/A'
-        )
-      
+          "N/A"
+        ),
     },
     {
       id: "created_at",
@@ -145,26 +176,26 @@ const MasterData: React.FC = () => {
     },
   ];
 
-
-  const { filtersPayload, openSider,isSearchTriggered } = useSelector(
+  const { filtersPayload, openSider, isSearchTriggered } = useSelector(
     (state: RootState) => state.masterData
   );
   const [
     masterFilters,
-    {
-      data: listOfCompaniesData,
-      isLoading: listOfCompaniesLoading,
-    },
+    { data: listOfCompaniesData, isLoading: listOfCompaniesLoading },
   ] = useMasterFiltersMutation();
 
   useEffect(() => {
     if (!openSider) {
-      masterFilters({ ...filtersPayload, page: isSearchTriggered?0:page, size: rowsPerPage });
+      masterFilters({
+        ...filtersPayload,
+        page: isSearchTriggered ? 0 : page,
+        size: rowsPerPage,
+      });
     }
-    if(isSearchTriggered){
-      setPage(0)
+    if (isSearchTriggered) {
+      setPage(0);
     }
-  }, [page, openSider,filtersPayload,rowsPerPage]);
+  }, [page, openSider, filtersPayload, rowsPerPage]);
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,
@@ -173,48 +204,63 @@ const MasterData: React.FC = () => {
       customer: row.customer_name,
     },
   }));
-  
+
+  useEffect(() => {
+    dispatch(setUpdateButton(false));
+    localStorage.setItem("hasVisitedMasterDataDetails", "false");
+    dispatch(setMasterDataDataTouched(false));
+    localStorage.setItem("hasVisitedPrintingDetails", "false");
+    dispatch(setPrintingDataTouched(false));
+    localStorage.setItem("hasVisitedLaminationDetails", "false");
+    dispatch(setLaminationDataTouched(false));
+    localStorage.setItem("hasVisitedDyeCuttingDetails", "false");
+    dispatch(setDyeCuttingDataTouched(false));
+  }, []);
+
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
-  }, [page,rowsPerPage]);
-  
+  }, [page, rowsPerPage]);
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
     dispatch(setIsSearchTriggered(false));
     localStorage.setItem(storageKey, newPage.toString());
   };
 
-const baseActions = [
-  {
-    label: "View Job Data",
-    onClick: (row: any) => {
-      const selectedUENAction = row?.unit_effectivity_number;
-      const versionNoAction = row?.version_no;
-      localStorage.setItem("actionSelectedUEN", selectedUENAction);
-      localStorage.setItem("actionVersionNo", versionNoAction);
-      navigate(`/viewJobsList`);
+  const baseActions = [
+    {
+      label: "View Job Data",
+      onClick: (row: any) => {
+        const selectedUENAction = row?.unit_effectivity_number;
+        const versionNoAction = row?.version_no;
+        localStorage.setItem("actionSelectedUEN", selectedUENAction);
+        localStorage.setItem("actionVersionNo", versionNoAction);
+        navigate(`/viewJobsList`);
+      },
     },
-  },
-];
+  ];
 
-const actions =
-  role === "Admin"
-    ? [
-        ...baseActions,
-        {
-          label: "Update",
-          onClick: (row: any) => {
-            const selectedUENActionUpdate = row?.unit_effectivity_number;
-            const versionNoAction = row?.version_no;
-            localStorage.setItem("actionSelectedUEN", selectedUENActionUpdate);
-            localStorage.setItem("actionVersionNo", versionNoAction);
-            dispatch(setUpdateButton(true));
-            navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+  const actions =
+    role === "Admin"
+      ? [
+          ...baseActions,
+          {
+            label: "Update",
+            onClick: (row: any) => {
+              const selectedUENActionUpdate = row?.unit_effectivity_number;
+              const versionNoAction = row?.version_no;
+              localStorage.setItem(
+                "actionSelectedUEN",
+                selectedUENActionUpdate
+              );
+              localStorage.setItem("actionVersionNo", versionNoAction);
+              dispatch(setUpdateButton(true));
+              navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+            },
           },
-        },
-      ]
-    : baseActions;
+        ]
+      : baseActions;
 
   return (
     <Box sx={{ p: 0 }}>
@@ -239,7 +285,9 @@ const actions =
 
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
-        infoText={'Displays a list of master data entries with their associated SKU information.'}
+          infoText={
+            "Displays a list of master data entries with their associated SKU information."
+          }
           boxShadow={true}
           columns={columns}
           pageNumber={page}

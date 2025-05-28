@@ -64,25 +64,21 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const {
     saveFormData,
     masterDataFormErrors,
-    updateButton,
     masterDataDataTouched,
     saveMasterDataDetailsData,
     saveButtonMasterData,
     dropDownValuesStructure,
+    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const { id } = useParams();
   const location = useLocation();
 
-  const UEN = localStorage.getItem(
-    !updateButton ? "selectedUEN" : "actionSelectedUEN"
-  );
+  const UEN = localStorage.getItem("actionSelectedUEN");
   let selectedUEN: any;
   if (UEN) {
     selectedUEN = UEN;
   }
-  const version = localStorage.getItem(
-    !updateButton ? "selectedVersionNo" : "actionVersionNo"
-  );
+  const version = localStorage.getItem("actionVersionNo");
   let versionNo: any;
   if (version) {
     versionNo = version;
@@ -106,18 +102,21 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const masterData = useMemo(() => data?.data ?? null, [data]);
 
-useEffect(() => {
-  const hasVisited = localStorage.getItem('hasVisitedMasterDataDetails');
+  const hasVisited = localStorage.getItem("hasVisitedMasterDataDetails");
 
-  if (!hasVisited && id) {
-    dispatch(setMasterDataDataTouched(false));
-    localStorage.setItem('hasVisitedMasterDataDetails', 'true');
-  } else if (hasVisited && !id) {
-    dispatch(setMasterDataDataTouched(false));
-  }
-}, [id]);
+  useEffect(() => {
+    localStorage.setItem("hasVisitedMasterDataDetails", "false");
 
-
+    if (!hasVisited && id && !updateButton) {
+      dispatch(setMasterDataDataTouched(false));
+      localStorage.setItem("hasVisitedMasterDataDetails", "true");
+    } else if (hasVisited && !id) {
+      dispatch(setMasterDataDataTouched(false));
+    } else if (updateButton && !hasVisited && id) {
+      dispatch(setMasterDataDataTouched(false));
+      localStorage.setItem("hasVisitedMasterDataDetails", "true");
+    }
+  }, [id]);
 
   useEffect(() => {
     if (id && isUpdatePage && !masterDataDataTouched && masterData) {
@@ -227,7 +226,7 @@ useEffect(() => {
     "jar_cap",
     "repeat_length",
     "ups",
-     "noOfColorsSetting",
+    "noOfColorsSetting",
     "noOfSpecialColors",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
@@ -410,7 +409,7 @@ useEffect(() => {
     }
   }, [id, viewMasterDataDetails]);
   const { data: LabelTyepsData } = useGetLabelTypesQuery();
-  
+
   const dropdownOptions =
     LabelTyepsData &&
     LabelTyepsData?.map((option: any) => option.labelTypeName);
@@ -461,15 +460,15 @@ useEffect(() => {
     !!errors.unit_effectivity_number || !!errors.customer_name;
   const row2HasError = !!errors.item_code || !!errors.brand_description;
 
+  useEffect(() => {
+    if (isPreviewOpen) {
+      setIsPreviewOpen(false);
+    }
+  }, [location]);
+
   if (id && isLoading) {
     return <Loader />;
   }
-
-    useEffect(()=>{
-      if(isPreviewOpen){
-        setIsPreviewOpen(false)
-      }
-    },[location])
 
   return (
     <Box sx={{ borderRadius: "0px " }}>

@@ -47,7 +47,7 @@ const Printing: React.FC<PrintingProps> = ({
 
   const [subStrateDropDown] = useSubStrateDropDownMutation();
   const { data: machineNameData } = useGetMachinesByTypeQuery("printing");
-  const [formInitialized, setFormInitialized] = useState(false); 
+  const [formInitialized, setFormInitialized] = useState(false);
   const [supplierDropdown] = useSupplierDropdownMutation();
 
   useEffect(() => {
@@ -92,6 +92,7 @@ const Printing: React.FC<PrintingProps> = ({
     dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
+    updateButton,
   } = useSelector((state: RootState) => state.masterData);
 
   const machineFields = [
@@ -161,7 +162,7 @@ const Printing: React.FC<PrintingProps> = ({
       editSelect: true,
       options: dropDownValuesSupplierPrinting,
       onNewOptionAdd: true,
-      field:'ink_supplier'
+      field: "ink_supplier",
     },
     { id: "lpcm", label: "LPCM", edit: true },
     { id: "volume", label: "Volume", edit: true },
@@ -175,7 +176,7 @@ const Printing: React.FC<PrintingProps> = ({
       editSelect: true,
       options: dropDownValuesMountingTape,
       onNewOptionAdd: true,
-      field:'mounting_tape'
+      field: "mounting_tape",
     },
   ];
 
@@ -256,18 +257,20 @@ const Printing: React.FC<PrintingProps> = ({
       dispatch(setPrintingDataTouched(true));
     }
 
-
     let newValue = Array.isArray(value)
       ? value
       : typeof value === "string"
       ? value
       : value.target.value;
-      if (field === "supplier" || field==="substrate_type") {
-        if (Array.isArray(newValue)) {
-          // Remove empty strings, trim, then join if needed
-          newValue = newValue.filter(Boolean).map(v => v.trim()).join(" ");
-        }
+    if (field === "supplier" || field === "substrate_type") {
+      if (Array.isArray(newValue)) {
+        // Remove empty strings, trim, then join if needed
+        newValue = newValue
+          .filter(Boolean)
+          .map((v) => v.trim())
+          .join(" ");
       }
+    }
 
     const isNumberField = [
       "width",
@@ -374,17 +377,20 @@ const Printing: React.FC<PrintingProps> = ({
     setFormValues(updatedFormData);
     dispatch(setSavePrintingFormData(updatedFormData));
   };
+  const hasVisited = localStorage.getItem("hasVisitedPrintingDetails");
 
-useEffect(() => {
-  const hasVisited = localStorage.getItem('hasVisitedPrintingDetails');
-
-  if (!hasVisited && id) {
-    dispatch(setPrintingDataTouched(false));
-    localStorage.setItem('hasVisitedPrintingDetails', 'true');
-  } else if (hasVisited && !id) {
-    dispatch(setPrintingDataTouched(false));
-  }
-}, [id]);
+  useEffect(() => {
+    localStorage.setItem("hasVisitedPrintingDetails", "false");
+    if (!hasVisited && id && !updateButton) {
+      dispatch(setPrintingDataTouched(false));
+      localStorage.setItem("hasVisitedPrintingDetails", "true");
+    } else if (hasVisited && !id) {
+      dispatch(setPrintingDataTouched(false));
+    } else if (updateButton && !hasVisited && id) {
+      dispatch(setPrintingDataTouched(false));
+      localStorage.setItem("hasVisitedPrintingDetails", "true");
+    }
+  }, [id]);
 
   const renderField = (field: {
     id: string;
@@ -433,7 +439,7 @@ useEffect(() => {
           checkbox={false}
           allowNewOption
           dropdown={field.label === "Supplier" ? "supplier" : ""}
-           required={field.label === "Supplier" ? false : true}
+          required={field.label === "Supplier" ? false : true}
         />
       );
     }
@@ -454,7 +460,7 @@ useEffect(() => {
     );
   };
   useEffect(() => {
-     if (formInitialized) return;
+    if (formInitialized) return;
     if (
       id &&
       location.pathname.includes("/updateMasterData") &&
@@ -462,9 +468,9 @@ useEffect(() => {
     ) {
       setFormValues(printingDetails);
       setTableData(printingDetails.stationWiseMetrics);
-        setFormInitialized(true);
+      setFormInitialized(true);
     }
-  }, [id, printingDetails,formInitialized]);
+  }, [id, printingDetails, formInitialized]);
 
   useEffect(() => {
     if (formInitialized) return;
@@ -484,14 +490,13 @@ useEffect(() => {
       setFormValues(savePrintingData);
       setFormInitialized(true);
     }
-
   }, [
     printingSaveFormData,
     printingFormErrors,
     id,
     savePrintingData,
     saveButtonPrintingData,
-    formInitialized
+    formInitialized,
   ]);
 
   useEffect(() => {
