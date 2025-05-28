@@ -105,11 +105,14 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const [masterDataNotifications, { data }] =
     useLazyMasterDataNotificationsQuery();
 
-  useEffect(() => {
-    const notifications = data?.notifications?.map((item: any) => item);
-    dispatch(setMasterDataNotifications(notifications));
-  }, [data]);
+useEffect(() => {
+    if (data?.notifications) {
+      dispatch(setMasterDataNotifications(data?.notifications));
+    }
+  }, [data, dispatch]);
+
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
+
   const handleSubmitPopupConfirmOpen = async () => {
     if (!submitTrue) {
       try {

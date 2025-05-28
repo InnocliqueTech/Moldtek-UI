@@ -37,10 +37,12 @@ import {
   setBackButtonNavigationAllowed,
   setSideNavigationAllowed,
   setPopOverDailyPlan,
+  setDailyPlanDataNotifications,
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
 import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
+import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -230,12 +232,29 @@ const Layout = () => {
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
 
-  const { data } = useMasterDataNotificationsQuery();
+   const isMasterDataPage = location.pathname === "/masterData";
+   const isDailyPlanDataPage = location.pathname ==="/dailyPlan"
+
+ const { data } = useMasterDataNotificationsQuery(undefined, {
+    skip: !isMasterDataPage,
+  });
 
   useEffect(() => {
-    const notifications = data?.notifications?.map((item: any) => item);
-    dispatch(setMasterDataNotifications(notifications));
-  }, [data]);
+    if (data?.notifications) {
+      dispatch(setMasterDataNotifications(data.notifications));
+    }
+  }, [data, dispatch]);
+
+   const { data:dailyPlanData } = useDailyPlanNotificationsQuery(undefined, {
+    skip: !isDailyPlanDataPage,
+  });
+
+  useEffect(() => {
+    if (dailyPlanData?.data) {
+      dispatch(setDailyPlanDataNotifications(dailyPlanData?.data));
+    }
+  }, [dailyPlanData, dispatch]);
+
 
   const handleMasterNotification = () => {
     dispatch(setPopOver(true));

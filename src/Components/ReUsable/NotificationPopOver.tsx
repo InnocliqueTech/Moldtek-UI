@@ -26,6 +26,19 @@ const NotificationPopover: React.FC<NotificationPopoverProps> = ({
   popUpTitle,
   onClickNotification,
 }) => {
+
+console.log(notifications,"NOTIFICATIONSOFDAILYPLAN")
+
+const isEmptyNotification = (notif: Notification) =>
+  !notif.fileName &&
+  !notif.fileReadStatus &&
+  !notif.processedOn &&
+  !notif.unitEffectiveNumbers &&
+  !notif.exceptionMessage;
+
+const validNotifications = notifications?.filter(n => !isEmptyNotification(n)) ?? [];
+
+
   return (
     <Popover
       open={open}
@@ -56,7 +69,7 @@ const NotificationPopover: React.FC<NotificationPopoverProps> = ({
       </Typography>
       <Divider />
 
-      {(notifications?.length ?? 0) === 0 ? (
+      {(notifications?.length ?? 0) === 0 || validNotifications.length === 0 ? (
         <Box textAlign="center" py={4}>
           <Inbox fontSize="large" color="disabled" />
           <Typography variant="body2" color="text.secondary">
@@ -104,7 +117,7 @@ const NotificationPopover: React.FC<NotificationPopoverProps> = ({
                         component="span"
                         sx={{ fontWeight: "bold", color: "primary.main" }}
                       >
-                        {notif.unitEffectiveNumbers}
+                        {notif.unitEffectiveNumbers?notif.unitEffectiveNumbers:'N/A'}
                       </Box>
                     </Typography>
                     {notif.fileReadStatus === "Failed" &&

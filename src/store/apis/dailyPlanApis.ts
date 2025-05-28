@@ -204,6 +204,13 @@ export const dailyPlanApi = createApi({
         },
       ],
     }),
+      dailyPlanNotifications: builder.query<any, void>({   
+  query: () => ({
+    url: `/dailyplan/getJobUploadNotifications?all=false`,
+    method: "GET",
+  }),
+}),
+
 
   }),
 });
@@ -224,4 +231,6 @@ export const {
   useSavePrintingReportDetailsMutation,
   useSaveLaminationReportDetailsMutation,
   useSaveMakeReadyDetailsMutation,
+  useDailyPlanNotificationsQuery,
+  useLazyDailyPlanNotificationsQuery
 } = dailyPlanApi;

@@ -59,6 +59,15 @@ export interface LabelType {
   labelTypeId: number;
   labelTypeName: string;
 }
+
+export interface DailyPlanNotifications {
+exceptionMessage: string|null;
+fileName: string;
+status:string;
+id: number;
+processedOn: string;
+unitEffectiveNumbers: string
+}
 export interface FiltersPayload {
   fromDate: string,
   toDate: string,
@@ -69,6 +78,7 @@ export interface FiltersPayload {
   status:string[]
 }
 export interface viewDailyPlan {
+  dailyPlanDataNotifications:DailyPlanNotifications[]
   dailyPlanCancel:boolean;
   dailyPlanSave:boolean;
   customers: Customer[];
@@ -103,6 +113,13 @@ export interface viewDailyPlan {
 }
 
 const initialState: viewDailyPlan = {
+  dailyPlanDataNotifications:[{
+exceptionMessage: "",
+fileName: "",
+status: "",
+id: 0,
+processedOn: "",
+unitEffectiveNumbers: ""}],
   popOverDailyPlan:false,
   dailyPlanSave:false,
   sideNavigationAllowed:false,
@@ -176,6 +193,9 @@ const ViewDailyPanSlice = createSlice({
   name: "viewDailyPanSlice",
   initialState,
   reducers: {
+        setDailyPlanDataNotifications:(state,action:PayloadAction<DailyPlanNotifications[]>)=>{
+        state.dailyPlanDataNotifications=action.payload
+        },
     setPopOverDailyPlan:(state,action:PayloadAction<boolean>)=>{
      state.popOverDailyPlan = action.payload
     },
@@ -314,6 +334,7 @@ export const {
   setDailyPlanSave,
   setDailyPlanCancel,
   setRecentlyCreatedIndentNumber,
-  setPopOverDailyPlan
+  setPopOverDailyPlan,
+  setDailyPlanDataNotifications
 } = ViewDailyPanSlice.actions;
 export default ViewDailyPanSlice.reducer;

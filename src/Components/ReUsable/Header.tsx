@@ -43,9 +43,15 @@ import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
-import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
+import {
+  useLazyDailyPlanNotificationsQuery,
+  useUpdateStatusJobMutation,
+} from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";
-import { setPopOverDailyPlan } from "../../store/slices/viewDailyPlanSlice";
+import {
+  setDailyPlanDataNotifications,
+  setPopOverDailyPlan,
+} from "../../store/slices/viewDailyPlanSlice";
 
 interface HeaderProps {
   title: string;
@@ -97,10 +103,15 @@ const Header: React.FC<HeaderProps> = ({
   notificationIconOnClick,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
-  const { updatePopup, submitAndPublish, uploadFile, submitTrue,popOver,masterDataNotifications } = useSelector(
-    (store: RootState) => store.masterData
-  );
-   const { popOverDailyPlan } = useSelector(
+  const {
+    updatePopup,
+    submitAndPublish,
+    uploadFile,
+    submitTrue,
+    popOver,
+    masterDataNotifications,
+  } = useSelector((store: RootState) => store.masterData);
+  const { popOverDailyPlan, dailyPlanDataNotifications } = useSelector(
     (store: RootState) => store.viewDailyPlan
   );
   const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
@@ -110,27 +121,24 @@ const Header: React.FC<HeaderProps> = ({
     return localStorage.getItem("status") || "";
   });
 
-const [notifications, setNotifications] = useState<any[]>([
-  {
-    filename: 'Invoice_123.pdf',
-    status: 'success',
-    message: 'File processed successfully',
-    processedOn: '2025-05-27T14:25:00',
-  },
-    {
-    filename: 'Invoice_1234.pdf',
-    status: 'success',
-    message: 'File processed successfully',
-    processedOn: '2025-05-27T14:25:00',
-  },
-]);
+  const isEmptyNotification = (n: any) =>
+    !n.fileName &&
+    !n.status &&
+    !n.processedOn &&
+    !n.unitEffectiveNumbers &&
+    !n.exceptionMessage;
 
+  const unreadCountMasterData = Array.isArray(masterDataNotifications)
+    ? masterDataNotifications
+        .filter((n: any) => !isEmptyNotification(n))
+        .filter((n: any) => !n.read).length
+    : 0;
 
-
-  const unreadCount = Array.isArray(masterDataNotifications)
-  ? masterDataNotifications.filter((n: any) => !n.read).length
-  : [];
-
+  const unreadCountDailyPlan = Array.isArray(dailyPlanDataNotifications)
+    ? dailyPlanDataNotifications
+        .filter((n: any) => !isEmptyNotification(n)) // filter out empty
+        .filter((n: any) => !n.read).length // count unread
+    : 0;
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -142,14 +150,20 @@ const [notifications, setNotifications] = useState<any[]>([
       setSelectedStatus(storedStatus);
     }
   }, [storedStatus]);
+
+  const isMasterDataPage = location.pathname === "/masterData";
+ 
+
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [statusChangeMessage, setStatusChangeMessage] =
     useState<React.ReactNode>("");
+
   const [uploadCustomerFile, { isLoading: uploadLoading }] =
     useUploadCustomerFileMutation();
+
   let unitEffectiveNumberDaily: any;
   const UEN = localStorage.getItem("unitEffectiveNumberDaily");
   if (UEN) {
@@ -157,6 +171,7 @@ const [notifications, setNotifications] = useState<any[]>([
   }
 
   const [updateStatusJob] = useUpdateStatusJobMutation();
+
   const performStatusUpdate = async () => {
     try {
       const response = await updateStatusJob({
@@ -238,6 +253,15 @@ const [notifications, setNotifications] = useState<any[]>([
     setSubmitPopup(false);
   };
 
+  const [dailyPlanNotifications, { data }] =
+    useLazyDailyPlanNotificationsQuery();
+
+  useEffect(() => {
+    if (data?.data) {
+      dispatch(setDailyPlanDataNotifications( data?.data));
+    }
+  }, [data, dispatch]);
+
   const handleSubmitPopupConfirmOpen = async () => {
     if (uploadFile) {
       try {
@@ -249,6 +273,10 @@ const [notifications, setNotifications] = useState<any[]>([
 
         setSubmitPopupConfirm(true);
         dispatch(setUploadedFile(null));
+
+        setTimeout(() => {
+          dailyPlanNotifications();
+        }, 5 * 60 * 1000);
       } catch (err) {
         console.error("Upload failed:", err);
 
@@ -313,18 +341,24 @@ const [notifications, setNotifications] = useState<any[]>([
     }
   }, [location]);
 
-    const handleMasterDataPopoverClose = () => {
+  const handleMasterDataPopoverClose = () => {
     dispatch(setPopOver(false));
   };
-     const handleDailyPlanDataPopoverClose = () => {
+  const handleDailyPlanDataPopoverClose = () => {
     dispatch(setPopOverDailyPlan(false));
   };
 
-  const handleNotificationItemClick = (index: number) => {
-  const newNotifs = [...masterDataNotifications];
-  newNotifs.splice(index, 1); // remove notification (simulate "mark as read")
-  dispatch(setMasterDataNotifications(newNotifs));
-};
+  const handleMasterDataNotificationItemClick = (index: number) => {
+    const newNotifs = [...masterDataNotifications];
+    newNotifs.splice(index, 1);
+    dispatch(setMasterDataNotifications(newNotifs));
+  };
+
+  const handleDailyPlanNotificationItemClick = (index: number) => {
+    const newNotifs = [...dailyPlanDataNotifications];
+    newNotifs.splice(index, 1);
+    dispatch(setDailyPlanDataNotifications(newNotifs));
+  };
 
   return (
     <>
@@ -450,9 +484,16 @@ const [notifications, setNotifications] = useState<any[]>([
                     },
                   }}
                 >
-                  <Badge badgeContent={unreadCount} color="error">
-          <Notifications />
-        </Badge>
+                  <Badge
+                    badgeContent={
+                      isMasterDataPage
+                        ? unreadCountMasterData
+                        : unreadCountDailyPlan
+                    }
+                    color="error"
+                  >
+                    <Notifications />
+                  </Badge>
                 </IconButton>
               )}
 
@@ -528,11 +569,12 @@ const [notifications, setNotifications] = useState<any[]>([
         onClose={handleClosePopUp}
         subText={uploadSubTitle || ""}
         sampleFile={true}
-      // Header.tsx or wherever you need it
-handleDownloadSampleFile={() =>
-  handleDownloadSampleFileMasterData("/Master_Data_Upload_template.xlsx")
-}
-
+        // Header.tsx or wherever you need it
+        handleDownloadSampleFile={() =>
+          handleDownloadSampleFileMasterData(
+            "/Master_Data_Upload_template.xlsx"
+          )
+        }
         disable={uploadFile ? false : true}
         popUpClosed={false}
       />
@@ -620,15 +662,19 @@ handleDownloadSampleFile={() =>
         open={popOver}
         onClose={handleMasterDataPopoverClose}
         notifications={masterDataNotifications}
-        popUpTitle='Master Data Upload Details'
-        onClickNotification={handleNotificationItemClick}
+        popUpTitle="Master Data Upload Details"
+        onClickNotification={handleMasterDataNotificationItemClick}
       />
-        <NotificationPopover
+      <NotificationPopover
         open={popOverDailyPlan}
         onClose={handleDailyPlanDataPopoverClose}
-        notifications={notifications}
-        popUpTitle='DailyPlan Data Upload Details'
-        onClickNotification={handleNotificationItemClick}
+       notifications={dailyPlanDataNotifications.map(({ status, ...rest }) => ({
+  ...rest,
+  fileReadStatus: status ,
+}))}
+
+        popUpTitle="DailyPlan Data Upload Details"
+        onClickNotification={handleDailyPlanNotificationItemClick}
       />
     </>
   );

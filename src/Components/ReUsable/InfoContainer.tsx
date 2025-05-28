@@ -82,18 +82,78 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
                 {item.type === "date" ? (
 <DateTimePicker
   value={parseDateSafe(item.value)}
-  onChange={(newValue) =>
+  onChange={(newValue) => {
+    const start = parseDateSafe(startingTimeValue);
+    if (
+      item.label === "Completion Time" &&
+      newValue &&
+      start &&
+      newValue < start
+    ) {
+      return; // block invalid time from even setting
+    }
+
     handleChange(
       index,
       newValue ? format(newValue, "yyyy-MM-dd'T'HH:mm") : ""
-    )
-  }
+    );
+  }}
+  onAccept={(newValue) => {
+    const start = parseDateSafe(startingTimeValue);
+    if (
+      item.label === "Completion Time" &&
+      newValue &&
+      start &&
+      newValue < start
+    ) {
+      // prevent closing the popup if invalid
+      return false;
+    }
+  }}
   format="dd/MM/yyyy hh:mm a"
   minDateTime={
     item.label === "Completion Time" && startingTimeValue
       ? parseDateSafe(startingTimeValue) ?? undefined
       : undefined
   }
+  shouldDisableTime={(timeValue, clockType) => {
+    if (item.label !== "Completion Time" || !startingTimeValue) return false;
+
+    const start = parseDateSafe(startingTimeValue);
+    if (!start) return false;
+
+    const selected = parseDateSafe(item.value) || new Date();
+
+    const sameDay =
+      start.getFullYear() === selected.getFullYear() &&
+      start.getMonth() === selected.getMonth() &&
+      start.getDate() === selected.getDate();
+
+    if (!sameDay) return false;
+
+    const startHour = start.getHours();
+    const startMinute = start.getMinutes();
+
+    const value =
+      timeValue instanceof Date
+        ? clockType === "hours"
+          ? timeValue.getHours()
+          : timeValue.getMinutes()
+        : timeValue;
+
+    if (clockType === "hours") {
+      return value < startHour;
+    }
+
+    if (clockType === "minutes") {
+      const selectedHour = selected.getHours();
+      if (selectedHour === startHour) {
+        return value < startMinute;
+      }
+    }
+
+    return false;
+  }}
   slots={{
     openPickerIcon: CalendarToday,
     clearIcon: ClearIcon,
@@ -107,26 +167,26 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
       sx: { mt: 0.5 },
     },
     actionBar: {
-      actions: ['clear', 'cancel', 'accept'],
+      actions: ["clear", "cancel", "accept"],
     },
     popper: {
       modifiers: [
         {
-          name: 'flip',
+          name: "flip",
           enabled: true,
           options: {
             altBoundary: true,
-            rootBoundary: 'viewport',
+            rootBoundary: "viewport",
             padding: 8,
           },
         },
         {
-          name: 'preventOverflow',
+          name: "preventOverflow",
           enabled: true,
           options: {
             altAxis: true,
             tether: true,
-            rootBoundary: 'document',
+            rootBoundary: "document",
             padding: 8,
           },
         },
@@ -134,6 +194,8 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
     },
   }}
 />
+
+
                 ) : (
                   <TextField
                     fullWidth
