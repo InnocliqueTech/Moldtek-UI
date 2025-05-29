@@ -8,7 +8,7 @@ import SubmitPopups from './submitPopups';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from '../../../store';
 import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
-import { listOfLables } from '../../CreateMasterData/data';
+import { listOfLables } from '../../createMasterData/data';
 import { validateFormFields } from './formValidation';
 import {
   useSegmentsDropdownMutation,
