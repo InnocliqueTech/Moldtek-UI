@@ -206,6 +206,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("role");
 
+  console.log(collapsed,"COLLAPSED")
+
   return (
     <>
     <Drawer
@@ -237,8 +239,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
             <img src={Logo} alt="Logo" />
           </Box>
         ) : (
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 2, width: 50, ml: 0.32 }}>
-            <img src={LogoIcon} alt="Logo" />
+          <Box sx={{ display: "flex", justifyContent: "center" }} >
+            <img src={LogoIcon} alt="Logo" style={{width:'50px',marginBottom:'2px',marginLeft:'0.32px'}} />
           </Box>
         )}
 
