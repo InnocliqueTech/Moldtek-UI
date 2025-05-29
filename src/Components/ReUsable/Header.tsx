@@ -15,7 +15,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Badge,
+  // Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
@@ -33,7 +33,7 @@ import {
   setUploadedFile,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import { Notifications, ReplayOutlined } from "@mui/icons-material";
+import {  ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/ViewMasterData/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
@@ -44,7 +44,7 @@ import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 import {
-  useLazyDailyPlanNotificationsQuery,
+  // useLazyDailyPlanNotificationsQuery,
   useUpdateStatusJobMutation,
 } from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";

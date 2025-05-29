@@ -8,7 +8,7 @@ import {
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   clearDyeCuttingFormData,
   clearDyeCuttingFormErrors,
@@ -18,9 +18,9 @@ import {
   clearMasterDetaisData,
   clearPrintingFormData,
   clearPrintingFormErrors,
-  setMasterDataNotifications,
+  // setMasterDataNotifications,
   setOpenSlider,
-  setPopOver,
+  // setPopOver,
   setRequestPayload,
   setSelectedFile,
   setSelectedTab,
@@ -36,13 +36,13 @@ import {
   setShowTabChangeDialog,
   setBackButtonNavigationAllowed,
   setSideNavigationAllowed,
-  setPopOverDailyPlan,
-  setDailyPlanDataNotifications,
+  // setPopOverDailyPlan,
+  // setDailyPlanDataNotifications,
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
-import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
-import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
+// import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
+// import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

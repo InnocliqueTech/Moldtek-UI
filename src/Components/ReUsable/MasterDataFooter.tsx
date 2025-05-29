@@ -14,7 +14,7 @@ import {
   setDyeCuttingDataTouched,
   setLaminationDataTouched,
   setMasterDataDataTouched,
-  setMasterDataNotifications,
+  // setMasterDataNotifications,
   setPrintingDataTouched,
   setSelectedFile,
   setSelectedTab,
@@ -29,12 +29,12 @@ import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateMasterDataMutation,
-  useLazyMasterDataNotificationsQuery,
+  // useLazyMasterDataNotificationsQuery,
 } from "../../store/apis/masterDataApis";
 import { toast } from "react-toastify";
 import SuccessPopup from "./SuccessPopup";
 import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 interface MasterDataFooterProps {
   selectedTab: number;
