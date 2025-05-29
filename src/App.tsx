@@ -8,7 +8,7 @@ import ScrollToTop from "./Components/ReUsable/ScrollTop";
 
 const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));
 const DashboardPage = lazy(() => import("./Pages/Dashboard/Dashboard"));
-const ProductionOperatorsPage = lazy(() => import("./Pages/ProductionOperators/ProductionOperators"));
+const ProductionOperatorsPage = lazy(() => import("./Pages/Production_Operators/Production_Operators"));
 const ReportsPage = lazy(() => import("./Pages/Reports/Reports"));
 const SettingsPage = lazy(() => import("./Pages/Settings/Settings"));
 const MasterData = lazy(() => import("./Pages/Create_Master_Data/MasterData"));
@@ -20,7 +20,7 @@ const ViewMasterData = lazy(()=>import("./Pages/View_Master_Data/ViewMasterData"
 const DailyPlan = lazy(()=>import("./Pages/DailyPlan"));
 const JobsList = lazy(()=>import("./Pages/View_Master_Data/JobsList"));
 const CreatePlan = lazy(()=>import("./Pages/DailyPlan/createPlan"));
-const ViewDailyPlan = lazy(()=>import("./Pages/DailyPlan/viewDailyPlan"));
+const ViewDailyPlan = lazy(()=>import("./Pages/DailyPlan/View_Daily_Plan"));
 const ForgotPassword = lazy(()=>import("./Components/Authentication/ForgotPassword"));
 
 
