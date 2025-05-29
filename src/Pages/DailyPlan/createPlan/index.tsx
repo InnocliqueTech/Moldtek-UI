@@ -316,6 +316,8 @@ if (unitEffNumLoading) return (
 );
 if (error) return <div>Error: Something Went Wrong...</div>;
 
+console.log(unitEffNumLoading,"LOADINGUNITNUMBER")
+
   return (
     <Box className="bg-white rounded-xl px-5 py-2">
       <Box sx={{ mb: 1, pb: 1 }}>
