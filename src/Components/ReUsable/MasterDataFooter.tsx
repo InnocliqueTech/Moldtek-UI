@@ -102,14 +102,14 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       if (handleSave) handleSave();
     }
   };
-  const [masterDataNotifications, { data }] =
-    useLazyMasterDataNotificationsQuery();
+//   const [masterDataNotifications, { data }] =
+//     useLazyMasterDataNotificationsQuery();
 
-useEffect(() => {
-    if (data?.notifications) {
-      dispatch(setMasterDataNotifications(data?.notifications));
-    }
-  }, [data, dispatch]);
+// useEffect(() => {
+//     if (data?.notifications) {
+//       dispatch(setMasterDataNotifications(data?.notifications));
+//     }
+//   }, [data, dispatch]);
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
 
@@ -188,9 +188,9 @@ useEffect(() => {
 
           dispatch(setSubmitAndPublishPopup(false));
           dispatch(setUploadedFile(null));
-          setTimeout(() => {
-            masterDataNotifications();
-          }, 5 * 60 * 1000);
+          // setTimeout(() => {
+          //   masterDataNotifications();
+          // }, 5 * 60 * 1000);
         } catch (err) {
           console.error("Upload failed:", err);
 

@@ -121,24 +121,24 @@ const Header: React.FC<HeaderProps> = ({
     return localStorage.getItem("status") || "";
   });
 
-  const isEmptyNotification = (n: any) =>
-    !n.fileName &&
-    !n.status &&
-    !n.processedOn &&
-    !n.unitEffectiveNumbers &&
-    !n.exceptionMessage;
+  // const isEmptyNotification = (n: any) =>
+  //   !n.fileName &&
+  //   !n.status &&
+  //   !n.processedOn &&
+  //   !n.unitEffectiveNumbers &&
+  //   !n.exceptionMessage;
 
-  const unreadCountMasterData = Array.isArray(masterDataNotifications)
-    ? masterDataNotifications
-        .filter((n: any) => !isEmptyNotification(n))
-        .filter((n: any) => !n.read).length
-    : 0;
+  // const unreadCountMasterData = Array.isArray(masterDataNotifications)
+  //   ? masterDataNotifications
+  //       .filter((n: any) => !isEmptyNotification(n))
+  //       .filter((n: any) => !n.read).length
+  //   : 0;
 
-  const unreadCountDailyPlan = Array.isArray(dailyPlanDataNotifications)
-    ? dailyPlanDataNotifications
-        .filter((n: any) => !isEmptyNotification(n)) // filter out empty
-        .filter((n: any) => !n.read).length // count unread
-    : 0;
+  // const unreadCountDailyPlan = Array.isArray(dailyPlanDataNotifications)
+  //   ? dailyPlanDataNotifications
+  //       .filter((n: any) => !isEmptyNotification(n)) // filter out empty
+  //       .filter((n: any) => !n.read).length // count unread
+  //   : 0;
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -151,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }, [storedStatus]);
 
-  const isMasterDataPage = location.pathname === "/masterData";
+  // const isMasterDataPage = location.pathname === "/masterData";
  
 
   const { indentNo } = useParams();
@@ -253,14 +253,14 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopup(false);
   };
 
-  const [dailyPlanNotifications, { data }] =
-    useLazyDailyPlanNotificationsQuery();
+  // const [dailyPlanNotifications, { data }] =
+  //   useLazyDailyPlanNotificationsQuery();
 
-  useEffect(() => {
-    if (data?.data) {
-      dispatch(setDailyPlanDataNotifications( data?.data));
-    }
-  }, [data, dispatch]);
+  // useEffect(() => {
+  //   if (data?.data) {
+  //     dispatch(setDailyPlanDataNotifications( data?.data));
+  //   }
+  // }, [data, dispatch]);
 
   const handleSubmitPopupConfirmOpen = async () => {
     if (uploadFile) {
@@ -274,9 +274,9 @@ const Header: React.FC<HeaderProps> = ({
         setSubmitPopupConfirm(true);
         dispatch(setUploadedFile(null));
 
-        setTimeout(() => {
-          dailyPlanNotifications();
-        }, 5 * 60 * 1000);
+        // setTimeout(() => {
+        //   dailyPlanNotifications();
+        // }, 5 * 60 * 1000);
       } catch (err) {
         console.error("Upload failed:", err);
 
@@ -484,7 +484,7 @@ const Header: React.FC<HeaderProps> = ({
                     },
                   }}
                 >
-                  <Badge
+                  {/* <Badge
                     badgeContent={
                       isMasterDataPage
                         ? unreadCountMasterData
@@ -493,7 +493,7 @@ const Header: React.FC<HeaderProps> = ({
                     color="error"
                   >
                     <Notifications />
-                  </Badge>
+                  </Badge> */}
                 </IconButton>
               )}
 

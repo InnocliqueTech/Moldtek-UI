@@ -232,36 +232,36 @@ const Layout = () => {
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
 
-   const isMasterDataPage = location.pathname === "/masterData";
-   const isDailyPlanDataPage = location.pathname ==="/dailyPlan"
+  //  const isMasterDataPage = location.pathname === "/masterData";
+  //  const isDailyPlanDataPage = location.pathname ==="/dailyPlan"
 
- const { data } = useMasterDataNotificationsQuery(undefined, {
-    skip: !isMasterDataPage,
-  });
+//  const { data } = useMasterDataNotificationsQuery(undefined, {
+//     skip: !isMasterDataPage,
+//   });
 
-  useEffect(() => {
-    if (data?.notifications) {
-      dispatch(setMasterDataNotifications(data.notifications));
-    }
-  }, [data, dispatch]);
+//   useEffect(() => {
+//     if (data?.notifications) {
+//       dispatch(setMasterDataNotifications(data.notifications));
+//     }
+//   }, [data, dispatch]);
 
-   const { data:dailyPlanData } = useDailyPlanNotificationsQuery(undefined, {
-    skip: !isDailyPlanDataPage,
-  });
+//    const { data:dailyPlanData } = useDailyPlanNotificationsQuery(undefined, {
+//     skip: !isDailyPlanDataPage,
+//   });
 
-  useEffect(() => {
-    if (dailyPlanData?.data) {
-      dispatch(setDailyPlanDataNotifications(dailyPlanData?.data));
-    }
-  }, [dailyPlanData, dispatch]);
+//   useEffect(() => {
+//     if (dailyPlanData?.data) {
+//       dispatch(setDailyPlanDataNotifications(dailyPlanData?.data));
+//     }
+//   }, [dailyPlanData, dispatch]);
 
 
-  const handleMasterNotification = () => {
-    dispatch(setPopOver(true));
-  };
-  const handleDailyPlanNotification = () => {
-    dispatch(setPopOverDailyPlan(true));
-  };
+//   const handleMasterNotification = () => {
+//     dispatch(setPopOver(true));
+//   };
+//   const handleDailyPlanNotification = () => {
+//     dispatch(setPopOverDailyPlan(true));
+//   };
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -308,10 +308,10 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
-      notificationIcon: true,
-      notificationIconOnClick: () => {
-        handleMasterNotification();
-      },
+      // notificationIcon: true,
+      // notificationIconOnClick: () => {
+      //   handleMasterNotification();
+      // },
     },
     "/createMasterData": {
       title: "Create Master Data",
@@ -405,10 +405,10 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
-      notificationIcon: true,
-      notificationIconOnClick: () => {
-        handleDailyPlanNotification();
-      },
+      // notificationIcon: true,
+      // notificationIconOnClick: () => {
+      //   handleDailyPlanNotification();
+      // },
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
