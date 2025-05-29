@@ -310,7 +310,14 @@ useEffect(() => {
 
 
 if (unitEffNumLoading) return (
-  <Box className="w-full h-full flex justify-center items-center">
+  <Box sx={{
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+}}>
+
     <CircularProgress />
   </Box>
 );
@@ -319,7 +326,12 @@ if (error) return <div>Error: Something Went Wrong...</div>;
 console.log(unitEffNumLoading,"LOADINGUNITNUMBER")
 
   return (
-    <Box className="bg-white rounded-xl px-5 py-2">
+   <Box style={{
+  backgroundColor: 'white',
+  borderRadius: '12px', 
+  padding: '8px 20px'    
+}}>
+
       <Box sx={{ mb: 1, pb: 1 }}>
         {/* <Box sx={{ mb: 3 }}>
           <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
@@ -415,7 +427,7 @@ console.log(unitEffNumLoading,"LOADINGUNITNUMBER")
         >
           * All fields are mandatory
         </Typography>
-        <Box className="flex justify-end">
+       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {/* <ButtonComponent
             text="Save"
             textColor="#0073B7"
