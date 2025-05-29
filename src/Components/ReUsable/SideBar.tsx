@@ -206,7 +206,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("role");
 
-  console.log(collapsed,"COLLAPSED")
 
   return (
     <>

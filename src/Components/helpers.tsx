@@ -45,19 +45,35 @@ export const UENCell: React.FC<UENCellProps> = ({ value, onClick }) => {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div
+    <Box
+      component="div"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        cursor: "pointer",
+      sx={{
+        cursor: 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
       }}
     >
-      <span style={{ textDecoration: hovered ? "underline" : "none" }}>
+      <Box
+        component="span"
+        sx={{
+          textDecoration: hovered ? 'underline' : 'none',
+        }}
+      >
         <RenderTooltip content={value} strLength={45} />
-      </span>
-      {hovered && <LinkOutlined style={{ color: "#172B4D" }} />}
-    </div>
+      </Box>
+
+      <LinkOutlined
+        sx={{
+          color: '#172B4D',
+          ml: 0.5,
+          visibility: hovered ? 'visible' : 'hidden',
+          transition: 'visibility 0.2s',
+        }}
+      />
+    </Box>
   );
 };
 
