@@ -25,6 +25,7 @@ type Env = keyof typeof apiMap;
 
 function getBaseApiUrl(): string {
   const env = import.meta.env.MODE as Env;
+  console.log(env,"ENVIROMENT")
   const port = window.location.port;
 
   const envApiUrls = apiMap[env] ?? apiMap.production;
