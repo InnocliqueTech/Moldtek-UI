@@ -83,11 +83,13 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   if (version) {
     versionNo = version;
   }
+    const selectedUENNumber = localStorage.getItem("selectedUEN");
+  const selectedVersion = localStorage.getItem("selectedVersionNo");
 
   const { data, isLoading } = useViewMasterDataQuery(
     {
-      ueNumber: selectedUEN,
-      versionNo: versionNo,
+      ueNumber: !updateButton ? selectedUENNumber :selectedUEN,
+      versionNo: !updateButton ?selectedVersion:versionNo,
     },
     {
       skip: !id,

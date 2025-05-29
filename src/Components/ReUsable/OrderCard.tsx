@@ -240,6 +240,7 @@ const OrderCard: React.FC = () => {
                     <IconButton
                       onClick={() => setImagePreviewOpen(true)}
                       color="primary"
+                      sx={{marginTop:'-7px'}}
                     >
                       <Visibility />
                     </IconButton>
