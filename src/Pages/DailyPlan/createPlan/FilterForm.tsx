@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState,  useEffect, useRef } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
@@ -9,9 +9,7 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 import {
   ArrowForward,
@@ -20,43 +18,43 @@ import {
 } from "@mui/icons-material";
 import { RootState } from "../../../store";
 import {
-  FiltersPayload,
   setFiltersPayload,
-  setIsSearchTriggered,
-  setOpenSliderDaily,
   setSelectedCustomers,
   setSelectedLabelTypeIds,
 } from "../../../store/slices/viewDailyPlanSlice";
 import LabelTypeSelector from "./LabelTypes";
 import CustomerSelect from "./CustomersData";
-import ButtonComponent from "../../../Components/ReUsable/Button";
 import SearchIcon from "@mui/icons-material/Search";
+import { LocalDatePayload } from "./Filter";
 
-interface LocalDatePayload {
-  fromDate: Date | null;
-  toDate: Date | null;
+interface FilterFormProps {
+  setLocalDates: React.Dispatch<React.SetStateAction<LocalDatePayload>>;
+  localDates: LocalDatePayload;
+  searchField: string;
+  setSearchField: React.Dispatch<React.SetStateAction<string>>;
+  searchType: string;
+  setSearchType: React.Dispatch<React.SetStateAction<string>>;
+  selectedStatuses: string[];
+  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const FilterForm: React.FC = () => {
+const FilterForm: React.FC<FilterFormProps> = ({
+  setLocalDates,
+  localDates,
+  searchField,
+  setSearchField,
+  searchType,
+  setSearchType,
+  selectedStatuses,
+  setSelectedStatuses,
+}) => {
   const dispatch = useDispatch();
-  const {
-    selectedCustomers,
-    selectedLabelTypeIds,
-    filtersPayload,
-    openSliderDaily,
-    isSearchTriggered,
-  } = useSelector((state: RootState) => state.viewDailyPlan);
+  const { openSliderDaily, isSearchTriggered } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
 
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);
-
-  const [searchField, setSearchField] = useState(
-    filtersPayload.searchField || ""
-  );
-  const [searchType, setSearchType] = useState(filtersPayload.searchType || "");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(
-    filtersPayload.status || []
-  );
 
   const statusOptions = [
     { label: "Active", value: "Active", color: "#FFA500" },
@@ -64,13 +62,6 @@ const FilterForm: React.FC = () => {
     { label: "Completed", value: "Completed", color: "#4CAF50" },
     { label: "Inactive", value: "Inactive", color: "#f44336" },
   ];
-
-  const [localDates, setLocalDates] = useState<LocalDatePayload>({
-    fromDate: filtersPayload.fromDate
-      ? new Date(filtersPayload.fromDate)
-      : null,
-    toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate) : null,
-  });
 
   const hasInitialized = useRef(false);
 
@@ -104,88 +95,6 @@ const FilterForm: React.FC = () => {
     field: keyof LocalDatePayload
   ) => {
     setLocalDates((prev) => ({ ...prev, [field]: date }));
-  };
-
-  const isSearchEnabled = useMemo(() => {
-    const hasCustomer = selectedCustomers.length > 0;
-    const hasLabelTypes = selectedLabelTypeIds.length > 0;
-    const hasValidDates =
-      localDates.fromDate !== null && localDates.toDate !== null;
-    return (
-      hasCustomer ||
-      hasValidDates ||
-      hasLabelTypes ||
-      searchField.trim() !== "" ||
-      searchType !== "" ||
-      selectedStatuses.length > 0
-    );
-  }, [
-    selectedCustomers,
-    localDates,
-    selectedLabelTypeIds,
-    searchField,
-    searchType,
-    selectedStatuses,
-  ]);
-
-  const onSubmit = () => {
-    if (!isSearchEnabled) {
-      toast.error("Please select a Customer or both From and To dates!");
-      return;
-    }
-
-    const customerName = selectedCustomers.map(
-      (customer: any) => customer.fullName
-    );
-    const labelType = selectedLabelTypeIds.map(
-      (label: any) => label.labelTypeName
-    );
-
-    const finalSearchPayload: FiltersPayload = {
-      customerName,
-      fromDate:
-        localDates.fromDate && localDates.toDate
-          ? format(localDates.fromDate, "yyyy-MM-dd")
-          : "",
-      toDate:
-        localDates.toDate && localDates.toDate
-          ? format(localDates.toDate, "yyyy-MM-dd")
-          : "",
-      labelType,
-      searchField: searchField.trim(),
-      searchType,
-      status: selectedStatuses,
-    };
-
-    dispatch(setFiltersPayload(finalSearchPayload));
-    localStorage.setItem("dailyPlanDataPage", "0");
-    dispatch(setIsSearchTriggered(true));
-    dispatch(setOpenSliderDaily(false));
-    toast.success("Search submitted successfully!");
-  };
-
-  const handleClear = () => {
-    setLocalDates({ fromDate: null, toDate: null });
-    setSearchField("");
-    setSearchType("");
-
-    dispatch(
-      setFiltersPayload({
-        customerName: [],
-        fromDate: "",
-        toDate: "",
-        labelType: [],
-        searchField: "",
-        searchType: "",
-        status: [],
-      })
-    );
-
-    dispatch(setSelectedCustomers([]));
-    dispatch(setSelectedLabelTypeIds([]));
-    dispatch(setIsSearchTriggered(true));
-    dispatch(setOpenSliderDaily(false));
-    toast.success("Filters cleared!");
   };
 
   const handleClearStatuses = () => {
@@ -476,28 +385,6 @@ const FilterForm: React.FC = () => {
             />
           </Box>
         </Grid>
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-          <ButtonComponent
-            text="Search"
-            borderRadius="100px"
-            onClick={onSubmit}
-            color="#0073B7"
-            textColor="white"
-            p={2}
-            disabled={!isSearchEnabled}
-          />
-          <ButtonComponent
-            text="Clear"
-            borderRadius="100px"
-            onClick={handleClear}
-            color="#f44336"
-            textColor="white"
-            p={2}
-          />
-        </Box>
       </Grid>
     </>
   );
