@@ -20,7 +20,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
-import Filter from "../../Pages/createMasterData/Filter";
+import Filter from "../../Pages/Create_Master_Data/Filter";
 import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -35,7 +35,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import {  ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import VersinDetails from "../../Pages/viewMasterData/versionDetails";
+import VersinDetails from "../../Pages/View_Master_Data/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import excelFile from "/Master_Data_Upload_template.xlsx";
