@@ -199,7 +199,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
                 toast.error("Failed to fetch notifications.");
               }
             }
-          }, 500);
+}, 5 * 60 * 1000);
         } catch (err) {
           console.error("Upload failed:", err);
 
