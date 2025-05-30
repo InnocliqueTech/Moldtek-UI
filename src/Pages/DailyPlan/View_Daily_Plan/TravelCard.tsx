@@ -124,6 +124,21 @@ const TravelCard: React.FC<TravelCardProps> = ({
     const updated: EditableTravelCardData = { ...editableData };
     const machine = { ...updated[section] } as MachineDetails;
 
+  // Extract jobStartingTime and completionTime from updatedItems
+    const jobStartingItem = updatedItems.find(item => item.keyName === "jobStartingTime");
+    const completionTimeItem = updatedItems.find(item => item.keyName === "completionTime");
+
+  // Validate times
+    if (jobStartingItem?.value && completionTimeItem?.value) {
+      const jobStart = new Date(jobStartingItem.value);
+      const jobEnd = new Date(completionTimeItem.value);
+
+      if (jobStart > jobEnd) {
+        // Clear jobStartingTime if it's after completionTime
+        completionTimeItem.value = "";
+      }
+    }
+
     updatedItems.forEach((item) => {
       if (item.keyName && item.value !== undefined) {
         (machine as any)[item.keyName] = item.value;

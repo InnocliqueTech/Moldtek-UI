@@ -50,7 +50,7 @@ const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatIte
       { title: "Total Jobs", value:  0,infoText:'Displays the count of newly created jobs' },
       { title: "Lamination Jobs", value:  0,infoText:'Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW'  },
       { title: "Non-Lamination Jobs", value:  0 ,infoText:'Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW.' },
-      { title: "New Jobs Added", value: 0,infoText:'Displays total number of jobs created'  },
+      { title: "Completed Jobs", value: 0,infoText:'Displays total number of jobs created'  },
     ];
   }
 
@@ -58,7 +58,7 @@ const transformApiDataToStats = (apiData: ApiStatsResponse | undefined): StatIte
     { title: "Total Jobs", value: apiData.totalJobs || 0,infoText:'Displays the count of newly created jobs' },
     { title: "Lamination Jobs", value: apiData.laminationJobs || 0,infoText:'Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW'  },
     { title: "Non-Lamination Jobs", value: apiData.nonLaminationJobs || 0 ,infoText:'Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW.' },
-    { title: "New Jobs Added", value: apiData.newJobs || 0,infoText:'Displays total number of jobs created'  },
+    { title: "Completed Jobs", value: apiData.completedJobs || 0,infoText:'Displays total number of jobs created'  },
   ];
 };
 
