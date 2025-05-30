@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setJobsListData,
-  setSelectedTab,
+  setSelectedTabView,
 } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetJobsListQuery,
@@ -91,7 +91,7 @@ const JobsList: React.FC = () => {
             localStorage.setItem("status", row.status);
             const encodedParam = encodeURIComponent(value);
             navigate(`/viewDailyPlan/${encodedParam}`);
-            dispatch(setSelectedTab(0));
+            dispatch(setSelectedTabView(0));
             dispatch(setIsEditing(false));
             dispatch(setSideNavigationAllowed(false));
             dispatch(setBackButtonNavigationAllowed(false));

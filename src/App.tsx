@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import Loader from "./Loader";
 import './App.css'
 import ScrollToTop from "./Components/ReUsable/ScrollTop";
+import GlobalDialog from "./Components/ReUsable/GlobalDialog";
 
 
 
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   return (
     <Router>
           <ScrollToTop />
+                <GlobalDialog />
       <Suspense fallback={<Loader/>}>
         <Routes>
           <Route path="/" element={<SignInPage />} />

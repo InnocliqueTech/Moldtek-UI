@@ -122,7 +122,7 @@ export interface ViewMasterDataDetails {
 }
 
 interface ViewMasterDataState {
-  selectedTab: number;
+  selectedTabView: number;
   repeatTableData: RepeatTableRow;
   substrateTableData: SubstrateTableRow[];
   printingMachineSettings: PrintingMachineSettings;
@@ -139,7 +139,7 @@ interface ViewMasterDataState {
 }
 
 const initialState: ViewMasterDataState = {
-  selectedTab: 0,
+  selectedTabView: 0,
   repeatTableData: {
     repeat_length: 0,
     ups: 0,
@@ -272,8 +272,8 @@ const viewMasterDataSlice = createSlice({
   name: "viewMasterData",
   initialState,
   reducers: {
-    setSelectedTab: (state, action: PayloadAction<number>) => {
-      state.selectedTab = action.payload;
+    setSelectedTabView: (state, action: PayloadAction<number>) => {
+      state.selectedTabView = action.payload;
     },
     setRepeatTableData: (state, action: PayloadAction<RepeatTableRow>) => {
       state.repeatTableData = action.payload;
@@ -348,7 +348,7 @@ const viewMasterDataSlice = createSlice({
 });
 
 export const {
-  setSelectedTab,
+  setSelectedTabView,
   setRepeatTableData,
   setSubstrateTableData,
   setPrintingMachineSettingsData,

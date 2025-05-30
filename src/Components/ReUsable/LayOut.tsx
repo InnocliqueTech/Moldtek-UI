@@ -18,13 +18,14 @@ import {
   clearMasterDetaisData,
   clearPrintingFormData,
   clearPrintingFormErrors,
-  // setMasterDataNotifications,
+  setDyeCuttingDataTouched,
+  setLaminationDataTouched,
+  setMasterDataDataTouched,
   setOpenSlider,
-  // setPopOver,
+  setPrintingDataTouched,
   setRequestPayload,
   setSelectedFile,
   setSelectedTab,
-  setUpdateButton,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,9 +53,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
-  const { updateButton } = useSelector(
-    (state: RootState) => state.masterData
-  );
+ const updateButtonAction = localStorage.getItem("updateButton");
   const { hasUnsavedChanges } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
@@ -336,7 +335,7 @@ const Layout = () => {
       uploadTitle: "Update Master Data",
       uploadSubTitle: "Upload Master Data",
       onBack: () => {
-        if (!updateButton) {
+        if (updateButtonAction==='false') {
           navigate(`/viewMasterData/${selectedUEN}`);
         } else {
           navigate("/masterData");
@@ -352,7 +351,12 @@ const Layout = () => {
         onButton2Click: () => {
           navigate(`/updateMasterData/${selectedUEN}`);
           dispatch(setSelectedTab(0));
-          dispatch(setUpdateButton(false));
+          // dispatch(setUpdateButton(false));
+          localStorage.setItem('updateButton','false');
+          dispatch(setMasterDataDataTouched(false));
+          dispatch(setPrintingDataTouched(false));
+          dispatch(setLaminationDataTouched(false));
+          dispatch(setDyeCuttingDataTouched(false));
         },
       }),
       onButton1Click: () => dispatch(setVersionPopup(true)),

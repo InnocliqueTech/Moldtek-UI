@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setSelectedTab } from "../../store/slices/viewMasterDataSlice";
+import { setSelectedTabView } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetMetricsQuery,
   useMasterFiltersMutation,
@@ -25,7 +25,7 @@ import {
   setLaminationDataTouched,
   setMasterDataDataTouched,
   setPrintingDataTouched,
-  setUpdateButton,
+  setSelectedTab,
 } from "../../store/slices/masterDataSlice";
 
 const MasterData: React.FC = () => {
@@ -88,7 +88,7 @@ const MasterData: React.FC = () => {
           onClick={() => {
             localStorage.setItem("selectedUEN", value);
             localStorage.setItem("selectedVersionNo", row.version_no);
-            dispatch(setSelectedTab(0));
+            dispatch(setSelectedTabView(0));
             navigate(`/viewMasterData/${value}`);
           }}
         />
@@ -206,7 +206,8 @@ const MasterData: React.FC = () => {
   }));
 
   useEffect(() => {
-    dispatch(setUpdateButton(false));
+     localStorage.setItem('updateButton','false')
+    // dispatch(setUpdateButton(false));
     localStorage.setItem("hasVisitedMasterDataDetails", "false");
     dispatch(setMasterDataDataTouched(false));
     localStorage.setItem("hasVisitedPrintingDetails", "false");
@@ -255,8 +256,14 @@ const MasterData: React.FC = () => {
                 selectedUENActionUpdate
               );
               localStorage.setItem("actionVersionNo", versionNoAction);
-              dispatch(setUpdateButton(true));
+               localStorage.setItem('updateButton','true')
+              // dispatch(setUpdateButton(true));
               navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+              dispatch(setSelectedTab(0));
+               dispatch(setMasterDataDataTouched(false));
+                        dispatch(setPrintingDataTouched(false));
+                        dispatch(setLaminationDataTouched(false));
+                        dispatch(setDyeCuttingDataTouched(false));
             },
           },
         ]

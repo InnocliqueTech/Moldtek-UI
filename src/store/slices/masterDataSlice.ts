@@ -11,21 +11,39 @@ import {
   MasterDataNotifications,
   MasterDataState,
   MasterFormData,
+  PopupState,
   PrintingFormErrors,
   PrintingFormValues,
   RequestPayload,
 } from "./masterDataInterface";
 
 const initialState: MasterDataState = {
-  masterDataNotifications:[{
-exceptionMessage: "",
-fileName: "",
-fileReadStatus: "",
-id: 0,
-processedOn: "",
-unitEffectiveNumbers: ""}],
-  popOver:false,
-  needUpload:false,
+  PopupState: {
+    open: false,
+    message: "",
+    data: [
+      {
+        id: 0,
+        fileName: "",
+        fileReadStatus: "",
+        unitEffectiveNumbers: "",
+        exceptionMessage: "",
+        processedOn: "",
+      },
+    ],
+  },
+  masterDataNotifications: [
+    {
+      exceptionMessage: "",
+      fileName: "",
+      fileReadStatus: "",
+      id: 0,
+      processedOn: "",
+      unitEffectiveNumbers: "",
+    },
+  ],
+  popOver: false,
+  needUpload: false,
   noOfColorsSetting: "",
   noOfSpecialColors: "",
   updateButton: false,
@@ -744,14 +762,17 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
-    setMasterDataNotifications:(state,action:PayloadAction<MasterDataNotifications[]>)=>{
-    state.masterDataNotifications=action.payload
+    setMasterDataNotifications: (
+      state,
+      action: PayloadAction<MasterDataNotifications[]>
+    ) => {
+      state.masterDataNotifications = action.payload;
     },
-    setPopOver:(state,action:PayloadAction<boolean>)=>{
-    state.popOver = action.payload
+    setPopOver: (state, action: PayloadAction<boolean>) => {
+      state.popOver = action.payload;
     },
-    setNeedUpload:(state,action:PayloadAction<boolean>)=>{
-    state.needUpload=action.payload
+    setNeedUpload: (state, action: PayloadAction<boolean>) => {
+      state.needUpload = action.payload;
     },
     setUploadedFile: (state, action: PayloadAction<any>) => {
       state.uploadFile = action.payload;
@@ -1611,10 +1632,18 @@ const masterDataSlice = createSlice({
     setLaminatingDetails: (state, action: PayloadAction<any>) => {
       state.laminatingDetails = action.payload;
     },
+    setGlobalPopup: (state, action: PayloadAction<PopupState>) => {
+      state.PopupState = action.payload;
+    },
+    closeGlobalPopup: (state) => {
+      state.PopupState.open = false;
+    },
   },
 });
 
 export const {
+  setGlobalPopup,
+  closeGlobalPopup,
   setSelectedTab,
   setDyeCuttingDetails,
   setLaminatingDetails,
@@ -1698,6 +1727,6 @@ export const {
   setSelectedFile,
   setNeedUpload,
   setPopOver,
-  setMasterDataNotifications
+  setMasterDataNotifications,
 } = masterDataSlice.actions;
 export default masterDataSlice.reducer;

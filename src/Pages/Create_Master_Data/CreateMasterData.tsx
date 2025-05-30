@@ -425,26 +425,44 @@ const CreateMasterData: React.FC = () => {
 
     dispatch(setRequestPayload(updatedPayload));
   };
+  const UEN = localStorage.getItem("actionSelectedUEN");
+  let selectedUEN: any;
+  if (UEN) {
+    selectedUEN = UEN;
+  }
+  const version = localStorage.getItem("actionVersionNo");
+  let versionNo: any;
+  if (version) {
+    versionNo = version;
+  }
 
-  const UEN = localStorage.getItem("selectedUEN");
-  const version = localStorage.getItem("selectedVersionNo");
+  const updateButtonAction = localStorage.getItem("updateButton");
+
+    const selectedUENNumber = localStorage.getItem("selectedUEN");
+  const selectedVersion = localStorage.getItem("selectedVersionNo");
   const { id } = useParams();
   const { data, isLoading } = useViewMasterDataQuery(
-    { ueNumber: UEN || "", versionNo: version || "" },
+     {
+      ueNumber: updateButtonAction==='false' ? selectedUENNumber :selectedUEN,
+      versionNo: updateButtonAction==='false' ?selectedVersion:versionNo,
+    },
     { skip: !id }
   );
 
-  const tabs = [
-    "Master Data Details",
-    "Master Data - Printing",
-    ...(saveFormData.label_type === "THINWALL" ||
+ const tabs = [
+  "Master Data Details",
+  "Master Data - Printing",
+  ...(
+    saveFormData.label_type === "THINWALL" ||
     saveFormData.segment === "TW" ||
-    (id && viewMasterDataDetails.label_type === "THINWALL") ||
-    viewMasterDataDetails.segment === "TW"
+    (id && viewMasterDataDetails.label_type === "THINWALL" && formData.label_type === "THINWALL" ) ||
+    (id &&viewMasterDataDetails.segment === "TW" && formData.segment === "TW")
       ? []
-      : ["Master Data - Lamination"]),
-    "Master Data - Dye Cutting",
-  ];
+      : ["Master Data - Lamination"]
+  ),
+  "Master Data - Dye Cutting",
+];
+
 
   const contentRef = useRef<HTMLDivElement>(null);
 

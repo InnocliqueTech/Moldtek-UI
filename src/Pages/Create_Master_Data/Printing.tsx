@@ -92,8 +92,9 @@ const Printing: React.FC<PrintingProps> = ({
     dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
-    updateButton,
   } = useSelector((state: RootState) => state.masterData);
+
+   const updateButtonAction = localStorage.getItem("updateButton");
 
   const machineFields = [
     {
@@ -381,12 +382,12 @@ const Printing: React.FC<PrintingProps> = ({
 
   useEffect(() => {
     localStorage.setItem("hasVisitedPrintingDetails", "false");
-    if (!hasVisited && id && !updateButton) {
+    if (!hasVisited && id && updateButtonAction==='false') {
       dispatch(setPrintingDataTouched(false));
       localStorage.setItem("hasVisitedPrintingDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setPrintingDataTouched(false));
-    } else if (updateButton && !hasVisited && id) {
+    } else if (updateButtonAction==='true' && !hasVisited && id) {
       dispatch(setPrintingDataTouched(false));
       localStorage.setItem("hasVisitedPrintingDetails", "true");
     }

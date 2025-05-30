@@ -48,7 +48,6 @@ const Lamination: React.FC<LaminationProps> = ({
     saveLaminatingData,
     dropDownValuesLamination,
     dropDownValuesSupplierLamination,
-    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const {
     laminatingSubstrateSettings,
@@ -57,6 +56,9 @@ const Lamination: React.FC<LaminationProps> = ({
   } = useSelector((state: RootState) => state.viewMasterData);
   const dispatch = useDispatch<AppDispatch>();
   const [formInitialized, setFormInitialized] = useState(false);
+
+ const updateButtonAction = localStorage.getItem("updateButton");
+
   const bondingMaterialColumns = [
     { id: "type", label: "Field" },
     {
@@ -545,12 +547,12 @@ const Lamination: React.FC<LaminationProps> = ({
 
   useEffect(() => {
     localStorage.setItem("hasVisitedLaminationDetails", "false");
-    if (!hasVisited && id && !updateButton) {
+    if (!hasVisited && id && updateButtonAction==='false') {
       dispatch(setLaminationDataTouched(false));
       localStorage.setItem("hasVisitedLaminationDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setLaminationDataTouched(false));
-    } else if (updateButton && !hasVisited && id) {
+    } else if (updateButtonAction==='true' && !hasVisited && id) {
       dispatch(setLaminationDataTouched(false));
       localStorage.setItem("hasVisitedLaminationDetails", "true");
     }

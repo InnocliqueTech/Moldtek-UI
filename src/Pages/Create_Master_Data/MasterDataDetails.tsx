@@ -68,7 +68,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     saveMasterDataDetailsData,
     saveButtonMasterData,
     dropDownValuesStructure,
-    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const { id } = useParams();
   const location = useLocation();
@@ -83,13 +82,16 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   if (version) {
     versionNo = version;
   }
+
+  const updateButtonAction = localStorage.getItem("updateButton");
+
     const selectedUENNumber = localStorage.getItem("selectedUEN");
   const selectedVersion = localStorage.getItem("selectedVersionNo");
 
   const { data, isLoading } = useViewMasterDataQuery(
     {
-      ueNumber: !updateButton ? selectedUENNumber :selectedUEN,
-      versionNo: !updateButton ?selectedVersion:versionNo,
+      ueNumber: updateButtonAction==='false' ? selectedUENNumber :selectedUEN,
+      versionNo: updateButtonAction==='false' ?selectedVersion:versionNo,
     },
     {
       skip: !id,
@@ -109,15 +111,16 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   useEffect(() => {
     localStorage.setItem("hasVisitedMasterDataDetails", "false");
 
-    if (!hasVisited && id && !updateButton) {
+    if (!hasVisited && id && updateButtonAction==='false') {
       dispatch(setMasterDataDataTouched(false));
       localStorage.setItem("hasVisitedMasterDataDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setMasterDataDataTouched(false));
-    } else if (updateButton && !hasVisited && id) {
+    } else if (updateButtonAction==='true' && !hasVisited && id) {
       dispatch(setMasterDataDataTouched(false));
       localStorage.setItem("hasVisitedMasterDataDetails", "true");
     }
+    console.log(hasVisited,updateButtonAction,id,masterDataDataTouched,"DATAEMPTY3")
   }, [id]);
 
   useEffect(() => {

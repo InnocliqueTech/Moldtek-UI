@@ -37,13 +37,14 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     dyeCuttingErrors,
     dyeCuttingDataTouched,
     dyeCuttingDetails,
-    updateButton,
   } = useSelector((state: RootState) => state.masterData);
   const { dyeCuttingSettings } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams();
+
+   const updateButtonAction = localStorage.getItem("updateButton");
 
   function sanitizeDyeCuttingData(data: any): DyeCuttingFormData {
     return {
@@ -144,12 +145,12 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
   useEffect(() => {
     localStorage.setItem("hasVisitedDyeCuttingDetails", "false");
-    if (!hasVisited && id && !updateButton) {
+    if (!hasVisited && id && updateButtonAction==='false') {
       dispatch(setDyeCuttingDataTouched(false));
       localStorage.setItem("hasVisitedDyeCuttingDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setDyeCuttingDataTouched(false));
-    } else if (updateButton && !hasVisited && id) {
+    } else if (updateButtonAction==='true' && !hasVisited && id) {
       dispatch(setDyeCuttingDataTouched(false));
       localStorage.setItem("hasVisitedDyeCuttingDetails", "true");
     }

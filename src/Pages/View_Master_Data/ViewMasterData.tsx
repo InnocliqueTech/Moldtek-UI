@@ -11,7 +11,7 @@ import {
   setPrintingInkStationData,
   setPrintingMachineSettingsData,
   setPrintingSubstrate,
-  setSelectedTab,
+  setSelectedTabView,
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
 import ViewPrinting from "./ViewPrinting";
@@ -23,7 +23,7 @@ import Loader from "../../Loader";
 
 const ViewMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedTab } = useSelector(
+  const { selectedTabView } = useSelector(
     (state: RootState) => state.viewMasterData
   );
 
@@ -40,7 +40,7 @@ const ViewMasterData: React.FC = () => {
   }
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    dispatch(setSelectedTab(newValue));
+    dispatch(setSelectedTabView(newValue));
 
     // Also scroll internal content (like the tab content area)
     if (contentRef.current) {
@@ -112,10 +112,10 @@ const ViewMasterData: React.FC = () => {
         height:
           (data?.data.masterDataDetails.label_type !== "THINWALL" &&
             data?.data.masterDataDetails.label_type !== "TW" &&
-            selectedTab !== 2) ||
+            selectedTabView !== 2) ||
           ((data?.data.masterDataDetails.label_type === "THINWALL" ||
             data?.data.masterDataDetails.label_type === "TW") &&
-            selectedTab !== 1)
+            selectedTabView !== 1)
             ? {
                 xl: "136vh",
                 lg: "144vh",
@@ -175,21 +175,21 @@ const ViewMasterData: React.FC = () => {
             >
               <TabsComponent
                 tabs={tabs}
-                value={selectedTab}
+                value={selectedTabView}
                 onChange={handleTabChange}
               />
             </Box>
 
             <Box sx={{ padding: 2 }}>
-              {selectedTab === 0 && <ViewPrinting />}
-              {selectedTab === 1 &&
+              {selectedTabView === 0 && <ViewPrinting />}
+              {selectedTabView === 1 &&
               !(
                 data?.data.masterDataDetails.label_type === "THINWALL" ||
                 data?.data.masterDataDetails.segment === "TW"
               ) ? (
                 <ViewLamination />
               ) : (
-                selectedTab !== 0 && <ViewDyeCutting />
+                selectedTabView !== 0 && <ViewDyeCutting />
               )}
             </Box>
           </Box>

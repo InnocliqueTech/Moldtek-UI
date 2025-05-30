@@ -292,7 +292,23 @@ id: number;
 processedOn: string;
 unitEffectiveNumbers: string
 }
+
+export interface FileData {
+  id: number;
+  fileName: string;
+  fileReadStatus: string;
+  unitEffectiveNumbers?: string;
+  exceptionMessage?: string | null;
+  processedOn: string;
+}
+export interface PopupState {
+  open: boolean;
+  title?: string;
+  message?: string;
+  data?: FileData[]; 
+}
 export interface MasterDataState {
+  PopupState :PopupState;
   masterDataNotifications:MasterDataNotifications[]
   popOver:boolean
   needUpload:boolean;

@@ -15,7 +15,7 @@ import { generateId,formatDate } from '../../Components/helpers';
 // import { toast } from "react-toastify";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { setSelectedTab } from '../../store/slices/viewMasterDataSlice';
+import { setSelectedTabView } from '../../store/slices/viewMasterDataSlice';
 import { setBackButtonNavigationAllowed, setIsEditing, setIsSearchTriggered, setSideNavigationAllowed } from '../../store/slices/viewDailyPlanSlice';
 
 interface DailyPlanProps {
@@ -159,7 +159,7 @@ const dispatch = useDispatch()
       localStorage.setItem("status",row.status);
       const encodedParam = encodeURIComponent(value);
       navigate(`/viewDailyPlan/${encodedParam}`)
-      dispatch(setSelectedTab(0))
+      dispatch(setSelectedTabView(0))
        dispatch(setIsEditing(false));
        dispatch(setSideNavigationAllowed(false));
        dispatch(setBackButtonNavigationAllowed(false));

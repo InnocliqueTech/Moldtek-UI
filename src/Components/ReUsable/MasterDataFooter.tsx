@@ -12,9 +12,9 @@ import {
   clearPrintingFormData,
   clearPrintingFormErrors,
   setDyeCuttingDataTouched,
+  setGlobalPopup,
   setLaminationDataTouched,
   setMasterDataDataTouched,
-  // setMasterDataNotifications,
   setPrintingDataTouched,
   setSelectedFile,
   setSelectedTab,
@@ -29,7 +29,7 @@ import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateMasterDataMutation,
-  // useLazyMasterDataNotificationsQuery,
+  useLazyMasterDataNotificationsQuery,
 } from "../../store/apis/masterDataApis";
 import { toast } from "react-toastify";
 import SuccessPopup from "./SuccessPopup";
@@ -102,14 +102,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       if (handleSave) handleSave();
     }
   };
-//   const [masterDataNotifications, { data }] =
-//     useLazyMasterDataNotificationsQuery();
-
-// useEffect(() => {
-//     if (data?.notifications) {
-//       dispatch(setMasterDataNotifications(data?.notifications));
-//     }
-//   }, [data, dispatch]);
+  const [masterDataNotifications] = useLazyMasterDataNotificationsQuery();
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
 
@@ -188,15 +181,30 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
 
           dispatch(setSubmitAndPublishPopup(false));
           dispatch(setUploadedFile(null));
-          // setTimeout(() => {
-          //   masterDataNotifications();
-          // }, 5 * 60 * 1000);
+          localStorage.setItem("showNotificationPopup", "true");
+
+          setTimeout(async () => {
+            const shouldShow = localStorage.getItem("showNotificationPopup");
+            if (shouldShow === "true") {
+              try {
+                const response = await masterDataNotifications().unwrap();
+                dispatch(
+                  setGlobalPopup({
+                    open: true,
+                    data: response && response?.notifications,
+                  })
+                );
+                localStorage.removeItem("showNotificationPopup");
+              } catch (err) {
+                toast.error("Failed to fetch notifications.");
+              }
+            }
+          }, 500);
         } catch (err) {
           console.error("Upload failed:", err);
 
           let message = "Upload failed. Please try again.";
 
-          // Check for RTK Query error format
           if (err && typeof err === "object") {
             const errData = err as {
               data?: { message?: string };
@@ -215,6 +223,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       } else {
         toast.warn("No file selected to upload.");
       }
+
       dispatch(setSubmitPopupConfirm(true));
       dispatch(setSelectedFile(null));
     }

@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import TabsComponent from "../../../Components/ReUsable/Tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { setSelectedTab } from "../../../store/slices/viewMasterDataSlice";
+import { setSelectedTabView } from "../../../store/slices/viewMasterDataSlice";
 import MakeReady from "./makeReady";
 import PrintingReport from "./PrintingReport";
 import LaminationReport from "./LaminationReport";
@@ -75,7 +75,7 @@ const ViewDailyPlan: React.FC = () => {
   } = useGetMakeReadyDetailsQuery(decodedIndentNo);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedTab } = useSelector(
+  const { selectedTabView } = useSelector(
     (state: RootState) => state.viewMasterData
   );
   const { sideNavigationAllowed, backButtonNavigationAllowed } = useSelector(
@@ -117,7 +117,7 @@ const ViewDailyPlan: React.FC = () => {
       setNextTab(newValue);
       dispatch(setShowTabChangeDialog(true));
     } else {
-      dispatch(setSelectedTab(newValue));
+      dispatch(setSelectedTabView(newValue));
       dispatch(clearUpdateDailyPlanPayload());
     }
   };
@@ -216,7 +216,7 @@ const ViewDailyPlan: React.FC = () => {
       };
 
       await saveTabData(
-        selectedTab,
+        selectedTabView,
         commonPayload,
         saveLabelCuttingDetails,
         saveTravelCardDetails,
@@ -254,7 +254,7 @@ const ViewDailyPlan: React.FC = () => {
   const handleDialogContinue = () => {
     dispatch(setShowTabChangeDialog(false));
     if (nextTab !== null) {
-      dispatch(setSelectedTab(nextTab));
+      dispatch(setSelectedTabView(nextTab));
       setNextTab(null);
     }
     dispatch(setHasUnsavedChanges(false));
@@ -281,7 +281,7 @@ const ViewDailyPlan: React.FC = () => {
   ].filter(Boolean);
 
   const renderTabContent = () => {
-    switch (selectedTab) {
+    switch (selectedTabView) {
       case 0:
         return (
           <MakeReady
@@ -397,7 +397,7 @@ const ViewDailyPlan: React.FC = () => {
       >
         <TabsComponent
           tabs={tabs}
-          value={selectedTab}
+          value={selectedTabView}
           onChange={handleTabChange}
         />
         <Box sx={{ padding: 1 }}>{renderTabContent()}</Box>
@@ -435,14 +435,14 @@ const ViewDailyPlan: React.FC = () => {
 
           {/* Save */}
           <ButtonComponent
-            text={savingTabIndex === selectedTab ? "Saving..." : "Save"}
+            text={savingTabIndex === selectedTabView ? "Saving..." : "Save"}
             variant="contained"
             onClick={handleSave}
             color="primary"
-            disabled={savingTabIndex === selectedTab}
+            disabled={savingTabIndex === selectedTabView}
             borderRadius="100px"
             startIcon={
-              savingTabIndex === selectedTab ? (
+              savingTabIndex === selectedTabView ? (
                 <CircularProgress size={20} color="inherit" />
               ) : null
             }
@@ -451,21 +451,21 @@ const ViewDailyPlan: React.FC = () => {
 
           {/* Next */}
           {(dailyPlan.labelType === "THINWALL" ||dailyPlan.segment ==='TW'
-            ? selectedTab != 3
-            : selectedTab != 4) && (
+            ? selectedTabView != 3
+            : selectedTabView != 4) && (
             <ButtonComponent
               text="Next"
               variant="contained"
               onClick={() => {
                 if (hasUnsavedChanges) {
-                  setNextTab(selectedTab + 1);
+                  setNextTab(selectedTabView + 1);
                   dispatch(setShowTabChangeDialog(true)); // show popup if unsaved changes
                 } else {
-                  dispatch(setSelectedTab(selectedTab + 1));
+                  dispatch(setSelectedTabView(selectedTabView + 1));
                 }
               }}
               color="primary"
-              disabled={selectedTab === tabs.length - 1}
+              disabled={selectedTabView === tabs.length - 1}
               borderRadius="100px"
               p="14px"
             />
