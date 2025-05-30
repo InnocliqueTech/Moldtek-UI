@@ -235,7 +235,7 @@ function ReusableTable<T extends Record<string, any>>({
     : sortedData;
 
   const handleSelectAll = () => {
-    const allSelected = filteredData.every((row) => isSelected(row));
+    const allSelected = filteredData.filter((row)=>!checkTheDisableStatus(row)).every((row) => isSelected(row));
 
     let newSelected: T[] = [];
 
@@ -279,9 +279,15 @@ function ReusableTable<T extends Record<string, any>>({
     return selected.some((item) => item[rowIdentifier] === row[rowIdentifier]);
   };
 
+  const checkTheDisableStatus = (row: T) =>{
+    return row?.status == "Inactive";
+  }
+
   const isAllSelected = () => {
     if (filteredData.length === 0) return false;
-    return filteredData.every((row) => isSelected(row)); // Check if all rows are selected in the entire filtered data
+    const filtered = filteredData.filter((row) => !checkTheDisableStatus(row));
+    const allSelected = filtered.length > 0 && filtered.every((row) => isSelected(row));
+    return allSelected;
   };
 
   // useEffect(() => {
@@ -802,8 +808,9 @@ function ReusableTable<T extends Record<string, any>>({
                           pageNumber * rowsPerPage,
                           pageNumber * rowsPerPage + rowsPerPage
                         )
-                    ).map((row, index) => {
+                    ).map((row:any, index:any) => {
                       const isItemSelected = isSelected(row);
+                      const isRowCheckBoxDisable = checkTheDisableStatus(row);
                       return (
                         <TableRow
                           key={index}
@@ -824,6 +831,7 @@ function ReusableTable<T extends Record<string, any>>({
                           {selectable && (
                             <TableCell padding="checkbox">
                               <Checkbox
+                                disabled={isRowCheckBoxDisable}
                                 checked={isItemSelected}
                                 onChange={() => handleSelect(row)}
                                 onClick={(event) => event.stopPropagation()}
