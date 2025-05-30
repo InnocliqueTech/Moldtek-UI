@@ -3,6 +3,7 @@ export interface ApiStatsResponse {
   nonLaminationJobs: number | null;
   laminationJobs: number | null;
   newJobs: number | null;
+  completedJobs: number | null;
 }
 export interface DailyJobMetricsResponse {
   statusCode: number
