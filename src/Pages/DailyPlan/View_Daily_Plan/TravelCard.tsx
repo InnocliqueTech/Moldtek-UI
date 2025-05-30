@@ -229,7 +229,7 @@ const TravelCard: React.FC<TravelCardProps> = ({
                 return row.category === "Inspection Wastage";
               return false;
             }}
-            //rowEditable={(row) => row.category === "Inspection Wastage"} // ✅ restrict by category
+            //rowEditable={(row) => row.category === "Inspection Wastage"}
           />
         </Box>
       )}

@@ -67,6 +67,7 @@ const DataTable = <T extends Record<string, any>>({
   const dispatch = useDispatch<AppDispatch>();
   const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
     useSelector((state: RootState) => state.masterData);
+  const {isEditing} = useSelector((state:RootState)=>state.viewDailyPlan)
 
   const [invalidFields, setInvalidFields] = useState<{
     [key: string]: boolean;
@@ -606,6 +607,7 @@ const DataTable = <T extends Record<string, any>>({
                                 color: "#2F2F2F",
                                 height: "32px",
                                 padding: "0px",
+                                background: isEditing ? "#D6FAFA" : ""
                               },
                             }}
                           />
