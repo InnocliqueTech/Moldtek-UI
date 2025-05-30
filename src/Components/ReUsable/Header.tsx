@@ -25,6 +25,7 @@ import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
+  setGlobalPopup,
   setMasterDataNotifications,
   setPopOver,
   setSelectedFile,
@@ -33,18 +34,17 @@ import {
   setUploadedFile,
   setUploadPopup,
 } from "../../store/slices/masterDataSlice";
-import {  ReplayOutlined } from "@mui/icons-material";
+import { ReplayOutlined } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/View_Master_Data/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-// import excelFile from "/Master_Data_Upload_template.xlsx";
 import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 import {
-  // useLazyDailyPlanNotificationsQuery,
+  useLazyDailyPlanNotificationsQuery,
   useUpdateStatusJobMutation,
 } from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";
@@ -76,6 +76,7 @@ interface HeaderProps {
   button1Disable?: boolean;
   notificationIcon?: boolean;
   notificationIconOnClick?: () => void;
+  dailyPlanSampleFile?:boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -101,6 +102,7 @@ const Header: React.FC<HeaderProps> = ({
   button1Disable,
   notificationIcon,
   notificationIconOnClick,
+  dailyPlanSampleFile
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const {
@@ -150,9 +152,6 @@ const Header: React.FC<HeaderProps> = ({
       setSelectedStatus(storedStatus);
     }
   }, [storedStatus]);
-
-  // const isMasterDataPage = location.pathname === "/masterData";
- 
 
   const { indentNo } = useParams();
   const decodedIndentNo = decodeURIComponent(indentNo || "");
@@ -253,8 +252,7 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopup(false);
   };
 
-  // const [dailyPlanNotifications, { data }] =
-  //   useLazyDailyPlanNotificationsQuery();
+  const [dailyPlanNotifications] = useLazyDailyPlanNotificationsQuery();
 
   // useEffect(() => {
   //   if (data?.data) {
@@ -274,9 +272,34 @@ const Header: React.FC<HeaderProps> = ({
         setSubmitPopupConfirm(true);
         dispatch(setUploadedFile(null));
 
-        // setTimeout(() => {
-        //   dailyPlanNotifications();
-        // }, 5 * 60 * 1000);
+        localStorage.setItem("showDailyNotificationPopup", "true");
+
+        setTimeout(async () => {
+          const shouldShow = localStorage.getItem("showDailyNotificationPopup");
+          if (shouldShow === "true") {
+            try {
+              const response = await dailyPlanNotifications().unwrap();
+              const transformedData = response?.data?.map((item: any) => {
+                const { status, ...rest } = item;
+                return {
+                  ...rest,
+                  fileReadStatus: status,
+                };
+              });
+
+              dispatch(
+                setGlobalPopup({
+                  open: true,
+                  data: transformedData,
+                })
+              );
+
+              localStorage.removeItem("showDailyNotificationPopup");
+            } catch (err) {
+              toast.error("Failed to fetch notifications.");
+            }
+          }
+        }, 5 * 60 * 1000);
       } catch (err) {
         console.error("Upload failed:", err);
 
@@ -334,6 +357,7 @@ const Header: React.FC<HeaderProps> = ({
       })
       .catch((error) => console.error("Error downloading the file:", error));
   };
+
 
   useEffect(() => {
     if (confirmDialogOpen) {
@@ -569,7 +593,6 @@ const Header: React.FC<HeaderProps> = ({
         onClose={handleClosePopUp}
         subText={uploadSubTitle || ""}
         sampleFile={true}
-        // Header.tsx or wherever you need it
         handleDownloadSampleFile={() =>
           handleDownloadSampleFileMasterData(
             "/Master_Data_Upload_template.xlsx"
@@ -577,6 +600,12 @@ const Header: React.FC<HeaderProps> = ({
         }
         disable={uploadFile ? false : true}
         popUpClosed={false}
+        dailyPlanSampleFile={dailyPlanSampleFile}
+        handleDownloadSampleFileDaiyPlan={() =>
+          handleDownloadSampleFileMasterData(
+            "/Upload_template_after_job.xlsx"
+          )
+        }
       />
       <ConfirmPopup
         open={
@@ -668,11 +697,12 @@ const Header: React.FC<HeaderProps> = ({
       <NotificationPopover
         open={popOverDailyPlan}
         onClose={handleDailyPlanDataPopoverClose}
-       notifications={dailyPlanDataNotifications.map(({ status, ...rest }) => ({
-  ...rest,
-  fileReadStatus: status ,
-}))}
-
+        notifications={dailyPlanDataNotifications.map(
+          ({ status, ...rest }) => ({
+            ...rest,
+            fileReadStatus: status,
+          })
+        )}
         popUpTitle="DailyPlan Data Upload Details"
         onClickNotification={handleDailyPlanNotificationItemClick}
       />

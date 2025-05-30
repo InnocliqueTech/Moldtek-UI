@@ -284,6 +284,8 @@ const Layout = () => {
       button1Disable?: boolean;
       notificationIcon?: boolean;
       notificationIconOnClick?: () => void;
+      dailyPlanSampleFile?:boolean;
+
     }
   > = {
     "/dashboard": {
@@ -325,6 +327,7 @@ const Layout = () => {
       headerButton: true,
       onBack: () => navigate("/masterData"),
       headerButtonColor: true,
+       dailyPlanSampleFile:false,
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",
@@ -342,6 +345,7 @@ const Layout = () => {
         }
       },
       headerButton: true,
+       dailyPlanSampleFile:false,
     },
     "/viewMasterData/:id": {
       title: selectedUEN,
@@ -431,12 +435,13 @@ const Layout = () => {
           }
         : () => navigate("/dailyPlan"),
       uploadTitle: "Upload Job Data",
-      uploadSubTitle: "",
+      uploadSubTitle: "Daily Plan Data",
       dropDown: true,
       dropDownOptions: ["Completed", "Inactive", "Active", "Inprogress"],
       editButton: true,
       editClick: () => dispatch(setIsEditing(true)),
       button1Disable: loading ? true : false,
+      dailyPlanSampleFile:true,
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -519,6 +524,7 @@ const Layout = () => {
           button1Disable={headerData.button1Disable}
           notificationIcon={headerData.notificationIcon}
           notificationIconOnClick={headerData.notificationIconOnClick}
+          dailyPlanSampleFile={headerData.dailyPlanSampleFile}
         />
 
         <Box sx={{ flex: 1, p: 1.5, backgroundColor: "#ECECEC" }}>

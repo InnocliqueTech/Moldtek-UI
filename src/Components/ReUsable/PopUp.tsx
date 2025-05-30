@@ -31,6 +31,8 @@ interface ReusablePopupProps {
   cancel?: boolean;
   sampleFile?: boolean;
   handleDownloadSampleFile?: () => void;
+    dailyPlanSampleFile?: boolean;
+  handleDownloadSampleFileDaiyPlan?: () => void;
   isLoading?: boolean;
   disable?: boolean;
   popUpClosed?:boolean;
@@ -52,7 +54,9 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   sampleFile,
   handleDownloadSampleFile,
   isLoading,
-  popUpClosed
+  popUpClosed,
+      dailyPlanSampleFile,
+  handleDownloadSampleFileDaiyPlan
 }) => {
 
   const {selectedFile} = useSelector((state:RootState)=>state.masterData)
@@ -151,7 +155,7 @@ useEffect(() => {
               <Typography variant="body2" color="gray">
                 {subText}
               </Typography>
-              {sampleFile && (
+              {sampleFile && !dailyPlanSampleFile && (
                 <Typography
                   variant="body2"
                   sx={{
@@ -160,6 +164,19 @@ useEffect(() => {
                     cursor: "pointer",
                   }}
                   onClick={handleDownloadSampleFile}
+                >
+                  Download Sample File
+                </Typography>
+              )}
+                {sampleFile && dailyPlanSampleFile && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#007bff",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleDownloadSampleFileDaiyPlan}
                 >
                   Download Sample File
                 </Typography>
