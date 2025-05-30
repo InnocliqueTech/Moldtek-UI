@@ -186,8 +186,8 @@ useEffect(() => {
     'numberOfRolls',
     'balanceIndentQtyPlanned',
     'webLengthForColorMatch',
-    'substrate',
-    'lamSubstrate'
+    // 'substrate',
+    // 'lamSubstrate'
   ];
 
   const shouldShowField = (fieldId: string): boolean => {

@@ -544,6 +544,7 @@ const DataTable = <T extends Record<string, any>>({
                         />
                       ): (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
                           <TextField
+                            placeholder="Enter a value"
                             variant="standard"
                             value={row[column?.id]?row[column?.id]:''} // only the number
                             onChange={(e) => {

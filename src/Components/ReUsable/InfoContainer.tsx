@@ -198,6 +198,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
 
                 ) : (
                   <TextField
+                    placeholder="Enter a value"
                     fullWidth
                     type={"text"}
                     size="small"
