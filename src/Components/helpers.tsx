@@ -38,11 +38,20 @@ export const RenderTooltip: React.FC<RenderTooltipProps> = ({
 interface UENCellProps {
   value: string;
   onClick: () => void;
+  row?: any;
 }
 
 
-export const UENCell: React.FC<UENCellProps> = ({ value, onClick }) => {
+export const UENCell: React.FC<UENCellProps> = ({ value, onClick,row }) => {
   const [hovered, setHovered] = useState(false);
+
+   if (row?.status === "Inactive") {
+    return (
+      <Box component="span">
+        <RenderTooltip content={value} strLength={45} />
+      </Box>
+    );
+  }
 
   return (
     <Box

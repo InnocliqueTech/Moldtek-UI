@@ -153,7 +153,8 @@ const dispatch = useDispatch()
   const data = transformJobDataList(listOfCompaniesData?.data)
   const navigate = useNavigate();
   const columns = [
-    { id: "indentNumber", label: "Indent Number", align: false, format: (value: string,row:any) => <UENCell value={value} onClick={()=>{
+    { id: "indentNumber", label: "Indent Number", align: false, format: (value: string,row:any) => <UENCell value={value} row={row} onClick={()=>{
+      if(row?.status != "Inactive"){
       const uniteffectiveNumber = row.unitEffectivityNumber
       localStorage.setItem("unitEffectiveNumberDaily",uniteffectiveNumber);
       localStorage.setItem("status",row.status);
@@ -163,6 +164,7 @@ const dispatch = useDispatch()
        dispatch(setIsEditing(false));
        dispatch(setSideNavigationAllowed(false));
        dispatch(setBackButtonNavigationAllowed(false));
+      }
     }} />, },
       {
         id: "unitEffectivityNumber",
@@ -295,7 +297,7 @@ const dispatch = useDispatch()
           </Grid>
           <Box sx={{ paddingTop: 2 }}>
             <ReusableTable
-            infoText='Displays a list of daily plan jobs, including their details'
+              infoText='Displays a list of daily plan jobs, including their details'
               columns={columns}
               data={data}
               selectable={true}
