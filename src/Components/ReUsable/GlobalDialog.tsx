@@ -16,14 +16,24 @@ import { closeGlobalPopup } from "../../store/slices/masterDataSlice";
 import dayjs from "dayjs";
 import { AccessTime, CheckCircle, Description, ErrorOutline } from "@mui/icons-material";
 import { CalendarIcon } from "@mui/x-date-pickers";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const GlobalDialog = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { PopupState } = useSelector((state: RootState) => state.masterData);
-
   const handleClose = () => {
     dispatch(closeGlobalPopup());
   };
+
+  useEffect(() => {
+  if (PopupState.open) {
+    handleClose();
+  }
+}, [location]);
+
+
 
   const SummaryTile = ({ count, label, color, icon }: { count: number; label: string; color: string; icon: React.ReactNode }) => (
   <Box
