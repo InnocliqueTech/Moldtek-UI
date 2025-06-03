@@ -23,12 +23,14 @@ const initialState: MasterDataState = {
     message: "",
     data: [
       {
-        id: 0,
-        fileName: "",
-        fileReadStatus: "",
-        unitEffectiveNumbers: "",
-        exceptionMessage: "",
-        processedOn: "",
+        pkUploadMasterId: 0,
+         fileName: "",
+         fileReadStatus: "",
+         processedOn: "",
+         units:[{
+           unitEffectiveNumber: "",
+  exceptionMessage: ""
+         }]
       },
     ],
   },

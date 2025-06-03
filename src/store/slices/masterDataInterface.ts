@@ -293,14 +293,19 @@ processedOn: string;
 unitEffectiveNumbers: string
 }
 
+export interface UnitData {
+  unitEffectiveNumber: string;
+  exceptionMessage?: string;
+}
+
 export interface FileData {
-  id: number;
+  pkUploadMasterId: number;
   fileName: string;
   fileReadStatus: string;
-  unitEffectiveNumbers?: string;
-  exceptionMessage?: string | null;
   processedOn: string;
+  units: UnitData[];
 }
+
 export interface PopupState {
   open: boolean;
   title?: string;

@@ -120,7 +120,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
       dispatch(setMasterDataDataTouched(false));
       localStorage.setItem("hasVisitedMasterDataDetails", "true");
     }
-    console.log(hasVisited,updateButtonAction,id,masterDataDataTouched,"DATAEMPTY3")
+
   }, [id]);
 
   useEffect(() => {
@@ -730,7 +730,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
             />
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: row1HasError ? 3:2 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}

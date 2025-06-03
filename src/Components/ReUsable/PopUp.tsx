@@ -151,7 +151,7 @@ useEffect(() => {
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
           {subText && (
-            <Box display="flex" alignItems="center" gap={"130px"}>
+            <Box display="flex" alignItems="center" gap={!dailyPlanSampleFile?"130px":"164px"}>
               <Typography variant="body2" color="gray">
                 {subText}
               </Typography>

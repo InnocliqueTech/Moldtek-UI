@@ -187,7 +187,8 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             const shouldShow = localStorage.getItem("showNotificationPopup");
             if (shouldShow === "true") {
               try {
-                const response = await masterDataNotifications().unwrap();
+              const response = await masterDataNotifications(uploadFile?.name ?? "").unwrap();
+
                 dispatch(
                   setGlobalPopup({
                     open: true,
@@ -252,7 +253,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
   const confirmPublishTitle = id
     ? `Are you sure you want to update and publish? This version is ${UEN} V${displayVersion}.`
-    : `Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+    : !submitTrue?'Are you sure you want to submit and publish?':`Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const successTitle = id
     ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
@@ -261,13 +262,13 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const isSubmitDisabled = () => {
-    if (!id && printingTab && laminationTab) {
+    if (!id ) {
       return (
-        submitAndPublishButtonMasterData ||
-        submitAndPublishButtonDyeCutting ||
-        submitAndPublishButtonPrinting ||
-        ((!skipLamination || !skipLaminationButton) &&
-          submitAndPublishButtonLamination)
+        // submitAndPublishButtonMasterData ||
+        // submitAndPublishButtonDyeCutting ||
+        submitAndPublishButtonPrinting
+        // ((!skipLamination || !skipLaminationButton) &&
+        //   submitAndPublishButtonLamination)
       );
     } else if (id) {
       return (

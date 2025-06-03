@@ -80,11 +80,12 @@ export const masterDataApi = createApi({
         body: newItem,
       }),
     }),
-   masterDataNotifications: builder.query<any, void>({   
-  query: () => ({
-    url: `/master/getNotificationForUpload`,
+masterDataNotifications: builder.query<any, string>({
+  query: (newItem) => ({
+    url: `/master/getNotificationForUpload?fileName=${newItem}`,
     method: "GET",
   }),
+
 }),
 
 }),

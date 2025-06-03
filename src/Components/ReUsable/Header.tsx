@@ -278,19 +278,11 @@ const Header: React.FC<HeaderProps> = ({
           const shouldShow = localStorage.getItem("showDailyNotificationPopup");
           if (shouldShow === "true") {
             try {
-              const response = await dailyPlanNotifications().unwrap();
-              const transformedData = response?.data?.map((item: any) => {
-                const { status, ...rest } = item;
-                return {
-                  ...rest,
-                  fileReadStatus: status,
-                };
-              });
-
+              const response = await dailyPlanNotifications(uploadFile?.name ?? "").unwrap();
               dispatch(
                 setGlobalPopup({
                   open: true,
-                  data: transformedData,
+                  data: response && response?.notifications,
                 })
               );
 

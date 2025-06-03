@@ -323,7 +323,7 @@ if (unitEffNumLoading) return (
 );
 if (error) return <div>Error: Something Went Wrong...</div>;
 
-console.log(unitEffNumLoading,"LOADINGUNITNUMBER")
+
 
   return (
    <Box style={{

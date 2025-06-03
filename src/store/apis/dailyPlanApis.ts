@@ -186,7 +186,7 @@ export const dailyPlanApi = createApi({
         method: "POST",
         body: reportData,
       }),
-      invalidatesTags: ["PrintingReport"], // Optional: adjust if needed
+      invalidatesTags: ["PrintingReport"], 
     }),
     saveMakeReadyDetails: builder.mutation<
       SaveTravelCardResponse,
@@ -204,9 +204,9 @@ export const dailyPlanApi = createApi({
         },
       ],
     }),
-      dailyPlanNotifications: builder.query<any, void>({   
-  query: () => ({
-    url: `/dailyplan/getJobUploadNotifications?all=false`,
+      dailyPlanNotifications: builder.query<any, string>({
+  query: (newItem) => ({
+    url: `/dailyplan/getJobUploadNotifications?fileName=${newItem}`,
     method: "GET",
   }),
 }),
