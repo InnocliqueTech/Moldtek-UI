@@ -596,13 +596,7 @@ function ReusableTable<T extends Record<string, any>>({
                   <TextField
                     size="small"
                     variant="outlined"
-                    placeholder={
-                      id === "masterData"
-                        ? "Search for UEN"
-                        : id === "dailyPlan"
-                        ? "Search for Indent No or UEN"
-                        : "Search"
-                    }
+                    placeholder={"Search"}
                     onChange={(e) => setSearch(e.target.value)}
                     InputProps={{
                       startAdornment: (

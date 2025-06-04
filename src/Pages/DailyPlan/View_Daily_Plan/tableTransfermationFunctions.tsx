@@ -70,7 +70,7 @@ type TensionApiResponse = {
     };
   };
   
-  type TensionColumn = { id: string; label: string };
+  type TensionColumn = { id: string; label: string;editIcon:boolean };
   type TensionRow = { label: string;  edit?: boolean;
     [key: string]: string | number | boolean | undefined | null;  };
 
@@ -80,11 +80,11 @@ type TensionApiResponse = {
   ): { columns: TensionColumn[]; rows: TensionRow[] } => {
     
     const columns: TensionColumn[] = [
-      { id: "label", label: "" },
-      { id: "unwinder", label: "Unwinder" },
-      { id: "infeed", label: "Infeed" },
-      { id: "outfeed", label: "Outfeed" },
-      { id: "rewinder", label: "Rewinder" },
+      { id: "label", label: "",editIcon:false },
+      { id: "unwinder", label: "Unwinder",editIcon:false },
+      { id: "infeed", label: "Infeed",editIcon:false },
+      { id: "outfeed", label: "Outfeed",editIcon:false },
+      { id: "rewinder", label: "Rewinder",editIcon:false },
     ];
     if(!apiData){
         return { columns, rows:[] };

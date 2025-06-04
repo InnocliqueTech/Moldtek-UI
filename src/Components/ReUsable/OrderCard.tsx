@@ -7,6 +7,8 @@ import {
   IconButton,
   Modal,
   useMediaQuery,
+  Stack,
+  Avatar,
 } from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
 import { useSelector } from "react-redux";
@@ -91,6 +93,12 @@ const OrderCard: React.FC = () => {
     }
   },[location])
 
+  const getInitial = (name: string) =>
+  name ? name.trim().charAt(0).toUpperCase() : "?";
+
+  const logo = viewMasterDataDetails?.customer_logo;
+const name = viewMasterDataDetails?.customer_name;
+
   return (
     <Box>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 1.5 }}>
@@ -112,7 +120,7 @@ const OrderCard: React.FC = () => {
                 maxChars
               )}
             </Typography>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 4 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -153,19 +161,60 @@ const OrderCard: React.FC = () => {
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Customer Name
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                mt: 0.5,
-                wordBreak: "break-word",
-                whiteSpace: "pre-line",
-              }}
-            >
-              {renderValue(viewMasterDataDetails?.customer_name, maxChars)}
-            </Typography>
+        
+
+  <Box>
+    <Typography variant="body2" color="text.secondary" fontWeight={500}>
+      Customer Name
+    </Typography>
+<Stack direction="row" alignItems="center" spacing={1} mt={1}>
+  <Box position="relative" width={32} height={32}>
+    <Avatar
+      src={logo || ""}
+      sx={{
+        width: 32,
+        height: 32,
+        bgcolor: "#1976d2",
+        fontSize: 14,
+      }}
+    >
+      {!logo && getInitial(name)}
+    </Avatar>
+    {logo && (
+      <Tooltip title="Preview">
+        <IconButton
+          size="small"
+          onClick={() => setImagePreviewOpen(true)}
+          sx={{
+            position: "absolute",
+            top: -10,
+            right: -10,
+            bgcolor: "transparent",
+            "&:hover": { bgcolor: "transparent" },
+            // color:'blue'
+          }}
+        >
+          <Visibility fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    )}
+  </Box>
+
+  <Box>
+    <Typography
+      variant="body1"
+      sx={{
+        mt: 0.5,
+        wordBreak: "break-word",
+        whiteSpace: "pre-line",
+      }}
+    >
+      {renderValue(name, maxChars)}
+    </Typography>
+  </Box>
+</Stack>
+  </Box>
+
             <Box sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
@@ -213,44 +262,26 @@ const OrderCard: React.FC = () => {
 
           <Grid size={{ xs: 12, md: 4 }}>
             <Box />
-            <Box sx={{ mt: 0 }}>
+  <Box sx={{ mt: 0 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 fontWeight={500}
               >
-                Customer Picture
+               KLD
               </Typography>
-
-              {viewMasterDataDetails?.customer_logo ? (
-                <Box sx={{ display: "flex", flexDirection: "row", mt: 1 }}>
-                  <Box
-                    component="img"
-                    src={viewMasterDataDetails?.customer_logo}
-                    alt="Uploaded"
-                    sx={{
-                      width: 150,
-                      height: 35,
-                      borderRadius: "8px",
-                      objectFit: "cover",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Tooltip title="View">
-                    <IconButton
-                      onClick={() => setImagePreviewOpen(true)}
-                      color="primary"
-                      sx={{marginTop:'-7px'}}
-                    >
-                      <Visibility />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ) : (
-                <Typography variant="body1">N/A</Typography>
-              )}
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {renderValue(viewMasterDataDetails?.kld, maxChars)}
+              </Typography>
             </Box>
-            <Box sx={{ mt: viewMasterDataDetails?.customer_logo ? 0 : 2 }}>
+            <Box sx={{ mt:  3 }}>
               <AutoTooltipText
                 content={"Brand Name & Pack-Description"}
                 maxLength={30}

@@ -20,7 +20,7 @@ const inkCoatingColumns = [
   { id: "mixingOnGec", label: "Mixing on GEC" },
   { id: "mtplCode", label: "MTPL Code" },
   { id: "lfValue", label: "LF Value" },
-  { id: "supplierBatchNo", label: "Supplier Batch No", edit: true },
+  { id: "supplierBatchNo", label: "Supplier Batch No", edit: true,editIcon:true },
 ];
 
 const generateAnaloxColumns = (specs: any[]) => {
@@ -296,6 +296,7 @@ const MakeReady: React.FC<MakeReadyProps> = ({
           columns={inkCoatingColumns.map((col) => ({
             ...col,
             edit: isEditing && col.edit,
+            editIcon: col.editIcon
           }))}
           data={editableInkCoatingSpecifications || []}
           setData={(newData: any[]) =>
@@ -329,6 +330,7 @@ const MakeReady: React.FC<MakeReadyProps> = ({
           columns={materialColumns.map((col) => ({
             ...col,
             edit: isEditing && col.id === "gsm",
+            editIcon:col.id==="gsm"?true:false
           }))}
           data={[editableMaterialSpec]}
           setData={(newData: any[]) =>

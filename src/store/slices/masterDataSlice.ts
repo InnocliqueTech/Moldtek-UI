@@ -350,6 +350,7 @@ const initialState: MasterDataState = {
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
+    kld:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -391,6 +392,7 @@ const initialState: MasterDataState = {
   saveFormData: {
     job_master_id: 0,
     unit_effectivity_number: "",
+    kld:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -408,6 +410,7 @@ const initialState: MasterDataState = {
   saveMasterDataDetailsData: {
     job_master_id: 0,
     unit_effectivity_number: "",
+    kld:"",
     customer_name: "",
     customer_logo: "",
     noOfColorsSetting: "",
@@ -660,6 +663,7 @@ const initialState: MasterDataState = {
     masterDataDetails: {
       job_master_id: 0,
       unit_effectivity_number: "",
+      kld:"",
       customer_name: "",
       customer_logo: "",
       item_code: "",
@@ -970,6 +974,7 @@ const masterDataSlice = createSlice({
       state.saveFormData = {
         job_master_id: 0,
         unit_effectivity_number: "",
+        kld:"",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
@@ -989,6 +994,7 @@ const masterDataSlice = createSlice({
       state.saveMasterDataDetailsData = {
         job_master_id: 0,
         unit_effectivity_number: "",
+        kld:"",
         noOfColorsSetting: "",
         noOfSpecialColors: "",
         customer_name: "",
@@ -1062,6 +1068,7 @@ const masterDataSlice = createSlice({
         ups: "",
         tracks: "",
         unit_effectivity_number: "",
+        kld:"",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",

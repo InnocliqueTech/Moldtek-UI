@@ -513,7 +513,7 @@ export const printingMCData = [
 export const printingColumns = [
     { id: "category", label: "Category",edit: false },
     { id: "target", label: "Target" , edit: true},
-    { id: "actuals", label: "Actuals",edit: true },
+    { id: "actuals", label: "Actuals",edit: true,editIcon:true },
 ];
 
 export const printingData = [
@@ -552,7 +552,7 @@ export const jobDetails = [
 export const laminationColumns = [
     { id: "category", label: "Category" , edit:false},
     { id: "target", label: "Target", edit:true },
-    { id: "actuals", label: "Actuals", edit:true },
+    { id: "actuals", label: "Actuals", edit:true,editIcon:true },
 ];
 
 export const laminationData = [
@@ -581,7 +581,7 @@ export const laminationData = [
 export const labelCuttingColumns = [
     { id: "category", label: "Category", edit:false },
     { id: "target", label: "Target" ,edit:false},
-    { id: "actuals", label: "Actuals", edit:true },
+    { id: "actuals", label: "Actuals", edit:true,editIcon:true },
 ];
 
 export const labelCuttingData = [
@@ -618,10 +618,10 @@ export const jobMetadata = [
 ];
 
 export const labelDispatchColums = [
-    { id: "requiredLabelsForDispatch", label: "REQUIRED LABELS FOR DISPATCH", edit:true },
-    { id: "dispatchedLabels", label: "DISPATCHED LABELS" , edit:true},
-    { id: "balanceLabels", label: "BALANCE LABELS", edit:true },
-    { id: "hodComments", label:"HOD Comments", edit:true}
+    { id: "requiredLabelsForDispatch", label: "REQUIRED LABELS FOR DISPATCH", edit:true,editIcon:true },
+    { id: "dispatchedLabels", label: "DISPATCHED LABELS" , edit:true,editIcon:true},
+    { id: "balanceLabels", label: "BALANCE LABELS", edit:true,editIcon:true },
+    { id: "hodComments", label:"HOD Comments", edit:true,editIcon:true}
 ]
 
 export const labelDispatchRows = [
@@ -656,8 +656,8 @@ export const machineSpecsRows = [
 
 export const productionColumns = [
     { id: 'particular', label: 'Particular' ,edit:false },
-    { id: 'target', label: 'Target' ,edit:true},
-    { id: 'actual', label: 'Actual' , edit:true},
+    { id: 'target', label: 'Target' ,edit:true,editIcon:true},
+    { id: 'actual', label: 'Actual' , edit:true,editIcon:true},
   ];
 
 
@@ -676,10 +676,10 @@ export const productionColumns = [
 ];
 
   export const approvalColumns = [
-    { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" , edit: true},
-    { id: "qcApproval", label: "QC APPROVAL", edit: true },
-    { id: "inchargeComments", label: "INCHARGE COMMENTS", edit: true },
-    { id: "remarks", label: "REMARKS", edit: true} // Added new column at the end
+    { id: "supervisorApproval", label: "SUPERVISOR APPROVAL" , edit: true,editIcon:true},
+    { id: "qcApproval", label: "QC APPROVAL", edit: true ,editIcon:true},
+    { id: "inchargeComments", label: "INCHARGE COMMENTS", edit: true,editIcon:true },
+    { id: "remarks", label: "REMARKS", edit: true,editIcon:true} 
   ];
   
   export const approvalData = [

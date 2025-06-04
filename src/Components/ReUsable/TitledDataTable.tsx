@@ -11,6 +11,7 @@ interface Column {
   options?: string[];
   edit?: boolean;
   editSelect?: boolean;
+  editIcon?:boolean;
 }
 
 interface TitledDataTableProps<T> {
@@ -49,6 +50,9 @@ const TitledDataTable = <T extends Record<string, any>>({
   setInfoItems,
   rowEditable,
 }: TitledDataTableProps<T>) => {
+
+console.log(columns,"COLUMNSDDATA")
+
   return (
     <Box
       sx={{

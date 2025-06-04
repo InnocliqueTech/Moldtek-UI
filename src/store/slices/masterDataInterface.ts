@@ -24,6 +24,7 @@ export interface RequestPayload {
   masterDataDetails: {
     job_master_id: number;
     unit_effectivity_number: string;
+     kld:string;
     customer_name: string;
     customer_logo: string;
     item_code: string;
@@ -151,6 +152,7 @@ export interface LaminationFormData {
 export interface MasterFormData {
   job_master_id: number;
   unit_effectivity_number: string;
+   kld:string;
   customer_name: string;
   customer_logo: string;
   jar_cap: string;
@@ -180,6 +182,7 @@ export interface MasterDataFormErrors {
   ups: string;
   tracks: string;
   unit_effectivity_number: string;
+   kld:string;
   customer_name: string;
   customer_logo: string;
   jar_cap: string;

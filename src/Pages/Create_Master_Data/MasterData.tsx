@@ -307,7 +307,7 @@ const MasterData: React.FC = () => {
           }
           title="Overview"
           info={true}
-          searchVisible={false}
+          searchVisible={true}
           action={true}
           actions={actions}
           isLoading={listOfCompaniesLoading}

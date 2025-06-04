@@ -183,7 +183,8 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
   const rollColumns = rollKeys.map((roll) => ({
     id: roll,
     label: roll.replace("-", " "),
-     edit: isEditing
+     edit: isEditing,
+     editIcon:true
   }));
 
   const rollKeysMetrics: string[] = [];
@@ -205,8 +206,11 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
   const rollColumnsMetrics = rollKeysMetrics.map((roll) => ({
     id: roll,
     label: roll.replace("-", " "),
-     edit: isEditing
+     edit: isEditing,
+     editIcon:true
   }));
+
+  console.log(tensionRows,"TENSIONCOLUMNS")
 
 
   return (
@@ -234,7 +238,9 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
             edit: isEditing && col.id !== "label",
           }))}
           rowEditable={(row) => row.label === "Actuals"}
-          data={tensionRows}
+          data={tensionRows.map((row) =>
+    row.label === "Actuals" ? { ...row, rowEditIcon: true } : row
+  )}
           setData={(data: any) => handleDataUpdate("tensionControl", data)}
           firstRow
         />
@@ -262,13 +268,14 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
           columns={[
             { id: "widthMm", label: "Width mm" },
             { id: "thicknessMicrons", label: "Thickness Microns" },
-            { id: "gsm", label: "GSM", edit: isEditing },
+            { id: "gsm", label: "GSM", edit: isEditing, editIcon:true },
             { id: "dyne", label: "DYNE" },
-            { id: "staticCharge", label: "Static Charge", edit: isEditing },
+            { id: "staticCharge", label: "Static Charge", edit: isEditing,editIcon:true },
             {
               id: "formatCorrection",
               label: "Format Correction",
               edit: isEditing,
+              editIcon:true
             },
           ]}
           data={materialSpecsData ?materialSpecsData:[]}
@@ -282,14 +289,15 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
         <TitledDataTable
           title="Foil Roll Consumption Details"
           columns={[
-            { id: "foilInputRoll", label: "Foil Input Roll", edit: isEditing },
+            { id: "foilInputRoll", label: "Foil Input Roll", edit: isEditing ,editIcon:true},
             {
               id: "foilReturnRoll",
               label: "Foil Return Roll",
               edit: isEditing,
+              editIcon:true
             },
-            { id: "consumption", label: "Consumption", edit: isEditing },
-            { id: "foilWidth", label: "Foil Width", edit: isEditing },
+            { id: "consumption", label: "Consumption", edit: isEditing,editIcon:true },
+            { id: "foilWidth", label: "Foil Width", edit: isEditing,editIcon:true },
           ]}
           data={foilConsumptionData}
           setData={(data: any) =>
@@ -302,7 +310,9 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
         <TitledDataTable
           title="Printing Process Report"
           columns={[...baseColumns, ...rollColumns]}
-          data={printingProcessData}
+          data={printingProcessData.map((row) =>
+    row.particular === "Input Plain Film For Printing Mtrs" ||row.particular === "Input Film For Printing Kgs" ? { ...row, rowEditIcon: true } : row
+  )}
           setData={(data: any) =>
             handleDataUpdate("printingProcessReport", data)
           }

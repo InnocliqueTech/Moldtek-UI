@@ -188,7 +188,9 @@ const TravelCard: React.FC<TravelCardProps> = ({
 
             return { ...col, edit: false };
           })}
-          data={editableData.printingMachine.categories}
+          data={editableData.printingMachine.categories.map((row) =>
+row.category === "Inspection Wastage" ? { ...row, rowEditIcon: true } : row
+  )}
           setData={(newData: any[]) =>
             handleDataUpdate("printingMachine", newData)
           }
@@ -227,7 +229,9 @@ const TravelCard: React.FC<TravelCardProps> = ({
 
               return { ...col, edit: false };
             })}
-            data={editableData.laminationMachine.categories}
+            data={editableData.laminationMachine.categories.map((row) =>
+row.category === "Inspection Wastage" ? { ...row, rowEditIcon: true } : row
+  )}
             setData={(newData: any[]) =>
               handleDataUpdate("laminationMachine", newData)
             }

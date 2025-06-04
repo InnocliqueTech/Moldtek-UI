@@ -182,7 +182,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
           dispatch(setSubmitAndPublishPopup(false));
           dispatch(setUploadedFile(null));
           localStorage.setItem("showNotificationPopup", "true");
-
           setTimeout(async () => {
             const shouldShow = localStorage.getItem("showNotificationPopup");
             if (shouldShow === "true") {
@@ -262,13 +261,13 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
 
   const isSubmitDisabled = () => {
-    if (!id ) {
+    if (!id && printingTab && laminationTab) {
       return (
-        // submitAndPublishButtonMasterData ||
-        // submitAndPublishButtonDyeCutting ||
-        submitAndPublishButtonPrinting
-        // ((!skipLamination || !skipLaminationButton) &&
-        //   submitAndPublishButtonLamination)
+        submitAndPublishButtonMasterData ||
+        submitAndPublishButtonDyeCutting ||
+        submitAndPublishButtonPrinting ||
+        ((!skipLamination || !skipLaminationButton) &&
+          submitAndPublishButtonLamination)
       );
     } else if (id) {
       return (

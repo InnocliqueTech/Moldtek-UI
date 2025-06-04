@@ -392,76 +392,77 @@ const Lamination: React.FC<LaminationProps> = ({
       laminationTableValueVaidation ||
       allValid;
     dispatch(setSubmitAndPublishButtonMasterLamination(shouldDisableButton));
+     dispatch(setLaminationSave(shouldDisableButton));
   }, [errors, formData, laminationTableValueVaidation]);
 
-  useEffect(() => {
-    const importantFields = [
-      "zone1_temp",
-      "zone2_temp",
-      "nip_pressure_bar",
-      "speed",
-      "lami_set_tension",
-      "rewinder_tension",
-      "printed_film_tension",
-      "laminate_film_tension",
-      "viscosity_range",
-      "adhesive_gsm",
+  // useEffect(() => {
+  //   const importantFields = [
+  //     "zone1_temp",
+  //     "zone2_temp",
+  //     "nip_pressure_bar",
+  //     "speed",
+  //     "lami_set_tension",
+  //     "rewinder_tension",
+  //     "printed_film_tension",
+  //     "laminate_film_tension",
+  //     "viscosity_range",
+  //     "adhesive_gsm",
 
-      "substrate_type",
+  //     "substrate_type",
 
-      "dyne_level",
-      "width",
-      "thickness",
-      "density",
-    ] as (
-      | keyof LaminationFormData["laminationConditions"]
-      | keyof LaminationFormData["laminationSubstrate"]
-      | keyof LaminationFormData["bondingMaterials"][number]
-    )[];
+  //     "dyne_level",
+  //     "width",
+  //     "thickness",
+  //     "density",
+  //   ] as (
+  //     | keyof LaminationFormData["laminationConditions"]
+  //     | keyof LaminationFormData["laminationSubstrate"]
+  //     | keyof LaminationFormData["bondingMaterials"][number]
+  //   )[];
 
-    const bondingMaterials = Array.isArray(formData?.bondingMaterials)
-      ? formData.bondingMaterials
-      : [];
+  //   const bondingMaterials = Array.isArray(formData?.bondingMaterials)
+  //     ? formData.bondingMaterials
+  //     : [];
 
-    const hasNonEmptyValue = bondingMaterials.some((item) =>
-      Object.entries(item).some(
-        ([key, value]) =>
-          !["type", "bonding_id", "lamination_id"].includes(key) &&
-          value !== "" &&
-          value !== null &&
-          value !== undefined
-      )
-    );
+  //   const hasNonEmptyValue = bondingMaterials.some((item) =>
+  //     Object.entries(item).some(
+  //       ([key, value]) =>
+  //         !["type", "bonding_id", "lamination_id"].includes(key) &&
+  //         value !== "" &&
+  //         value !== null &&
+  //         value !== undefined
+  //     )
+  //   );
 
-    const isAnyFieldFilled = importantFields.some((field) => {
-      if (field in formData.laminationConditions) {
-        const value =
-          formData.laminationConditions[
-            field as keyof LaminationFormData["laminationConditions"]
-          ];
+  //   const isAnyFieldFilled = importantFields.some((field) => {
+  //     if (field in formData.laminationConditions) {
+  //       const value =
+  //         formData.laminationConditions[
+  //           field as keyof LaminationFormData["laminationConditions"]
+  //         ];
 
-        if (typeof value === "string") return value.trim() !== "";
-        return value !== null && value !== undefined;
-      }
+  //       if (typeof value === "string") return value.trim() !== "";
+  //       return value !== null && value !== undefined;
+  //     }
 
-      if (field in formData.laminationSubstrate) {
-        const value =
-          formData.laminationSubstrate[
-            field as keyof LaminationFormData["laminationSubstrate"]
-          ];
+  //     if (field in formData.laminationSubstrate) {
+  //       const value =
+  //         formData.laminationSubstrate[
+  //           field as keyof LaminationFormData["laminationSubstrate"]
+  //         ];
 
-        if (typeof value === "string") return value.trim() !== "";
-        return value !== null && value !== undefined;
-      }
-    });
+  //       if (typeof value === "string") return value.trim() !== "";
+  //       return value !== null && value !== undefined;
+  //     }
+  //   });
 
-    const hasErrors = Object.values(errors).some((error) => error);
+  //   const hasErrors = Object.values(errors).some((error) => error);
 
-    const isSaveEnabled =
-      !isAnyFieldFilled || hasErrors || laminationTableValueVaidation;
+  //   const isSaveEnabled =
+  //     !isAnyFieldFilled || hasErrors || laminationTableValueVaidation;
 
-    dispatch(setLaminationSave(isSaveEnabled && !hasNonEmptyValue));
-  }, [errors, formData, laminationTableValueVaidation]);
+  //   dispatch(setLaminationSave(isSaveEnabled && !hasNonEmptyValue));
+  // }, [errors, formData, laminationTableValueVaidation]);
   useEffect(() => {
     if (formInitialized) return;
     if (

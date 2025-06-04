@@ -9,7 +9,7 @@ import {
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { Close, Delete, Edit, Visibility } from "@mui/icons-material";
+import { Close, CloudUpload, Delete, Edit, Upload, Visibility } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useMemo, useState } from "react";
@@ -204,6 +204,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
+     kld:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -233,6 +234,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     "ups",
     "noOfColorsSetting",
     "noOfSpecialColors",
+    //  "kld",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   const freeTextFields: (keyof MasterFormData)[] = [
@@ -392,6 +394,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     return {
       job_master_id: data?.job_master_id || 0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
+       kld:data?.kld||"",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",
       jar_cap: data?.jar_cap || "",
@@ -429,31 +432,32 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     );
 
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
+    dispatch(setMasterDataDetailsSave(hasErrors));
   }, [formData, errors]);
 
-  useEffect(() => {
-    const importantFields: (keyof MasterFormData)[] = [
-      "unit_effectivity_number",
-      "customer_name",
-      "brand_description",
-      "label_type",
-      "jar_cap",
-      "repeat_length",
-      "ups",
-    ];
+  // useEffect(() => {
+  //   const importantFields: (keyof MasterFormData)[] = [
+  //     "unit_effectivity_number",
+  //     "customer_name",
+  //     "brand_description",
+  //     "label_type",
+  //     "jar_cap",
+  //     "repeat_length",
+  //     "ups",
+  //   ];
 
-    const { job_master_id, ...formDataWithoutJobId } = formData;
+  //   const { job_master_id, ...formDataWithoutJobId } = formData;
 
-    const anyValuePresent = Object.values(formDataWithoutJobId).some(
-      (value) => value !== "" && value !== null && value !== undefined
-    );
+  //   const anyValuePresent = Object.values(formDataWithoutJobId).some(
+  //     (value) => value !== "" && value !== null && value !== undefined
+  //   );
 
-    const anyErrors = importantFields.some((field) => errors[field] !== "");
+  //   const anyErrors = importantFields.some((field) => errors[field] !== "");
 
-    const canSubmit = anyValuePresent && !anyErrors;
+  //   const canSubmit = anyValuePresent && !anyErrors;
 
-    dispatch(setMasterDataDetailsSave(!canSubmit));
-  }, [formData, errors, dispatch]);
+  //   dispatch(setMasterDataDetailsSave(!canSubmit));
+  // }, [formData, errors, dispatch]);
 
   const handleRemoveImage = () => {
     setFormData((prev) => ({
@@ -462,7 +466,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }));
   };
   const row1HasError =
-    !!errors.unit_effectivity_number || !!errors.customer_name;
+    !!errors.unit_effectivity_number || !!errors.customer_name ||!!errors.kld;
   const row2HasError = !!errors.item_code || !!errors.brand_description;
 
   useEffect(() => {
@@ -478,131 +482,39 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-        <Typography
-          sx={{ color: "#2F2FF", fontWeight: 600, fontSize: "16px" }}
-          gutterBottom
-        >
-          SKU Master Data
-        </Typography>
+<Box
+  display="flex"
+  justifyContent="space-between"
+  alignItems="center"
+  mb={2}
+>
+  <Typography
+    sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+    gutterBottom
+  >
+    SKU Master Data
+  </Typography>
 
-        <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput
-              label="Unit Effective Number"
-              value={formData.unit_effectivity_number}
-              onChange={(e) =>
-                handleChange("unit_effectivity_number", e.target.value)
-              }
-              error={!!errors.unit_effectivity_number}
-              helperText={errors.unit_effectivity_number}
-              disabled={id ? true : false}
-              required
-            />
-            <Box
-              sx={{
-                minHeight:
-                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
-              }}
-            />
-            <Box
-              sx={{
-                mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
-              }}
-            >
-              <DropdownComponent
-                label="Type of Label"
-                options={dropdownOptions ? dropdownOptions : []}
-                value={formData.label_type}
-                onChange={(e) => handleChange("label_type", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                required
-              />
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <DropdownComponent
-                label="Jar/Cap"
-                options={["JAR", "CAP", "JAR&CAP"]}
-                value={formData.jar_cap}
-                onChange={(e) => handleChange("jar_cap", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                required
-              />
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 4 }}>
-            <ReusableInput
-              label="Customer"
-              value={formData.customer_name}
-              onChange={(e) => handleChange("customer_name", e.target.value)}
-              error={!!errors.customer_name}
-              helperText={errors.customer_name}
-              required
-            />
-            <Box
-              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
-            />
-            <Box sx={{ mt: row1HasError && !!errors.customer_name ? 0 : 2 }} />
-            <ReusableInput
-              label="ITEM Code"
-              value={formData.item_code}
-              onChange={(e) => handleChange("item_code", e.target.value)}
-              error={!!errors.item_code}
-              helperText={errors.item_code}
-            />
-            <Box
-              sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
-            />
-            <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
-              <DropdownTextComponent
-                label="Structure"
-                options={dropDownValuesStructure}
-                value={formData.structure}
-                onChange={(e) => handleChange("structure", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                allowNewOption
-                dropdown="structure"
-              />
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 500 }}
-                color="#656565"
-              >
-                Customer Picture
-              </Typography>
-
-              <Box
-                display="flex"
-                alignItems="center"
-                gap={2}
-                mt={formData.customer_logo ? 0 : 0.4}
-              >
-                {formData.customer_logo ? (
+  <Box display="flex" alignItems="center" gap={1}>
+    <Typography sx={{ fontWeight: 500 }}>Customer Picture:</Typography>
+    {formData.customer_logo ? (
                   <>
                     {/* Uploaded Image Preview */}
-                    <Box
+                    {/* <Box
                       component="img"
                       src={formData.customer_logo}
                       alt="Uploaded"
                       sx={{
-                        width: 150,
+                        width: 80,
                         height: 30,
                         borderRadius: "8px",
                         objectFit: "cover",
                         flexShrink: 0,
                       }}
-                    />
+                    /> */}
 
                     {/* Action Icons */}
-                    <Box display="flex" gap={1} alignItems="center">
+                    <Box display="flex" gap={0} alignItems="center">
                       {/* Eye Icon */}
                       <Tooltip title="View">
                         <IconButton
@@ -693,44 +605,146 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                     </Modal>
                   </>
                 ) : (
-                  // Upload button when no image
-                  <label htmlFor="upload-image">
-                    <Box
-                      component="span"
-                      sx={{
-                        background: "#1976d2",
-                        color: "#fff",
-                        px: 2,
-                        py: 0.7,
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 150,
-                        height: 35,
-                        textAlign: "center",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Upload Image
-                    </Box>
-                    <input
-                      accept="image/*"
-                      type="file"
-                      id="upload-image"
-                      style={{ display: "none" }}
-                      onChange={handleImageUpload}
-                    />
-                  </label>
-                )}
-              </Box>
+                  <>
+
+    <label htmlFor="sku-upload">
+      <Tooltip title="Upload File">
+        <IconButton
+  component="span"
+  sx={{
+    p: 0.5,
+    '&:hover': {
+      backgroundColor: 'transparent', 
+    },
+  }}
+>
+          <CloudUpload  />
+        </IconButton>
+      </Tooltip>
+    </label>
+
+    <input
+      id="sku-upload"
+      type="file"
+      accept="image/*"
+      style={{ display: "none" }}
+      onChange={handleImageUpload}
+    />
+    </>)}
+  </Box>
+</Box>
+
+        <Grid container spacing={2} pt={1}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <ReusableInput
+              label="Unit Effective Number"
+              value={formData.unit_effectivity_number}
+              onChange={(e) =>
+                handleChange("unit_effectivity_number", e.target.value)
+              }
+              error={!!errors.unit_effectivity_number}
+              helperText={errors.unit_effectivity_number}
+              disabled={id ? true : false}
+              required
+              endIcon={!id?true:false}
+            />
+            <Box
+              sx={{
+                minHeight:
+                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+              }}
+            />
+            <Box
+              sx={{
+                mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
+              }}
+            >
+              <DropdownComponent
+                label="Type of Label"
+                options={dropdownOptions ? dropdownOptions : []}
+                value={formData.label_type}
+                onChange={(e) => handleChange("label_type", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
+                required
+              />
             </Box>
+            <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
+              <DropdownTextComponent
+                label="Structure"
+                options={dropDownValuesStructure}
+                value={formData.structure}
+                onChange={(e) => handleChange("structure", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
+                allowNewOption
+                dropdown="structure"
+              />
+            </Box>
+            
+          </Grid>
+          <Grid size={{ xs: 12, md:4 }}>
+            <ReusableInput
+              label="KLD"
+              value={formData. kld}
+              onChange={(e) =>
+                handleChange("kld", e.target.value)
+              }
+              error={!!errors.kld}
+              helperText={errors.kld}
+              disabled={true }
+              // required
+            />
+            <Box
+              sx={{
+                minHeight:
+                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+              }}
+            />
+            <Box
+              sx={{
+                mt: row1HasError && !!errors.kld ? 0 : 2,
+              }}
+            >
+            <ReusableInput
+              label="ITEM Code"
+              value={formData.item_code}
+              onChange={(e) => handleChange("item_code", e.target.value)}
+              error={!!errors.item_code}
+              helperText={errors.item_code}
+            />
+            <Box
+              sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
+            />
+            </Box>
+            <Box
+              sx={{ mt: row2HasError && !!errors.brand_description ? 0 : 2 }}
+            >
+              <DropdownComponent
+                label="Segment"
+                options={segmentNames}
+                value={formData.segment}
+                onChange={(e) => handleChange("segment", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
+              />
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md:4 }}>
+            <ReusableInput
+              label="Customer"
+              value={formData.customer_name}
+              onChange={(e) => handleChange("customer_name", e.target.value)}
+              error={!!errors.customer_name}
+              helperText={errors.customer_name}
+              required
+            />
             <Box
               sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
             />
-
-            <Box sx={{ mt: row1HasError ? 3:2 }}>
+            
+            <Box sx={{ mt: row1HasError && !!errors.customer_name ? 0:2 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}
@@ -745,18 +759,23 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 multiline={false}
               />
             </Box>
-            <Box
-              sx={{ mt: row2HasError && !!errors.brand_description ? 0 : 2 }}
-            >
+            
+                        <Box sx={{ mt: row1HasError ?3:2 }}>
               <DropdownComponent
-                label="Segment"
-                options={segmentNames}
-                value={formData.segment}
-                onChange={(e) => handleChange("segment", e.target.value)}
+                label="Jar/Cap"
+                options={["JAR", "CAP", "JAR&CAP"]}
+                value={formData.jar_cap}
+                onChange={(e) => handleChange("jar_cap", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
+                required
               />
             </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md:4 }}>
+
+
           </Grid>
         </Grid>
       </Box>

@@ -42,8 +42,8 @@ const laminationFilmColumns = [
 
 const repeatColumns = [
   { id: "label", label: "" },
-  { id: "printedFilmRepeat", label: "Printed Film", edit: true },
-  { id: "afterLaminationRepeat", label: "After Lamination", edit: true },
+  { id: "printedFilmRepeat", label: "Printed Film", edit: true,editIcon:true },
+  { id: "afterLaminationRepeat", label: "After Lamination", edit: true,editIcon:true },
 ];
 
 const bondingMaterialColumns = [
@@ -51,31 +51,31 @@ const bondingMaterialColumns = [
   { id: "code", label: "Code" },
   { id: "brand", label: "Brand" },
   { id: "mixingRatio", label: "Mixing Ratio" },
-  { id: "actual", label: "Actual", edit: true },
+  { id: "actual", label: "Actual", edit: true ,editIcon:true},
 ];
 
 const viscosityWeightColumns = [
   { id: "viscosityRange", label: "Viscosity Range" },
-  { id: "actualViscosity", label: "Actual", edit: true },
+  { id: "actualViscosity", label: "Actual", edit: true,editIcon:true },
   { id: "gsmRange", label: "GSM Range" },
-  { id: "gsmRangeActual", label: "Actual", edit: true },
-  { id: "mixingComposition", label: "Mixing Composition", edit: true },
-  { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true },
-  { id: "compositeGsm", label: "Composite gsm ", edit: true },
+  { id: "gsmRangeActual", label: "Actual", edit: true,editIcon:true },
+  { id: "mixingComposition", label: "Mixing Composition", edit: true,editIcon:true },
+  { id: "rubberRollerWidth", label: "Rubber Roller Width", edit: true,editIcon:true },
+  { id: "compositeGsm", label: "Composite gsm ", edit: true,editIcon:true },
 ];
 
 const laminationProcessColumns = [
   { id: "particular", label: "" },
-  { id: "target", label: "Target", edit: true },
-  { id: "actual", label: "Actual", edit: true },
+  { id: "target", label: "Target", edit: true,editIcon:true },
+  { id: "actual", label: "Actual", edit: true ,editIcon:true},
 ];
 
 const qcCheckColumns = [
   { id: "type", label: "Type" },
-  { id: "repeat", label: "Repeat", edit: true },
-  { id: "curling", label: "Curling", edit: true },
-  { id: "bondStrength", label: "Bond Strength", edit: true },
-  { id: "others", label: "Others", edit: true },
+  { id: "repeat", label: "Repeat", edit: true,editIcon:true },
+  { id: "curling", label: "Curling", edit: true ,editIcon:true},
+  { id: "bondStrength", label: "Bond Strength", edit: true,editIcon:true },
+  { id: "others", label: "Others", edit: true,editIcon:true },
 ];
 
 const plainFilmLeftColumns = [
@@ -333,7 +333,9 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
             ...col,
             edit: isEditing && col.id !== "particular",
           }))}
-          data={zoneTempPressingData}
+          data={zoneTempPressingData.map((row) =>
+row.particular === "Actual"  ? { ...row, rowEditIcon: true } : row
+  )}
           firstRow={true}
           setData={(data: any) =>
             handleDataUpdate("zoneTemperatureAndPressing", data)
@@ -348,7 +350,9 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
             ...col,
             edit: isEditing && col.id !== "particular",
           }))}
-          data={unwindRewindData}
+          data={unwindRewindData.map((row) =>
+row.particular === "Actual"  ? { ...row, rowEditIcon: true } : row
+  )}
           firstRow={true}
           setData={(data: any) =>
             handleDataUpdate("unwindingRewindingTension", data)
@@ -363,7 +367,9 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
             ...col,
             edit: isEditing && col.id !== "spec",
           }))}
-          data={laminationFilmData}
+          data={laminationFilmData.map((row) =>
+row.spec === "GSM"  ? { ...row, rowEditIcon: true } : row
+  )}
           firstRow={true}
           setData={(data: any) =>
             handleDataUpdate("laminationFilmSpecifications", data)

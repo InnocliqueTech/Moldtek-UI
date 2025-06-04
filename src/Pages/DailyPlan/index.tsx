@@ -305,7 +305,7 @@ const dispatch = useDispatch()
               title="Job OverView"
               pageNumber={page}
               info={true}
-              searchVisible={false}
+              searchVisible={true}
               action={false}
               onSelectionChange={(selectedItems) => {
                 console.log('Selected items:', selectedItems);

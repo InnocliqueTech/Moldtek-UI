@@ -14,7 +14,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { Done } from "@mui/icons-material";
+import { Done, Edit } from "@mui/icons-material";
 import { AutocompleteCell } from "../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -36,7 +36,8 @@ interface Column {
   editSelect?: boolean;
   required?:boolean;
   onNewOptionAdd?:boolean;
-  field?:string
+  field?:string;
+    editIcon?: boolean; 
 }
 
 interface DataTableProps<T> {
@@ -197,6 +198,7 @@ const DataTable = <T extends Record<string, any>>({
     "volume",
     "color_pantone"
   ];
+  console.log(data,"DATAOFTHETABLE")
 
   return (
     <>
@@ -276,6 +278,11 @@ const DataTable = <T extends Record<string, any>>({
                       *
                     </Box>
                   )}
+                  {column.edit && column.editIcon && (
+                    <Box component="span" sx={{ color: "#00000066", ml: 0.5 }}>
+                      <Edit sx={{width:'24px',height:'16px'}}/>
+                    </Box>
+                  )}
                 </TableCell>
               ))}
             </TableRow>
@@ -316,74 +323,80 @@ const DataTable = <T extends Record<string, any>>({
                           : "1px solid #ccc",
                       }}
                     >
-                  {
-  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && [ "ratio"].includes(column.id)) ||  ( !location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" &&  ["code", "brand", "ratio"].includes(column.id)) ||
+{(
+  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && ["ratio"].includes(column.id)) ||
+  (!location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && ["code", "brand", "ratio"].includes(column.id)) ||
   (row?.type === "Adhesive" && ["ratio"].includes(column.id)) ||
-  (row?.type === "Hardner" && ["ratio"].includes(column.id)) ? (
-    location.pathname.includes("/viewMasterData") ? (
-      <Box sx={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#2F2F2F" }}>
-        {row[column.id]}&nbsp;kg
-      </Box>
-    ) : (
+  (row?.type === "Hardner" && ["ratio"].includes(column.id))
+) ? (
+  location.pathname.includes("/viewMasterData") ? (
+    <Box sx={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#2F2F2F" }}>
+      {row[column.id]}&nbsp;kg
+    </Box>
+  ) : (
+    <Box sx={{ position: "relative", width: "80%" }}>
+      {/* TextField input */}
+      <TextField
+        variant="standard"
+        value={row[column.id]}
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          const isValid = validateInput(column.id, inputValue);
+          const key = `${rowIndex}_${column.id}`;
+          const updatedInvalidFields = { ...invalidFields, [key]: !isValid };
+          setInvalidFields(updatedInvalidFields);
+          dispatch(setInvalidFieldsTable(updatedInvalidFields));
 
-      <Box sx={{ position: "relative", width: "80%" }}>
-        <TextField
-          variant="standard"
-          value={row[column.id]}
-          onChange={(e) => {
-            const inputValue = e.target.value;
-            const isValid = validateInput(column.id, inputValue);
-            const key = `${rowIndex}_${column.id}`;
-            const updatedInvalidFields = { ...invalidFields, [key]: !isValid };
-            setInvalidFields(updatedInvalidFields);
-            dispatch(setInvalidFieldsTable(updatedInvalidFields));
+          const isLaminationField = laminationFields.some((field) =>
+            column.id.toLowerCase().includes(field.toLowerCase())
+          );
+          dispatch(setLaminationTableValueVaidation(isLaminationField && !isValid ? true : false));
 
-            const isLaminationField = laminationFields.some((field) =>
-              column.id.toLowerCase().includes(field.toLowerCase())
-            );
-            dispatch(setLaminationTableValueVaidation(isLaminationField && !isValid ? true : false));
+          const isPrintingField = printingFields.some((field) =>
+            column.id.toLowerCase().includes(field.toLowerCase())
+          );
+          dispatch(setPrintingTableValueVaidation(isPrintingField && !isValid ? true : false));
 
-            const isPrintingField = printingFields.some((field) =>
-              column.id.toLowerCase().includes(field.toLowerCase())
-            );
-            dispatch(setPrintingTableValueVaidation(isPrintingField && !isValid ? true : false));
+          handleChange(rowIndex, column.id as keyof T, inputValue as T[keyof T]);
+        }}
+        fullWidth
+        InputProps={{
+          disableUnderline: true,
+          sx: {
+            fontSize: "14px",
+            color: "#2F2F2F",
+            height: "32px",
+            padding: "0px",
+            input: { textAlign: "left", paddingRight: "30px" },
+          },
+        }}
+        inputProps={{
+          inputMode: column.id === "ratio" ? "numeric" : "text",
+        }}
+      />
 
-            handleChange(rowIndex, column.id as keyof T, inputValue as T[keyof T]);
+      {/* KG Unit Label */}
+      {column.id === "ratio" && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+            right: "8px",
+            pointerEvents: "none",
+            color: "#666",
+            fontSize: "14px",
           }}
-          fullWidth
-          InputProps={{
-            disableUnderline: true,
-            sx: {
-              fontSize: "14px",
-              color: "#2F2F2F",
-              height: "32px",
-              padding: "0px",
-              input: { textAlign: "left", paddingRight: "30px" },
-            },
-          }}
-          inputProps={{
-            inputMode: column.id === "ratio" ? "numeric" : "text",
-          }}
-        />
-        {column.id === "ratio" && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              transform: "translateY(-50%)",
-              right: "8px",
-              pointerEvents: "none",
-              color: "#666",
-              fontSize: "14px",
-            }}
-          >
-            kg
-          </Box>
-        )}
-      </Box>
-    )
-  ) 
- :   column.isDropdown &&
+        >
+          kg
+        </Box>
+      )}
+
+      {/* Edit Icon for Actuals Row in First Column */}
+
+    </Box>
+  )
+) :  column.isDropdown &&
                         row.type === "Hardner" &&
                         column.id === "code" ? (
                         <Select
@@ -607,7 +620,7 @@ const DataTable = <T extends Record<string, any>>({
                                 color: "#2F2F2F",
                                 height: "32px",
                                 padding: "0px",
-                                background: isEditing ? "#D6FAFA" : ""
+                                // background: isEditing ? "" : ""
                               },
                             }}
                           />
@@ -642,6 +655,11 @@ const DataTable = <T extends Record<string, any>>({
                                     *
                                   </Box>
                                 )}
+                                      { row.rowEditIcon && (
+ <Box component="span" sx={{ color: "#00000066", ml: 0.5 }}>
+                      <Edit sx={{width:'24px',height:'16px'}}/>
+                    </Box>
+      )}
                               </>
                             ) : (
                               "N/A"

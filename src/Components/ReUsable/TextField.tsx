@@ -7,7 +7,7 @@ import {
   Typography,
   Tooltip
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
 import AutoTooltipText from "./AutoTooltipText";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -24,6 +24,7 @@ interface ReusableInputProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   required?: boolean;
+  endIcon?:React.ReactNode;
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -37,8 +38,13 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   icon,
   disabled,
   required = false,
+  endIcon
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const onEnter = ()=>{
+    console.log("Enter");
+  }
 
   return (
     <Box display="flex" flexDirection="column">
@@ -109,62 +115,75 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
         </LocalizationProvider>
       ) : (
         <Tooltip title={value}>
-          <TextField
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            type={showPassword && type === "password" ? "text" : type}
-            fullWidth
-            variant="outlined"
-            error={error}
-            helperText={helperText}
-            disabled={disabled}
-            InputProps={{
-              startAdornment: icon ? (
-                <InputAdornment position="start">{icon}</InputAdornment>
-              ) : null,
-              endAdornment:
-                type === "password" ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      disableRipple
-                      disableFocusRipple
-                      sx={{
-                        pointerEvents: "auto",
-                        "&:focus": { outline: "none" },
-                      }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ) : null,
-            }}
-            inputProps={{
-              autoComplete: "new-password",
-              style: {
-                appearance: "none",
-                MozAppearance: "textfield",
-                WebkitAppearance: "none",
-              },
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
-                "& input": {
-                  padding: "6px 12px",
-                  color: "black",
-                  "&::-ms-reveal": {
-                    display: "none",
-                  },
-                  "&::-ms-clear": {
-                    display: "none",
-                  },
-                },
-              },
-            }}
-          />
+        <TextField
+  placeholder={`Enter a ${label} value`}
+  value={value}
+  onChange={onChange}
+  type={showPassword && type === "password" ? "text" : type}
+  fullWidth
+  variant="outlined"
+  error={error}
+  helperText={helperText}
+  disabled={disabled}
+  InputProps={{
+    startAdornment: icon ? (
+      <InputAdornment position="start">{icon}</InputAdornment>
+    ) : null,
+    endAdornment: (
+      <>
+        {type === "password" ? (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={() => setShowPassword(!showPassword)}
+              edge="end"
+              disableRipple
+              disableFocusRipple
+              sx={{
+                pointerEvents: "auto",
+                "&:focus": { outline: "none" },
+              }}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        ) : endIcon ? (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={onEnter} 
+              edge="end"
+              color="primary"
+            >
+              <ArrowForward />
+            </IconButton>
+          </InputAdornment>
+        ) : null}
+      </>
+    ),
+  }}
+  inputProps={{
+    autoComplete: "new-password",
+    style: {
+      appearance: "none",
+      MozAppearance: "textfield",
+      WebkitAppearance: "none",
+    },
+  }}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      "& input": {
+        padding: "6px 12px",
+        color: "black",
+        "&::-ms-reveal": {
+          display: "none",
+        },
+        "&::-ms-clear": {
+          display: "none",
+        },
+      },
+    },
+  }}
+/>
         </Tooltip>
       )}
     </Box>

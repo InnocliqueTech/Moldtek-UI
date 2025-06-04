@@ -299,7 +299,13 @@ const Printing: React.FC<PrintingProps> = ({
       if (stringValue === "0" || stringValue === "0.0" || stringValue === "") {
         finalValue = stringValue; // Allow 0 and empty
         errorMsg = ""; // No error
-      } else {
+      }
+      if (isNumberField) {
+  if (newValue === "" || newValue === null || isNaN(Number(newValue))) {
+    errorMsg = `${field.replace(/_/g, " ")} is required`;
+  }
+}
+      else {
         // Regex to validate decimal or percentage with optional "%"
         const regex = /^(\d+(\.\d+)?)(%)?$/;
         const match = stringValue.match(regex);
@@ -329,10 +335,12 @@ const Printing: React.FC<PrintingProps> = ({
     }
     // For other string-based fields
     else if (typeof newValue === "string") {
-      const trimmed = newValue.trim();
-      if (trimmed === "") {
-        errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (
+       const trimmed = newValue.trim();
+  const skipRequiredFields = ["static_charge", "format_correct"];
+console.log(trimmed,field,"TRIMMEDVALUE")
+  if (trimmed === "" && !skipRequiredFields.includes(field)) {
+    errorMsg = `${field.replace(/_/g, " ")} is required`;
+  }  else if (
         !onlyLettersRegex.test(trimmed) &&
         field !== "cylinder_teeth" &&
         field !== "tension" &&
@@ -577,90 +585,112 @@ const Printing: React.FC<PrintingProps> = ({
     const shouldDisableButton =
       !isAllFieldFilled || hasErrors || printingTableValueVaidation;
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
+     dispatch(setPrintingSave(shouldDisableButton));
   }, [formValues, errors, printingTableValueVaidation]);
 
-  useEffect(() => {
-    const importantFields = [
-      "static_charge",
-      "format_correct",
-      "substrate_type",
-      "supplier",
-      "printing_machine_name",
-      "cylinder_teeth",
-      "tension",
-      "unwinder",
-      "infeed",
-      "outfeed",
-      "rewinder",
-      "dyne_level",
-      "width",
-      "thickness",
-      "density",
-      "color_pantone",
-      "lpcm",
-      "lf_value",
-      "ink_supplier",
-      "volume",
-      "uv_led",
-      "uv_led_intensity",
-      "mixing_on_gec",
-      "mptl_code",
-      "mounting_tape",
-    ] as (
-      | keyof PrintingFormValues["printingDetails"]
-      | keyof PrintingFormValues["printingSubstrateSettings"]
-      | keyof PrintingFormValues["stationWiseMetrics"][number]
-    )[];
+  // useEffect(() => {
+  //   const importantFields = [
+  //     "static_charge",
+  //     "format_correct",
+  //     "substrate_type",
+  //     "supplier",
+  //     "printing_machine_name",
+  //     "cylinder_teeth",
+  //     "tension",
+  //     "unwinder",
+  //     "infeed",
+  //     "outfeed",
+  //     "rewinder",
+  //     "dyne_level",
+  //     "width",
+  //     "thickness",
+  //     "density",
+  //     "color_pantone",
+  //     "lpcm",
+  //     "lf_value",
+  //     "ink_supplier",
+  //     "volume",
+  //     "uv_led",
+  //     "uv_led_intensity",
+  //     "mixing_on_gec",
+  //     "mptl_code",
+  //     "mounting_tape",
+  //   ] as (
+  //     | keyof PrintingFormValues["printingDetails"]
+  //     | keyof PrintingFormValues["printingSubstrateSettings"]
+  //     | keyof PrintingFormValues["stationWiseMetrics"][number]
+  //   )[];
 
-    const isAnyFieldFilled = importantFields.some((field) => {
-      if (field in formValues.printingDetails) {
-        const value =
-          formValues.printingDetails[
-            field as keyof PrintingFormValues["printingDetails"]
-          ];
+  //   const isAnyFieldFilled = importantFields.some((field) => {
+  //     if (field in formValues.printingDetails) {
+  //       const value =
+  //         formValues.printingDetails[
+  //           field as keyof PrintingFormValues["printingDetails"]
+  //         ];
 
-        if (typeof value === "string") return value.trim() !== "";
-        return value !== null && value !== undefined;
-      }
+  //       if (typeof value === "string") return value.trim() !== "";
+  //       return value !== null && value !== undefined;
+  //     }
 
-      if (field in formValues.printingSubstrateSettings) {
-        const value =
-          formValues.printingSubstrateSettings[
-            field as keyof PrintingFormValues["printingSubstrateSettings"]
-          ];
+  //     if (field in formValues.printingSubstrateSettings) {
+  //       const value =
+  //         formValues.printingSubstrateSettings[
+  //           field as keyof PrintingFormValues["printingSubstrateSettings"]
+  //         ];
 
-        if (typeof value === "string") return value.trim() !== "";
-        return value !== null && value !== undefined;
-      }
+  //       if (typeof value === "string") return value.trim() !== "";
+  //       return value !== null && value !== undefined;
+  //     }
 
-      const stationResult = formValues.stationWiseMetrics.some((station) => {
-        if (field in station) {
-          const value = station[field as keyof typeof station];
+  //     const stationResult = formValues.stationWiseMetrics.some((station) => {
+  //       if (field in station) {
+  //         const value = station[field as keyof typeof station];
 
-          if (typeof value === "string") return value.trim() !== "";
-          return value !== null && value !== undefined;
-        }
-        return false;
-      });
+  //         if (typeof value === "string") return value.trim() !== "";
+  //         return value !== null && value !== undefined;
+  //       }
+  //       return false;
+  //     });
 
-      return stationResult;
-    });
+  //     return stationResult;
+  //   });
 
-    const hasErrors = Object.values(errors).some((error) => error);
+  //   const hasErrors = Object.values(errors).some((error) => error);
 
-    const isSaveEnabled =
-      !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
-    dispatch(setPrintingSave(isSaveEnabled));
-  }, [formValues, errors, dispatch]);
+  //   const isSaveEnabled =
+  //     !isAnyFieldFilled || hasErrors || printingTableValueVaidation;
+  //   dispatch(setPrintingSave(isSaveEnabled));
+  // }, [formValues, errors, dispatch]);
 
   return (
     <Box sx={{ borderRadius: "0px" }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-        <Typography
-          sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
-        >
-          Machine Settings
-        </Typography>
+     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+  <Typography sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}>
+    Machine Settings
+  </Typography>
+
+  <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
+    KLD:{" "}
+    <Box
+      component="span"
+      sx={{
+        backgroundColor: "#E3F2FD", 
+        color: "#1976d2",          
+        px: 1,
+        py: 0.3,
+        borderRadius: "4px",
+        fontWeight: 600,
+        fontSize: "14px",
+        ml: 0.5,
+      }}
+    >
+      12345
+    </Box>
+  </Typography>
+</Box>
+
+
         <Grid container spacing={2} pt={1}>
           {machineFields.map((field) => (
             <Grid size={{ xs: 12, md: 4 }} id={field.id}>
