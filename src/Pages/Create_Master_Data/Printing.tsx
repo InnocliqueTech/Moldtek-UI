@@ -670,24 +670,29 @@ console.log(trimmed,field,"TRIMMEDVALUE")
     Machine Settings
   </Typography>
 
-  <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
-    KLD:{" "}
-    <Box
-      component="span"
-      sx={{
-        backgroundColor: "#E3F2FD", 
-        color: "#1976d2",          
-        px: 1,
-        py: 0.3,
-        borderRadius: "4px",
-        fontWeight: 600,
-        fontSize: "14px",
-        ml: 0.5,
-      }}
-    >
-      12345
-    </Box>
+<Box
+  sx={{
+    display: "inline-flex",
+    alignItems: "center",
+    backgroundColor: "#E3F2FD",
+    color: "#1976d2",
+    px: 1.5,
+    py: 0.5,
+    borderRadius: "8px",
+    fontWeight: 600,
+    fontSize: "14px",
+    boxShadow: 1,
+  }}
+>
+  <Typography
+    component="span"
+    sx={{ fontWeight: 700, mr: 0.8 }}
+  >
+    KLD:
   </Typography>
+  <Typography component="span">GPWC 50ML JC 558.8 FD</Typography>
+</Box>
+
 </Box>
 
 

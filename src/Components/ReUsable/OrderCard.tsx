@@ -120,7 +120,7 @@ const name = viewMasterDataDetails?.customer_name;
                 maxChars
               )}
             </Typography>
-            <Box sx={{ mt: 4 }}>
+            <Box sx={{ mt: 2 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -161,66 +161,25 @@ const name = viewMasterDataDetails?.customer_name;
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-        
-
-  <Box>
-    <Typography variant="body2" color="text.secondary" fontWeight={500}>
-      Customer Name
-    </Typography>
-<Stack direction="row" alignItems="center" spacing={1.5} mt={1}>
-  <Avatar
-    src={logo || ""}
-    sx={{
-      width: 40,
-      height: 40,
-      bgcolor: "#1976d2",
-      fontSize: 16,
-      boxShadow: 2,
-    }}
-  >
-    {!logo && getInitial(name)}
-  </Avatar>
-
-  <Box>
-    <Stack direction="row" alignItems="center" spacing={1}>
-      <Typography
-        variant="body1"
-        sx={{
-          fontSize: 14,
-          fontWeight: 500,
-          color: "#2F2F2F",
-          maxWidth: 200,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {renderValue(name, maxChars)}
-      </Typography>
-
-      {logo && (
-        <Tooltip title="Preview">
-          <IconButton
-            size="small"
-            onClick={() => setImagePreviewOpen(true)}
-            sx={{
-              backgroundColor: "transparent",
-              borderRadius: "50%",
-              padding: "4px",
-              boxShadow: 0,
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-            }}
-          >
-            <Visibility fontSize="small" sx={{ color: "#1976d2" }} />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Stack>
-  </Box>
-</Stack>
-</Box>
+  <Box sx={{ mt: 0 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+               KLD
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  mt: 0.5,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {renderValue(viewMasterDataDetails?.kld, maxChars)}
+              </Typography>
+            </Box>
 
             <Box sx={{ mt: 2 }}>
               <Typography
@@ -268,27 +227,59 @@ const name = viewMasterDataDetails?.customer_name;
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box />
-  <Box sx={{ mt: 0 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={500}
-              >
-               KLD
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  mt: 0.5,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {renderValue(viewMasterDataDetails?.kld, maxChars)}
-              </Typography>
-            </Box>
-            <Box sx={{ mt:  3 }}>
+            {/* <Box /> */}
+        
+
+  <Box>
+    <Typography variant="body2" color="text.secondary" fontWeight={500}>
+      Customer Name
+    </Typography>
+<Stack direction="row" alignItems="center" spacing={1.5} mt={1}>
+  <Box
+    onClick={() => {
+      if (logo) setImagePreviewOpen(true);
+    }}
+    sx={{
+      cursor: logo ? "pointer" : "default",
+      borderRadius: "50%",
+      boxShadow: 2,
+      width: 30,
+      height: 30,
+    }}
+  >
+    <Avatar
+      src={logo || ""}
+      sx={{
+        width: 30,
+        height: 30,
+        bgcolor: "#1976d2",
+        fontSize: 16,
+      }}
+    >
+      {!logo && getInitial(name)}
+    </Avatar>
+  </Box>
+
+  <Box>
+    <Typography
+      variant="body1"
+      sx={{
+        fontSize: 14,
+        fontWeight: 500,
+        color: "#2F2F2F",
+        maxWidth: 200,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {renderValue(name, maxChars)}
+    </Typography>
+  </Box>
+</Stack>
+
+</Box>
+            <Box sx={{ mt:  1 }}>
               <AutoTooltipText
                 content={"Brand Name & Pack-Description"}
                 maxLength={30}
@@ -311,7 +302,7 @@ const name = viewMasterDataDetails?.customer_name;
                 )}
               </Typography>
             </Box>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"

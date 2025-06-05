@@ -25,7 +25,12 @@ import {
   setPrintingTableValueVaidation,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
-import { LaminatingTableRow, LaminationFormData, PrintingFormValues, PrintingTableRow } from "../../store/slices/masterDataInterface";
+import {
+  LaminatingTableRow,
+  LaminationFormData,
+  PrintingFormValues,
+  PrintingTableRow,
+} from "../../store/slices/masterDataInterface";
 
 interface Column {
   id: string;
@@ -34,10 +39,10 @@ interface Column {
   options?: string[];
   edit?: boolean;
   editSelect?: boolean;
-  required?:boolean;
-  onNewOptionAdd?:boolean;
-  field?:string;
-    editIcon?: boolean; 
+  required?: boolean;
+  onNewOptionAdd?: boolean;
+  field?: string;
+  editIcon?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -49,7 +54,9 @@ interface DataTableProps<T> {
   id?: string;
   rowEditable?: (row: T, columnId: string) => boolean;
   setFormData?: React.Dispatch<React.SetStateAction<PrintingFormValues>>;
-setFormDataLaminaton?:React.Dispatch<React.SetStateAction<LaminationFormData>>;
+  setFormDataLaminaton?: React.Dispatch<
+    React.SetStateAction<LaminationFormData>
+  >;
 
   // rowEditable?: (row: T) => boolean;
 }
@@ -63,12 +70,12 @@ const DataTable = <T extends Record<string, any>>({
   id,
   setFormData,
   rowEditable,
-  setFormDataLaminaton
+  setFormDataLaminaton,
 }: DataTableProps<T>) => {
   const dispatch = useDispatch<AppDispatch>();
   const { printingSaveFormData, laminaionFormData, invalidFieldsTable } =
     useSelector((state: RootState) => state.masterData);
-  const {isEditing} = useSelector((state:RootState)=>state.viewDailyPlan)
+  const { isEditing } = useSelector((state: RootState) => state.viewDailyPlan);
 
   const [invalidFields, setInvalidFields] = useState<{
     [key: string]: boolean;
@@ -79,32 +86,31 @@ const DataTable = <T extends Record<string, any>>({
       "ratio",
       "uv_led_intensity",
       "volume",
-      "lf_value"
+      "lf_value",
     ];
     const laminationFields = ["code", "brand"];
     const printingFields = ["color_pantone"];
-  
+
     if (value === "") return true;
-  
+
     if (numericFields.includes(columnId)) {
       // Allow any digits (including leading zeros) with optional decimal part
       const isValidDecimal = /^\d+(\.\d+)?$/.test(value);
       const isValidPercentage = /^\d+(\.\d+)?%$/.test(value);
-  
+
       return isValidDecimal || isValidPercentage;
     }
-  
-    if (id === 'lamination' && laminationFields.includes(columnId)) {
+
+    if (id === "lamination" && laminationFields.includes(columnId)) {
       return /^[a-zA-Z0-9\s]*$/.test(value);
     }
-  
+
     if (id === "printing" && printingFields.includes(columnId)) {
       return /^[\x20-\x7E]*$/.test(value);
     }
-  
+
     return true;
   };
-  
 
   const handleChange = <K extends keyof T>(
     rowIndex: number,
@@ -117,17 +123,17 @@ const DataTable = <T extends Record<string, any>>({
       "ratio",
       "uv_led_intensity",
       "volume",
-      "lf_value"
+      "lf_value",
     ];
-    
+
     let updatedValue: any = value;
-  
+
     if (numberKeys.includes(columnId as string)) {
-      const stringValue = String(value); 
-    
+      const stringValue = String(value);
+
       const isValidDecimal = /^\d+(\.\d+)?$/.test(stringValue);
       const isValidPercentage = /^\d+(\.\d+)?%$/.test(stringValue);
-    
+
       if (stringValue === "") {
         updatedValue = "";
       } else if (isValidDecimal) {
@@ -138,15 +144,14 @@ const DataTable = <T extends Record<string, any>>({
         updatedValue = stringValue;
       }
     }
-    
-  
+
     updated[rowIndex] = {
       ...updated[rowIndex],
       [columnId]: updatedValue,
     };
-  
+
     setData?.(updated);
-  
+
     if (id === "printing") {
       dispatch(
         setSavePrintingFormData({
@@ -154,14 +159,14 @@ const DataTable = <T extends Record<string, any>>({
           stationWiseMetrics: updated as unknown as PrintingTableRow[],
         })
       );
-      if (setFormData ) {
-    setFormData(prev => ({
-  ...prev,
-  stationWiseMetrics: updated as unknown as PrintingTableRow[],
-}));
-  }
+      if (setFormData) {
+        setFormData((prev) => ({
+          ...prev,
+          stationWiseMetrics: updated as unknown as PrintingTableRow[],
+        }));
+      }
     }
-  
+
     if (id === "lamination") {
       dispatch(
         setLaminationFormData({
@@ -169,16 +174,14 @@ const DataTable = <T extends Record<string, any>>({
           bondingMaterials: updated as unknown as LaminatingTableRow[],
         })
       );
-      if(setFormDataLaminaton){
-      setFormDataLaminaton(prev => ({
-  ...prev,
-   bondingMaterials: updated as unknown as LaminatingTableRow[],
-   }));
-  }
+      if (setFormDataLaminaton) {
+        setFormDataLaminaton((prev) => ({
+          ...prev,
+          bondingMaterials: updated as unknown as LaminatingTableRow[],
+        }));
+      }
     }
-
   };
-  
 
   useEffect(() => {
     if (invalidFieldsTable) {
@@ -196,9 +199,9 @@ const DataTable = <T extends Record<string, any>>({
     "mixing_on_gec",
     "uv_led_intensity",
     "volume",
-    "color_pantone"
+    "color_pantone",
   ];
-  console.log(data,"DATAOFTHETABLE")
+  console.log(data, "DATAOFTHETABLE");
 
   return (
     <>
@@ -280,7 +283,7 @@ const DataTable = <T extends Record<string, any>>({
                   )}
                   {column.edit && column.editIcon && (
                     <Box component="span" sx={{ color: "#00000066", ml: 0.5 }}>
-                      <Edit sx={{width:'24px',height:'16px'}}/>
+                      <Edit sx={{ width: "24px", height: "16px" }} />
                     </Box>
                   )}
                 </TableCell>
@@ -302,265 +305,310 @@ const DataTable = <T extends Record<string, any>>({
             }}
           >
             {Array.isArray(data) &&
-             data.filter((row) => row && typeof row === 'object').map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {columns?.map((column, index) => (
-                    <TableCell
-                      key={column.id}
-                      align="center"
-                      sx={{
-                        maxWidth: 180,
-                        overflow: "hidden",
-                        backgroundColor: invalidFields[
-                          `${rowIndex}_${column.id}`
-                        ]
-                          ? "#ffe6e6"
-                          : firstRow && index === 0
-                          ? "#F0F0F0"
-                          : "inherit",
-                        border: invalidFields[`${rowIndex}_${column.id}`]
-                          ? "1px solid red"
-                          : "1px solid #ccc",
-                      }}
-                    >
-{(
-  (location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && ["ratio"].includes(column.id)) ||
-  (!location.pathname.includes("/viewMasterData") && row?.type === "Ethyl" && ["code", "brand", "ratio"].includes(column.id)) ||
-  (row?.type === "Adhesive" && ["ratio"].includes(column.id)) ||
-  (row?.type === "Hardner" && ["ratio"].includes(column.id))
-) ? (
-  location.pathname.includes("/viewMasterData") ? (
-    <Box sx={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#2F2F2F" }}>
-      {row[column.id]}&nbsp;kg
-    </Box>
-  ) : (
-    <Box sx={{ position: "relative", width: "80%" }}>
-      {/* TextField input */}
-      <TextField
-        variant="standard"
-        value={row[column.id]}
-        onChange={(e) => {
-          const inputValue = e.target.value;
-          const isValid = validateInput(column.id, inputValue);
-          const key = `${rowIndex}_${column.id}`;
-          const updatedInvalidFields = { ...invalidFields, [key]: !isValid };
-          setInvalidFields(updatedInvalidFields);
-          dispatch(setInvalidFieldsTable(updatedInvalidFields));
+              data
+                .filter((row) => row && typeof row === "object")
+                .map((row, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {columns?.map((column, index) => (
+                      <TableCell
+                        key={column.id}
+                        align="center"
+                        sx={{
+                          maxWidth: 180,
+                          overflow: "hidden",
+                          backgroundColor: invalidFields[
+                            `${rowIndex}_${column.id}`
+                          ]
+                            ? "#ffe6e6"
+                            : firstRow && index === 0
+                            ? "#F0F0F0"
+                            : "inherit",
+                          border: invalidFields[`${rowIndex}_${column.id}`]
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                        }}
+                      >
+                        {(location.pathname.includes("/viewMasterData") &&
+                          row?.type === "Ethyl" &&
+                          ["ratio"].includes(column.id)) ||
+                        (!location.pathname.includes("/viewMasterData") &&
+                          row?.type === "Ethyl" &&
+                          ["code", "brand", "ratio"].includes(column.id)) ||
+                        (row?.type === "Adhesive" &&
+                          ["ratio"].includes(column.id)) ||
+                        (row?.type === "Hardner" &&
+                          ["ratio"].includes(column.id)) ? (
+                          location.pathname.includes("/viewMasterData") ? (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                fontSize: "14px",
+                                color: "#2F2F2F",
+                              }}
+                            >
+                              {row[column.id]}&nbsp;kg
+                            </Box>
+                          ) : (
+                            <Box sx={{ position: "relative", width: "80%" }}>
+                              {/* TextField input */}
+                              <TextField
+                                variant="standard"
+                                value={row[column.id]}
+                                onChange={(e) => {
+                                  const inputValue = e.target.value;
+                                  const isValid = validateInput(
+                                    column.id,
+                                    inputValue
+                                  );
+                                  const key = `${rowIndex}_${column.id}`;
+                                  const updatedInvalidFields = {
+                                    ...invalidFields,
+                                    [key]: !isValid,
+                                  };
+                                  setInvalidFields(updatedInvalidFields);
+                                  dispatch(
+                                    setInvalidFieldsTable(updatedInvalidFields)
+                                  );
 
-          const isLaminationField = laminationFields.some((field) =>
-            column.id.toLowerCase().includes(field.toLowerCase())
-          );
-          dispatch(setLaminationTableValueVaidation(isLaminationField && !isValid ? true : false));
+                                  const isLaminationField =
+                                    laminationFields.some((field) =>
+                                      column.id
+                                        .toLowerCase()
+                                        .includes(field.toLowerCase())
+                                    );
+                                  dispatch(
+                                    setLaminationTableValueVaidation(
+                                      isLaminationField && !isValid
+                                        ? true
+                                        : false
+                                    )
+                                  );
 
-          const isPrintingField = printingFields.some((field) =>
-            column.id.toLowerCase().includes(field.toLowerCase())
-          );
-          dispatch(setPrintingTableValueVaidation(isPrintingField && !isValid ? true : false));
+                                  const isPrintingField = printingFields.some(
+                                    (field) =>
+                                      column.id
+                                        .toLowerCase()
+                                        .includes(field.toLowerCase())
+                                  );
+                                  dispatch(
+                                    setPrintingTableValueVaidation(
+                                      isPrintingField && !isValid ? true : false
+                                    )
+                                  );
 
-          handleChange(rowIndex, column.id as keyof T, inputValue as T[keyof T]);
-        }}
-        fullWidth
-        InputProps={{
-          disableUnderline: true,
-          sx: {
-            fontSize: "14px",
-            color: "#2F2F2F",
-            height: "32px",
-            padding: "0px",
-            input: { textAlign: "left", paddingRight: "30px" },
-          },
-        }}
-        inputProps={{
-          inputMode: column.id === "ratio" ? "numeric" : "text",
-        }}
-      />
-
-      {/* KG Unit Label */}
-      {column.id === "ratio" && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            transform: "translateY(-50%)",
-            right: "8px",
-            pointerEvents: "none",
-            color: "#666",
-            fontSize: "14px",
-          }}
-        >
-          kg
-        </Box>
-      )}
-
-      {/* Edit Icon for Actuals Row in First Column */}
-
-    </Box>
-  )
-) :  column.isDropdown &&
-                        row.type === "Hardner" &&
-                        column.id === "code" ? (
-                        <Select
-                          value={row[column.id] || ""}
-                          onChange={(e) =>
-                            handleChange(
-                              rowIndex,
-                              column.id as keyof T,
-                              e.target.value as T[keyof T]
-                            )
-                          }
-                          variant="standard"
-                          fullWidth
-                          renderValue={(selected) => (
-                            <Tooltip title={selected} arrow>
-                              <Box
-                                sx={{
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
+                                  handleChange(
+                                    rowIndex,
+                                    column.id as keyof T,
+                                    inputValue as T[keyof T]
+                                  );
                                 }}
-                              >
-                                {selected}
-                              </Box>
-                            </Tooltip>
-                          )}
-                          sx={{
-                            height: "32px",
-                            fontSize: "14px",
-                            borderBottom: "none",
-                            "&:before": { borderBottom: "none" },
-                            "&:after": { borderBottom: "none" },
-                            "&:hover:not(.Mui-disabled):before": {
-                              borderBottom: "none !important",
-                            },
-                            "& .MuiSelect-select": {
-                              display: "flex",
-                              alignItems: "center",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            },
-                          }}
-                        >
-                          {hardenerCodeOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              <Tooltip title={option} arrow>
-                                <ListItemText
-                                  primary={option}
+                                fullWidth
+                                InputProps={{
+                                  disableUnderline: true,
+                                  sx: {
+                                    fontSize: "14px",
+                                    color: "#2F2F2F",
+                                    height: "32px",
+                                    padding: "0px",
+                                    input: {
+                                      textAlign: "left",
+                                      paddingRight: "30px",
+                                    },
+                                  },
+                                }}
+                                inputProps={{
+                                  inputMode:
+                                    column.id === "ratio" ? "numeric" : "text",
+                                }}
+                              />
+
+                              {/* KG Unit Label */}
+                              {column.id === "ratio" && (
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    right: "8px",
+                                    pointerEvents: "none",
+                                    color: "#666",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  kg
+                                </Box>
+                              )}
+
+                              {/* Edit Icon for Actuals Row in First Column */}
+                            </Box>
+                          )
+                        ) : column.isDropdown &&
+                          row.type === "Hardner" &&
+                          column.id === "code" ? (
+                          <Select
+                            value={row[column.id] || ""}
+                            onChange={(e) =>
+                              handleChange(
+                                rowIndex,
+                                column.id as keyof T,
+                                e.target.value as T[keyof T]
+                              )
+                            }
+                            variant="standard"
+                            fullWidth
+                            renderValue={(selected) => (
+                              <Tooltip title={selected} arrow>
+                                <Box
                                   sx={{
                                     whiteSpace: "nowrap",
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
-                                    maxWidth: "180px",
-                                    color: "#2F2F2F",
                                   }}
-                                />
+                                >
+                                  {selected}
+                                </Box>
                               </Tooltip>
-                              {row[column.id] === option && (
-                                <IconButton sx={{ color: "#0073B7" }}>
-                                  <Done />
-                                </IconButton>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      ) : column.isDropdown ? (
-                        <Select
-                          value={row[column.id] || ""}
-                          onChange={(e) =>
-                            handleChange(
-                              rowIndex,
-                              column.id as keyof T,
-                              e.target.value as T[keyof T]
-                            )
-                          }
-                          variant="standard"
-                          fullWidth
-                          renderValue={(selected) => (
-                            <Tooltip title={selected} arrow>
-                              <Box
-                                sx={{
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                }}
-                              >
-                                {selected}
-                              </Box>
-                            </Tooltip>
-                          )}
-                          sx={{
-                            height: "32px",
-                            fontSize: "14px",
-                            borderBottom: "none",
-                            "&:before": { borderBottom: "none" },
-                            "&:after": { borderBottom: "none" },
-                            "&:hover:not(.Mui-disabled):before": {
-                              borderBottom: "none !important",
-                            },
-                            "& .MuiSelect-select": {
-                              display: "flex",
-                              alignItems: "center",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            },
-                          }}
-                        >
-                          {column.options?.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              <Tooltip title={option} arrow>
-                                <ListItemText
-                                  primary={option}
+                            )}
+                            sx={{
+                              height: "32px",
+                              fontSize: "14px",
+                              borderBottom: "none",
+                              "&:before": { borderBottom: "none" },
+                              "&:after": { borderBottom: "none" },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none !important",
+                              },
+                              "& .MuiSelect-select": {
+                                display: "flex",
+                                alignItems: "center",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              },
+                            }}
+                          >
+                            {hardenerCodeOptions.map((option) => (
+                              <MenuItem key={option} value={option}>
+                                <Tooltip title={option} arrow>
+                                  <ListItemText
+                                    primary={option}
+                                    sx={{
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      maxWidth: "180px",
+                                      color: "#2F2F2F",
+                                    }}
+                                  />
+                                </Tooltip>
+                                {row[column.id] === option && (
+                                  <IconButton sx={{ color: "#0073B7" }}>
+                                    <Done />
+                                  </IconButton>
+                                )}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : column.isDropdown ? (
+                          <Select
+                            value={row[column.id] || ""}
+                            onChange={(e) =>
+                              handleChange(
+                                rowIndex,
+                                column.id as keyof T,
+                                e.target.value as T[keyof T]
+                              )
+                            }
+                            variant="standard"
+                            fullWidth
+                            renderValue={(selected) => (
+                              <Tooltip title={selected} arrow>
+                                <Box
                                   sx={{
                                     whiteSpace: "nowrap",
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
-                                    maxWidth: "180px",
-                                    color: "#2F2F2F",
                                   }}
-                                />
+                                >
+                                  {selected}
+                                </Box>
                               </Tooltip>
-                              {row[column.id] === option && (
-                                <IconButton sx={{ color: "#0073B7" }}>
-                                  <Done />
-                                </IconButton>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      ) : column.editSelect && !column.onNewOptionAdd  ? (
-                        <AutocompleteCell
-                          row={row}
-                          column={column}
-                          rowIndex={rowIndex}
-                          handleChange={(rowIndex, columnId, newValue) =>
-                            handleChange(
-                              rowIndex,
-                              columnId as keyof T,
-                              newValue as T[keyof T]
-                            )
-                          }
-                        />
-                      ) : column.editSelect && column.onNewOptionAdd ? (
-                        <AutocompleteCell
-                          row={row}
-                          column={column}
-                          rowIndex={rowIndex}
-                          handleChange={(rowIndex, columnId, newValue) =>
-                            handleChange(
-                              rowIndex,
-                              columnId as keyof T,
-                              newValue as T[keyof T]
-                            )
-                          }
-                          onNewOptionAdd={column.onNewOptionAdd}
-                          field={column.field}
-                        />
-                      ): (column.edit && (!rowEditable || rowEditable(row, column.id))) ? (
+                            )}
+                            sx={{
+                              height: "32px",
+                              fontSize: "14px",
+                              borderBottom: "none",
+                              "&:before": { borderBottom: "none" },
+                              "&:after": { borderBottom: "none" },
+                              "&:hover:not(.Mui-disabled):before": {
+                                borderBottom: "none !important",
+                              },
+                              "& .MuiSelect-select": {
+                                display: "flex",
+                                alignItems: "center",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              },
+                            }}
+                          >
+                            {column.options?.map((option) => (
+                              <MenuItem key={option} value={option}>
+                                <Tooltip title={option} arrow>
+                                  <ListItemText
+                                    primary={option}
+                                    sx={{
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      maxWidth: "180px",
+                                      color: "#2F2F2F",
+                                    }}
+                                  />
+                                </Tooltip>
+                                {row[column.id] === option && (
+                                  <IconButton sx={{ color: "#0073B7" }}>
+                                    <Done />
+                                  </IconButton>
+                                )}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : column.editSelect && !column.onNewOptionAdd ? (
+                          <AutocompleteCell
+                            row={row}
+                            column={column}
+                            rowIndex={rowIndex}
+                            handleChange={(rowIndex, columnId, newValue) =>
+                              handleChange(
+                                rowIndex,
+                                columnId as keyof T,
+                                newValue as T[keyof T]
+                              )
+                            }
+                          />
+                        ) : column.editSelect && column.onNewOptionAdd ? (
+                          <AutocompleteCell
+                            row={row}
+                            column={column}
+                            rowIndex={rowIndex}
+                            handleChange={(rowIndex, columnId, newValue) =>
+                              handleChange(
+                                rowIndex,
+                                columnId as keyof T,
+                                newValue as T[keyof T]
+                              )
+                            }
+                            onNewOptionAdd={column.onNewOptionAdd}
+                            field={column.field}
+                          />
+                        ) : column.edit &&
+                          (!rowEditable || rowEditable(row, column.id)) ? (
                           <TextField
                             placeholder="Enter a value"
                             variant="standard"
-                            value={row[column?.id]?row[column?.id]:''} // only the number
+                            value={row[column?.id] ? row[column?.id] : ""} // only the number
                             onChange={(e) => {
                               let inputValue = e.target.value;
                               const isValid = validateInput(
@@ -624,53 +672,64 @@ const DataTable = <T extends Record<string, any>>({
                               },
                             }}
                           />
-                      ) : (
-                        <Tooltip
-                          title={String(row ? row[column?.id] : "")}
-                          arrow
-                        >
-                          <Box
-                            sx={{
-                              maxWidth: "100%",
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              textOverflow: "ellipsis",
-                              fontSize: "14px",
-                              color: "#2F2F2F",
-                              height: "32px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
+                        ) : (
+                          <Tooltip
+                            title={String(row ? row[column?.id] : "")}
+                            arrow
                           >
-                            {row ? (
-                              <>
-                                {row[column?.id]}
-                                {(row.type === "Hardner"&& !location.pathname.includes('/viewMasterData')  ||
-                                  row.type === "Adhesive")&& !location.pathname.includes('/viewMasterData')  && (
-                                  <Box
-                                    component="span"
-                                    sx={{ color: "#D32F2F", ml: 0.3 }}
-                                  >
-                                    *
-                                  </Box>
-                                )}
-                                      { row.rowEditIcon && (
- <Box component="span" sx={{ color: "#00000066", ml: 0.5 }}>
-                      <Edit sx={{width:'24px',height:'16px'}}/>
-                    </Box>
-      )}
-                              </>
-                            ) : (
-                              "N/A"
-                            )}
-                          </Box>
-                        </Tooltip>
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                            <Box
+                              sx={{
+                                maxWidth: "100%",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                fontSize: "14px",
+                                color: "#2F2F2F",
+                                height: "32px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {row ? (
+                                <>
+                                  {row[column?.id]}
+                                  {((row.type === "Hardner" &&
+                                    !location.pathname.includes(
+                                      "/viewMasterData"
+                                    )) ||
+                                    row.type === "Adhesive") &&
+                                    !location.pathname.includes(
+                                      "/viewMasterData"
+                                    ) && (
+                                      <Box
+                                        component="span"
+                                        sx={{ color: "#D32F2F", ml: 0.3 }}
+                                      >
+                                        *
+                                      </Box>
+                                    )}
+                                  {row.rowEditIcon && isEditing && (
+                                    <Box
+                                      component="span"
+                                      sx={{ color: "#00000066", ml: 0.5 }}
+                                    >
+                                      <Edit
+                                        sx={{ width: "24px", height: "16px" }}
+                                      />
+                                    </Box>
+                                  )}
+                                </>
+                              ) : (
+                                "N/A"
+                              )}
+                            </Box>
+                          </Tooltip>
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>

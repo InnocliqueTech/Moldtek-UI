@@ -9,7 +9,14 @@ import {
 import ReusableInput from "../../Components/ReUsable/TextField";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import TextArea from "../../Components/ReUsable/TextArea";
-import { Close, CloudUpload, Delete, Edit, Upload, Visibility } from "@mui/icons-material";
+import {
+  Close,
+  CloudUpload,
+  Delete,
+  Edit,
+  Upload,
+  Visibility,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useMemo, useState } from "react";
@@ -85,13 +92,14 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const updateButtonAction = localStorage.getItem("updateButton");
 
-    const selectedUENNumber = localStorage.getItem("selectedUEN");
+  const selectedUENNumber = localStorage.getItem("selectedUEN");
   const selectedVersion = localStorage.getItem("selectedVersionNo");
 
   const { data, isLoading } = useViewMasterDataQuery(
     {
-      ueNumber: updateButtonAction==='false' ? selectedUENNumber :selectedUEN,
-      versionNo: updateButtonAction==='false' ?selectedVersion:versionNo,
+      ueNumber:
+        updateButtonAction === "false" ? selectedUENNumber : selectedUEN,
+      versionNo: updateButtonAction === "false" ? selectedVersion : versionNo,
     },
     {
       skip: !id,
@@ -111,16 +119,15 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   useEffect(() => {
     localStorage.setItem("hasVisitedMasterDataDetails", "false");
 
-    if (!hasVisited && id && updateButtonAction==='false') {
+    if (!hasVisited && id && updateButtonAction === "false") {
       dispatch(setMasterDataDataTouched(false));
       localStorage.setItem("hasVisitedMasterDataDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setMasterDataDataTouched(false));
-    } else if (updateButtonAction==='true' && !hasVisited && id) {
+    } else if (updateButtonAction === "true" && !hasVisited && id) {
       dispatch(setMasterDataDataTouched(false));
       localStorage.setItem("hasVisitedMasterDataDetails", "true");
     }
-
   }, [id]);
 
   useEffect(() => {
@@ -204,7 +211,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
-     kld:"",
+    kld: "",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -394,7 +401,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     return {
       job_master_id: data?.job_master_id || 0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
-       kld:data?.kld||"",
+      kld: data?.kld || "",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",
       jar_cap: data?.jar_cap || "",
@@ -466,8 +473,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }));
   };
   const row1HasError =
-    !!errors.unit_effectivity_number || !!errors.customer_name ||!!errors.kld;
-  const row2HasError = !!errors.item_code || !!errors.brand_description;
+    !!errors.unit_effectivity_number || !!errors.kld || !!errors.jar_cap;
+  const row2HasError = !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
 
   useEffect(() => {
     if (isPreviewOpen) {
@@ -482,25 +489,25 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   return (
     <Box sx={{ borderRadius: "0px " }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-<Box
-  display="flex"
-  justifyContent="space-between"
-  alignItems="center"
-  mb={2}
->
-  <Typography
-    sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
-    gutterBottom
-  >
-    SKU Master Data
-  </Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography
+            sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+            gutterBottom
+          >
+            SKU Master Data
+          </Typography>
 
-  <Box display="flex" alignItems="center" gap={1}>
-    <Typography sx={{ fontWeight: 500 }}>Customer Picture:</Typography>
-    {formData.customer_logo ? (
-                  <>
-                    {/* Uploaded Image Preview */}
-                    {/* <Box
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography sx={{ fontWeight: 500 }}>Customer Picture:</Typography>
+            {formData.customer_logo ? (
+              <>
+                {/* Uploaded Image Preview */}
+                {/* <Box
                       component="img"
                       src={formData.customer_logo}
                       alt="Uploaded"
@@ -513,126 +520,126 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                       }}
                     /> */}
 
-                    {/* Action Icons */}
-                    <Box display="flex" gap={0} alignItems="center">
-                      {/* Eye Icon */}
-                      <Tooltip title="View">
-                        <IconButton
-                          onClick={() => setIsPreviewOpen(true)}
-                          color="primary"
-                        >
-                          <Visibility />
-                        </IconButton>
-                      </Tooltip>
+                {/* Action Icons */}
+                <Box display="flex" gap={0} alignItems="center">
+                  {/* Eye Icon */}
+                  <Tooltip title="View">
+                    <IconButton
+                      onClick={() => setIsPreviewOpen(true)}
+                      color="primary"
+                    >
+                      <Visibility />
+                    </IconButton>
+                  </Tooltip>
 
-                      {/* Edit Icon (re-upload) */}
-                      <label htmlFor="reupload-image">
-                        <input
-                          accept="image/*"
-                          type="file"
-                          id="reupload-image"
-                          style={{ display: "none" }}
-                          onChange={handleImageUpload}
-                        />
-                        <Tooltip title="Edit">
-                          <IconButton component="span" color="warning">
-                            <Edit />
-                          </IconButton>
-                        </Tooltip>
-                      </label>
+                  {/* Edit Icon (re-upload) */}
+                  <label htmlFor="reupload-image">
+                    <input
+                      accept="image/*"
+                      type="file"
+                      id="reupload-image"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
+                    <Tooltip title="Edit">
+                      <IconButton component="span" color="warning">
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                  </label>
 
-                      {/* Delete Icon */}
-                      <Tooltip title="Delete">
-                        <IconButton onClick={handleRemoveImage} color="error">
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
+                  {/* Delete Icon */}
+                  <Tooltip title="Delete">
+                    <IconButton onClick={handleRemoveImage} color="error">
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+
+                {/* Image Preview Modal */}
+                <Modal
+                  open={isPreviewOpen}
+                  onClose={() => {}}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      bgcolor: "background.paper",
+                      borderRadius: 2,
+                      boxShadow: 24,
+                      p: 2,
+                      outline: "none",
+                      maxWidth: "90%",
+                      maxHeight: "90%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* Modal Header */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      width="100%"
+                      mb={2}
+                    >
+                      <Typography variant="h6" component="h2">
+                        Preview of Image
+                      </Typography>
+                      <IconButton onClick={() => setIsPreviewOpen(false)}>
+                        <Close />
+                      </IconButton>
                     </Box>
 
-                    {/* Image Preview Modal */}
-                    <Modal
-                      open={isPreviewOpen}
-                      onClose={() => {}}
+                    {/* Image Preview */}
+                    <Box
+                      component="img"
+                      src={formData.customer_logo}
+                      alt="Full Image"
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        maxWidth: "100%",
+                        maxHeight: "75vh",
+                        borderRadius: "8px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </Box>
+                </Modal>
+              </>
+            ) : (
+              <>
+                <label htmlFor="sku-upload">
+                  <Tooltip title="Upload File">
+                    <IconButton
+                      component="span"
+                      sx={{
+                        p: 0.5,
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                        },
                       }}
                     >
-                      <Box
-                        sx={{
-                          bgcolor: "background.paper",
-                          borderRadius: 2,
-                          boxShadow: 24,
-                          p: 2,
-                          outline: "none",
-                          maxWidth: "90%",
-                          maxHeight: "90%",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Modal Header */}
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          width="100%"
-                          mb={2}
-                        >
-                          <Typography variant="h6" component="h2">
-                            Preview of Image
-                          </Typography>
-                          <IconButton onClick={() => setIsPreviewOpen(false)}>
-                            <Close />
-                          </IconButton>
-                        </Box>
+                      <CloudUpload />
+                    </IconButton>
+                  </Tooltip>
+                </label>
 
-                        {/* Image Preview */}
-                        <Box
-                          component="img"
-                          src={formData.customer_logo}
-                          alt="Full Image"
-                          sx={{
-                            maxWidth: "100%",
-                            maxHeight: "75vh",
-                            borderRadius: "8px",
-                            objectFit: "contain",
-                          }}
-                        />
-                      </Box>
-                    </Modal>
-                  </>
-                ) : (
-                  <>
-
-    <label htmlFor="sku-upload">
-      <Tooltip title="Upload File">
-        <IconButton
-  component="span"
-  sx={{
-    p: 0.5,
-    '&:hover': {
-      backgroundColor: 'transparent', 
-    },
-  }}
->
-          <CloudUpload  />
-        </IconButton>
-      </Tooltip>
-    </label>
-
-    <input
-      id="sku-upload"
-      type="file"
-      accept="image/*"
-      style={{ display: "none" }}
-      onChange={handleImageUpload}
-    />
-    </>)}
-  </Box>
-</Box>
+                <input
+                  id="sku-upload"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+              </>
+            )}
+          </Box>
+        </Box>
 
         <Grid container spacing={2} pt={1}>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -646,7 +653,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               helperText={errors.unit_effectivity_number}
               disabled={id ? true : false}
               required
-              endIcon={!id?true:false}
+              endIcon={ false}
             />
             <Box
               sx={{
@@ -659,14 +666,13 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
               }}
             >
-              <DropdownComponent
-                label="Type of Label"
-                options={dropdownOptions ? dropdownOptions : []}
-                value={formData.label_type}
-                onChange={(e) => handleChange("label_type", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                required
+
+                            <ReusableInput
+                label="ITEM Code"
+                value={formData.item_code}
+                onChange={(e) => handleChange("item_code", e.target.value)}
+                error={!!errors.item_code}
+                helperText={errors.item_code}
               />
             </Box>
             <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
@@ -681,20 +687,17 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 dropdown="structure"
               />
             </Box>
-            
           </Grid>
-          <Grid size={{ xs: 12, md:4 }}>
-            <ReusableInput
-              label="KLD"
-              value={formData. kld}
-              onChange={(e) =>
-                handleChange("kld", e.target.value)
-              }
-              error={!!errors.kld}
-              helperText={errors.kld}
-              disabled={true }
-              // required
-            />
+          <Grid size={{ xs: 12, md: 4 }}>
+                          <DropdownComponent
+                label="Jar/Cap"
+                options={["JAR", "CAP", "JAR&CAP"]}
+                value={formData.jar_cap}
+                onChange={(e) => handleChange("jar_cap", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
+                required
+              />
             <Box
               sx={{
                 minHeight:
@@ -703,36 +706,10 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             />
             <Box
               sx={{
-                mt: row1HasError && !!errors.kld ? 0 : 2,
+                mt: row1HasError? '20px' : 2,
               }}
             >
-            <ReusableInput
-              label="ITEM Code"
-              value={formData.item_code}
-              onChange={(e) => handleChange("item_code", e.target.value)}
-              error={!!errors.item_code}
-              helperText={errors.item_code}
-            />
-            <Box
-              sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
-            />
-            </Box>
-            <Box
-              sx={{ mt: row2HasError && !!errors.brand_description ? 0 : 2 }}
-            >
-              <DropdownComponent
-                label="Segment"
-                options={segmentNames}
-                value={formData.segment}
-                onChange={(e) => handleChange("segment", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-              />
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, md:4 }}>
-            <ReusableInput
+                          <ReusableInput
               label="Customer"
               value={formData.customer_name}
               onChange={(e) => handleChange("customer_name", e.target.value)}
@@ -740,11 +717,43 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               helperText={errors.customer_name}
               required
             />
+
+              <Box
+                sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
+              />
+            </Box>
+            <Box
+              sx={{ mt: row2HasError ? '-16px' : 2 }}
+            >
+                            <DropdownComponent
+                label="Type of Label"
+                options={dropdownOptions ? dropdownOptions : []}
+                value={formData.label_type}
+                onChange={(e) => handleChange("label_type", e.target.value)}
+                isMultiSelect={false}
+                checkbox={false}
+                required
+              />
+
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+
+                        <ReusableInput
+              label="KLD"
+              value={formData.kld}
+              onChange={(e) => handleChange("kld", e.target.value)}
+              error={!!errors.kld}
+              helperText={errors.kld}
+              disabled={true}
+              // required
+            />
             <Box
               sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
             />
-            
-            <Box sx={{ mt: row1HasError && !!errors.customer_name ? 0:2 }}>
+
+            <Box sx={{ mt: row1HasError  ? '12px' : 2 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}
@@ -759,24 +768,20 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 multiline={false}
               />
             </Box>
-            
-                        <Box sx={{ mt: row1HasError ?3:2 }}>
-              <DropdownComponent
-                label="Jar/Cap"
-                options={["JAR", "CAP", "JAR&CAP"]}
-                value={formData.jar_cap}
-                onChange={(e) => handleChange("jar_cap", e.target.value)}
+
+            <Box sx={{ mt: row1HasError ? 3 : 2 }}>
+                            <DropdownComponent
+                label="Segment"
+                options={segmentNames}
+                value={formData.segment}
+                onChange={(e) => handleChange("segment", e.target.value)}
                 isMultiSelect={false}
                 checkbox={false}
-                required
               />
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 12, md:4 }}>
-
-
-          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}></Grid>
         </Grid>
       </Box>
 

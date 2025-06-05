@@ -507,6 +507,8 @@ function ReusableTable<T extends Record<string, any>>({
     }
   }, [location]);
 
+  console.log(actions,"ACTIONSOFTHEDATA")
+
   return (
     <Paper
       elevation={0}
@@ -893,49 +895,36 @@ function ReusableTable<T extends Record<string, any>>({
                               )}
                             </TableCell>
                           ))}
-                          {action && (
-                            <TableCell align="left">
-                              <IconButton
-                                onClick={(e) => handleMenuOpen(e, row)}
-                              >
-                                <MoreVertIcon />
-                              </IconButton>
-                            </TableCell>
-                          )}
+                         {actions && actions.length > 0  && (
+  <TableCell align="right">
+    <Stack direction="row">
+      {actions.map((action, index) => (
+        <Tooltip key={index} title={action.label} arrow>
+          <IconButton
+            size="small"
+            onClick={() => {
+              action.onClick(row);
+            }}
+            sx={{
+              p: 0.1,
+              color: "inherit", 
+            }}
+          >
+            {action.icon}
+          </IconButton>
+        </Tooltip>
+      ))}
+    </Stack>
+  </TableCell>
+)}
+
                         </TableRow>
                       );
                     })
                   )}
                 </TableBody>
 
-                {selectedRow && (
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    transformOrigin={{ vertical: "top", horizontal: "right" }}
-                  >
-                    {actions?.map((action, index) => (
-                      <MenuItem
-                        key={index}
-                        onClick={() => {
-                          handleMenuClose();
-                          action.onClick(selectedRow);
-                        }}
-                        sx={{
-                          px: 1,
-                          py: 0.5,
-                          minHeight: "30px",
-                          gap: 0.5,
-                        }}
-                      >
-                        {action.icon && <Box mr={0.5}>{action.icon}</Box>}
-                        {action.label}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                )}
+               
               </Table>
             </TableContainer>
 
