@@ -3,12 +3,13 @@ import {
   Avatar,
   Box,
   Grid,
+  IconButton,
   SelectChangeEvent,
   Tooltip,
   Typography,
 } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
-import { InfoOutline } from "@mui/icons-material";
+import { Edit, InfoOutline, Visibility } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { UENCell } from "../../Components/helpers";
@@ -229,45 +230,54 @@ const MasterData: React.FC = () => {
     localStorage.setItem(storageKey, newPage.toString());
   };
 
-  const baseActions = [
-    {
-      label: "View Job Data",
-      onClick: (row: any) => {
-        const selectedUENAction = row?.unit_effectivity_number;
-        const versionNoAction = row?.version_no;
-        localStorage.setItem("actionSelectedUEN", selectedUENAction);
-        localStorage.setItem("actionVersionNo", versionNoAction);
-        navigate(`/viewJobsList`);
-      },
+const baseActions = [
+  {
+    icon: (
+      <Tooltip title="View Job Data" arrow>
+        <IconButton size="small" color="primary">
+          <Visibility fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    ),
+    onClick: (row: any) => {
+      const selectedUENAction = row?.unit_effectivity_number;
+      const versionNoAction = row?.version_no;
+      localStorage.setItem("actionSelectedUEN", selectedUENAction);
+      localStorage.setItem("actionVersionNo", versionNoAction);
+      navigate(`/viewJobsList`);
     },
-  ];
+  },
+];
 
-  const actions =
-    role === "Admin"
-      ? [
-          ...baseActions,
-          {
-            label: "Update",
-            onClick: (row: any) => {
-              const selectedUENActionUpdate = row?.unit_effectivity_number;
-              const versionNoAction = row?.version_no;
-              localStorage.setItem(
-                "actionSelectedUEN",
-                selectedUENActionUpdate
-              );
-              localStorage.setItem("actionVersionNo", versionNoAction);
-               localStorage.setItem('updateButton','true')
-              // dispatch(setUpdateButton(true));
-              navigate(`/updateMasterData/${selectedUENActionUpdate}`);
-              dispatch(setSelectedTab(0));
-               dispatch(setMasterDataDataTouched(false));
-                        dispatch(setPrintingDataTouched(false));
-                        dispatch(setLaminationDataTouched(false));
-                        dispatch(setDyeCuttingDataTouched(false));
-            },
+const actions =
+  role === "Admin"
+    ? [
+        ...baseActions,
+        {
+          icon: (
+            <Tooltip title="Update" arrow>
+              <IconButton size="small" color="primary">
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          ),
+          onClick: (row: any) => {
+            const selectedUENActionUpdate = row?.unit_effectivity_number;
+            const versionNoAction = row?.version_no;
+            localStorage.setItem("actionSelectedUEN", selectedUENActionUpdate);
+            localStorage.setItem("actionVersionNo", versionNoAction);
+            localStorage.setItem("updateButton", "true");
+
+            navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+            dispatch(setSelectedTab(0));
+            dispatch(setMasterDataDataTouched(false));
+            dispatch(setPrintingDataTouched(false));
+            dispatch(setLaminationDataTouched(false));
+            dispatch(setDyeCuttingDataTouched(false));
           },
-        ]
-      : baseActions;
+        },
+      ]
+    : baseActions;
 
   return (
     <Box sx={{ p: 0 }}>

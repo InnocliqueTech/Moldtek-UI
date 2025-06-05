@@ -70,7 +70,7 @@ interface Column {
   dropdownOptions?: { label: string; value: string }[];
 }
 interface TableAction<T> {
-  label: string;
+  label?: string;
   icon?: JSX.Element;
   onClick: (row: T) => void;
 }
@@ -235,7 +235,9 @@ function ReusableTable<T extends Record<string, any>>({
     : sortedData;
 
   const handleSelectAll = () => {
-    const allSelected = filteredData.filter((row)=>!checkTheDisableStatus(row)).every((row) => isSelected(row));
+    const allSelected = filteredData
+      .filter((row) => !checkTheDisableStatus(row))
+      .every((row) => isSelected(row));
 
     let newSelected: T[] = [];
 
@@ -249,7 +251,6 @@ function ReusableTable<T extends Record<string, any>>({
     setShowSelectionBar(newSelected.length > 0);
     if (onSelectionChange) onSelectionChange(newSelected);
   };
-
 
   const handleSelect = (row: T) => {
     const selectedIndex = selected.findIndex(
@@ -279,14 +280,15 @@ function ReusableTable<T extends Record<string, any>>({
     return selected.some((item) => item[rowIdentifier] === row[rowIdentifier]);
   };
 
-  const checkTheDisableStatus = (row: T) =>{
+  const checkTheDisableStatus = (row: T) => {
     return row?.status == "Inactive";
-  }
+  };
 
   const isAllSelected = () => {
     if (filteredData.length === 0) return false;
     const filtered = filteredData.filter((row) => !checkTheDisableStatus(row));
-    const allSelected = filtered.length > 0 && filtered.every((row) => isSelected(row));
+    const allSelected =
+      filtered.length > 0 && filtered.every((row) => isSelected(row));
     return allSelected;
   };
 
@@ -368,8 +370,6 @@ function ReusableTable<T extends Record<string, any>>({
   // useEffect(() => {
   //   localStorage.setItem(storageKey, page.toString());
   // }, [page]);
-
-  
 
   const [downloadSummary, setDownloadSummary] = useState<null | {
     total: number;
@@ -498,14 +498,14 @@ function ReusableTable<T extends Record<string, any>>({
 
   const location = useLocation();
 
-   useEffect(() => {
-      if (!!downloadSummary) {
-         setDownloadSummary(null)
-      }
-      if(confirmDialogOpen){
-        setConfirmDialogOpen(false)
-      }
-    }, [location]);
+  useEffect(() => {
+    if (!!downloadSummary) {
+      setDownloadSummary(null);
+    }
+    if (confirmDialogOpen) {
+      setConfirmDialogOpen(false);
+    }
+  }, [location]);
 
   return (
     <Paper
@@ -802,7 +802,7 @@ function ReusableTable<T extends Record<string, any>>({
                           pageNumber * rowsPerPage,
                           pageNumber * rowsPerPage + rowsPerPage
                         )
-                    ).map((row:any, index:any) => {
+                    ).map((row: any, index: any) => {
                       const isItemSelected = isSelected(row);
                       const isRowCheckBoxDisable = checkTheDisableStatus(row);
                       return (
@@ -923,8 +923,14 @@ function ReusableTable<T extends Record<string, any>>({
                           handleMenuClose();
                           action.onClick(selectedRow);
                         }}
+                        sx={{
+                          px: 1,
+                          py: 0.5,
+                          minHeight: "30px",
+                          gap: 0.5,
+                        }}
                       >
-                        {action.icon && <Box mr={1}>{action.icon}</Box>}
+                        {action.icon && <Box mr={0.5}>{action.icon}</Box>}
                         {action.label}
                       </MenuItem>
                     ))}
@@ -1308,7 +1314,7 @@ function ReusableTable<T extends Record<string, any>>({
             </Dialog>
             <Dialog
               open={confirmDialogOpen}
-              onClose={() =>{}}
+              onClose={() => {}}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 5, p: 0.5 } }}

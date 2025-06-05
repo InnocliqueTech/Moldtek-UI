@@ -167,53 +167,60 @@ const name = viewMasterDataDetails?.customer_name;
     <Typography variant="body2" color="text.secondary" fontWeight={500}>
       Customer Name
     </Typography>
-<Stack direction="row" alignItems="center" spacing={1} mt={1}>
-  <Box position="relative" width={32} height={32}>
-    <Avatar
-      src={logo || ""}
-      sx={{
-        width: 32,
-        height: 32,
-        bgcolor: "#1976d2",
-        fontSize: 14,
-      }}
-    >
-      {!logo && getInitial(name)}
-    </Avatar>
-    {logo && (
-      <Tooltip title="Preview">
-        <IconButton
-          size="small"
-          onClick={() => setImagePreviewOpen(true)}
-          sx={{
-            position: "absolute",
-            top: -10,
-            right: -10,
-            bgcolor: "transparent",
-            "&:hover": { bgcolor: "transparent" },
-            // color:'blue'
-          }}
-        >
-          <Visibility fontSize="small" />
-        </IconButton>
-      </Tooltip>
-    )}
-  </Box>
+<Stack direction="row" alignItems="center" spacing={1.5} mt={1}>
+  <Avatar
+    src={logo || ""}
+    sx={{
+      width: 40,
+      height: 40,
+      bgcolor: "#1976d2",
+      fontSize: 16,
+      boxShadow: 2,
+    }}
+  >
+    {!logo && getInitial(name)}
+  </Avatar>
 
   <Box>
-    <Typography
-      variant="body1"
-      sx={{
-        mt: 0.5,
-        wordBreak: "break-word",
-        whiteSpace: "pre-line",
-      }}
-    >
-      {renderValue(name, maxChars)}
-    </Typography>
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <Typography
+        variant="body1"
+        sx={{
+          fontSize: 14,
+          fontWeight: 500,
+          color: "#2F2F2F",
+          maxWidth: 200,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {renderValue(name, maxChars)}
+      </Typography>
+
+      {logo && (
+        <Tooltip title="Preview">
+          <IconButton
+            size="small"
+            onClick={() => setImagePreviewOpen(true)}
+            sx={{
+              backgroundColor: "transparent",
+              borderRadius: "50%",
+              padding: "4px",
+              boxShadow: 0,
+              "&:hover": {
+                backgroundColor: "transparent",
+              },
+            }}
+          >
+            <Visibility fontSize="small" sx={{ color: "#1976d2" }} />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Stack>
   </Box>
 </Stack>
-  </Box>
+</Box>
 
             <Box sx={{ mt: 2 }}>
               <Typography

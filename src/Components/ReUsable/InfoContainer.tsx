@@ -62,7 +62,7 @@ const InfoContainer: React.FC<InfoContainerProps> = ({
   };
 
   return (
-    <Box sx={{ px: 4, pb: 4 }}>
+    <Box sx={{ px: 1, pb: 4 }}>
       <Grid container spacing={2} pt={1}>
         {infoItems.map((item, index) => (
           <Grid
