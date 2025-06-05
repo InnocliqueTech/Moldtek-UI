@@ -19,7 +19,7 @@ import {
   Pagination,
   PaginationItem,
   Stack,
-  Menu,
+  // Menu,
   MenuItem,
   Fade,
   Slide,
@@ -37,7 +37,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   CheckCircle,
   ChevronLeft,
@@ -136,7 +136,7 @@ function ReusableTable<T extends Record<string, any>>({
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px–900px
 
   const [selected, setSelected] = useState<T[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
   const [showSelectionBar, setShowSelectionBar] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -146,18 +146,18 @@ function ReusableTable<T extends Record<string, any>>({
 
   const { dropDown } = useSelector((state: RootState) => state.viewDailyPlan);
 
-  const handleMenuOpen = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    row: T
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
-  };
+  // const handleMenuOpen = (
+  //   event: React.MouseEvent<HTMLButtonElement>,
+  //   row: T
+  // ) => {
+  //   setAnchorEl(event.currentTarget);
+  //   setSelectedRow(row);
+  // };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedRow(null);
-  };
+  // const handleMenuClose = () => {
+  //   setAnchorEl(null);
+  //   setSelectedRow(null);
+  // };
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";

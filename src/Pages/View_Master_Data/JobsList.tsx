@@ -30,7 +30,7 @@ import {
   setIsEditing,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
-import { Close, Visibility } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import theme from "../../theme";
 import AutoTooltipText from "../../Components/ReUsable/AutoTooltipText";
 

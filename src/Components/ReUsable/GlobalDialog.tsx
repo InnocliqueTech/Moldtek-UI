@@ -8,13 +8,12 @@ import {
   Box,
   Chip,
   Divider,
-  List,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { closeGlobalPopup } from "../../store/slices/masterDataSlice";
 import dayjs from "dayjs";
-import { AccessTime, CheckCircle, Description, ErrorOutline } from "@mui/icons-material";
+import { AccessTime, CheckCircle } from "@mui/icons-material";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";

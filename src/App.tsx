@@ -38,7 +38,7 @@ const App: React.FC = () => {
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/productionOperators" element={<ProductionOperatorsPage/>} />
+              <Route path="/kld" element={<ProductionOperatorsPage/>} />
               <Route path="/settings" element={<SettingsPage/>}/>
               <Route path="/masterData" element={<MasterData />} />
               <Route path="/createMasterData" element={<CreateMasterData />} />
