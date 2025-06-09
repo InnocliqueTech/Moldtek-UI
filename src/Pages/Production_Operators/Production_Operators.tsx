@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
   Alert,
-  Skeleton
+  Skeleton,
 } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { Edit, InfoOutline } from "@mui/icons-material";
@@ -16,23 +16,28 @@ import ReusableTable from "../../Components/ReUsable/Table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
-import { setCreateSlider, setKLDEdit, setRowKLDData } from "../../store/slices/kldSlice";
-import { useGetKLDDataMutation, useGetKLDmetricsQuery, useKldDataGlobalSearchMutation } from "../../store/apis/kldApis";
+import {
+  setCreateSlider,
+  setKLDEdit,
+  setRowKLDData,
+} from "../../store/slices/kldSlice";
+import {
+  useGetKLDDataMutation,
+  useGetKLDmetricsQuery,
+  useKldDataGlobalSearchMutation,
+} from "../../store/apis/kldApis";
 import { KLDData } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    data: kldMetricsData,
-    isLoading,
-    isError,
-  } = useGetKLDmetricsQuery();
+  const { data: kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
   const apiStats: KLDData | undefined = kldMetricsData?.data;
   const storageKey = "kldDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
+  const [previousPage, setPreviousPage] = useState(0);
   const rowsPerPageStorageKey = "kldDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -42,20 +47,17 @@ const ProductionOperatorsPage: React.FC = () => {
     {
       title: "Total KLD",
       value: apiStats?.["Total"] ?? 0,
-      infoText:
-        "Displays the total count of created KLD's",
+      infoText: "Displays the total count of created KLD's",
     },
     {
       title: "KLD-SET CODE",
       value: apiStats?.["KLD - SET CODE"] ?? 0,
-      infoText:
-        "Displays the total count of Jar and Cap KLD sets.",
+      infoText: "Displays the total count of Jar and Cap KLD sets.",
     },
     {
       title: "KLD-JAR CODE",
       value: apiStats?.["KLD - JAR CODE"] ?? 0,
-      infoText:
-        "Displays the total count of Jar KLD sets.",
+      infoText: "Displays the total count of Jar KLD sets.",
     },
     {
       title: "KLD-CAP CODE",
@@ -69,7 +71,6 @@ const ProductionOperatorsPage: React.FC = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
-
 
   const columns = [
     {
@@ -126,25 +127,26 @@ const ProductionOperatorsPage: React.FC = () => {
     },
   ];
 
-  const { filtersPayload, openSliderKld, isSearchTriggered,debouncedSearchKLD,createSlider } = useSelector(
-    (state: RootState) => state.kld
-  );
+  const {
+    filtersPayload,
+    openSliderKld,
+    isSearchTriggered,
+    debouncedSearchKLD,
+    createSlider,
+  } = useSelector((state: RootState) => state.kld);
 
   const [
     getKLDData,
     { data: listOfCompaniesData, isLoading: listOfCompaniesLoading },
   ] = useGetKLDDataMutation();
 
-
-
-    const [
-      kldDataGlobalSearch,
-      { data: globalSearchData, isLoading: searchLoading },
-    ] = useKldDataGlobalSearchMutation();
-
+  const [
+    kldDataGlobalSearch,
+    { data: globalSearchData, isLoading: searchLoading },
+  ] = useKldDataGlobalSearchMutation();
 
   useEffect(() => {
-    if (!openSliderKld || !createSlider) {
+    if (debouncedSearchKLD === "" && !openSliderKld && !createSlider) {
       getKLDData({
         ...filtersPayload,
         page: isSearchTriggered ? 0 : page,
@@ -154,17 +156,26 @@ const ProductionOperatorsPage: React.FC = () => {
     if (isSearchTriggered) {
       setPage(0);
     }
-  }, [page, getKLDData, filtersPayload, rowsPerPage,createSlider]);
+  }, [page, filtersPayload, rowsPerPage, createSlider]);
 
-    useEffect(() => {
-      if (debouncedSearchKLD !== "") {
-        kldDataGlobalSearch({
-          page: page,
-          size: rowsPerPage,
-          searchField: debouncedSearchKLD,
-        });
-      }
-    }, [page, rowsPerPage, debouncedSearchKLD]);
+  useEffect(() => {
+    if (page !== 0) {
+      setPreviousPage(page);
+    }
+    if (debouncedSearchKLD !== "" && !openSliderKld && !createSlider) {
+      kldDataGlobalSearch({
+        page: page,
+        size: rowsPerPage,
+        searchField: debouncedSearchKLD,
+      });
+    }
+    if (debouncedSearchKLD !== "") {
+      setPage(0);
+    }
+    if (debouncedSearchKLD === "") {
+      setPage(previousPage);
+    }
+  }, [page, rowsPerPage, debouncedSearchKLD]);
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
@@ -186,7 +197,7 @@ const ProductionOperatorsPage: React.FC = () => {
           </IconButton>
         </Tooltip>
       ),
-      onClick: (row:any) => {
+      onClick: (row: any) => {
         dispatch(setRowKLDData(row));
         dispatch(setKLDEdit(true));
         dispatch(setCreateSlider(true));
@@ -197,49 +208,55 @@ const ProductionOperatorsPage: React.FC = () => {
   return (
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
-        {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
-                <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
-              </Grid>
-            ))
-          : isError
-          ? (
-              <Grid size={{ xs: 12 }}>
-                <Alert severity="error">
-                  Failed to fetch KLD metrics. Please try again later.
-                </Alert>
-              </Grid>
-            )
-          : stats.map((stat, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-                <Cards
-                  title={stat.title}
-                  value={stat.value}
-                  icon={
-                    <InfoOutline
-                      sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                    />
-                  }
-                  infoText={stat.infoText}
-                />
-              </Grid>
-            ))}
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
+              <Skeleton
+                variant="rectangular"
+                height={120}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+          ))
+        ) : isError ? (
+          <Grid size={{ xs: 12 }}>
+            <Alert severity="error">
+              Failed to fetch KLD metrics. Please try again later.
+            </Alert>
+          </Grid>
+        ) : (
+          stats.map((stat, index) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+              <Cards
+                title={stat.title}
+                value={stat.value}
+                icon={
+                  <InfoOutline
+                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                  />
+                }
+                infoText={stat.infoText}
+              />
+            </Grid>
+          ))
+        )}
       </Grid>
 
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
-          infoText={
-            "Displays a list of master data KLD entries"
-          }
+          infoText={"Displays a list of master data KLD entries"}
           boxShadow={true}
           columns={columns}
           pageNumber={page}
-          data={debouncedSearchKLD ? globalSearchData?.data ??[]:listOfCompaniesData?.data?.content?? []}
+          data={
+            debouncedSearchKLD
+              ? globalSearchData?.data ?? []
+              : listOfCompaniesData?.data?.content ?? []
+          }
           selectable={false}
           label={`${
             debouncedSearchKLD
-              ? globalSearchData?.data?.totalItems ?? 0
+              ? globalSearchData?.totalRecords ?? 0
               : listOfCompaniesData?.data?.totalItems ?? 0
           } klds`}
           title="KLD Overview"
@@ -247,13 +264,15 @@ const ProductionOperatorsPage: React.FC = () => {
           searchVisible={true}
           action={true}
           actions={actions}
-          isLoading={listOfCompaniesLoading||searchLoading}
+          isLoading={listOfCompaniesLoading || searchLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"kldData"}
-          totalLength={ debouncedSearchKLD
-              ? globalSearchData?.data?.totalItems ?? 0
-              : listOfCompaniesData?.data?.totalItems ?? 0}
+          totalLength={
+            debouncedSearchKLD
+              ? globalSearchData?.totalRecords ?? 0
+              : listOfCompaniesData?.data?.totalItems ?? 0
+          }
           pageRange={true}
           handleRowsPerPageChange={handleRowsPerPageChange}
         />

@@ -40,6 +40,7 @@ const MasterData: React.FC = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
+  const [previousPage, setPreviousPage] = useState(0);
   const rowsPerPageStorageKey = "masterDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -191,7 +192,7 @@ const MasterData: React.FC = () => {
   ] = useMasterDataGlobalSearchMutation();
 
   useEffect(() => {
-    if (!openSider) {
+    if (debouncedSearch === "" && !openSider) {
       masterFilters({
         ...filtersPayload,
         page: isSearchTriggered ? 0 : page,
@@ -204,12 +205,21 @@ const MasterData: React.FC = () => {
   }, [page, openSider, filtersPayload, rowsPerPage]);
 
   useEffect(() => {
-    if (debouncedSearch !== "") {
+    if (page !== 0) {
+      setPreviousPage(page);
+    }
+    if (debouncedSearch !== "" && !openSider) {
       masterDataGlobalSearch({
-        page: page,
+        page: debouncedSearch !== "" ? 0 : page,
         size: rowsPerPage,
         searchField: debouncedSearch,
       });
+    }
+    if (debouncedSearch !== "") {
+      setPage(0);
+    }
+    if (debouncedSearch === "") {
+      setPage(previousPage);
     }
   }, [page, rowsPerPage, debouncedSearch]);
 
@@ -303,7 +313,6 @@ const MasterData: React.FC = () => {
           },
         ]
       : baseActions;
-
 
   return (
     <Box sx={{ p: 0 }}>

@@ -124,7 +124,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 try {
   if (formData.unit_effectivity_number && formData.jar_cap) {
     const response = await getKLDCode({
-      unit_effectivity_number: formData.unit_effectivity_number.toString(),
+      unitEffectiveNumber: formData.unit_effectivity_number.toString(),
       jarCap: formData.jar_cap,
     }).unwrap();
 const newKldCode = response?.data?.kldCode ?? "";
