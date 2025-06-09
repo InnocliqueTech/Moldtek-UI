@@ -29,7 +29,7 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     filtersPayload
   } = useSelector((state: RootState) => state.kld);
 
-  const [selectedJarCaps, setSelectedJarCaps] =  useState<string>(
+  const [selectedJarCaps, setSelectedJarCaps] =   useState<string>(
     filtersPayload.jarCap || ''
   );
 

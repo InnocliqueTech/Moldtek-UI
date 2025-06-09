@@ -205,6 +205,7 @@ useEffect(() => {
   value={(formValues.unitEffectiveNumber ?? "").toString()}
   onChange={handleChange("unitEffectiveNumber")}
   required
+  disabled={kldEdit?true:false}
 />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -216,6 +217,7 @@ useEffect(() => {
               isMultiSelect={false}
               checkbox={false}
               required
+               disabled={kldEdit?true:false}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>

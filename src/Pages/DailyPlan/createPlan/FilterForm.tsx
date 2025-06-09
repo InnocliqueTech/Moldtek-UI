@@ -7,7 +7,7 @@ import {
   IconButton,
   Grid,
   Typography,
-  TextField,
+  // TextField,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,7 +24,7 @@ import {
 } from "../../../store/slices/viewDailyPlanSlice";
 import LabelTypeSelector from "./LabelTypes";
 import CustomerSelect from "./CustomersData";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import { LocalDatePayload } from "./Filter";
 
 interface FilterFormProps {
@@ -41,9 +41,9 @@ interface FilterFormProps {
 const FilterForm: React.FC<FilterFormProps> = ({
   setLocalDates,
   localDates,
-  searchField,
+  // searchField,
   setSearchField,
-  searchType,
+  // searchType,
   setSearchType,
   selectedStatuses,
   setSelectedStatuses,
@@ -314,7 +314,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
         })}
       </Grid>
 
-      <Grid container spacing={0} sx={{ mb: 2 }}>
+      {/* <Grid container spacing={0} sx={{ mb: 2 }}>
         <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
             Search
@@ -385,7 +385,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
             />
           </Box>
         </Grid>
-      </Grid>
+      </Grid> */}
     </>
   );
 };

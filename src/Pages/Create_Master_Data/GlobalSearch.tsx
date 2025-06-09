@@ -6,8 +6,8 @@ import {
   InputAdornment,
   IconButton,
   Grid,
-  TextField,
-  Typography,
+  // TextField,
+  // Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import LabelTypeSelector from "./LabelType";
@@ -23,7 +23,7 @@ import {
   CalendarToday,
   Clear as ClearIcon,
 } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import { LocalDatePayload } from "./Filter";
 
 
@@ -39,7 +39,7 @@ interface FilterFormProps {
 const FilterForm: React.FC<FilterFormProps> = ({
   setLocalDates,
   localDates,
-  searchField,
+  // searchField,
   setSearchField,
 }) => {
   const dispatch = useDispatch();
@@ -234,7 +234,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
       <Grid size={{ xs: 12 }}>
         <LabelTypeSelector />
       </Grid>
-      <Grid container spacing={4} sx={{ mb: 2 }}>
+      {/* <Grid container spacing={4} sx={{ mb: 2 }}>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Typography sx={{ mb: 1, fontWeight: 500 }}>Search Term</Typography>
           <TextField
@@ -278,7 +278,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
             }}
           />
         </Grid>
-      </Grid>
+      </Grid> */}
     </>
   );
 };

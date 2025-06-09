@@ -25,6 +25,7 @@ interface DropdownProps {
   error?: boolean;
   helperText?: string;
   required?: boolean;
+  disabled?:boolean;
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -38,6 +39,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
   error = false,
   helperText = "",
   required = false,
+  disabled= false
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -88,6 +90,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({
           value={selectedOptions}
           onChange={handleSelectChange}
           displayEmpty
+          disabled={disabled}
             error={error}
           renderValue={(selected) => {
             if (

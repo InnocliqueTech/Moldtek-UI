@@ -43,24 +43,24 @@ const ProductionOperatorsPage: React.FC = () => {
       title: "Total KLD",
       value: apiStats?.["Total"] ?? 0,
       infoText:
-        "Displays the count of master data jobs with the latest version",
+        "Displays the total count of created KLD's",
     },
     {
       title: "KLD-SET CODE",
       value: apiStats?.["KLD - SET CODE"] ?? 0,
       infoText:
-        "Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW",
+        "Displays the total count of Jar and Cap KLD sets.",
     },
     {
       title: "KLD-JAR CODE",
       value: apiStats?.["KLD - JAR CODE"] ?? 0,
       infoText:
-        "Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW",
+        "Displays the total count of Jar KLD sets.",
     },
     {
       title: "KLD-CAP CODE",
       value: apiStats?.["KLD - CAP CODE"] ?? 0,
-      infoText: "Displays the total count of customers",
+      infoText: "Displays the total count of Cap KLD sets.",
     },
   ];
 
@@ -230,7 +230,7 @@ const ProductionOperatorsPage: React.FC = () => {
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
           infoText={
-            "Displays a list of master data entries with their associated SKU information."
+            "Displays a list of master data KLD entries"
           }
           boxShadow={true}
           columns={columns}

@@ -100,25 +100,57 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const selectedVersion = localStorage.getItem("selectedVersionNo");
 
 
+  const [errors, setErrors] = useState<MasterDataFormErrors>({
+    job_master_id: "",
+    repeat_length: "",
+    ups: "",
+    tracks: "",
+    unit_effectivity_number: "",
+    kldCode: "",
+    customer_name: "",
+    customer_logo: "",
+    jar_cap: "",
+    item_code: "",
+    structure: "",
+    brand_description: "",
+    label_type: "",
+    segment: "",
+    noOfColorsSetting: "",
+    noOfSpecialColors: "",
+  });
 
   useEffect(() => {
     const fetchKLDCode = async () => {
-      try {
-        if (formData.unit_effectivity_number && formData.jar_cap) {
-          const response = await getKLDCode({
-            unit_effectivity_number: formData.unit_effectivity_number.toString(),
-            jarCap: formData.jar_cap,
-          }).unwrap();
+try {
+  if (formData.unit_effectivity_number && formData.jar_cap) {
+    const response = await getKLDCode({
+      unit_effectivity_number: formData.unit_effectivity_number.toString(),
+      jarCap: formData.jar_cap,
+    }).unwrap();
 
-          dispatch(setKldCode(response?.data ?response?.data?.kldCode:'' )); 
-           setFormData((prev) => ({
-          ...prev,
-          kldCode: response?.data?.kldCode, 
-        }));
-        }
-      } catch (error) {
-        console.error("Failed to fetch KLD code:", error);
-      }
+    const newKldCode = response?.data?.kldCode ?? "";
+          dispatch(setKldCode(newKldCode ?newKldCode:'' )); 
+    setFormData((prev) => ({
+      ...prev,
+      kldCode: newKldCode,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      kldCode: "",
+    }));
+  }
+} catch (error: any) {
+  const errorMessage =
+    error?.data?.message ||
+    "Unit Effective Number does not exist. Please create new KLD Code.";
+
+  setErrors((prev) => ({
+    ...prev,
+    kldCode: errorMessage,
+  }));
+}
+
+
     };
 
     fetchKLDCode();
@@ -234,24 +266,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [formInitialized, setFormInitialized] = useState(false);
 
-  const [errors, setErrors] = useState<MasterDataFormErrors>({
-    job_master_id: "",
-    repeat_length: "",
-    ups: "",
-    tracks: "",
-    unit_effectivity_number: "",
-    kldCode: "",
-    customer_name: "",
-    customer_logo: "",
-    jar_cap: "",
-    item_code: "",
-    structure: "",
-    brand_description: "",
-    label_type: "",
-    segment: "",
-    noOfColorsSetting: "",
-    noOfSpecialColors: "",
-  });
 
   const numericFields: (keyof MasterFormData)[] = [
     "repeat_length",
@@ -270,7 +284,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     "ups",
     "noOfColorsSetting",
     "noOfSpecialColors",
-    //  "kldCode",
+     "kldCode",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   const freeTextFields: (keyof MasterFormData)[] = [
@@ -732,7 +746,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               error={!!errors.kldCode}
               helperText={errors.kldCode}
               disabled={true}
-              // required
+              required
             />
             <Box
               sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}

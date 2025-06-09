@@ -14,6 +14,8 @@ import {
   ArrowForward,
   CalendarToday,
   Clear as ClearIcon,
+  RadioButtonChecked,
+  RadioButtonUnchecked,
 } from "@mui/icons-material";
 import { RootState } from "../../store";
 import { LocalDatePayload } from "./Filter";
@@ -66,17 +68,10 @@ const FilterForm: React.FC<FilterFormProps> = ({
 const jarCapOptions = [
   { label: "JAR", value: "jar" },
   { label: "CAP", value: "cap" },
-  { label: "JAR/CAP", value: "jar/cap" },
    { label: "JAR&CAP", value: "jar&cap" },
 ];
 
-const toggleJarCap = (value: string) => {
-  setSelectedJarCaps(value)
-};
 
-const handleClearJarCaps = () => {
-  setSelectedJarCaps('');
-};
 
 
   return (
@@ -218,61 +213,51 @@ const handleClearJarCaps = () => {
           </Box>
         </Box>
       </LocalizationProvider>
-      <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
-<Grid size={{xs:12}}
-  sx={{ display: "flex", alignItems: "center", mb: 1 }}
->
-  <Typography variant="subtitle1">
-    Jar/Cap ({selectedJarCaps.length})
-  </Typography>
-  <IconButton size="small" onClick={handleClearJarCaps}>
-    <ClearIcon fontSize="small" />
-  </IconButton>
-</Grid>
 
-{jarCapOptions.map((option) => {
-  const isSelected = selectedJarCaps.includes(option.value);
-  return (
-    <Grid key={option.value} >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          px: 1,
-          py: 0,
-          border: "2px solid",
-          borderColor:"#ccc",
-          borderRadius: "20px",
-          cursor: "pointer",
-          backgroundColor:"transparent",
-        }}
-        onClick={() => toggleJarCap(option.value)}
-      >
-        <input
-          type="checkbox"
-          checked={isSelected}
-          readOnly
-          style={{
-            width: "14px",
-            height: "14px",
-            marginRight: "8px",
-            borderRadius: "0px",
-          }}
-        />
-        <Typography
+<Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
+  <Grid size={{xs:12}} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+    <Typography variant="subtitle1">
+      Jar/Cap {selectedJarCaps ? `(1 selected)` : `(0 selected)`}
+    </Typography>
+    <IconButton size="small" onClick={() => setSelectedJarCaps('')}>
+      <ClearIcon fontSize="small" />
+    </IconButton>
+  </Grid>
+
+  {jarCapOptions.map((option) => {
+    const isSelected = selectedJarCaps === option.value;
+
+    return (
+      <Grid  key={option.value}>
+        <Box
           sx={{
-            fontWeight: 400,
-            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            px: 2,
+            py: 0.5,
+            border: "2px solid",
+            borderColor: isSelected ? "#0073B7" : "#ccc",
+            borderRadius: "20px",
+            cursor: "pointer",
+            backgroundColor: isSelected ? "#E3F2FD" : "transparent",
+            transition: "all 0.2s ease-in-out",
           }}
+          onClick={() => setSelectedJarCaps(option.value)}
         >
-          {option.label}
-        </Typography>
-      </Box>
-    </Grid>
-  );
-})}
+          {isSelected ? (
+            <RadioButtonChecked sx={{ mr: 1, color: "#0073B7" }} />
+          ) : (
+            <RadioButtonUnchecked sx={{ mr: 1, color: "#aaa" }} />
+          )}
 
+          <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+            {option.label}
+          </Typography>
+        </Box>
       </Grid>
+    );
+  })}
+</Grid>
 
     </>
   );
