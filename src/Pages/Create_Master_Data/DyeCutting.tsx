@@ -14,7 +14,7 @@ import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import {
   DyeCuttingFormData,
   DyeCuttingFormErrors,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 
 interface DyeCuttingProps {
   formData: DyeCuttingFormData;

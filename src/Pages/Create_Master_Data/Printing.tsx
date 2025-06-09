@@ -21,7 +21,7 @@ import {
   PrintingFormErrors,
   PrintingFormValues,
   PrintingTableRow,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import {
   useGetMachinesByTypeQuery,

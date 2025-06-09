@@ -53,7 +53,7 @@ import {
 import {
   MasterDataFormErrors,
   MasterFormData,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
 import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";

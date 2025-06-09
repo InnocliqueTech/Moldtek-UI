@@ -45,7 +45,7 @@ import {
   MasterFormData,
   PrintingFormValues,
   PrintingTableRow,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

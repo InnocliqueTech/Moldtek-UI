@@ -15,7 +15,7 @@ import {
   PrintingFormErrors,
   PrintingFormValues,
   RequestPayload,
-} from "./masterDataInterface";
+} from "../Interfaces/masterDataTypes";
 
 const initialState: MasterDataState = {
   PopupState: {

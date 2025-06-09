@@ -15,7 +15,6 @@ import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import ButtonComponent from "../../Components/ReUsable/Button";
-import { setKLDEdit } from "../../store/slices/kldSlice";
 
 interface KLDSliderProps {
   open: boolean;
@@ -25,7 +24,6 @@ interface KLDSliderProps {
 
 const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
   const { kldEdit } = useSelector((state: RootState) => state.kld);
-  const dispatch = useDispatch();
 
   const [formValues, setFormValues] = useState({
     uen: "",
