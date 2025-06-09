@@ -51,7 +51,6 @@ const TitledDataTable = <T extends Record<string, any>>({
   rowEditable,
 }: TitledDataTableProps<T>) => {
 
-console.log(columns,"COLUMNSDDATA")
 
   return (
     <Box

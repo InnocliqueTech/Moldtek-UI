@@ -210,7 +210,7 @@ const handleDataUpdate = (section: keyof PrintingReportResponse["data"], newData
      editIcon:true
   }));
 
-  console.log(tensionRows,"TENSIONCOLUMNS")
+
 
 
   return (

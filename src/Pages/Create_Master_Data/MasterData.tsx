@@ -304,7 +304,6 @@ const MasterData: React.FC = () => {
         ]
       : baseActions;
 
-  console.log(transformedSearchData, "TRANSFORMEDSEARCHDATA");
 
   return (
     <Box sx={{ p: 0 }}>

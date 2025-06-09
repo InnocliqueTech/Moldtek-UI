@@ -126,7 +126,10 @@ useEffect(() => {
 
   const handleSubmitPopupConfirmOpen = async () => {
       try {
-        const response = await createOrUpdateKldData({formValues});
+        const response = await createOrUpdateKldData({ unitEffectiveNumber: formValues.unitEffectiveNumber,
+    jarCap: formValues.jarCap,
+    itemCode: formValues.itemCode,
+    kldCode: formValues.kldCode});
 
         const isCreateSuccess =
           response && response.data && response.data.statusCode === 200;

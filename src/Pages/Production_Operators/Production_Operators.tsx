@@ -126,7 +126,7 @@ const ProductionOperatorsPage: React.FC = () => {
     },
   ];
 
-  const { filtersPayload, openSliderKld, isSearchTriggered,debouncedSearchKLD } = useSelector(
+  const { filtersPayload, openSliderKld, isSearchTriggered,debouncedSearchKLD,createSlider } = useSelector(
     (state: RootState) => state.kld
   );
 
@@ -144,7 +144,7 @@ const ProductionOperatorsPage: React.FC = () => {
 
 
   useEffect(() => {
-    if (!openSliderKld) {
+    if (!openSliderKld || !createSlider) {
       getKLDData({
         ...filtersPayload,
         page: isSearchTriggered ? 0 : page,
@@ -154,7 +154,7 @@ const ProductionOperatorsPage: React.FC = () => {
     if (isSearchTriggered) {
       setPage(0);
     }
-  }, [page, getKLDData, filtersPayload, rowsPerPage]);
+  }, [page, getKLDData, filtersPayload, rowsPerPage,createSlider]);
 
     useEffect(() => {
       if (debouncedSearchKLD !== "") {
