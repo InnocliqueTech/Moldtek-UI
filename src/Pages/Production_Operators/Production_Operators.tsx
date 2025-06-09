@@ -17,10 +17,12 @@ import {
   setIsSearchTriggered,
 } from "../../store/slices/masterDataSlice";
 import { setCreateSlider, setKLDEdit } from "../../store/slices/kldSlice";
+import { useGetKLDmetricsQuery } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-
+   const { data:kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
+   console.log({kldMetricsData,isLoading,isError},"KldMetricsApiCalled");
  const data = {
     totalKld: 124,
     kldSetCode: 46,

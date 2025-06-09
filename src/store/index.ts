@@ -8,6 +8,7 @@ import masterDataReducer from './slices/masterDataSlice';
 import viewMasterDataReducer from './slices/viewMasterDataSlice'
 import  viewDailyPlanReducer  from './slices/viewDailyPlanSlice';
 import kldReducer from './slices/kldSlice';
+import { kldApi } from './apis/kldApis';
 
 export const store = configureStore({
   reducer: {
@@ -19,13 +20,15 @@ export const store = configureStore({
     [dailyPlanApi.reducerPath]: dailyPlanApi.reducer,
      [authenticationApi.reducerPath]: authenticationApi.reducer,
       [genericApi.reducerPath]: genericApi.reducer,
+    [kldApi.reducerPath] : kldApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(masterDataApi.middleware)
       .concat(dailyPlanApi.middleware)
       .concat(authenticationApi.middleware)
-      .concat(genericApi.middleware),
+      .concat(genericApi.middleware)
+      .concat(kldApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>; 
