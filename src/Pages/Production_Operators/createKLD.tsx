@@ -15,12 +15,14 @@ import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import ButtonComponent from "../../Components/ReUsable/Button";
-import { useCreateOrUpdateKldDataMutation } from "../../store/apis/kldApis";
+import {
+  useCreateKldDataMutation,
+  useUpdateKldDataMutation,
+} from "../../store/apis/kldApis";
 import { setCreateSlider } from "../../store/slices/kldSlice";
 import SuccessPopup from "../../Components/ReUsable/SuccessPopup";
 import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
 import { toast } from "react-toastify";
-
 
 interface KLDSliderProps {
   open: boolean;
@@ -28,13 +30,12 @@ interface KLDSliderProps {
 }
 
 const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
-  const { kldEdit,rowKldData } = useSelector((state: RootState) => state.kld);
+  const { kldEdit, rowKldData } = useSelector((state: RootState) => state.kld);
 
   const dispatch = useDispatch();
 
-  const [submitPopupConfirm,setSubmitPopupConfirm]= useState<boolean>(false);
-  const [submitAndPublish,setSubmitAndPublishPopup] = useState<boolean>(false);
-
+  const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
+  const [submitAndPublish, setSubmitAndPublishPopup] = useState<boolean>(false);
 
   const [formValues, setFormValues] = useState({
     unitEffectiveNumber: "",
@@ -43,18 +44,20 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
     kldCode: "",
   });
 
-  const [createOrUpdateKldData,{isLoading}] = useCreateOrUpdateKldDataMutation();
+  const [createKldData, { isLoading }] = useCreateKldDataMutation();
+  const [updateKldData, { isLoading: kldUpdateLoading }] =
+    useUpdateKldDataMutation();
+  useUpdateKldDataMutation;
 
+  const onSubmit = () => {
+    setSubmitAndPublishPopup(true);
+  };
 
-     const onSubmit=() => {
-  setSubmitAndPublishPopup(true);
-  }
-
-   const successTitle = kldEdit
+  const successTitle = kldEdit
     ? `You have successfully updated KLD Master Data.`
     : `You have successfully created KLD Master Data.`;
 
- const confirmPublishTitle = kldEdit
+  const confirmPublishTitle = kldEdit
     ? `Are you sure you want to update and publish? `
     : `Are you sure you want to submit and publish? `;
 
@@ -69,99 +72,101 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
       setFormValues((prev) => ({ ...prev, [field]: value }));
     };
 
- const getKLDLabel = () => {
-  switch ((formValues.jarCap ?? "").toUpperCase()) {
-    case "JAR":
-      return "KLD-JAR Code";
-    case "CAP":
-      return "KLD-CAP Code";
-    case "JAR&CAP":
-      return "KLD-SET Code";
-    default:
-      return "KLD Code";
-  }
-};
+  const getKLDLabel = () => {
+    switch ((formValues.jarCap ?? "").toUpperCase()) {
+      case "JAR":
+        return "KLD-JAR Code";
+      case "CAP":
+        return "KLD-CAP Code";
+      case "JAR&CAP":
+        return "KLD-SET Code";
+      default:
+        return "KLD Code";
+    }
+  };
 
+  const isSubmitEnabled = useMemo(
+    () =>
+      (formValues.unitEffectiveNumber ?? "").trim() &&
+      (formValues.jarCap ?? "").trim() &&
+      (formValues.itemCode ?? "").trim() &&
+      (formValues.kldCode ?? "").trim(),
+    [formValues]
+  );
 
-const isSubmitEnabled = useMemo(
-  () =>
-    (formValues.unitEffectiveNumber ?? "").trim() &&
-    (formValues.jarCap ?? "").trim() &&
-    (formValues.itemCode ?? "").trim() &&
-    (formValues.kldCode ?? "").trim(),
-  [formValues]
-);
+  useEffect(() => {
+    if (kldEdit && rowKldData) {
+      setFormValues({
+        unitEffectiveNumber: rowKldData.unitEffectiveNumber ?? "",
+        jarCap: rowKldData.jarCap ?? "",
+        itemCode: rowKldData.itemCode ?? "",
+        kldCode: rowKldData.kldCode ?? "",
+      });
+    } else {
+      setFormValues({
+        unitEffectiveNumber: "",
+        jarCap: "",
+        itemCode: "",
+        kldCode: "",
+      });
+    }
+  }, [kldEdit, open, rowKldData]);
 
-
-useEffect(() => {
-  if (kldEdit && rowKldData) {
-    setFormValues({
-      unitEffectiveNumber: rowKldData.unitEffectiveNumber ?? "",
-      jarCap: rowKldData.jarCap ?? "",
-      itemCode: rowKldData.itemCode ?? "",
-      kldCode: rowKldData.kldCode ?? "",
-    });
-  } else {
-    setFormValues({
-      unitEffectiveNumber: "",
-      jarCap: "",
-      itemCode: "",
-      kldCode: "",
-    });
-  }
-}, [kldEdit, open, rowKldData]);
-
-
-    const handleSubmitPopupConfirmClose = () => {
-      setSubmitAndPublishPopup(false);
-      setSubmitPopupConfirm(false);
-    };
-  
-    const handleSubmitPopupConfirmClick = () => {
+  const handleSubmitPopupConfirmClose = () => {
     setSubmitAndPublishPopup(false);
-      setSubmitPopupConfirm(false);
-      dispatch(setCreateSlider(false));
-      localStorage.setItem("kldDataPage", "0");
-    };
+    setSubmitPopupConfirm(false);
+  };
+
+  const handleSubmitPopupConfirmClick = () => {
+    setSubmitAndPublishPopup(false);
+    setSubmitPopupConfirm(false);
+    dispatch(setCreateSlider(false));
+    localStorage.setItem("kldDataPage", "0");
+  };
 
   const handleSubmitPopupConfirmOpen = async () => {
-      try {
-        const response = await createOrUpdateKldData({ unitEffectiveNumber: formValues.unitEffectiveNumber,
-    jarCap: formValues.jarCap,
-    itemCode: formValues.itemCode,
-    kldCode: formValues.kldCode});
-
-        const isCreateSuccess =
-          response && response.data && response.data.statusCode === 200;
-
-        if (!isCreateSuccess) {
-          const errorData = (response as any)?.error?.data;
-          const message =
-            errorData?.message ||
-            response?.data?.message ||
-            "Error saving master data";
-
-          toast.error(message);
-          return;
-        }
-
-        setSubmitAndPublishPopup(false);
-
-        setSubmitPopupConfirm(true);
-        setFormValues({
-            unitEffectiveNumber: "",
-    jarCap: "",
-    itemCode: "",
-    kldCode: "",
-        })
-      } catch (err: any) {
-        const message =
-          err?.data?.message ||
-          err?.message ||
-          "Unexpected error during submission.";
-        toast.error(message);
-      }
+    const _formData = {
+      unitEffectiveNumber: formValues.unitEffectiveNumber,
+      jarCap: formValues.jarCap,
+      itemCode: formValues.itemCode,
+      kldCode: formValues.kldCode,
     };
+    try {
+      const response = !kldEdit
+        ? await createKldData(_formData)
+        : await updateKldData(_formData);
+
+      const isCreateSuccess =
+        response && response.data && response.data.statusCode === 200;
+
+      if (!isCreateSuccess) {
+        const errorData = (response as any)?.error?.data;
+        const message =
+          errorData?.message ||
+          response?.data?.message ||
+          "Error saving master data";
+
+        toast.error(message);
+        return;
+      }
+
+      setSubmitAndPublishPopup(false);
+
+      setSubmitPopupConfirm(true);
+      setFormValues({
+        unitEffectiveNumber: "",
+        jarCap: "",
+        itemCode: "",
+        kldCode: "",
+      });
+    } catch (err: any) {
+      const message =
+        err?.data?.message ||
+        err?.message ||
+        "Unexpected error during submission.";
+      toast.error(message);
+    }
+  };
 
   return (
     <Drawer
@@ -200,30 +205,30 @@ useEffect(() => {
       <Box flex={1} p={3} overflow="auto">
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
-        <ReusableInput
-  label="Unit Effective Number"
-  value={(formValues.unitEffectiveNumber ?? "").toString()}
-  onChange={handleChange("unitEffectiveNumber")}
-  required
-  disabled={kldEdit?true:false}
-/>
+            <ReusableInput
+              label="Unit Effective Number"
+              value={(formValues.unitEffectiveNumber ?? "").toString()}
+              onChange={handleChange("unitEffectiveNumber")}
+              required
+              disabled={kldEdit ? true : false}
+            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <DropdownComponent
               label="Jar/Cap"
               options={["JAR&CAP", "JAR", "CAP"]}
-              value={formValues.jarCap??""}
+              value={formValues.jarCap ?? ""}
               onChange={handleChange("jarCap")}
               isMultiSelect={false}
               checkbox={false}
               required
-               disabled={kldEdit?true:false}
+              disabled={kldEdit ? true : false}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <ReusableInput
               label="Item Code"
-              value={formValues.itemCode??""}
+              value={formValues.itemCode ?? ""}
               onChange={handleChange("itemCode")}
               required
             />
@@ -231,7 +236,7 @@ useEffect(() => {
           <Grid size={{ xs: 12 }}>
             <ReusableInput
               label={getKLDLabel()}
-              value={formValues.kldCode??""}
+              value={formValues.kldCode ?? ""}
               onChange={handleChange("kldCode")}
               required
             />
@@ -271,30 +276,31 @@ useEffect(() => {
           p={2}
           disabled={!isSubmitEnabled}
         />
-              <SuccessPopup
-                open={submitPopupConfirm}
-                message={successTitle}
-                onClose={handleSubmitPopupConfirmClose}
-                onClick={handleSubmitPopupConfirmClick}
-                subMessage={""}
-                buttonText="Go back to KLD Master Data"
-                popUpClosed={false}
-              />
-        
-              <ConfirmPopup
-                open={submitAndPublish}
-                title={confirmPublishTitle}
-                message=""
-                buttonText="No"
-                buttonText2="Yes, Publish it!"
-                gifSrc=""
-                onClose={() => {
-                setSubmitAndPublishPopup(false);}}
-                onClick={handleSubmitPopupConfirmOpen}
-                isLoading={isLoading}
-                popUpClosed={false}
-                noButton={isLoading}
-              />
+        <SuccessPopup
+          open={submitPopupConfirm}
+          message={successTitle}
+          onClose={handleSubmitPopupConfirmClose}
+          onClick={handleSubmitPopupConfirmClick}
+          subMessage={""}
+          buttonText="Go back to KLD Master Data"
+          popUpClosed={false}
+        />
+
+        <ConfirmPopup
+          open={submitAndPublish}
+          title={confirmPublishTitle}
+          message=""
+          buttonText="No"
+          buttonText2="Yes, Publish it!"
+          gifSrc=""
+          onClose={() => {
+            setSubmitAndPublishPopup(false);
+          }}
+          onClick={handleSubmitPopupConfirmOpen}
+          isLoading={!kldEdit ? isLoading : kldUpdateLoading}
+          popUpClosed={false}
+          noButton={!kldEdit ? isLoading : kldUpdateLoading}
+        />
       </Box>
     </Drawer>
   );
