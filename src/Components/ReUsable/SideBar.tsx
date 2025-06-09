@@ -143,11 +143,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
     localStorage.setItem("masterData-page", (0).toString());
+     localStorage.setItem("kldDataPage", (0).toString());
+    localStorage.setItem("kldData-page", (0).toString());
     localStorage.setItem("dailyPlan-page", (0).toString());
     localStorage.setItem("dailyPlanDataPage", (0).toString());
     localStorage.setItem("dailyPlanDataRowsPerPage", (10).toString());
     localStorage.setItem("jobsDataRowsPerPage", (10).toString());
     localStorage.setItem("masterDataRowsPerPage", (10).toString());
+    localStorage.setItem("kldDataRowsPerPage", (10).toString());
     dispatch(setKLDEdit(false));
     dispatch(clearSaveLaminatingFormData());
     dispatch(clearSaveMasterDetailsData());
