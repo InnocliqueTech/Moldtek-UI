@@ -15,15 +15,26 @@ import DropdownComponent from "../../Components/ReUsable/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import ButtonComponent from "../../Components/ReUsable/Button";
+import { useCreateOrUpdateKldDataMutation } from "../../store/apis/kldApis";
+import { setCreateSlider } from "../../store/slices/kldSlice";
+import SuccessPopup from "../../Components/ReUsable/SuccessPopup";
+import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
+import { toast } from "react-toastify";
+
 
 interface KLDSliderProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: () => void;
 }
 
-const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
-  const { kldEdit } = useSelector((state: RootState) => state.kld);
+const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
+  const { kldEdit,rowKldData } = useSelector((state: RootState) => state.kld);
+
+  const dispatch = useDispatch();
+
+  const [submitPopupConfirm,setSubmitPopupConfirm]= useState<boolean>(false);
+  const [submitAndPublish,setSubmitAndPublishPopup] = useState<boolean>(false);
+
 
   const [formValues, setFormValues] = useState({
     unitEffectiveNumber: "",
@@ -31,6 +42,21 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
     itemCode: "",
     kldCode: "",
   });
+
+  const [createOrUpdateKldData,{isLoading}] = useCreateOrUpdateKldDataMutation();
+
+
+     const onSubmit=() => {
+  setSubmitAndPublishPopup(true);
+  }
+
+   const successTitle = kldEdit
+    ? `You have successfully updated KLD Master Data.`
+    : `You have successfully created KLD Master Data.`;
+
+ const confirmPublishTitle = kldEdit
+    ? `Are you sure you want to update and publish? `
+    : `Are you sure you want to submit and publish? `;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -43,53 +69,96 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
       setFormValues((prev) => ({ ...prev, [field]: value }));
     };
 
-  const getKLDLabel = () => {
-    switch (formValues.jarCap.toUpperCase()) {
-      case "JAR":
-        return "KLD-JAR Code";
-      case "CAP":
-        return "KLD-CAP Code";
-      case "JAR&CAP":
-        return "KLD-SET Code";
-      default:
-        return "KLD Code";
-    }
-  };
+ const getKLDLabel = () => {
+  switch ((formValues.jarCap ?? "").toUpperCase()) {
+    case "JAR":
+      return "KLD-JAR Code";
+    case "CAP":
+      return "KLD-CAP Code";
+    case "JAR&CAP":
+      return "KLD-SET Code";
+    default:
+      return "KLD Code";
+  }
+};
 
-  const isSubmitEnabled = useMemo(
-    () =>
-      formValues.unitEffectiveNumber.trim() &&
-      formValues.jarCap.trim() &&
-      formValues.itemCode.trim() &&
-      formValues.kldCode.trim(),
-    [formValues]
-  );
 
-  const kldData = {
-    unitEffectiveNumber: "251",
-    jarCap: "JAR",
-    itemCode: "FSITW0460MLRRXXXX",
-    kldCode: "KLD-JAR-001",
-  };
+const isSubmitEnabled = useMemo(
+  () =>
+    (formValues.unitEffectiveNumber ?? "").trim() &&
+    (formValues.jarCap ?? "").trim() &&
+    (formValues.itemCode ?? "").trim() &&
+    (formValues.kldCode ?? "").trim(),
+  [formValues]
+);
 
-  useEffect(() => {
-    if (kldEdit) {
-      setFormValues({
-        unitEffectiveNumber: kldData.unitEffectiveNumber,
-        jarCap: kldData.jarCap,
-        itemCode: kldData.itemCode,
-        kldCode: kldData.kldCode,
-      });
-    } else {
-      setFormValues({
-        unitEffectiveNumber: "",
-        jarCap: "",
-        itemCode: "",
-        kldCode: "",
-      });
-    }
-  }, [kldEdit, open]);
 
+useEffect(() => {
+  if (kldEdit && rowKldData) {
+    setFormValues({
+      unitEffectiveNumber: rowKldData.unitEffectiveNumber ?? "",
+      jarCap: rowKldData.jarCap ?? "",
+      itemCode: rowKldData.itemCode ?? "",
+      kldCode: rowKldData.kldCode ?? "",
+    });
+  } else {
+    setFormValues({
+      unitEffectiveNumber: "",
+      jarCap: "",
+      itemCode: "",
+      kldCode: "",
+    });
+  }
+}, [kldEdit, open, rowKldData]);
+
+
+    const handleSubmitPopupConfirmClose = () => {
+      setSubmitAndPublishPopup(false);
+      setSubmitPopupConfirm(false);
+    };
+  
+    const handleSubmitPopupConfirmClick = () => {
+    setSubmitAndPublishPopup(false);
+      setSubmitPopupConfirm(false);
+      dispatch(setCreateSlider(false));
+      localStorage.setItem("kldDataPage", "0");
+    };
+
+  const handleSubmitPopupConfirmOpen = async () => {
+      try {
+        const response = await createOrUpdateKldData({formValues});
+
+        const isCreateSuccess =
+          response && response.data && response.data.statusCode === 200;
+
+        if (!isCreateSuccess) {
+          const errorData = (response as any)?.error?.data;
+          const message =
+            errorData?.message ||
+            response?.data?.message ||
+            "Error saving master data";
+
+          toast.error(message);
+          return;
+        }
+
+        setSubmitAndPublishPopup(false);
+
+        setSubmitPopupConfirm(true);
+        setFormValues({
+            unitEffectiveNumber: "",
+    jarCap: "",
+    itemCode: "",
+    kldCode: "",
+        })
+      } catch (err: any) {
+        const message =
+          err?.data?.message ||
+          err?.message ||
+          "Unexpected error during submission.";
+        toast.error(message);
+      }
+    };
 
   return (
     <Drawer
@@ -128,18 +197,18 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
       <Box flex={1} p={3} overflow="auto">
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
-            <ReusableInput
-              label="unitEffectiveNumber"
-              value={formValues.unitEffectiveNumber.toString()}
-              onChange={handleChange("unitEffectiveNumber")}
-              required
-            />
+        <ReusableInput
+  label="Unit Effective Number"
+  value={(formValues.unitEffectiveNumber ?? "").toString()}
+  onChange={handleChange("unitEffectiveNumber")}
+  required
+/>
           </Grid>
           <Grid size={{ xs: 12 }}>
             <DropdownComponent
               label="Jar/Cap"
               options={["JAR&CAP", "JAR", "CAP"]}
-              value={formValues.jarCap}
+              value={formValues.jarCap??""}
               onChange={handleChange("jarCap")}
               isMultiSelect={false}
               checkbox={false}
@@ -149,7 +218,7 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
           <Grid size={{ xs: 12 }}>
             <ReusableInput
               label="Item Code"
-              value={formValues.itemCode}
+              value={formValues.itemCode??""}
               onChange={handleChange("itemCode")}
               required
             />
@@ -157,7 +226,7 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
           <Grid size={{ xs: 12 }}>
             <ReusableInput
               label={getKLDLabel()}
-              value={formValues.kldCode}
+              value={formValues.kldCode??""}
               onChange={handleChange("kldCode")}
               required
             />
@@ -197,6 +266,30 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
           p={2}
           disabled={!isSubmitEnabled}
         />
+              <SuccessPopup
+                open={submitPopupConfirm}
+                message={successTitle}
+                onClose={handleSubmitPopupConfirmClose}
+                onClick={handleSubmitPopupConfirmClick}
+                subMessage={""}
+                buttonText="Go back to KLD Master Data"
+                popUpClosed={false}
+              />
+        
+              <ConfirmPopup
+                open={submitAndPublish}
+                title={confirmPublishTitle}
+                message=""
+                buttonText="No"
+                buttonText2="Yes, Publish it!"
+                gifSrc=""
+                onClose={() => {
+                setSubmitAndPublishPopup(false);}}
+                onClick={handleSubmitPopupConfirmOpen}
+                isLoading={isLoading}
+                popUpClosed={false}
+                noButton={isLoading}
+              />
       </Box>
     </Drawer>
   );

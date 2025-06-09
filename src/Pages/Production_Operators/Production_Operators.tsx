@@ -13,11 +13,11 @@ import Cards from "../../Components/ReUsable/Cards";
 import { Edit, InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 // import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
-import { setCreateSlider, setKLDEdit } from "../../store/slices/kldSlice";
-import { useGetKLDmetricsQuery } from "../../store/apis/kldApis";
+import { setCreateSlider, setKLDEdit, setRowKLDData } from "../../store/slices/kldSlice";
+import { useGetKLDDataMutation, useGetKLDmetricsQuery, useKldDataGlobalSearchMutation } from "../../store/apis/kldApis";
 import { KLDData } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
@@ -70,33 +70,10 @@ const ProductionOperatorsPage: React.FC = () => {
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
 
-  const rows = [
-    {
-      unit_effectivity_number: "UEN123456",
-      version_no: "v1.0",
-      jarCap: "JAR",
-      item_code: "FSI0460MLRRXXXX",
-      kld_code: "KLD-001-ABCD",
-    },
-    {
-      unit_effectivity_number: "UEN987654",
-      version_no: "v2.3",
-      jarCap: "CAP",
-      item_code: "FSI1000MLPBXXXX",
-      kld_code: "KLD-002-XYZT",
-    },
-    {
-      unit_effectivity_number: "UEN555888",
-      version_no: "v3.1",
-      jarCap: "JAR/CAP",
-      item_code: "FSI500MLTWXXXX",
-      kld_code: null,
-    },
-  ];
 
   const columns = [
     {
-      id: "unit_effectivity_number",
+      id: "unitEffectiveNumber",
       label: "Unit Effective Number",
       align: false,
       disableSorting: false,
@@ -114,13 +91,13 @@ const ProductionOperatorsPage: React.FC = () => {
     },
 
     {
-      id: "item_code",
+      id: "itemCode",
       label: "Item Code",
       align: true,
       disableSorting: false,
     },
     {
-      id: "kld_code",
+      id: "kldCode",
       label: "KLD Code",
       align: false,
       disableSorting: false,
@@ -149,26 +126,45 @@ const ProductionOperatorsPage: React.FC = () => {
     },
   ];
 
-  // const { filtersPayload, openSider, isSearchTriggered } = useSelector(
-  //   (state: RootState) => state.masterData
-  // );
-  // const [
-  //   masterFilters,
-  //   { data: listOfCompaniesData, isLoading: listOfCompaniesLoading },
-  // ] = useMasterFiltersMutation();
+  const { filtersPayload, openSliderKld, isSearchTriggered,debouncedSearchKLD } = useSelector(
+    (state: RootState) => state.kld
+  );
 
-  // useEffect(() => {
-  //   if (!openSider) {
-  //     masterFilters({
-  //       ...filtersPayload,
-  //       page: isSearchTriggered ? 0 : page,
-  //       size: rowsPerPage,
-  //     });
-  //   }
-  //   if (isSearchTriggered) {
-  //     setPage(0);
-  //   }
-  // }, [page, openSider, filtersPayload, rowsPerPage]);
+  const [
+    getKLDData,
+    { data: listOfCompaniesData, isLoading: listOfCompaniesLoading },
+  ] = useGetKLDDataMutation();
+
+
+
+    const [
+      kldDataGlobalSearch,
+      { data: globalSearchData, isLoading: searchLoading },
+    ] = useKldDataGlobalSearchMutation();
+
+
+  useEffect(() => {
+    if (!openSliderKld) {
+      getKLDData({
+        ...filtersPayload,
+        page: isSearchTriggered ? 0 : page,
+        size: rowsPerPage,
+      });
+    }
+    if (isSearchTriggered) {
+      setPage(0);
+    }
+  }, [page, getKLDData, filtersPayload, rowsPerPage]);
+
+    useEffect(() => {
+      if (debouncedSearchKLD !== "") {
+        kldDataGlobalSearch({
+          page: page,
+          size: rowsPerPage,
+          searchField: debouncedSearchKLD,
+        });
+      }
+    }, [page, rowsPerPage, debouncedSearchKLD]);
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
@@ -190,7 +186,8 @@ const ProductionOperatorsPage: React.FC = () => {
           </IconButton>
         </Tooltip>
       ),
-      onClick: () => {
+      onClick: (row:any) => {
+        dispatch(setRowKLDData(row));
         dispatch(setKLDEdit(true));
         dispatch(setCreateSlider(true));
       },
@@ -238,19 +235,25 @@ const ProductionOperatorsPage: React.FC = () => {
           boxShadow={true}
           columns={columns}
           pageNumber={page}
-          data={rows ? rows : []}
+          data={debouncedSearchKLD ? globalSearchData?.data ??[]:listOfCompaniesData?.data?.content?? []}
           selectable={false}
-          label={rows?.length ? `${rows?.length} klds` : "0 klds"}
+          label={`${
+            debouncedSearchKLD
+              ? globalSearchData?.data?.totalItems ?? 0
+              : listOfCompaniesData?.data?.totalItems ?? 0
+          } klds`}
           title="KLD Overview"
           info={true}
           searchVisible={true}
           action={true}
           actions={actions}
-          // isLoading={listOfCompaniesLoading}
+          isLoading={listOfCompaniesLoading||searchLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"kldData"}
-          totalLength={rows?.length ? rows?.length : 0}
+          totalLength={ debouncedSearchKLD
+              ? globalSearchData?.data?.totalItems ?? 0
+              : listOfCompaniesData?.data?.totalItems ?? 0}
           pageRange={true}
           handleRowsPerPageChange={handleRowsPerPageChange}
         />

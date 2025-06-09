@@ -29,6 +29,11 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     filtersPayload
   } = useSelector((state: RootState) => state.kld);
 
+  const [selectedJarCaps, setSelectedJarCaps] =  useState<string>(
+    filtersPayload.jarCap || ''
+  );
+
+
   const [localDates, setLocalDates] = useState<LocalDatePayload>({
     fromDate: filtersPayload.fromDate
       ? new Date(filtersPayload.fromDate)
@@ -36,13 +41,8 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     toDate: filtersPayload.toDate ? new Date(filtersPayload.toDate) : null,
   });
 
-  const [searchField, setSearchField] = useState(
-    filtersPayload.searchField || ""
-  );
-  const [searchType, setSearchType] = useState(filtersPayload.searchType || "");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(
-    filtersPayload.status || []
-  );
+
+
 
   const isSearchEnabled = useMemo(() => {
     // const hasCustomer = selectedCustomers.length > 0;
@@ -50,20 +50,12 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     const hasValidDates =
       localDates.fromDate !== null && localDates.toDate !== null;
     return (
-    //   hasCustomer ||
-      hasValidDates ||
-    //   hasLabelTypes ||
-      searchField.trim() !== "" ||
-      searchType !== "" ||
-      selectedStatuses.length > 0
+      hasValidDates|| selectedJarCaps.length>0 
     );
   }, [
-    // selectedCustomers,
+
     localDates,
-    // selectedLabelTypeIds,
-    searchField,
-    searchType,
-    selectedStatuses,
+selectedJarCaps
   ]);
 
   const handleSubmit = () => {
@@ -80,7 +72,7 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     // );
 
     const finalSearchPayload: FiltersPayload = {
-    customerName:[],
+
       fromDate:
         localDates.fromDate && localDates.toDate
           ? format(localDates.fromDate, "yyyy-MM-dd")
@@ -89,10 +81,7 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         localDates.toDate && localDates.toDate
           ? format(localDates.toDate, "yyyy-MM-dd")
           : "",
-    labelType:[],
-      searchField: searchField.trim(),
-      searchType,
-      status: selectedStatuses,
+          jarCap:''
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -104,18 +93,12 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
 
   const handleClear = () => {
     setLocalDates({ fromDate: null, toDate: null });
-    setSearchField("");
-    setSearchType("");
 
     dispatch(
       setFiltersPayload({
-        customerName: [],
+       jarCap:'',
         fromDate: "",
         toDate: "",
-        labelType: [],
-        searchField: "",
-        searchType: "",
-        status: [],
       })
     );
 
@@ -130,13 +113,9 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     <FilterForm
       localDates={localDates}
       setLocalDates={setLocalDates}
-      searchField={searchField}
-      setSearchField={setSearchField}
-      searchType={searchType}
-      setSearchType={setSearchType}
-      selectedStatuses={selectedStatuses}
-      setSelectedStatuses={setSelectedStatuses}
-    />
+setSelectedJarCaps = {setSelectedJarCaps}
+selectedJarCaps={selectedJarCaps}
+      />
   );
   const sliderButtons = (
     <Grid size={{ xs: 12 }}>

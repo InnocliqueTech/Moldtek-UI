@@ -60,6 +60,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import Loader from "../../Loader";
 import { useLocation } from "react-router-dom";
 import { setDebouncedSearch } from "../../store/slices/masterDataSlice";
+import { setDebouncedSearchKLD } from "../../store/slices/kldSlice";
 
 interface Column {
   id: string;
@@ -176,7 +177,7 @@ function ReusableTable<T extends Record<string, any>>({
     dispatch(setDebouncedSearchDailyPlan(search));
     }
     if(id==='kldData'){
-
+ dispatch(setDebouncedSearchKLD(search));
     }
   }, 500); 
 
@@ -518,9 +519,6 @@ return (sortedData)
     }
   }, [location]);
 
-  console.log(filteredData,"FILTEREDDATA")
-
-  console.log(actions,"ACTIONSOFTHEDATA")
 
   return (
     <Paper

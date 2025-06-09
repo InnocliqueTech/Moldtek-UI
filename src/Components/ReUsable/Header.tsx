@@ -379,7 +379,7 @@ const Header: React.FC<HeaderProps> = ({
     dispatch(setDailyPlanDataNotifications(newNotifs));
   };
 
-  console.log(createSlider,"CREATESLIDER")
+
 
   return (
     <>
@@ -638,9 +638,6 @@ const Header: React.FC<HeaderProps> = ({
       <KLDSlider
   open={createSlider}
   onClose={()=>dispatch(setCreateSlider(false))}
-  onSubmit={() => {
-    dispatch(setCreateSlider(false));
-  }}
 />
       <VersinDetails />
       <Dialog

@@ -49,6 +49,7 @@ import {
   setShowTabChangeDialog,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
+import { setKLDEdit } from "../../store/slices/kldSlice";
 
 interface SidebarProps {
   open: boolean;
@@ -147,6 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     localStorage.setItem("dailyPlanDataRowsPerPage", (10).toString());
     localStorage.setItem("jobsDataRowsPerPage", (10).toString());
     localStorage.setItem("masterDataRowsPerPage", (10).toString());
+    dispatch(setKLDEdit(false));
     dispatch(clearSaveLaminatingFormData());
     dispatch(clearSaveMasterDetailsData());
     dispatch(clearSavePrintingFormData());
@@ -171,6 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const itemClick = () => {
     toggleMobileSidebar();
+    dispatch(setKLDEdit(false));
     if (!isDyeCuttingDataSave) {
       dispatch(clearDyeCuttingFormData());
       dispatch(clearDyeCuttingFormErrors());

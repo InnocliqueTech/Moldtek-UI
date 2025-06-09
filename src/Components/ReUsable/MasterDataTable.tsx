@@ -201,7 +201,7 @@ const DataTable = <T extends Record<string, any>>({
     "volume",
     "color_pantone",
   ];
-  console.log(data, "DATAOFTHETABLE");
+
 
   return (
     <>

@@ -7,7 +7,6 @@ import {
   IconButton,
   Grid,
   Typography,
-  TextField,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,8 +15,6 @@ import {
   CalendarToday,
   Clear as ClearIcon,
 } from "@mui/icons-material";
-
-import SearchIcon from "@mui/icons-material/Search";
 import { RootState } from "../../store";
 import { LocalDatePayload } from "./Filter";
 
@@ -25,21 +22,15 @@ import { LocalDatePayload } from "./Filter";
 interface FilterFormProps {
   setLocalDates: React.Dispatch<React.SetStateAction<LocalDatePayload>>;
   localDates: LocalDatePayload;
-  searchField: string;
-  setSearchField: React.Dispatch<React.SetStateAction<string>>;
-  searchType: string;
-  setSearchType: React.Dispatch<React.SetStateAction<string>>;
-  selectedStatuses: string[];
-  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedJarCaps: string;
+  setSelectedJarCaps:React.Dispatch<React.SetStateAction<string>>;
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({
   setLocalDates,
   localDates,
-  searchField,
-  setSearchField,
-  searchType,
-  setSearchType,
+  selectedJarCaps,
+  setSelectedJarCaps
 }) => {
   const dispatch = useDispatch();
   const { openSliderKld,isSearchTriggered } = useSelector(
@@ -58,22 +49,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
       hasInitialized.current = true;
 
       if (!isSearchTriggered) {
-        // dispatch(
-        //   setFiltersPayload({
-        //     customerName: [],
-        //     fromDate: "",
-        //     toDate: "",
-        //     labelType: [],
-        //     searchField: "",
-        //     searchType: "",
-        //     status: [],
-        //   })
-        // );
-        // dispatch(setSelectedCustomers([]));
-        // dispatch(setSelectedLabelTypeIds([]));
         setLocalDates({ fromDate: null, toDate: null });
-        setSearchField("");
-        setSearchType("");
       }
     }
   }, [openSliderKld, dispatch, isSearchTriggered]);
@@ -85,7 +61,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
     setLocalDates((prev) => ({ ...prev, [field]: date }));
   };
 
-const [selectedJarCaps, setSelectedJarCaps] = useState<string[]>([]);
+
 
 const jarCapOptions = [
   { label: "JAR", value: "jar" },
@@ -95,13 +71,11 @@ const jarCapOptions = [
 ];
 
 const toggleJarCap = (value: string) => {
-  setSelectedJarCaps((prev) =>
-    prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-  );
+  setSelectedJarCaps(value)
 };
 
 const handleClearJarCaps = () => {
-  setSelectedJarCaps([]);
+  setSelectedJarCaps('');
 };
 
 
@@ -244,14 +218,6 @@ const handleClearJarCaps = () => {
           </Box>
         </Box>
       </LocalizationProvider>
-
-      {/* <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-        <CustomerSelect />
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
-        <LabelTypeSelector />
-      </Grid> */}
       <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
 <Grid size={{xs:12}}
   sx={{ display: "flex", alignItems: "center", mb: 1 }}
@@ -307,80 +273,7 @@ const handleClearJarCaps = () => {
 })}
 
       </Grid>
-{/* 
-      <Grid container spacing={0} sx={{ mb: 2 }}>
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            Search
-          </Typography>
-        </Grid>
 
-        <Grid size={{ xs: 12, sm: 12, md: 9 }}>
-          <Box sx={{ display: "flex", width: "100%" }}>
-            <TextField
-              select
-              size="small"
-              variant="outlined"
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              SelectProps={{ native: true }}
-              sx={{
-                width: "280px",
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px 0 0 50px",
-                  height: "40px",
-                  fontSize: "0.875rem",
-                },
-              }}
-            >
-              <option value="">Select Type</option>
-              <option value="UEN">UEN</option>
-              <option value="Item_Code">Item Code</option>
-                <option value="KLD">KLD</option>
-            </TextField>
-
-            <TextField
-              size="small"
-              fullWidth
-              variant="outlined"
-              placeholder="Enter a Value"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                ),
-                sx: {
-                  minWidth: { xs: "100%", sm: "100%", md: "230px" },
-                  borderRadius: "0 50px 50px 0",
-                  height: "40px",
-                  pl: 1.2,
-                  pr: 1,
-                  fontSize: "0.875rem",
-                },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "0 50px 50px 0",
-                  px: 1,
-                  height: "40px",
-                },
-                "& .MuiInputBase-input": {
-                  padding: "4px 0",
-                  fontSize: "0.875rem",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                },
-              }}
-            />
-          </Box>
-        </Grid>
-      </Grid> */}
     </>
   );
 };

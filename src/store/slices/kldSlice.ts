@@ -3,22 +3,35 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface FiltersPayload {
   fromDate: string;
   toDate: string;
-  customerName: string[];
-  labelType: string[];
-  searchField: string;
-  searchType: string;
-  status: string[];
+  jarCap:string;
+
 }
 
-export interface viewDailyPlan {
+export interface KLDRowData{
+   unitEffectiveNumber: string,
+    jarCap: string,
+    itemCode: string,
+    kldCode: string,
+}
+
+export interface KldData {
   openSliderKld: boolean;
   isSearchTriggered: boolean;
   filtersPayload: FiltersPayload;
   createSlider: boolean;
   kldEdit:boolean;
+  debouncedSearchKLD:string;
+  rowKldData:KLDRowData
 }
 
-const initialState: viewDailyPlan = {
+const initialState: KldData = {
+  rowKldData:{
+     unitEffectiveNumber: "",
+    jarCap: "",
+    itemCode: "",
+    kldCode: "",
+  },
+   debouncedSearchKLD:'',
   isSearchTriggered: false,
   openSliderKld: false,
   createSlider: false,
@@ -26,11 +39,7 @@ const initialState: viewDailyPlan = {
   filtersPayload: {
     fromDate: "",
     toDate: "",
-    customerName: [],
-    labelType: [],
-    searchField: "",
-    searchType: "",
-    status: [],
+    jarCap:''
   },
 };
 
@@ -38,6 +47,9 @@ const KldSlice = createSlice({
   name: "kldSlice",
   initialState,
   reducers: {
+        setDebouncedSearchKLD:(state,action:PayloadAction<string>)=>{
+      state.debouncedSearchKLD = action.payload
+    },
     setKLDEdit:(state,action:PayloadAction<boolean>)=>{
     state.kldEdit = action.payload
     },
@@ -53,9 +65,12 @@ const KldSlice = createSlice({
     setFiltersPayload: (state, action: PayloadAction<FiltersPayload>) => {
       state.filtersPayload = action.payload;
     },
+    setRowKLDData:(state,action:PayloadAction<KLDRowData>)=>{
+      state.rowKldData=action.payload
+    }
   },
 });
 
-export const { setIsSearchTriggered, setOpenSliderKld, setFiltersPayload,setCreateSlider,setKLDEdit } =
+export const { setIsSearchTriggered,setDebouncedSearchKLD, setOpenSliderKld, setFiltersPayload,setCreateSlider,setKLDEdit,setRowKLDData } =
   KldSlice.actions;
 export default KldSlice.reducer;

@@ -42,7 +42,7 @@ import {
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
-import { setCreateSlider, setOpenSliderKld } from "../../store/slices/kldSlice";
+import { setCreateSlider, setKLDEdit, setOpenSliderKld } from "../../store/slices/kldSlice";
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
@@ -398,9 +398,15 @@ const Layout = () => {
       title: "KLD Master Data",
         button1Text: "Filter",
       button2Text: "Create KLD",
-     onButton1Click: () => dispatch(setOpenSliderKld(true)),
+ onButton1Click: () => {
+  dispatch(setKLDEdit(false));
+  dispatch(setOpenSliderKld(true));
+ 
+},
+
       filterTitle: "Kld Data Filter",
-       onButton2Click:() => dispatch(setCreateSlider(true)),
+       onButton2Click:() =>{
+  dispatch(setKLDEdit(false)); dispatch(setCreateSlider(true));}
     },
     "/reports": {
       title: "Reports",
