@@ -92,10 +92,10 @@ const Printing: React.FC<PrintingProps> = ({
     dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
-    kldCode
+    kldCode,
   } = useSelector((state: RootState) => state.masterData);
 
-   const updateButtonAction = localStorage.getItem("updateButton");
+  const updateButtonAction = localStorage.getItem("updateButton");
 
   const machineFields = [
     {
@@ -302,11 +302,10 @@ const Printing: React.FC<PrintingProps> = ({
         errorMsg = ""; // No error
       }
       if (isNumberField) {
-  if (newValue === "" || newValue === null || isNaN(Number(newValue))) {
-    errorMsg = `${field.replace(/_/g, " ")} is required`;
-  }
-}
-      else {
+        if (newValue === "" || newValue === null || isNaN(Number(newValue))) {
+          errorMsg = `${field.replace(/_/g, " ")} is required`;
+        }
+      } else {
         // Regex to validate decimal or percentage with optional "%"
         const regex = /^(\d+(\.\d+)?)(%)?$/;
         const match = stringValue.match(regex);
@@ -336,11 +335,11 @@ const Printing: React.FC<PrintingProps> = ({
     }
     // For other string-based fields
     else if (typeof newValue === "string") {
-       const trimmed = newValue.trim();
-  const skipRequiredFields = ["static_charge", "format_correct"];
-  if (trimmed === "" && !skipRequiredFields.includes(field)) {
-    errorMsg = `${field.replace(/_/g, " ")} is required`;
-  }  else if (
+      const trimmed = newValue.trim();
+      const skipRequiredFields = ["static_charge", "format_correct"];
+      if (trimmed === "" && !skipRequiredFields.includes(field)) {
+        errorMsg = `${field.replace(/_/g, " ")} is required`;
+      } else if (
         !onlyLettersRegex.test(trimmed) &&
         field !== "cylinder_teeth" &&
         field !== "tension" &&
@@ -390,12 +389,12 @@ const Printing: React.FC<PrintingProps> = ({
 
   useEffect(() => {
     localStorage.setItem("hasVisitedPrintingDetails", "false");
-    if (!hasVisited && id && updateButtonAction==='false') {
+    if (!hasVisited && id && updateButtonAction === "false") {
       dispatch(setPrintingDataTouched(false));
       localStorage.setItem("hasVisitedPrintingDetails", "true");
     } else if (hasVisited && !id) {
       dispatch(setPrintingDataTouched(false));
-    } else if (updateButtonAction==='true' && !hasVisited && id) {
+    } else if (updateButtonAction === "true" && !hasVisited && id) {
       dispatch(setPrintingDataTouched(false));
       localStorage.setItem("hasVisitedPrintingDetails", "true");
     }
@@ -585,7 +584,7 @@ const Printing: React.FC<PrintingProps> = ({
     const shouldDisableButton =
       !isAllFieldFilled || hasErrors || printingTableValueVaidation;
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
-     dispatch(setPrintingSave(shouldDisableButton));
+    dispatch(setPrintingSave(shouldDisableButton));
   }, [formValues, errors, printingTableValueVaidation]);
 
   // useEffect(() => {
@@ -665,36 +664,38 @@ const Printing: React.FC<PrintingProps> = ({
   return (
     <Box sx={{ borderRadius: "0px" }}>
       <Box sx={{ border: "1px solid #ECECEC", borderRadius: "16px", p: 2 }}>
-     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-  <Typography sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}>
-    Machine Settings
-  </Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography
+            sx={{ color: "#2F2F2F", fontWeight: 600, fontSize: "16px" }}
+          >
+            Machine Settings
+          </Typography>
 
-<Box
-  sx={{
-    display: "inline-flex",
-    alignItems: "center",
-    backgroundColor: "#E3F2FD",
-    color: "#1976d2",
-    px: 1.5,
-    py: 0.5,
-    borderRadius: "8px",
-    fontWeight: 600,
-    fontSize: "14px",
-    boxShadow: 1,
-  }}
->
-  <Typography
-    component="span"
-    sx={{ fontWeight: 700, mr: 0.8 }}
-  >
-    KLD:
-  </Typography>
-  <Typography component="span">{kldCode}</Typography>
-</Box>
-
-</Box>
-
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              backgroundColor: "#E3F2FD",
+              color: "#1976d2",
+              px: 1.5,
+              py: 0.5,
+              borderRadius: "8px",
+              fontWeight: 600,
+              fontSize: "14px",
+              boxShadow: 1,
+            }}
+          >
+            <Typography component="span" sx={{ fontWeight: 700, mr: 0.8 }}>
+              KLD:
+            </Typography>
+            <Typography component="span">{kldCode ? kldCode : 0}</Typography>
+          </Box>
+        </Box>
 
         <Grid container spacing={2} pt={1}>
           {machineFields.map((field) => (

@@ -127,17 +127,30 @@ try {
       unit_effectivity_number: formData.unit_effectivity_number.toString(),
       jarCap: formData.jar_cap,
     }).unwrap();
+const newKldCode = response?.data?.kldCode ?? "";
 
-    const newKldCode = response?.data?.kldCode ?? "";
-          dispatch(setKldCode(newKldCode ?newKldCode:'' )); 
-    setFormData((prev) => ({
-      ...prev,
-      kldCode: newKldCode,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      kldCode: "",
-    }));
+if (response?.statusCode === 400) {
+  setErrors((prev) => ({
+    ...prev,
+    kldCode: response.message || "KLD entry not found",
+  }));
+  setFormData((prev) => ({
+    ...prev,
+    kldCode: "",
+  }));
+  dispatch(setKldCode(""));
+} else {
+  dispatch(setKldCode(newKldCode ? newKldCode : ""));
+  setFormData((prev) => ({
+    ...prev,
+    kldCode: newKldCode,
+  }));
+  setErrors((prev) => ({
+    ...prev,
+    kldCode: "",
+  }));
+}
+
   }
 } catch (error: any) {
   const errorMessage =
