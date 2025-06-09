@@ -1,16 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_API_URL } from "../../api.config";
 
+export interface KLDData {
+  "KLD - SET CODE": number;
+  "KLD - JAR CODE": number;
+  "KLD - CAP CODE": number;
+  "Total": number;
+}
+
 interface KLDResponse {
   statusCode: number;
   message: string;
-  payload: null;
-  data: {
-    "KLD - SET CODE": number;
-    "KLD - JAR CODE": number;
-    "KLD - CAP CODE": number;
-    Total: number;
-  };
+  payload: any;
+  data: KLDData;
 }
 
 export const kldApi = createApi({

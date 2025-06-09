@@ -6,6 +6,8 @@ import {
   SelectChangeEvent,
   Tooltip,
   Typography,
+  Alert,
+  Skeleton
 } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { Edit, InfoOutline } from "@mui/icons-material";
@@ -16,17 +18,16 @@ import { AppDispatch } from "../../store";
 import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
 import { setCreateSlider, setKLDEdit } from "../../store/slices/kldSlice";
 import { useGetKLDmetricsQuery } from "../../store/apis/kldApis";
+import { KLDData } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
-  console.log({ kldMetricsData, isLoading, isError }, "KldMetricsApiCalled");
-  const data = {
-    totalKld: 124,
-    kldSetCode: 46,
-    kldJarCode: 61,
-    kldCapCode: 17,
-  };
+  const {
+    data: kldMetricsData,
+    isLoading,
+    isError,
+  } = useGetKLDmetricsQuery();
+  const apiStats: KLDData | undefined = kldMetricsData?.data;
   const storageKey = "kldDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
@@ -40,25 +41,25 @@ const ProductionOperatorsPage: React.FC = () => {
   const stats = [
     {
       title: "Total KLD",
-      value: data?.totalKld || 0,
+      value: apiStats?.["Total"] ?? 0,
       infoText:
         "Displays the count of master data jobs with the latest version",
     },
     {
       title: "KLD-SET CODE",
-      value: data?.kldSetCode || 0,
+      value: apiStats?.["KLD - SET CODE"] ?? 0,
       infoText:
         "Displays the total count of lamination jobs where label type is Thinwall or segment is designated as TW",
     },
     {
       title: "KLD-JAR CODE",
-      value: data?.kldJarCode || 0,
+      value: apiStats?.["KLD - JAR CODE"] ?? 0,
       infoText:
         "Displays the total count of non-lamination jobs where label type is not Thinwall and segment is not TW",
     },
     {
       title: "KLD-CAP CODE",
-      value: data?.kldCapCode || 0,
+      value: apiStats?.["KLD - CAP CODE"] ?? 0,
       infoText: "Displays the total count of customers",
     },
   ];
@@ -199,22 +200,34 @@ const ProductionOperatorsPage: React.FC = () => {
   return (
     <Box sx={{ p: 0 }}>
       <Grid container spacing={1}>
-        {stats &&
-          stats?.map((stat, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-              <Cards
-                title={stat.title}
-                value={stat.value}
-                icon={
-                  <InfoOutline
-                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                  />
-                }
-                // isLoading={isLoading}
-                infoText={stat.infoText}
-              />
-            </Grid>
-          ))}
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
+                <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
+              </Grid>
+            ))
+          : isError
+          ? (
+              <Grid size={{ xs: 12 }}>
+                <Alert severity="error">
+                  Failed to fetch KLD metrics. Please try again later.
+                </Alert>
+              </Grid>
+            )
+          : stats.map((stat, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+                <Cards
+                  title={stat.title}
+                  value={stat.value}
+                  icon={
+                    <InfoOutline
+                      sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                    />
+                  }
+                  infoText={stat.infoText}
+                />
+              </Grid>
+            ))}
       </Grid>
 
       <Box sx={{ paddingTop: 1.5 }}>
