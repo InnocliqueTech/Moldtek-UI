@@ -75,7 +75,7 @@ const CreateMasterData: React.FC = () => {
   const [formData, setFormData] = useState<MasterFormData>({
     job_master_id: 0,
     unit_effectivity_number: "",
-     kld:"",
+     kldCode:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",

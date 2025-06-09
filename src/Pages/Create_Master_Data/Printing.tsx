@@ -92,6 +92,7 @@ const Printing: React.FC<PrintingProps> = ({
     dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
+    kldCode
   } = useSelector((state: RootState) => state.masterData);
 
    const updateButtonAction = localStorage.getItem("updateButton");
@@ -337,7 +338,6 @@ const Printing: React.FC<PrintingProps> = ({
     else if (typeof newValue === "string") {
        const trimmed = newValue.trim();
   const skipRequiredFields = ["static_charge", "format_correct"];
-console.log(trimmed,field,"TRIMMEDVALUE")
   if (trimmed === "" && !skipRequiredFields.includes(field)) {
     errorMsg = `${field.replace(/_/g, " ")} is required`;
   }  else if (
@@ -690,7 +690,7 @@ console.log(trimmed,field,"TRIMMEDVALUE")
   >
     KLD:
   </Typography>
-  <Typography component="span">GPWC 50ML JC 558.8 FD</Typography>
+  <Typography component="span">{kldCode}</Typography>
 </Box>
 
 </Box>

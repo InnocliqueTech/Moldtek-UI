@@ -18,6 +18,7 @@ import {
 } from "../Interfaces/masterDataTypes";
 
 const initialState: MasterDataState = {
+  kldCode:'',
   PopupState: {
     open: false,
     message: "",
@@ -350,7 +351,7 @@ const initialState: MasterDataState = {
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
-    kld:"",
+    kldCode:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -392,7 +393,7 @@ const initialState: MasterDataState = {
   saveFormData: {
     job_master_id: 0,
     unit_effectivity_number: "",
-    kld:"",
+    kldCode:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -410,7 +411,7 @@ const initialState: MasterDataState = {
   saveMasterDataDetailsData: {
     job_master_id: 0,
     unit_effectivity_number: "",
-    kld:"",
+    kldCode:"",
     customer_name: "",
     customer_logo: "",
     noOfColorsSetting: "",
@@ -663,7 +664,7 @@ const initialState: MasterDataState = {
     masterDataDetails: {
       job_master_id: 0,
       unit_effectivity_number: "",
-      kld:"",
+      kldCode:"",
       customer_name: "",
       customer_logo: "",
       item_code: "",
@@ -768,6 +769,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setKldCode:(state,action:PayloadAction<string>)=>{
+    state.kldCode = action.payload;
+    },
     setMasterDataNotifications: (
       state,
       action: PayloadAction<MasterDataNotifications[]>
@@ -974,7 +978,7 @@ const masterDataSlice = createSlice({
       state.saveFormData = {
         job_master_id: 0,
         unit_effectivity_number: "",
-        kld:"",
+        kldCode:"",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
@@ -994,7 +998,7 @@ const masterDataSlice = createSlice({
       state.saveMasterDataDetailsData = {
         job_master_id: 0,
         unit_effectivity_number: "",
-        kld:"",
+        kldCode:"",
         noOfColorsSetting: "",
         noOfSpecialColors: "",
         customer_name: "",
@@ -1068,7 +1072,7 @@ const masterDataSlice = createSlice({
         ups: "",
         tracks: "",
         unit_effectivity_number: "",
-        kld:"",
+        kldCode:"",
         customer_name: "",
         customer_logo: "",
         jar_cap: "",
@@ -1651,6 +1655,7 @@ const masterDataSlice = createSlice({
 });
 
 export const {
+  setKldCode,
   setGlobalPopup,
   closeGlobalPopup,
   setSelectedTab,

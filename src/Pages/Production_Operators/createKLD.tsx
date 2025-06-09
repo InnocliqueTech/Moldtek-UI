@@ -26,8 +26,8 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
   const { kldEdit } = useSelector((state: RootState) => state.kld);
 
   const [formValues, setFormValues] = useState({
-    uen: "",
-    jarCapValue: "",
+    unitEffectiveNumber: "",
+    jarCap: "",
     itemCode: "",
     kldCode: "",
   });
@@ -44,7 +44,7 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
     };
 
   const getKLDLabel = () => {
-    switch (formValues.jarCapValue.toUpperCase()) {
+    switch (formValues.jarCap.toUpperCase()) {
       case "JAR":
         return "KLD-JAR Code";
       case "CAP":
@@ -58,15 +58,15 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
 
   const isSubmitEnabled = useMemo(
     () =>
-      formValues.uen.trim() &&
-      formValues.jarCapValue.trim() &&
+      formValues.unitEffectiveNumber.trim() &&
+      formValues.jarCap.trim() &&
       formValues.itemCode.trim() &&
       formValues.kldCode.trim(),
     [formValues]
   );
 
   const kldData = {
-    uen: "251",
+    unitEffectiveNumber: "251",
     jarCap: "JAR",
     itemCode: "FSITW0460MLRRXXXX",
     kldCode: "KLD-JAR-001",
@@ -75,15 +75,15 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
   useEffect(() => {
     if (kldEdit) {
       setFormValues({
-        uen: kldData.uen,
-        jarCapValue: kldData.jarCap,
+        unitEffectiveNumber: kldData.unitEffectiveNumber,
+        jarCap: kldData.jarCap,
         itemCode: kldData.itemCode,
         kldCode: kldData.kldCode,
       });
     } else {
       setFormValues({
-        uen: "",
-        jarCapValue: "",
+        unitEffectiveNumber: "",
+        jarCap: "",
         itemCode: "",
         kldCode: "",
       });
@@ -129,9 +129,9 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <ReusableInput
-              label="UEN"
-              value={formValues.uen.toString()}
-              onChange={handleChange("uen")}
+              label="unitEffectiveNumber"
+              value={formValues.unitEffectiveNumber.toString()}
+              onChange={handleChange("unitEffectiveNumber")}
               required
             />
           </Grid>
@@ -139,8 +139,8 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
             <DropdownComponent
               label="Jar/Cap"
               options={["JAR&CAP", "JAR", "CAP"]}
-              value={formValues.jarCapValue}
-              onChange={handleChange("jarCapValue")}
+              value={formValues.jarCap}
+              onChange={handleChange("jarCap")}
               isMultiSelect={false}
               checkbox={false}
               required

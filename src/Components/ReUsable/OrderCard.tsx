@@ -177,7 +177,7 @@ const name = viewMasterDataDetails?.customer_name;
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.kld, maxChars)}
+                {renderValue(viewMasterDataDetails?.kldCode, maxChars)}
               </Typography>
             </Box>
 

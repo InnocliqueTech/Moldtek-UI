@@ -74,7 +74,7 @@ const Layout = () => {
     masterDataDetails: {
       job_master_id: 0,
       unit_effectivity_number: "",
-       kld:"",
+       kldCode:"",
       customer_name: "",
       customer_logo: "",
       item_code: "",

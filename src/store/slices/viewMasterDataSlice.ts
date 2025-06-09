@@ -105,7 +105,7 @@ export interface JobListData {
 export interface ViewMasterDataDetails {
   job_master_id: number;
   unit_effectivity_number: string;
-  kld:string;
+  kldCode:string;
   customer_name: string;
   customer_logo: string | null;
   item_code: string | null;
@@ -219,7 +219,7 @@ const initialState: ViewMasterDataState = {
   viewMasterDataDetails: {
     job_master_id: 0,
     unit_effectivity_number: "--",
-    kld:"--",
+    kldCode:"--",
     noOfColorsSetting: "--",
     noOfSpecialColors: "--",
     customer_name: "--",

@@ -211,7 +211,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
-    kld: "",
+    kldCode: "",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
