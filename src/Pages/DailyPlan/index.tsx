@@ -220,23 +220,23 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   }, [page, openSliderDaily, filtersPayload, dropDown, rowsPerPage]);
 
   useEffect(() => {
-    if (page !== 0) {
+    if (debouncedSearchDailyPlan !== "") {
       setPreviousPage(page);
+      setPage(0);
+    } else {
+      setPage(previousPage);
     }
-    if (debouncedSearchDailyPlan !== "" && !openSliderDaily) {
+  }, [debouncedSearchDailyPlan]);
+
+  useEffect(() => {
+    if (!openSliderDaily) {
       dailyPlanGlobalSearch({
         page: page,
         size: rowsPerPage,
         searchField: debouncedSearchDailyPlan,
       });
     }
-    if (debouncedSearchDailyPlan !== "") {
-      setPage(0);
-    }
-    if (debouncedSearchDailyPlan === "") {
-      setPage(previousPage);
-    }
-  }, [page, rowsPerPage, debouncedSearchDailyPlan]);
+  }, [page, rowsPerPage, debouncedSearchDailyPlan, openSliderDaily]);
 
   const dispatch = useDispatch();
   const stats = transformApiDataToStats(metricsData?.data);

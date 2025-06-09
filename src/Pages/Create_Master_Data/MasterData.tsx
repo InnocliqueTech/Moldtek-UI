@@ -205,23 +205,23 @@ const MasterData: React.FC = () => {
   }, [page, openSider, filtersPayload, rowsPerPage]);
 
   useEffect(() => {
-    if (page !== 0) {
+    if (debouncedSearch !== "") {
       setPreviousPage(page);
+      setPage(0);
+    } else {
+      setPage(previousPage);
     }
-    if (debouncedSearch !== "" && !openSider) {
-      masterDataGlobalSearch({
-        page: debouncedSearch !== "" ? 0 : page,
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (!openSider) {
+        masterDataGlobalSearch({
+        page: page,
         size: rowsPerPage,
         searchField: debouncedSearch,
       });
     }
-    if (debouncedSearch !== "") {
-      setPage(0);
-    }
-    if (debouncedSearch === "") {
-      setPage(previousPage);
-    }
-  }, [page, rowsPerPage, debouncedSearch]);
+  }, [page, rowsPerPage, debouncedSearch, openSider]);
 
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
     ...row,

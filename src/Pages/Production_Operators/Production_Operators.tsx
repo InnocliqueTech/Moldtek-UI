@@ -158,24 +158,26 @@ const ProductionOperatorsPage: React.FC = () => {
     }
   }, [page, filtersPayload, rowsPerPage, createSlider]);
 
-  useEffect(() => {
-    if (page !== 0) {
-      setPreviousPage(page);
-    }
-    if (debouncedSearchKLD !== "" && !openSliderKld && !createSlider) {
-      kldDataGlobalSearch({
-        page: page,
-        size: rowsPerPage,
-        searchField: debouncedSearchKLD,
-      });
-    }
-    if (debouncedSearchKLD !== "") {
-      setPage(0);
-    }
-    if (debouncedSearchKLD === "") {
-      setPage(previousPage);
-    }
-  }, [page, rowsPerPage, debouncedSearchKLD]);
+
+useEffect(() => {
+  if (debouncedSearchKLD !== "") {
+    setPreviousPage(page);
+    setPage(0); 
+  } else {
+    setPage(previousPage);
+  }
+}, [debouncedSearchKLD]);
+
+useEffect(() => {
+  if (!openSliderKld && !createSlider) {
+    kldDataGlobalSearch({
+      page,
+      size: rowsPerPage,
+      searchField: debouncedSearchKLD,
+    });
+  }
+}, [page, rowsPerPage, debouncedSearchKLD, openSliderKld, createSlider]);
+
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
