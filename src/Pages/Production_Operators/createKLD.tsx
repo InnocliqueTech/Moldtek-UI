@@ -25,18 +25,28 @@ interface KLDSliderProps {
 
 const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose, onSubmit }) => {
   const { kldEdit } = useSelector((state: RootState) => state.kld);
-const dispatch = useDispatch();
-  const [uen, setUen] = useState("");
-  const [jarCapValue, setJarCapValue] = useState("");
-  const [itemCode, setItemCode] = useState("");
-  const [kldCode, setKldCode] = useState("");
+  const dispatch = useDispatch();
+
+  const [formValues, setFormValues] = useState({
+    uen: "",
+    jarCapValue: "",
+    itemCode: "",
+    kldCode: "",
+  });
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
+  const handleChange =
+    (field: keyof typeof formValues) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
+      const value = e.target?.value ?? e;
+      setFormValues((prev) => ({ ...prev, [field]: value }));
+    };
+
   const getKLDLabel = () => {
-    switch (jarCapValue.toUpperCase()) {
+    switch (formValues.jarCapValue.toUpperCase()) {
       case "JAR":
         return "KLD-JAR Code";
       case "CAP":
@@ -48,41 +58,40 @@ const dispatch = useDispatch();
     }
   };
 
-
   const isSubmitEnabled = useMemo(
     () =>
-      uen.trim() !== "" &&
-      jarCapValue.trim() !== "" &&
-      itemCode.trim() !== "" &&
-      kldCode.trim() !== "",
-    [uen, jarCapValue, itemCode, kldCode]
+      formValues.uen.trim() &&
+      formValues.jarCapValue.trim() &&
+      formValues.itemCode.trim() &&
+      formValues.kldCode.trim(),
+    [formValues]
   );
 
-   const kldData =  {
+  const kldData = {
     uen: "251",
     jarCap: "JAR",
     itemCode: "FSITW0460MLRRXXXX",
-    kldCode: "KLD-JAR-001"
-  }
+    kldCode: "KLD-JAR-001",
+  };
 
-  useEffect(()=>{
-dispatch (setKLDEdit(false))
-  },[])
-
-    useEffect(() => {
-    if (kldEdit && kldData) {
-      setUen(kldData.uen || "");
-      setJarCapValue(kldData.jarCap || "");
-      setItemCode(kldData.itemCode || "");
-      setKldCode(kldData.kldCode || "");
+  useEffect(() => {
+    if (kldEdit) {
+      setFormValues({
+        uen: kldData.uen,
+        jarCapValue: kldData.jarCap,
+        itemCode: kldData.itemCode,
+        kldCode: kldData.kldCode,
+      });
     } else {
-      // clear fields on create
-      setUen("");
-      setJarCapValue("");
-      setItemCode("");
-      setKldCode("");
+      setFormValues({
+        uen: "",
+        jarCapValue: "",
+        itemCode: "",
+        kldCode: "",
+      });
     }
-  }, [kldEdit, kldData, open]);
+  }, [kldEdit, open]);
+
 
   return (
     <Drawer
@@ -120,38 +129,38 @@ dispatch (setKLDEdit(false))
       {/* Content */}
       <Box flex={1} p={3} overflow="auto">
         <Grid container spacing={2}>
-          <Grid size={{xs:12}}>
+          <Grid size={{ xs: 12 }}>
             <ReusableInput
               label="UEN"
-              value={uen}
-              onChange={(e) => setUen(e.target.value)}
+              value={formValues.uen.toString()}
+              onChange={handleChange("uen")}
               required
             />
           </Grid>
-          <Grid size={{xs:12}}>
+          <Grid size={{ xs: 12 }}>
             <DropdownComponent
               label="Jar/Cap"
-              options={["Jar&CAP", "JAR", "CAP"]}
-              value={jarCapValue}
-              onChange={(e: any) => setJarCapValue(e.target.value)}
+              options={["JAR&CAP", "JAR", "CAP"]}
+              value={formValues.jarCapValue}
+              onChange={handleChange("jarCapValue")}
               isMultiSelect={false}
               checkbox={false}
               required
             />
           </Grid>
-          <Grid size={{xs:12}}>
+          <Grid size={{ xs: 12 }}>
             <ReusableInput
               label="Item Code"
-              value={itemCode}
-              onChange={(e) => setItemCode(e.target.value)}
+              value={formValues.itemCode}
+              onChange={handleChange("itemCode")}
               required
             />
           </Grid>
-          <Grid size={{xs:12}}>
+          <Grid size={{ xs: 12 }}>
             <ReusableInput
               label={getKLDLabel()}
-              value={kldCode}
-              onChange={(e) => setKldCode(e.target.value)}
+              value={formValues.kldCode}
+              onChange={handleChange("kldCode")}
               required
             />
           </Grid>
@@ -171,11 +180,18 @@ dispatch (setKLDEdit(false))
         bgcolor="#fff"
         zIndex={2}
       >
-        <Typography fontSize={13} color="text.secondary">
-          {kldEdit?"Updated On":"Created On"}: {dayjs().format("DD MMM YYYY")}
-        </Typography>
         <ButtonComponent
-          text="Submit"
+          color="white"
+          text={`${kldEdit ? "Updated On" : "Created On"}: ${dayjs().format(
+            "DD MMM YYYY"
+          )}`}
+          textColor="#0E0E0E"
+          borderRadius="100px"
+          border="1px solid #E5E5E5"
+          p={"14px"}
+        />
+        <ButtonComponent
+          text={kldEdit ? "Update" : "Submit"}
           borderRadius="100px"
           onClick={onSubmit}
           color="#0073B7"
