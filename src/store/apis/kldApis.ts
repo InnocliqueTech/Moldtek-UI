@@ -23,7 +23,21 @@ export const kldApi = createApi({
     getKLDmetrics: builder.query<KLDResponse, void>({
       query: () => "kld/kld-metrics",
     }),
+    getKLDCode:builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "kld/getKldCode",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
+    kldDataGlobalSearch:builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/kld/globalSearchForKld",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
   }),
 });
 
-export const { useGetKLDmetricsQuery } = kldApi;
+export const { useGetKLDmetricsQuery ,useGetKLDCodeMutation,useKldDataGlobalSearchMutation} = kldApi;

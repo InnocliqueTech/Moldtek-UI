@@ -209,13 +209,22 @@ export const dailyPlanApi = createApi({
     url: `/dailyplan/getJobUploadNotifications?fileName=${newItem}`,
     method: "GET",
   }),
+
 }),
+dailyPlanGlobalSearch:builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/dailyplan/globalSearchForDailyJob",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
 
 
   }),
 });
 
 export const {
+  useDailyPlanGlobalSearchMutation,
   useGetDailyJobMetricsQuery,
   useGetDailyJobsListQuery,
   useGetPrintingReportDetailsQuery,

@@ -18,6 +18,7 @@ import { AppDispatch, RootState } from "../../store";
 import { setSelectedTabView } from "../../store/slices/viewMasterDataSlice";
 import {
   useGetMetricsQuery,
+  useMasterDataGlobalSearchMutation,
   useMasterFiltersMutation,
 } from "../../store/apis/masterDataApis";
 import {
@@ -177,13 +178,17 @@ const MasterData: React.FC = () => {
     },
   ];
 
-  const { filtersPayload, openSider, isSearchTriggered } = useSelector(
-    (state: RootState) => state.masterData
-  );
+  const { filtersPayload, openSider, isSearchTriggered, debouncedSearch } =
+    useSelector((state: RootState) => state.masterData);
   const [
     masterFilters,
     { data: listOfCompaniesData, isLoading: listOfCompaniesLoading },
   ] = useMasterFiltersMutation();
+
+  const [
+    masterDataGlobalSearch,
+    { data: globalSearchData, isLoading: searchLoading },
+  ] = useMasterDataGlobalSearchMutation();
 
   useEffect(() => {
     if (!openSider) {
@@ -198,7 +203,24 @@ const MasterData: React.FC = () => {
     }
   }, [page, openSider, filtersPayload, rowsPerPage]);
 
+  useEffect(() => {
+    if (debouncedSearch !== "") {
+      masterDataGlobalSearch({
+        page: page,
+        size: rowsPerPage,
+        searchField: debouncedSearch,
+      });
+    }
+  }, [page, rowsPerPage, debouncedSearch]);
+
   const transformedData = listOfCompaniesData?.data?.map((row: any) => ({
+    ...row,
+    customer_name: {
+      image: row.customer_logo,
+      customer: row.customer_name,
+    },
+  }));
+  const transformedSearchData = globalSearchData?.data?.map((row: any) => ({
     ...row,
     customer_name: {
       image: row.customer_logo,
@@ -207,7 +229,7 @@ const MasterData: React.FC = () => {
   }));
 
   useEffect(() => {
-     localStorage.setItem('updateButton','false')
+    localStorage.setItem("updateButton", "false");
     // dispatch(setUpdateButton(false));
     localStorage.setItem("hasVisitedMasterDataDetails", "false");
     dispatch(setMasterDataDataTouched(false));
@@ -230,54 +252,59 @@ const MasterData: React.FC = () => {
     localStorage.setItem(storageKey, newPage.toString());
   };
 
-const baseActions = [
-  {
-    icon: (
-      <Tooltip title="View Job Data" arrow>
-        <IconButton size="small" color="primary">
-          <Visibility fontSize="small" />
-        </IconButton>
-      </Tooltip>
-    ),
-    onClick: (row: any) => {
-      const selectedUENAction = row?.unit_effectivity_number;
-      const versionNoAction = row?.version_no;
-      localStorage.setItem("actionSelectedUEN", selectedUENAction);
-      localStorage.setItem("actionVersionNo", versionNoAction);
-      navigate(`/viewJobsList`);
+  const baseActions = [
+    {
+      icon: (
+        <Tooltip title="View Job Data" arrow>
+          <IconButton size="small" color="primary">
+            <Visibility fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+      onClick: (row: any) => {
+        const selectedUENAction = row?.unit_effectivity_number;
+        const versionNoAction = row?.version_no;
+        localStorage.setItem("actionSelectedUEN", selectedUENAction);
+        localStorage.setItem("actionVersionNo", versionNoAction);
+        navigate(`/viewJobsList`);
+      },
     },
-  },
-];
+  ];
 
-const actions =
-  role === "Admin"
-    ? [
-        ...baseActions,
-        {
-          icon: (
-            <Tooltip title="Update" arrow>
-              <IconButton size="small" color="primary">
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          ),
-          onClick: (row: any) => {
-            const selectedUENActionUpdate = row?.unit_effectivity_number;
-            const versionNoAction = row?.version_no;
-            localStorage.setItem("actionSelectedUEN", selectedUENActionUpdate);
-            localStorage.setItem("actionVersionNo", versionNoAction);
-            localStorage.setItem("updateButton", "true");
+  const actions =
+    role === "Admin"
+      ? [
+          ...baseActions,
+          {
+            icon: (
+              <Tooltip title="Update" arrow>
+                <IconButton size="small" color="primary">
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ),
+            onClick: (row: any) => {
+              const selectedUENActionUpdate = row?.unit_effectivity_number;
+              const versionNoAction = row?.version_no;
+              localStorage.setItem(
+                "actionSelectedUEN",
+                selectedUENActionUpdate
+              );
+              localStorage.setItem("actionVersionNo", versionNoAction);
+              localStorage.setItem("updateButton", "true");
 
-            navigate(`/updateMasterData/${selectedUENActionUpdate}`);
-            dispatch(setSelectedTab(0));
-            dispatch(setMasterDataDataTouched(false));
-            dispatch(setPrintingDataTouched(false));
-            dispatch(setLaminationDataTouched(false));
-            dispatch(setDyeCuttingDataTouched(false));
+              navigate(`/updateMasterData/${selectedUENActionUpdate}`);
+              dispatch(setSelectedTab(0));
+              dispatch(setMasterDataDataTouched(false));
+              dispatch(setPrintingDataTouched(false));
+              dispatch(setLaminationDataTouched(false));
+              dispatch(setDyeCuttingDataTouched(false));
+            },
           },
-        },
-      ]
-    : baseActions;
+        ]
+      : baseActions;
+
+  console.log(transformedSearchData, "TRANSFORMEDSEARCHDATA");
 
   return (
     <Box sx={{ p: 0 }}>
@@ -308,26 +335,30 @@ const actions =
           boxShadow={true}
           columns={columns}
           pageNumber={page}
-          data={transformedData ? transformedData : []}
-          selectable={false}
-          label={
-            listOfCompaniesData?.totalRecords
-              ? `${listOfCompaniesData?.totalRecords} Jobs`
-              : "0 Job"
+          data={
+            debouncedSearch
+              ? transformedSearchData ?? []
+              : transformedData ?? []
           }
+          selectable={false}
+          label={`${
+            debouncedSearch
+              ? globalSearchData?.totalRecords ?? 0
+              : listOfCompaniesData?.totalRecords ?? 0
+          } Jobs`}
           title="Overview"
           info={true}
           searchVisible={true}
           action={true}
           actions={actions}
-          isLoading={listOfCompaniesLoading}
+          isLoading={listOfCompaniesLoading || searchLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"masterData"}
           totalLength={
-            listOfCompaniesData?.totalRecords
-              ? listOfCompaniesData?.totalRecords
-              : 0
+            debouncedSearch
+              ? globalSearchData?.totalRecords ?? 0
+              : listOfCompaniesData?.totalRecords ?? 0
           }
           pageRange={true}
           handleRowsPerPageChange={handleRowsPerPageChange}

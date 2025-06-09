@@ -18,6 +18,7 @@ import {
 } from "../Interfaces/masterDataTypes";
 
 const initialState: MasterDataState = {
+  debouncedSearch:'',
   kldCode:'',
   PopupState: {
     open: false,
@@ -769,6 +770,9 @@ const masterDataSlice = createSlice({
   name: "masterData",
   initialState,
   reducers: {
+    setDebouncedSearch:(state,action:PayloadAction<string>)=>{
+      state.debouncedSearch = action.payload
+    },
     setKldCode:(state,action:PayloadAction<string>)=>{
     state.kldCode = action.payload;
     },
@@ -1655,6 +1659,7 @@ const masterDataSlice = createSlice({
 });
 
 export const {
+  setDebouncedSearch,
   setKldCode,
   setGlobalPopup,
   closeGlobalPopup,

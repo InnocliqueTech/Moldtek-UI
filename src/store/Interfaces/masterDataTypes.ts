@@ -316,6 +316,7 @@ export interface PopupState {
   data?: FileData[]; 
 }
 export interface MasterDataState {
+  debouncedSearch:string;
   kldCode:string;
   PopupState :PopupState;
   masterDataNotifications:MasterDataNotifications[]

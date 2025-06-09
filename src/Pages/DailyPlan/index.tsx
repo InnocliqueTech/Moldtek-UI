@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 // import {  dailyJobsListMockResp } from './data';
 import {
   useDailyPlanFiltersMutation,
+  useDailyPlanGlobalSearchMutation,
   useGetDailyJobMetricsQuery,
 } from "../../store/apis/dailyPlanApis";
 import { ApiStatsResponse,DailyJob } from '../../store/Interfaces/createDailyPlanTypes';
@@ -127,7 +128,7 @@ const {
   //   // error: jobsError
   // } = useGetDailyJobsListQuery(pagination);
 
-    const { filtersPayload,openSliderDaily,dropDown,isSearchTriggered } = useSelector(
+    const { filtersPayload,openSliderDaily,dropDown,isSearchTriggered,debouncedSearchDailyPlan } = useSelector(
       (state: RootState) => state.viewDailyPlan
     );
   const [
@@ -138,6 +139,10 @@ const {
       // isError: companiesError,
     },
   ] = useDailyPlanFiltersMutation();
+
+ const [dailyPlanGlobalSearch,{data:globalSearchData,isLoading:searchLoading}] = useDailyPlanGlobalSearchMutation();
+
+
   useEffect(() => {
     if (!openSliderDaily|| dropDown) {
       dailyPlanFilters({ ...filtersPayload, page: isSearchTriggered ?0:page, size: rowsPerPage });
@@ -146,11 +151,22 @@ const {
       setPage(0)
     }
   }, [page, openSliderDaily, filtersPayload, dropDown,rowsPerPage]);
+
+      useEffect(() => {
+      if (debouncedSearchDailyPlan !=='') {
+       dailyPlanGlobalSearch ({
+    page: page,
+    size: rowsPerPage,
+    searchField: debouncedSearchDailyPlan 
+        });
+      }
+    }, [page, rowsPerPage,debouncedSearchDailyPlan]);
   
 
 const dispatch = useDispatch()
   const stats = transformApiDataToStats(metricsData?.data) ;
-  const data = transformJobDataList(listOfCompaniesData?.data)
+  const data = transformJobDataList(listOfCompaniesData?.data);
+  const dataSearch = transformJobDataList(globalSearchData?.data);
   const navigate = useNavigate();
   const columns = [
     { id: "indentNumber", label: "Indent Number", align: false, format: (value: string,row:any) => <UENCell value={value} row={row} onClick={()=>{
@@ -299,9 +315,9 @@ const dispatch = useDispatch()
             <ReusableTable
               infoText='Displays a list of daily plan jobs, including their details'
               columns={columns}
-              data={data}
+              data={debouncedSearchDailyPlan ? dataSearch??[]:data??[]}
               selectable={true}
-              label={`${listOfCompaniesData?.totalRecords? listOfCompaniesData.totalRecords:0} Jobs`}
+              label={`${debouncedSearchDailyPlan ? globalSearchData?.totalRecords ?? 0 :listOfCompaniesData?.totalRecords?? 0} Jobs`}
               title="Job OverView"
               pageNumber={page}
               info={true}
@@ -312,12 +328,9 @@ const dispatch = useDispatch()
               }}
               id={"dailyPlan"}
               rowIdentifier="_id" 
-              isLoading={listOfCompaniesLoading}
+              isLoading={listOfCompaniesLoading||searchLoading}
               rowsPerPage={rowsPerPage}
-              totalLength={
-                listOfCompaniesData?.totalRecords
-                  ? listOfCompaniesData.totalRecords
-                  : 0
+              totalLength={ debouncedSearchDailyPlan ? globalSearchData?.totalRecords ?? 0 :listOfCompaniesData?.totalRecords?? 0
               }
               pageRange={true}
               onPageChange={handlePageChange}

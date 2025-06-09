@@ -24,6 +24,7 @@ import { SelectChangeEvent } from "@mui/material";
 import {
   setCustomerLogoFile,
   setDyeCuttingDetails,
+  setKldCode,
   setLaminatingDetails,
   setMasterDataDataTouched,
   setMasterDataDetailsSave,
@@ -57,6 +58,7 @@ import {
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
 import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
+import { useGetKLDCodeMutation } from "../../store/apis/kldApis";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -79,6 +81,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const { id } = useParams();
   const location = useLocation();
 
+  const [getKLDCode] = useGetKLDCodeMutation();
+
   const UEN = localStorage.getItem("actionSelectedUEN");
   let selectedUEN: any;
   if (UEN) {
@@ -94,6 +98,31 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   const selectedUENNumber = localStorage.getItem("selectedUEN");
   const selectedVersion = localStorage.getItem("selectedVersionNo");
+
+
+
+  useEffect(() => {
+    const fetchKLDCode = async () => {
+      try {
+        if (formData.unit_effectivity_number && formData.jar_cap) {
+          const response = await getKLDCode({
+            unit_effectivity_number: formData.unit_effectivity_number.toString(),
+            jarCap: formData.jar_cap,
+          }).unwrap();
+
+          dispatch(setKldCode(response?.data ?response?.data?.kldCode:'' )); 
+           setFormData((prev) => ({
+          ...prev,
+          kldCode: response?.data?.kldCode, 
+        }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch KLD code:", error);
+      }
+    };
+
+    fetchKLDCode();
+  }, [formData.unit_effectivity_number, formData.jar_cap]);
 
   const { data, isLoading } = useViewMasterDataQuery(
     {
@@ -241,7 +270,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     "ups",
     "noOfColorsSetting",
     "noOfSpecialColors",
-    //  "kld",
+    //  "kldCode",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   const freeTextFields: (keyof MasterFormData)[] = [
@@ -401,7 +430,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     return {
       job_master_id: data?.job_master_id || 0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
-      kld: data?.kld || "",
+      kldCode: data?.kldCode || "",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",
       jar_cap: data?.jar_cap || "",
@@ -442,30 +471,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     dispatch(setMasterDataDetailsSave(hasErrors));
   }, [formData, errors]);
 
-  // useEffect(() => {
-  //   const importantFields: (keyof MasterFormData)[] = [
-  //     "unit_effectivity_number",
-  //     "customer_name",
-  //     "brand_description",
-  //     "label_type",
-  //     "jar_cap",
-  //     "repeat_length",
-  //     "ups",
-  //   ];
-
-  //   const { job_master_id, ...formDataWithoutJobId } = formData;
-
-  //   const anyValuePresent = Object.values(formDataWithoutJobId).some(
-  //     (value) => value !== "" && value !== null && value !== undefined
-  //   );
-
-  //   const anyErrors = importantFields.some((field) => errors[field] !== "");
-
-  //   const canSubmit = anyValuePresent && !anyErrors;
-
-  //   dispatch(setMasterDataDetailsSave(!canSubmit));
-  // }, [formData, errors, dispatch]);
-
   const handleRemoveImage = () => {
     setFormData((prev) => ({
       ...prev,
@@ -473,8 +478,9 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     }));
   };
   const row1HasError =
-    !!errors.unit_effectivity_number || !!errors.kld || !!errors.jar_cap;
-  const row2HasError = !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
+    !!errors.unit_effectivity_number || !!errors.kldCode || !!errors.jar_cap;
+  const row2HasError =
+    !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
 
   useEffect(() => {
     if (isPreviewOpen) {
@@ -506,23 +512,9 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             <Typography sx={{ fontWeight: 500 }}>Customer Picture:</Typography>
             {formData.customer_logo ? (
               <>
-                {/* Uploaded Image Preview */}
-                {/* <Box
-                      component="img"
-                      src={formData.customer_logo}
-                      alt="Uploaded"
-                      sx={{
-                        width: 80,
-                        height: 30,
-                        borderRadius: "8px",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    /> */}
-
-                {/* Action Icons */}
+              
                 <Box display="flex" gap={0} alignItems="center">
-                  {/* Eye Icon */}
+
                   <Tooltip title="View">
                     <IconButton
                       onClick={() => setIsPreviewOpen(true)}
@@ -531,8 +523,6 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                       <Visibility />
                     </IconButton>
                   </Tooltip>
-
-                  {/* Edit Icon (re-upload) */}
                   <label htmlFor="reupload-image">
                     <input
                       accept="image/*"
@@ -653,7 +643,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               helperText={errors.unit_effectivity_number}
               disabled={id ? true : false}
               required
-              endIcon={ false}
+              endIcon={false}
             />
             <Box
               sx={{
@@ -666,8 +656,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
               }}
             >
-
-                            <ReusableInput
+              <ReusableInput
                 label="ITEM Code"
                 value={formData.item_code}
                 onChange={(e) => handleChange("item_code", e.target.value)}
@@ -689,15 +678,15 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-                          <DropdownComponent
-                label="Jar/Cap"
-                options={["JAR", "CAP", "JAR&CAP"]}
-                value={formData.jar_cap}
-                onChange={(e) => handleChange("jar_cap", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                required
-              />
+            <DropdownComponent
+              label="Jar/Cap"
+              options={["JAR", "CAP", "JAR&CAP"]}
+              value={formData.jar_cap}
+              onChange={(e) => handleChange("jar_cap", e.target.value)}
+              isMultiSelect={false}
+              checkbox={false}
+              required
+            />
             <Box
               sx={{
                 minHeight:
@@ -706,26 +695,24 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             />
             <Box
               sx={{
-                mt: row1HasError? '20px' : 2,
+                mt: row1HasError ? "20px" : 2,
               }}
             >
-                          <ReusableInput
-              label="Customer"
-              value={formData.customer_name}
-              onChange={(e) => handleChange("customer_name", e.target.value)}
-              error={!!errors.customer_name}
-              helperText={errors.customer_name}
-              required
-            />
+              <ReusableInput
+                label="Customer"
+                value={formData.customer_name}
+                onChange={(e) => handleChange("customer_name", e.target.value)}
+                error={!!errors.customer_name}
+                helperText={errors.customer_name}
+                required
+              />
 
               <Box
                 sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
               />
             </Box>
-            <Box
-              sx={{ mt: row2HasError ? '-16px' : 2 }}
-            >
-                            <DropdownComponent
+            <Box sx={{ mt: row2HasError ? "-16px" : 2 }}>
+              <DropdownComponent
                 label="Type of Label"
                 options={dropdownOptions ? dropdownOptions : []}
                 value={formData.label_type}
@@ -734,18 +721,16 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
                 checkbox={false}
                 required
               />
-
             </Box>
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-
-                        <ReusableInput
-              label="KLD"
-              value={formData.kld}
-              onChange={(e) => handleChange("kld", e.target.value)}
-              error={!!errors.kld}
-              helperText={errors.kld}
+            <ReusableInput
+              label="KLD CODE"
+              value={formData.kldCode}
+              onChange={(e) => handleChange("kldCode", e.target.value)}
+              error={!!errors.kldCode}
+              helperText={errors.kldCode}
               disabled={true}
               // required
             />
@@ -753,7 +738,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
               sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
             />
 
-            <Box sx={{ mt: row1HasError  ? '12px' : 2 }}>
+            <Box sx={{ mt: row1HasError ? "12px" : 2 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}
@@ -770,7 +755,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             </Box>
 
             <Box sx={{ mt: row1HasError ? 3 : 2 }}>
-                            <DropdownComponent
+              <DropdownComponent
                 label="Segment"
                 options={segmentNames}
                 value={formData.segment}

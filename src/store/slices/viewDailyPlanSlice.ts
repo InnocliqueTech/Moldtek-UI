@@ -79,7 +79,8 @@ export interface FiltersPayload {
   status:string[]
 }
 export interface viewDailyPlan {
-  dailyPlanDataNotifications:DailyPlanNotifications[]
+  dailyPlanDataNotifications:DailyPlanNotifications[];
+  debouncedSearchDailyPlan:string;
   dailyPlanCancel:boolean;
   dailyPlanSave:boolean;
   customers: Customer[];
@@ -114,6 +115,7 @@ export interface viewDailyPlan {
 }
 
 const initialState: viewDailyPlan = {
+  debouncedSearchDailyPlan:'',
   dailyPlanDataNotifications:[{
 exceptionMessage: "",
 fileName: "",
@@ -196,6 +198,9 @@ const ViewDailyPanSlice = createSlice({
   name: "viewDailyPanSlice",
   initialState,
   reducers: {
+    setDebouncedSearchDailyPlan:(state,action:PayloadAction<string>)=>{
+        state.debouncedSearchDailyPlan=action.payload
+        },
         setDailyPlanDataNotifications:(state,action:PayloadAction<DailyPlanNotifications[]>)=>{
         state.dailyPlanDataNotifications=action.payload
         },
@@ -310,6 +315,7 @@ const ViewDailyPanSlice = createSlice({
 });
 
 export const {
+  setDebouncedSearchDailyPlan,
   setSideNavigationAllowed,
   setBackButtonNavigationAllowed,
   setDailyPlan,

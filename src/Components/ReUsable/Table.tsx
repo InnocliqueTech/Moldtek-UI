@@ -52,13 +52,14 @@ import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
 import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
 import { useDispatch, useSelector } from "react-redux";
-import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
+import { setDebouncedSearchDailyPlan, setDropDown } from "../../store/slices/viewDailyPlanSlice";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "../../api.config";
 import ErrorIcon from "@mui/icons-material/Error";
 import Loader from "../../Loader";
 import { useLocation } from "react-router-dom";
+import { setDebouncedSearch } from "../../store/slices/masterDataSlice";
 
 interface Column {
   id: string;
@@ -165,6 +166,25 @@ function ReusableTable<T extends Record<string, any>>({
     setOrderBy(property);
   };
 
+
+  useEffect(() => {
+  const handler = setTimeout(() => {
+    if(id==='masterData'){
+    dispatch(setDebouncedSearch(search));
+    }
+    if(id==='dailyPlan'){
+    dispatch(setDebouncedSearchDailyPlan(search));
+    }
+    if(id==='kldData'){
+
+    }
+  }, 500); 
+
+  return () => {
+    clearTimeout(handler);
+  };
+}, [search]);
+
   const getValue = (row: any, key: string) => {
     if (key === "customer_name")
       return row.customer_name?.customer?.toLowerCase() || "";
@@ -218,18 +238,9 @@ function ReusableTable<T extends Record<string, any>>({
 
             return stringValue.toLowerCase().includes(searchValue);
           });
-        } else {
-          return (
-            row.unitEffectivityNumber
-              ?.toString()
-              .toLowerCase()
-              .includes(searchValue) ||
-            row.indentNumber?.toString().toLowerCase().includes(searchValue) ||
-            row.unit_effectivity_number
-              ?.toString()
-              .toLowerCase()
-              .includes(searchValue)
-          );
+        } 
+        else  {
+return (sortedData)
         }
       })
     : sortedData;
@@ -506,6 +517,8 @@ function ReusableTable<T extends Record<string, any>>({
       setConfirmDialogOpen(false);
     }
   }, [location]);
+
+  console.log(filteredData,"FILTEREDDATA")
 
   console.log(actions,"ACTIONSOFTHEDATA")
 

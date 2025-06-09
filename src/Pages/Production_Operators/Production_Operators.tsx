@@ -13,17 +13,15 @@ import ReusableTable from "../../Components/ReUsable/Table";
 // import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import {
-  setIsSearchTriggered,
-} from "../../store/slices/masterDataSlice";
+import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
 import { setCreateSlider, setKLDEdit } from "../../store/slices/kldSlice";
 import { useGetKLDmetricsQuery } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-   const { data:kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
-   console.log({kldMetricsData,isLoading,isError},"KldMetricsApiCalled");
- const data = {
+  const { data: kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
+  console.log({ kldMetricsData, isLoading, isError }, "KldMetricsApiCalled");
+  const data = {
     totalKld: 124,
     kldSetCode: 46,
     kldJarCode: 61,
@@ -71,30 +69,29 @@ const ProductionOperatorsPage: React.FC = () => {
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
 
-const rows = [
-  {
-    unit_effectivity_number: "UEN123456",
-    version_no: "v1.0",
-    jarCap: "JAR",
-    item_code: "FSI0460MLRRXXXX",
-    kld_code: "KLD-001-ABCD",
-  },
-  {
-    unit_effectivity_number: "UEN987654",
-    version_no: "v2.3",
-    jarCap: "CAP",
-    item_code: "FSI1000MLPBXXXX",
-    kld_code: "KLD-002-XYZT",
-  },
-  {
-    unit_effectivity_number: "UEN555888",
-    version_no: "v3.1",
-    jarCap: "JAR/CAP",
-    item_code: "FSI500MLTWXXXX",
-    kld_code: null,
-  },
-];
-
+  const rows = [
+    {
+      unit_effectivity_number: "UEN123456",
+      version_no: "v1.0",
+      jarCap: "JAR",
+      item_code: "FSI0460MLRRXXXX",
+      kld_code: "KLD-001-ABCD",
+    },
+    {
+      unit_effectivity_number: "UEN987654",
+      version_no: "v2.3",
+      jarCap: "CAP",
+      item_code: "FSI1000MLPBXXXX",
+      kld_code: "KLD-002-XYZT",
+    },
+    {
+      unit_effectivity_number: "UEN555888",
+      version_no: "v3.1",
+      jarCap: "JAR/CAP",
+      item_code: "FSI500MLTWXXXX",
+      kld_code: null,
+    },
+  ];
 
   const columns = [
     {
@@ -103,21 +100,17 @@ const rows = [
       align: false,
       disableSorting: false,
     },
-{
-  id: "jarCap",
-  label: "Jar/Cap",
-  align: false,
-  disableSorting: false,
-  format: (value: string) => (
-    <Typography
-      variant="body2"
-      sx={{ fontWeight: 500, color: "#424242" }}
-    >
-      {value}
-    </Typography>
-  ),
-},
-
+    {
+      id: "jarCap",
+      label: "Jar/Cap",
+      align: false,
+      disableSorting: false,
+      format: (value: string) => (
+        <Typography variant="body2" sx={{ fontWeight: 500, color: "#424242" }}>
+          {value}
+        </Typography>
+      ),
+    },
 
     {
       id: "item_code",
@@ -176,7 +169,6 @@ const rows = [
   //   }
   // }, [page, openSider, filtersPayload, rowsPerPage]);
 
-
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
@@ -188,23 +180,21 @@ const rows = [
     localStorage.setItem(storageKey, newPage.toString());
   };
 
-
-
-const actions =[
-        {
-          icon: (
-            <Tooltip title="Update" arrow>
-              <IconButton size="small" color="primary">
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          ),
-          onClick: () => {
-           dispatch(setKLDEdit(true));
-           dispatch(setCreateSlider(true));
-          },
-        },
-      ]
+  const actions = [
+    {
+      icon: (
+        <Tooltip title="Update" arrow>
+          <IconButton size="small" color="primary">
+            <Edit fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+      onClick: () => {
+        dispatch(setKLDEdit(true));
+        dispatch(setCreateSlider(true));
+      },
+    },
+  ];
 
   return (
     <Box sx={{ p: 0 }}>
@@ -237,11 +227,7 @@ const actions =[
           pageNumber={page}
           data={rows ? rows : []}
           selectable={false}
-          label={
-            rows?.length
-              ? `${ rows?.length} klds`
-              : "0 klds"
-          }
+          label={rows?.length ? `${rows?.length} klds` : "0 klds"}
           title="KLD Overview"
           info={true}
           searchVisible={true}
@@ -251,11 +237,7 @@ const actions =[
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"kldData"}
-          totalLength={
-            rows?.length
-              ?  rows?.length
-              : 0
-          }
+          totalLength={rows?.length ? rows?.length : 0}
           pageRange={true}
           handleRowsPerPageChange={handleRowsPerPageChange}
         />
