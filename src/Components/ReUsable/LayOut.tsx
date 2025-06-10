@@ -19,6 +19,7 @@ import {
   clearPrintingFormData,
   clearPrintingFormErrors,
   setDyeCuttingDataTouched,
+  setKldCode,
   setLaminationDataTouched,
   setMasterDataDataTouched,
   setOpenSlider,
@@ -217,6 +218,7 @@ const Layout = () => {
     }
   };
   const handleCreateMasterData = () => {
+    dispatch(setKldCode(''));
     dispatch(setSelectedTab(0));
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());

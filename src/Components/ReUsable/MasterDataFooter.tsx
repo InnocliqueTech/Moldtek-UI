@@ -246,16 +246,18 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   };
 
   const UEN = localStorage.getItem("selectedUEN") ?? "";
+  const selectedUENNumber = localStorage.getItem("actionSelectedUEN")??"";
+  const updateButtonAction = localStorage.getItem("updateButton");
   const version = parseInt(localStorage.getItem("selectedVersionNo") || "0");
   const displayVersion = id ? version + 1 : version;
 
   const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
   const confirmPublishTitle = id
-    ? `Are you sure you want to update and publish? This version is ${UEN} V${displayVersion}.`
-    : !submitTrue?'Are you sure you want to submit and publish?':`Are you sure you want to submit and publish? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
+    ? `Are you sure you want to update and publish? This version is ${updateButtonAction === "false" ? UEN : selectedUENNumber} V${displayVersion}.`
+    : !submitTrue?'Are you sure you want to submit and publish?  This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.':`Are you sure you want to submit and publish? `;
 
   const successTitle = id
-    ? `You have successfully updated master data. Your version is ${UEN} V${displayVersion}.`
+    ? `You have successfully updated master data. Your version is ${updateButtonAction === "false" ? UEN : selectedUENNumber} V${displayVersion}.`
     : submitTrue
     ? `We are currently processing your data. Please wait a moment`
     : `You have successfully created master data. Your version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;

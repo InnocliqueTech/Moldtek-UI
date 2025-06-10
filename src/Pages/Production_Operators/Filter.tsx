@@ -64,12 +64,7 @@ selectedJarCaps
       return;
     }
 
-    // const customerName = selectedCustomers.map(
-    //   (customer: any) => customer.fullName
-    // );
-    // const labelType = selectedLabelTypeIds.map(
-    //   (label: any) => label.labelTypeName
-    // );
+
 
     const finalSearchPayload: FiltersPayload = {
 
@@ -81,7 +76,7 @@ selectedJarCaps
         localDates.toDate && localDates.toDate
           ? format(localDates.toDate, "yyyy-MM-dd")
           : "",
-          jarCap:''
+          jarCap:selectedJarCaps ?? '',
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));

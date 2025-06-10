@@ -47,7 +47,7 @@ const ProductionOperatorsPage: React.FC = () => {
     {
       title: "Total KLD",
       value: apiStats?.["Total"] ?? 0,
-      infoText: "Displays the total count of created KLD's",
+      infoText: "Displays the total count of created KLD sets.",
     },
     {
       title: "KLD-SET CODE",

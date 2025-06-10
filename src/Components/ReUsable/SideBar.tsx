@@ -40,6 +40,7 @@ import {
   clearSaveLaminatingFormData,
   clearSaveMasterDetailsData,
   clearSavePrintingFormData,
+  setKldCode,
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -137,6 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const handleLogOut = () => {
     navigate("/");
+    dispatch(setKldCode(''));
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");

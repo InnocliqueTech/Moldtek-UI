@@ -807,7 +807,7 @@ if (response?.statusCode === 400) {
           Repeat & Print Details
         </Typography>
         <Grid container spacing={2} pt={1}>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="Repeat"
               value={formData.repeat_length}
@@ -817,7 +817,7 @@ if (response?.statusCode === 400) {
               required
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="UPs"
               value={formData.ups}
@@ -827,7 +827,7 @@ if (response?.statusCode === 400) {
               required
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="Tracks"
               value={formData.tracks}
@@ -836,7 +836,7 @@ if (response?.statusCode === 400) {
               helperText={errors.tracks}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="No of Colors for setting"
               value={formData.noOfColorsSetting}
@@ -848,7 +848,7 @@ if (response?.statusCode === 400) {
               required
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="No of special colors"
               value={formData.noOfSpecialColors}
