@@ -24,6 +24,7 @@ import {
   TaskOutlined,
   West,
 } from "@mui/icons-material";
+import GroupIcon from '@mui/icons-material/Group';
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
@@ -110,6 +111,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       icon: <ManageAccountsOutlined />,
       selectedIcon: <ManageAccountsOutlined />,
       path: "/kld",
+    },
+    {
+      text: "Users",
+      icon: <GroupIcon />,
+      selectedIcon: <GroupIcon />,
+      path: "/users",
     },
     {
       text: "Reports",

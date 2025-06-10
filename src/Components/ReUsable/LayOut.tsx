@@ -465,6 +465,18 @@ const Layout = () => {
       headerButton: true,
       onBack: () => navigate("/dailyPlan"),
     },
+      "/users": {
+      title: "Manage Users",
+      button1Text: "Filter",
+      button2Text: "Create User",
+      onButton1Click: () => {},
+      onButton2Click: () => {},
+      filterTitle: "User filter",
+      // notificationIcon: true,
+      // notificationIconOnClick: () => {
+      //   handleDailyPlanNotification();
+      // },
+    },
     "/": {
       title: "Home",
       button1Text: "Get Started",
