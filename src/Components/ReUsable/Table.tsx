@@ -872,6 +872,7 @@ return (sortedData)
                                     )
                                   }
                                   displayEmpty
+                                  disabled={(row[column.id] || "").toLowerCase() === "completed"}
                                   variant="standard"
                                   sx={{
                                     width: 150,

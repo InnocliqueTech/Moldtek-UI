@@ -441,7 +441,7 @@ const Header: React.FC<HeaderProps> = ({
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
-              {editButton && !isEditing && (
+              {editButton && !isEditing && (selectedStatus || "").toLowerCase() !== "completed" && (
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton
                     onClick={editClick}
@@ -472,6 +472,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Select
                     value={selectedStatus}
                     onChange={handleDropdownChange}
+                     disabled={(selectedStatus || "").toLowerCase() === "completed"}
                     displayEmpty
                     size="small"
                     sx={{

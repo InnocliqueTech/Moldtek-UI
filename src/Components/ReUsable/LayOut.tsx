@@ -234,37 +234,8 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
+  const selectedStatus = localStorage.getItem("status")
 
-  //  const isMasterDataPage = location.pathname === "/masterData";
-  //  const isDailyPlanDataPage = location.pathname ==="/dailyPlan"
-
-//  const { data } = useMasterDataNotificationsQuery(undefined, {
-//     skip: !isMasterDataPage,
-//   });
-
-//   useEffect(() => {
-//     if (data?.notifications) {
-//       dispatch(setMasterDataNotifications(data.notifications));
-//     }
-//   }, [data, dispatch]);
-
-//    const { data:dailyPlanData } = useDailyPlanNotificationsQuery(undefined, {
-//     skip: !isDailyPlanDataPage,
-//   });
-
-//   useEffect(() => {
-//     if (dailyPlanData?.data) {
-//       dispatch(setDailyPlanDataNotifications(dailyPlanData?.data));
-//     }
-//   }, [dailyPlanData, dispatch]);
-
-
-//   const handleMasterNotification = () => {
-//     dispatch(setPopOver(true));
-//   };
-//   const handleDailyPlanNotification = () => {
-//     dispatch(setPopOverDailyPlan(true));
-//   };
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -432,10 +403,11 @@ const Layout = () => {
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
       button1Text: loading ? "Downloading..." : "Download Template",
+      ...((selectedStatus || "").toLowerCase() !== "completed" && { 
       button2Text: "Upload Job Data",
       onButton1Click: () => {
         downloadFile();
-      },
+      }}),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
       onBack: hasUnsavedChanges

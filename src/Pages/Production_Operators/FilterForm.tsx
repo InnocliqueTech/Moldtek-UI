@@ -217,7 +217,7 @@ const jarCapOptions = [
 <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
   <Grid size={{xs:12}} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
     <Typography variant="subtitle1">
-      Jar/Cap {selectedJarCaps ? `(1 selected)` : `(0 selected)`}
+      Jar/Cap {selectedJarCaps ? `(1)` : `(0)`}
     </Typography>
     <IconButton size="small" onClick={() => setSelectedJarCaps('')}>
       <ClearIcon fontSize="small" />
@@ -228,33 +228,28 @@ const jarCapOptions = [
     const isSelected = selectedJarCaps === option.value;
 
     return (
-      <Grid  key={option.value}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            px: 2,
-            py: 0.5,
-            border: "2px solid",
-            borderColor: isSelected ? "#0073B7" : "#ccc",
-            borderRadius: "20px",
-            cursor: "pointer",
-            backgroundColor: isSelected ? "#E3F2FD" : "transparent",
-            transition: "all 0.2s ease-in-out",
-          }}
-          onClick={() => setSelectedJarCaps(option.value)}
-        >
-          {isSelected ? (
-            <RadioButtonChecked sx={{ mr: 1, color: "#0073B7" }} />
-          ) : (
-            <RadioButtonUnchecked sx={{ mr: 1, color: "#aaa" }} />
-          )}
+   <Grid key={option.value}>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      px: 2,
+      py: 0,
+      border: "2px solid",
+      borderColor: isSelected ? "#0073B7" : "#ccc", 
+      borderRadius: "20px",
+      cursor: "pointer",
+      backgroundColor: isSelected ? "#E3F2FD" : "#f5f5f5", 
+      transition: "all 0.2s ease-in-out",
+    }}
+    onClick={() => setSelectedJarCaps(option.value)}
+  >
+    <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+      {option.label}
+    </Typography>
+  </Box>
+</Grid>
 
-          <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
-            {option.label}
-          </Typography>
-        </Box>
-      </Grid>
     );
   })}
 </Grid>
