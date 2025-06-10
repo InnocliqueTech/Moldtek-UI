@@ -14,8 +14,6 @@ import {
   ArrowForward,
   CalendarToday,
   Clear as ClearIcon,
-  RadioButtonChecked,
-  RadioButtonUnchecked,
 } from "@mui/icons-material";
 import { RootState } from "../../store";
 import { LocalDatePayload } from "./Filter";

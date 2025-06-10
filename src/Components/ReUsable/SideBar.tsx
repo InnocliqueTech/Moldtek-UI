@@ -19,7 +19,6 @@ import {
   East,
   ExitToApp,
   GridViewOutlined,
-  ManageAccountsOutlined,
   Queue,
   Settings,
   TaskOutlined,
