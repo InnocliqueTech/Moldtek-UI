@@ -19,7 +19,7 @@ import {
   East,
   ExitToApp,
   GridViewOutlined,
-  ManageAccountsOutlined,
+  Queue,
   Settings,
   TaskOutlined,
   West,
@@ -108,8 +108,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
     },
     {
       text: "KLD Master Data",
-      icon: <ManageAccountsOutlined />,
-      selectedIcon: <ManageAccountsOutlined />,
+      icon: <Queue />,
+      selectedIcon: <Queue />,
       path: "/kld",
     },
     {
