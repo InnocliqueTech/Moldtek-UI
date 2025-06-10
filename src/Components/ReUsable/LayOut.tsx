@@ -470,7 +470,7 @@ const Layout = () => {
       button1Text: "Filter",
       button2Text: "Create User",
       onButton1Click: () => {},
-      onButton2Click: () => {},
+      onButton2Click: () => {navigate("/create-user")},
       filterTitle: "User filter",
       // notificationIcon: true,
       // notificationIconOnClick: () => {
