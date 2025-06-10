@@ -11,6 +11,7 @@ const SignInPage = lazy(() => import("./Components/Authentication/SignIn"));
 const DashboardPage = lazy(() => import("./Pages/Dashboard/Dashboard"));
 const ProductionOperatorsPage = lazy(() => import("./Pages/Production_Operators/Production_Operators"));
 const UsersPage = lazy(() => import("./Pages/Users"));
+const CreateUserPage = lazy(() => import("./Pages/Users/create_user"));
 const ReportsPage = lazy(() => import("./Pages/Reports/Reports"));
 const SettingsPage = lazy(() => import("./Pages/Settings/Settings"));
 const MasterData = lazy(() => import("./Pages/Create_Master_Data/MasterData"));
@@ -41,6 +42,7 @@ const App: React.FC = () => {
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/kld" element={<ProductionOperatorsPage/>} />
               <Route path="/users" element={<UsersPage/>} />
+              <Route path="/create-user" element={<CreateUserPage/>} />
               <Route path="/settings" element={<SettingsPage/>}/>
               <Route path="/masterData" element={<MasterData />} />
               <Route path="/createMasterData" element={<CreateMasterData />} />
