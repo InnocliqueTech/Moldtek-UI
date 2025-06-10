@@ -87,11 +87,19 @@ masterDataNotifications: builder.query<any, string>({
   }),
 
 }),
+masterDataGlobalSearch:builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/master/globalSearchForMasterData",
+        method: "POST",
+        body: newItem,
+      }),
+    }),
 
 }),
 });
 
 export const {
+  useMasterDataGlobalSearchMutation,
   useGetMetricsQuery,
   useListOfCompaniesQuery,
   useViewMasterDataQuery,

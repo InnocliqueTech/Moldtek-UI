@@ -152,6 +152,8 @@ export interface PrintingReportResponse {
 
 // types.ts
 export interface DailyPlan {
+    itemCode:string;
+  kld_code:string;
   unitEffectivityNumber: string
   jobRunDate: string
   createdAt: string

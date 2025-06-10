@@ -10,7 +10,7 @@ import {
   Stack,
   Avatar,
 } from "@mui/material";
-import { Close, Visibility } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import AutoTooltipText from "./AutoTooltipText";
@@ -177,7 +177,7 @@ const name = viewMasterDataDetails?.customer_name;
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.kld, maxChars)}
+                {renderValue(viewMasterDataDetails?.kld_code, maxChars)}
               </Typography>
             </Box>
 

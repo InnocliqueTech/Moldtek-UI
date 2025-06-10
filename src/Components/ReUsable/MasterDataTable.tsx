@@ -30,7 +30,7 @@ import {
   LaminationFormData,
   PrintingFormValues,
   PrintingTableRow,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 
 interface Column {
   id: string;
@@ -201,7 +201,7 @@ const DataTable = <T extends Record<string, any>>({
     "volume",
     "color_pantone",
   ];
-  console.log(data, "DATAOFTHETABLE");
+
 
   return (
     <>

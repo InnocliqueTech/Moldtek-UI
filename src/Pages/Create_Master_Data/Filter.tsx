@@ -9,7 +9,7 @@ import ButtonComponent from "../../Components/ReUsable/Button";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import { useMemo, useState } from "react";
-import { FiltersPayload } from "../../store/slices/masterDataInterface";
+import { FiltersPayload } from "../../store/Interfaces/masterDataTypes";
 
 
 interface FilterProps {

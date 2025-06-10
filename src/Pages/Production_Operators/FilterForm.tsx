@@ -7,7 +7,6 @@ import {
   IconButton,
   Grid,
   Typography,
-  // TextField,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,79 +15,44 @@ import {
   CalendarToday,
   Clear as ClearIcon,
 } from "@mui/icons-material";
-import { RootState } from "../../../store";
-import {
-  setFiltersPayload,
-  setSelectedCustomers,
-  setSelectedLabelTypeIds,
-} from "../../../store/slices/viewDailyPlanSlice";
-import LabelTypeSelector from "./LabelTypes";
-import CustomerSelect from "./CustomersData";
-// import SearchIcon from "@mui/icons-material/Search";
+import { RootState } from "../../store";
 import { LocalDatePayload } from "./Filter";
+
 
 interface FilterFormProps {
   setLocalDates: React.Dispatch<React.SetStateAction<LocalDatePayload>>;
   localDates: LocalDatePayload;
-  searchField: string;
-  setSearchField: React.Dispatch<React.SetStateAction<string>>;
-  searchType: string;
-  setSearchType: React.Dispatch<React.SetStateAction<string>>;
-  selectedStatuses: string[];
-  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedJarCaps: string;
+  setSelectedJarCaps:React.Dispatch<React.SetStateAction<string>>;
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({
   setLocalDates,
   localDates,
-  // searchField,
-  setSearchField,
-  // searchType,
-  setSearchType,
-  selectedStatuses,
-  setSelectedStatuses,
+  selectedJarCaps,
+  setSelectedJarCaps
 }) => {
   const dispatch = useDispatch();
-  const { openSliderDaily, isSearchTriggered } = useSelector(
-    (state: RootState) => state.viewDailyPlan
+  const { openSliderKld,isSearchTriggered } = useSelector(
+    (state: RootState) => state.kld
   );
 
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);
 
-  const statusOptions = [
-    { label: "Active", value: "Active", color: "#FFA500" },
-    { label: "Inprogress", value: "Inprogress", color: "#0073B7" },
-    { label: "Completed", value: "Completed", color: "#4CAF50" },
-    { label: "Inactive", value: "Inactive", color: "#f44336" },
-  ];
+
 
   const hasInitialized = useRef(false);
 
   useEffect(() => {
-    if (openSliderDaily && !hasInitialized.current) {
+    if (openSliderKld && !hasInitialized.current) {
       hasInitialized.current = true;
 
       if (!isSearchTriggered) {
-        dispatch(
-          setFiltersPayload({
-            customerName: [],
-            fromDate: "",
-            toDate: "",
-            labelType: [],
-            searchField: "",
-            searchType: "",
-            status: [],
-          })
-        );
-        dispatch(setSelectedCustomers([]));
-        dispatch(setSelectedLabelTypeIds([]));
         setLocalDates({ fromDate: null, toDate: null });
-        setSearchField("");
-        setSearchType("");
       }
     }
-  }, [openSliderDaily, dispatch, isSearchTriggered]);
+  }, [openSliderKld, dispatch, isSearchTriggered]);
 
   const handleDateChange = (
     date: Date | null,
@@ -97,15 +61,16 @@ const FilterForm: React.FC<FilterFormProps> = ({
     setLocalDates((prev) => ({ ...prev, [field]: date }));
   };
 
-  const handleClearStatuses = () => {
-    setSelectedStatuses([]);
-  };
 
-  const toggleStatus = (value: string) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
+
+const jarCapOptions = [
+  { label: "JAR", value: "jar" },
+  { label: "CAP", value: "cap" },
+   { label: "JAR&CAP", value: "jar&cap" },
+];
+
+
+
 
   return (
     <>
@@ -247,145 +212,46 @@ const FilterForm: React.FC<FilterFormProps> = ({
         </Box>
       </LocalizationProvider>
 
-      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-        <CustomerSelect />
-      </Grid>
+<Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
+  <Grid size={{xs:12}} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+    <Typography variant="subtitle1">
+      Jar/Cap {selectedJarCaps ? `(1)` : `(0)`}
+    </Typography>
+    <IconButton size="small" onClick={() => setSelectedJarCaps('')}>
+      <ClearIcon fontSize="small" />
+    </IconButton>
+  </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        <LabelTypeSelector />
-      </Grid>
-      <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
-        <Grid
-          size={{ xs: 12 }}
-          sx={{ display: "flex", alignItems: "center", mb: 1 }}
-        >
-          <Typography variant="subtitle1">
-            Status({selectedStatuses.length})
-          </Typography>
-          <IconButton size="small" onClick={handleClearStatuses}>
-            <ClearIcon fontSize="small" />
-          </IconButton>
-        </Grid>
+  {jarCapOptions.map((option) => {
+    const isSelected = selectedJarCaps === option.value;
 
-        {statusOptions.map((status) => {
-          const isSelected = selectedStatuses.includes(status.value);
-          return (
-            <Grid key={status.value}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  px: 1,
-                  py: 0,
-                  border: "2px solid",
-                  borderColor: isSelected ? status.color : "#ccc",
-                  borderRadius: "20px",
-                  cursor: "pointer",
-                  backgroundColor: isSelected
-                    ? `${status.color}20`
-                    : "transparent",
-                }}
-                onClick={() => toggleStatus(status.value)}
-              >
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  readOnly
-                  style={{
-                    accentColor: status.color,
-                    width: "14px",
-                    height: "14px",
-                    marginRight: "8px",
-                    borderRadius: "0px",
-                  }}
-                />
-                <Typography
-                  sx={{
-                    fontWeight: 400,
-                    color: status.color,
-                    fontSize: "16px",
-                  }}
-                >
-                  {status.label}
-                </Typography>
-              </Box>
-            </Grid>
-          );
-        })}
-      </Grid>
+    return (
+   <Grid key={option.value}>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      px: 2,
+      py: 0,
+      border: "2px solid",
+      borderColor: isSelected ? "#0073B7" : "#ccc", 
+      borderRadius: "20px",
+      cursor: "pointer",
+      backgroundColor: isSelected ? "#E3F2FD" : "#f5f5f5", 
+      transition: "all 0.2s ease-in-out",
+    }}
+    onClick={() => setSelectedJarCaps(option.value)}
+  >
+    <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+      {option.label}
+    </Typography>
+  </Box>
+</Grid>
 
-      {/* <Grid container spacing={0} sx={{ mb: 2 }}>
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            Search
-          </Typography>
-        </Grid>
+    );
+  })}
+</Grid>
 
-        <Grid size={{ xs: 12, sm: 12, md: 9 }}>
-          <Box sx={{ display: "flex", width: "100%" }}>
-            <TextField
-              select
-              size="small"
-              variant="outlined"
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              SelectProps={{ native: true }}
-              sx={{
-                width: "280px",
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px 0 0 50px",
-                  height: "40px",
-                  fontSize: "0.875rem",
-                },
-              }}
-            >
-              <option value="">Select Type</option>
-              <option value="UEN">UEN</option>
-              <option value="Indent">Indent No</option>
-            </TextField>
-
-            <TextField
-              size="small"
-              fullWidth
-              variant="outlined"
-              placeholder="UEN or Indent No"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                ),
-                sx: {
-                  minWidth: { xs: "100%", sm: "100%", md: "230px" },
-                  borderRadius: "0 50px 50px 0",
-                  height: "40px",
-                  pl: 1.2,
-                  pr: 1,
-                  fontSize: "0.875rem",
-                },
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "0 50px 50px 0",
-                  px: 1,
-                  height: "40px",
-                },
-                "& .MuiInputBase-input": {
-                  padding: "4px 0",
-                  fontSize: "0.875rem",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                },
-              }}
-            />
-          </Box>
-        </Grid>
-      </Grid> */}
     </>
   );
 };

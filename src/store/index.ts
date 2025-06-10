@@ -7,23 +7,28 @@ import { genericApi } from './apis/genericApis';
 import masterDataReducer from './slices/masterDataSlice';
 import viewMasterDataReducer from './slices/viewMasterDataSlice'
 import  viewDailyPlanReducer  from './slices/viewDailyPlanSlice';
+import kldReducer from './slices/kldSlice';
+import { kldApi } from './apis/kldApis';
 
 export const store = configureStore({
   reducer: {
     masterData: masterDataReducer,
     viewMasterData: viewMasterDataReducer,
     viewDailyPlan:viewDailyPlanReducer,
+    kld: kldReducer,
     [masterDataApi.reducerPath]: masterDataApi.reducer,
     [dailyPlanApi.reducerPath]: dailyPlanApi.reducer,
      [authenticationApi.reducerPath]: authenticationApi.reducer,
       [genericApi.reducerPath]: genericApi.reducer,
+    [kldApi.reducerPath] : kldApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(masterDataApi.middleware)
       .concat(dailyPlanApi.middleware)
       .concat(authenticationApi.middleware)
-      .concat(genericApi.middleware),
+      .concat(genericApi.middleware)
+      .concat(kldApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>; 

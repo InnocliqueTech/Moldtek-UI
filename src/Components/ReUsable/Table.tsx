@@ -19,7 +19,7 @@ import {
   Pagination,
   PaginationItem,
   Stack,
-  Menu,
+  // Menu,
   MenuItem,
   Fade,
   Slide,
@@ -37,7 +37,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   CheckCircle,
   ChevronLeft,
@@ -52,13 +52,15 @@ import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
 import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
 import { useDispatch, useSelector } from "react-redux";
-import { setDropDown } from "../../store/slices/viewDailyPlanSlice";
+import { setDebouncedSearchDailyPlan, setDropDown } from "../../store/slices/viewDailyPlanSlice";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "../../api.config";
 import ErrorIcon from "@mui/icons-material/Error";
 import Loader from "../../Loader";
 import { useLocation } from "react-router-dom";
+import { setDebouncedSearch } from "../../store/slices/masterDataSlice";
+import { setDebouncedSearchKLD } from "../../store/slices/kldSlice";
 
 interface Column {
   id: string;
@@ -136,7 +138,7 @@ function ReusableTable<T extends Record<string, any>>({
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px–900px
 
   const [selected, setSelected] = useState<T[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
   const [showSelectionBar, setShowSelectionBar] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -146,24 +148,43 @@ function ReusableTable<T extends Record<string, any>>({
 
   const { dropDown } = useSelector((state: RootState) => state.viewDailyPlan);
 
-  const handleMenuOpen = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    row: T
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
-  };
+  // const handleMenuOpen = (
+  //   event: React.MouseEvent<HTMLButtonElement>,
+  //   row: T
+  // ) => {
+  //   setAnchorEl(event.currentTarget);
+  //   setSelectedRow(row);
+  // };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedRow(null);
-  };
+  // const handleMenuClose = () => {
+  //   setAnchorEl(null);
+  //   setSelectedRow(null);
+  // };
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
+
+
+  useEffect(() => {
+  const handler = setTimeout(() => {
+    if(id==='masterData'){
+    dispatch(setDebouncedSearch(search));
+    }
+    if(id==='dailyPlan'){
+    dispatch(setDebouncedSearchDailyPlan(search));
+    }
+    if(id==='kldData'){
+ dispatch(setDebouncedSearchKLD(search));
+    }
+  }, 500); 
+
+  return () => {
+    clearTimeout(handler);
+  };
+}, [search]);
 
   const getValue = (row: any, key: string) => {
     if (key === "customer_name")
@@ -218,18 +239,9 @@ function ReusableTable<T extends Record<string, any>>({
 
             return stringValue.toLowerCase().includes(searchValue);
           });
-        } else {
-          return (
-            row.unitEffectivityNumber
-              ?.toString()
-              .toLowerCase()
-              .includes(searchValue) ||
-            row.indentNumber?.toString().toLowerCase().includes(searchValue) ||
-            row.unit_effectivity_number
-              ?.toString()
-              .toLowerCase()
-              .includes(searchValue)
-          );
+        } 
+        else  {
+return (sortedData)
         }
       })
     : sortedData;
@@ -507,7 +519,6 @@ function ReusableTable<T extends Record<string, any>>({
     }
   }, [location]);
 
-  console.log(actions,"ACTIONSOFTHEDATA")
 
   return (
     <Paper
@@ -861,6 +872,7 @@ function ReusableTable<T extends Record<string, any>>({
                                     )
                                   }
                                   displayEmpty
+                                  disabled={(row[column.id] || "").toLowerCase() === "completed"}
                                   variant="standard"
                                   sx={{
                                     width: 150,

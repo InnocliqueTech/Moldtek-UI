@@ -19,7 +19,7 @@ import {
   East,
   ExitToApp,
   GridViewOutlined,
-  ManageAccountsOutlined,
+  Queue,
   Settings,
   TaskOutlined,
   West,
@@ -40,6 +40,7 @@ import {
   clearSaveLaminatingFormData,
   clearSaveMasterDetailsData,
   clearSavePrintingFormData,
+  setKldCode,
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -49,6 +50,7 @@ import {
   setShowTabChangeDialog,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
+import { setKLDEdit } from "../../store/slices/kldSlice";
 
 interface SidebarProps {
   open: boolean;
@@ -104,10 +106,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       path: "/dailyPlan",
     },
     {
-      text: "Production Operators",
-      icon: <ManageAccountsOutlined />,
-      selectedIcon: <ManageAccountsOutlined />,
-      path: "/productionOperators",
+      text: "KLD Master Data",
+      icon: <Queue />,
+      selectedIcon: <Queue />,
+      path: "/kld",
     },
     {
       text: "Reports",
@@ -136,17 +138,22 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const handleLogOut = () => {
     navigate("/");
+    dispatch(setKldCode(''));
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
     localStorage.setItem("masterData-page", (0).toString());
+     localStorage.setItem("kldDataPage", (0).toString());
+    localStorage.setItem("kldData-page", (0).toString());
     localStorage.setItem("dailyPlan-page", (0).toString());
     localStorage.setItem("dailyPlanDataPage", (0).toString());
     localStorage.setItem("dailyPlanDataRowsPerPage", (10).toString());
     localStorage.setItem("jobsDataRowsPerPage", (10).toString());
     localStorage.setItem("masterDataRowsPerPage", (10).toString());
+    localStorage.setItem("kldDataRowsPerPage", (10).toString());
+    dispatch(setKLDEdit(false));
     dispatch(clearSaveLaminatingFormData());
     dispatch(clearSaveMasterDetailsData());
     dispatch(clearSavePrintingFormData());
@@ -171,6 +178,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
 
   const itemClick = () => {
     toggleMobileSidebar();
+    dispatch(setKLDEdit(false));
     if (!isDyeCuttingDataSave) {
       dispatch(clearDyeCuttingFormData());
       dispatch(clearDyeCuttingFormErrors());

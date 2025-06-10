@@ -19,6 +19,7 @@ import {
   clearPrintingFormData,
   clearPrintingFormErrors,
   setDyeCuttingDataTouched,
+  setKldCode,
   setLaminationDataTouched,
   setMasterDataDataTouched,
   setOpenSlider,
@@ -42,6 +43,7 @@ import {
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
+import { setCreateSlider, setKLDEdit, setOpenSliderKld } from "../../store/slices/kldSlice";
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
@@ -73,7 +75,7 @@ const Layout = () => {
     masterDataDetails: {
       job_master_id: 0,
       unit_effectivity_number: "",
-       kld:"",
+       kld_code:"",
       customer_name: "",
       customer_logo: "",
       item_code: "",
@@ -216,6 +218,7 @@ const Layout = () => {
     }
   };
   const handleCreateMasterData = () => {
+    dispatch(setKldCode(''));
     dispatch(setSelectedTab(0));
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());
@@ -231,37 +234,8 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
+  const selectedStatus = localStorage.getItem("status")
 
-  //  const isMasterDataPage = location.pathname === "/masterData";
-  //  const isDailyPlanDataPage = location.pathname ==="/dailyPlan"
-
-//  const { data } = useMasterDataNotificationsQuery(undefined, {
-//     skip: !isMasterDataPage,
-//   });
-
-//   useEffect(() => {
-//     if (data?.notifications) {
-//       dispatch(setMasterDataNotifications(data.notifications));
-//     }
-//   }, [data, dispatch]);
-
-//    const { data:dailyPlanData } = useDailyPlanNotificationsQuery(undefined, {
-//     skip: !isDailyPlanDataPage,
-//   });
-
-//   useEffect(() => {
-//     if (dailyPlanData?.data) {
-//       dispatch(setDailyPlanDataNotifications(dailyPlanData?.data));
-//     }
-//   }, [dailyPlanData, dispatch]);
-
-
-//   const handleMasterNotification = () => {
-//     dispatch(setPopOver(true));
-//   };
-//   const handleDailyPlanNotification = () => {
-//     dispatch(setPopOverDailyPlan(true));
-//   };
   const role = localStorage.getItem("role");
   const pageData: Record<
     string,
@@ -393,12 +367,19 @@ const Layout = () => {
       // onButton1Click: () => alert("Save Changes Clicked"),
       // onButton2Click: () => alert("Reset Clicked"),
     },
-    "/productionOperators": {
-      title: "Production Operators",
-      // button1Text: "Save Changes",
-      // button2Text: "Reset",
-      // onButton1Click: () => alert("Save Changes Clicked"),
-      // onButton2Click: () => alert("Reset Clicked"),
+    "/kld": {
+      title: "KLD Master Data",
+        button1Text: "Filter",
+      button2Text: "Create KLD",
+ onButton1Click: () => {
+  dispatch(setKLDEdit(false));
+  dispatch(setOpenSliderKld(true));
+ 
+},
+
+      filterTitle: "Kld Data Filter",
+       onButton2Click:() =>{
+  dispatch(setKLDEdit(false)); dispatch(setCreateSlider(true));}
     },
     "/reports": {
       title: "Reports",
@@ -422,10 +403,11 @@ const Layout = () => {
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
       button1Text: loading ? "Downloading..." : "Download Template",
+      ...((selectedStatus || "").toLowerCase() !== "completed" && { 
       button2Text: "Upload Job Data",
       onButton1Click: () => {
         downloadFile();
-      },
+      }}),
       onButton2Click: () => dispatch(setUploadPopup(true)),
       headerButton: true,
       onBack: hasUnsavedChanges

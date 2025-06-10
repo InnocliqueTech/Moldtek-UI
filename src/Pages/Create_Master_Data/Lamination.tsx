@@ -18,7 +18,7 @@ import {
   LaminatingTableRow,
   LaminationFormData,
   LaminationFormErrors,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import {
   useSubStrateDropDownMutation,

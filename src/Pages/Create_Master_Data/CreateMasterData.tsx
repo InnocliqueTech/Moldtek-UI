@@ -45,7 +45,7 @@ import {
   MasterFormData,
   PrintingFormValues,
   PrintingTableRow,
-} from "../../store/slices/masterDataInterface";
+} from "../../store/Interfaces/masterDataTypes";
 
 const CreateMasterData: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,7 +75,7 @@ const CreateMasterData: React.FC = () => {
   const [formData, setFormData] = useState<MasterFormData>({
     job_master_id: 0,
     unit_effectivity_number: "",
-     kld:"",
+     kld_code:"",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",

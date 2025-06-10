@@ -203,7 +203,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   KLD
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                 {dailyPlan.unitEffectivityNumber ?dailyPlan.unitEffectivityNumber: "N/A"}
+                 {dailyPlan.kld_code ?dailyPlan.kld_code: "N/A"}
                 </Typography>
               </Box>
             </Grid>
@@ -242,7 +242,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   Item Code
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                 {dailyPlan.unitEffectivityNumber ?dailyPlan.unitEffectivityNumber: "N/A"}
+                 {dailyPlan.itemCode ?dailyPlan.itemCode: "N/A"}
                 </Typography>
               </Box>
             </Grid>

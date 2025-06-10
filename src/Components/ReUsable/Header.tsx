@@ -22,6 +22,7 @@ import ButtonComponent from "./Button";
 import ReusablePopup from "./PopUp";
 import Filter from "../../Pages/Create_Master_Data/Filter";
 import FilterDailyPlan from "../../Pages/DailyPlan/createPlan/Filter";
+import FilterKld from "../../Pages/Production_Operators/Filter";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
@@ -52,6 +53,8 @@ import {
   setDailyPlanDataNotifications,
   setPopOverDailyPlan,
 } from "../../store/slices/viewDailyPlanSlice";
+import KLDSlider from "../../Pages/Production_Operators/createKLD";
+import { setCreateSlider } from "../../store/slices/kldSlice";
 
 interface HeaderProps {
   title: string;
@@ -113,10 +116,10 @@ const Header: React.FC<HeaderProps> = ({
     popOver,
     masterDataNotifications,
   } = useSelector((store: RootState) => store.masterData);
-  const { popOverDailyPlan, dailyPlanDataNotifications } = useSelector(
+  const { popOverDailyPlan, dailyPlanDataNotifications,isEditing } = useSelector(
     (store: RootState) => store.viewDailyPlan
   );
-  const { isEditing } = useSelector((store: RootState) => store.viewDailyPlan);
+  const { createSlider } = useSelector((store: RootState) => store.kld);
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(() => {
@@ -376,6 +379,8 @@ const Header: React.FC<HeaderProps> = ({
     dispatch(setDailyPlanDataNotifications(newNotifs));
   };
 
+
+
   return (
     <>
       <AppBar
@@ -436,7 +441,7 @@ const Header: React.FC<HeaderProps> = ({
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
-              {editButton && !isEditing && (
+              {editButton && !isEditing && (selectedStatus || "").toLowerCase() !== "completed" && (
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                   <IconButton
                     onClick={editClick}
@@ -467,6 +472,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Select
                     value={selectedStatus}
                     onChange={handleDropdownChange}
+                     disabled={(selectedStatus || "").toLowerCase() === "completed"}
                     displayEmpty
                     size="small"
                     sx={{
@@ -629,6 +635,11 @@ const Header: React.FC<HeaderProps> = ({
       />
       <Filter filterTitle={filterTitle || ""} />
       <FilterDailyPlan filterTitle="Daily Plan Filter" />
+      <FilterKld filterTitle="KLD Filter"/>
+      <KLDSlider
+  open={createSlider}
+  onClose={()=>dispatch(setCreateSlider(false))}
+/>
       <VersinDetails />
       <Dialog
         open={confirmDialogOpen}

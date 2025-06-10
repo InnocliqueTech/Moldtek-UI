@@ -30,7 +30,7 @@ import {
   setIsEditing,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
-import { Close, Visibility } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import theme from "../../theme";
 import AutoTooltipText from "../../Components/ReUsable/AutoTooltipText";
 
@@ -427,7 +427,7 @@ const name = viewMasterDataDetails?.customer_name;
                   whiteSpace: "pre-line",
                 }}
               >
-                {renderValue(viewMasterDataDetails?.kld, maxChars)}
+                {renderValue(viewMasterDataDetails?.kld_code, maxChars)}
               </Typography>
             </Box>
 
