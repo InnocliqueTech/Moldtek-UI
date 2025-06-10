@@ -113,12 +113,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
       path: "/kld",
     },
     {
-      text: "Users",
-      icon: <GroupIcon />,
-      selectedIcon: <GroupIcon />,
-      path: "/users",
-    },
-    {
       text: "Reports",
       icon: <BarChartOutlined />,
       selectedIcon: <BarChartOutlined />,
@@ -127,6 +121,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   ];
 
   const preferenceItems = [
+        {
+      text: "Users",
+      icon: <GroupIcon />,
+      selectedIcon: <GroupIcon />,
+      path: "/users",
+    },
     {
       text: "Settings",
       icon: <Settings />,
