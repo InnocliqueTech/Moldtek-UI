@@ -78,6 +78,8 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     saveButtonMasterData,
     dropDownValuesStructure,
   } = useSelector((state: RootState) => state.masterData);
+  const [jarCapManuallyChanged, setJarCapManuallyChanged] = useState(false);
+
   const { id } = useParams();
   const location = useLocation();
 
@@ -99,14 +101,13 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const selectedUENNumber = localStorage.getItem("selectedUEN");
   const selectedVersion = localStorage.getItem("selectedVersionNo");
 
-
   const [errors, setErrors] = useState<MasterDataFormErrors>({
     job_master_id: "",
     repeat_length: "",
     ups: "",
     tracks: "",
     unit_effectivity_number: "",
-    kldCode: "",
+    kld_code: "",
     customer_name: "",
     customer_logo: "",
     jar_cap: "",
@@ -121,49 +122,47 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 
   useEffect(() => {
     const fetchKLDCode = async () => {
-try {
-  if (formData.unit_effectivity_number && formData.jar_cap) {
-    const response = await getKLDCode({
-      unitEffectiveNumber: formData.unit_effectivity_number.toString(),
-      jarCap: formData.jar_cap,
-    }).unwrap();
+      try {
+        if (formData.unit_effectivity_number && formData.jar_cap) {
+          if (id && !jarCapManuallyChanged) return;
+          const response = await getKLDCode({
+            unitEffectiveNumber: formData.unit_effectivity_number.toString(),
+            jarCap: formData.jar_cap,
+          }).unwrap();
 const newKldCode = response?.data?.kldCode ?? "";
 
-if (response?.statusCode === 400) {
-  setErrors((prev) => ({
-    ...prev,
-    kldCode: response.message || "KLD entry not found",
-  }));
-  setFormData((prev) => ({
-    ...prev,
-    kldCode: "",
-  }));
+          if (response?.statusCode === 400) {
+            setErrors((prev) => ({
+              ...prev,
+    kld_code: response.message || "KLD entry not found",
+            }));
+            setFormData((prev) => ({
+              ...prev,
+    kld_code: "",
+            }));
   dispatch(setKldCode(""));
-} else {
+          } else {
   dispatch(setKldCode(newKldCode ? newKldCode : ""));
-  setFormData((prev) => ({
-    ...prev,
-    kldCode: newKldCode,
-  }));
-  setErrors((prev) => ({
-    ...prev,
-    kldCode: "",
-  }));
-}
+            setFormData((prev) => ({
+              ...prev,
+              kld_code: newKldCode,
+            }));
+            setErrors((prev) => ({
+              ...prev,
+              kld_code: "",
+            }));
+          }
+        }
+      } catch (error: any) {
+        const errorMessage =
+          error?.data?.message ||
+          "Unit Effective Number does not exist. Please create new KLD Code.";
 
-  }
-} catch (error: any) {
-  const errorMessage =
-    error?.data?.message ||
-    "Unit Effective Number does not exist. Please create new KLD Code.";
-
-  setErrors((prev) => ({
-    ...prev,
-    kldCode: errorMessage,
-  }));
-}
-
-
+        setErrors((prev) => ({
+          ...prev,
+          kld_code: errorMessage,
+        }));
+      }
     };
 
     fetchKLDCode();
@@ -279,7 +278,6 @@ if (response?.statusCode === 400) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [formInitialized, setFormInitialized] = useState(false);
 
-
   const numericFields: (keyof MasterFormData)[] = [
     "repeat_length",
     "ups",
@@ -297,7 +295,7 @@ if (response?.statusCode === 400) {
     "ups",
     "noOfColorsSetting",
     "noOfSpecialColors",
-     "kldCode",
+    "kld_code",
   ];
   const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   const freeTextFields: (keyof MasterFormData)[] = [
@@ -311,6 +309,10 @@ if (response?.statusCode === 400) {
   ) => {
     if (id) {
       dispatch(setMasterDataDataTouched(true));
+    }
+
+    if (field === "jar_cap") {
+      setJarCapManuallyChanged(true);
     }
 
     let newValue: string | string[] = Array.isArray(value)
@@ -457,7 +459,7 @@ if (response?.statusCode === 400) {
     return {
       job_master_id: data?.job_master_id || 0,
       unit_effectivity_number: data?.unit_effectivity_number || "",
-      kldCode: data?.kldCode || "",
+      kld_code: data?.kld_code || "",
       customer_name: data?.customer_name || "",
       customer_logo: data?.customer_logo ?? "",
       jar_cap: data?.jar_cap || "",
@@ -505,7 +507,7 @@ if (response?.statusCode === 400) {
     }));
   };
   const row1HasError =
-    !!errors.unit_effectivity_number || !!errors.kldCode || !!errors.jar_cap;
+    !!errors.unit_effectivity_number || !!errors.kld_code || !!errors.jar_cap;
   const row2HasError =
     !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
 
@@ -539,9 +541,7 @@ if (response?.statusCode === 400) {
             <Typography sx={{ fontWeight: 500 }}>Customer Picture:</Typography>
             {formData.customer_logo ? (
               <>
-              
                 <Box display="flex" gap={0} alignItems="center">
-
                   <Tooltip title="View">
                     <IconButton
                       onClick={() => setIsPreviewOpen(true)}
@@ -716,13 +716,12 @@ if (response?.statusCode === 400) {
             />
             <Box
               sx={{
-                minHeight:
-                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+                minHeight: row1HasError && !errors.jar_cap ? 8 : 0,
               }}
             />
             <Box
               sx={{
-                mt: row1HasError ? "20px" : 2,
+                mt: row1HasError ? 2 : 2,
               }}
             >
               <ReusableInput
@@ -754,18 +753,16 @@ if (response?.statusCode === 400) {
           <Grid size={{ xs: 12, md: 4 }}>
             <ReusableInput
               label="KLD CODE"
-              value={formData.kldCode}
-              onChange={(e) => handleChange("kldCode", e.target.value)}
-              error={!!errors.kldCode}
-              helperText={errors.kldCode}
+              value={formData.kld_code}
+              onChange={(e) => handleChange("kld_code", e.target.value)}
+              error={!!errors.kld_code}
+              helperText={errors.kld_code}
               disabled={true}
               required
             />
-            <Box
-              sx={{ minHeight: row1HasError && !errors.customer_name ? 8 : 0 }}
-            />
+            <Box sx={{ minHeight: row1HasError && !errors.kld_code ? 8 : 0 }} />
 
-            <Box sx={{ mt: row1HasError ? "12px" : 2 }}>
+            <Box sx={{ mt: row1HasError ? 0 : 2 }}>
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}
@@ -781,7 +778,7 @@ if (response?.statusCode === 400) {
               />
             </Box>
 
-            <Box sx={{ mt: row1HasError ? 3 : 2 }}>
+            <Box sx={{ mt: row1HasError ? 2 : 2 }}>
               <DropdownComponent
                 label="Segment"
                 options={segmentNames}

@@ -246,7 +246,7 @@ useEffect(() => {
 
       <Box sx={{ paddingTop: 1.5 }}>
         <ReusableTable
-          infoText={"Displays a list of master data KLD entries"}
+          infoText={"Displays a list of KLD Master Data entries"}
           boxShadow={true}
           columns={columns}
           pageNumber={page}

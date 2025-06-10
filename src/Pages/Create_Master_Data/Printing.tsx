@@ -92,7 +92,7 @@ const Printing: React.FC<PrintingProps> = ({
     dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
-    kldCode,
+    kld_code,
   } = useSelector((state: RootState) => state.masterData);
 
   const updateButtonAction = localStorage.getItem("updateButton");
@@ -693,7 +693,7 @@ const Printing: React.FC<PrintingProps> = ({
             <Typography component="span" sx={{ fontWeight: 700, mr: 0.8 }}>
               KLD:
             </Typography>
-            <Typography component="span">{kldCode ? kldCode : 0}</Typography>
+            <Typography component="span">{kld_code ? kld_code : 0}</Typography>
           </Box>
         </Box>
 

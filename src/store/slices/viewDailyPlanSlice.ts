@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface DailyPlan {
   itemCode:string;
-  kldCode:string;
+  kld_code:string;
   unitEffectivityNumber: string;
   indentNumber: string;
   customerName: string;
@@ -148,7 +148,7 @@ unitEffectiveNumbers: ""}],
   },
   dailyPlan: {
     itemCode:"",
-    kldCode:"",
+    kld_code:"",
     unitEffectivityNumber: "",
     indentNumber: "",
     customerName: "",

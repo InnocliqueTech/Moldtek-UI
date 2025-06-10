@@ -254,7 +254,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const confirmTitle = `Are you sure you want to submit? This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`;
   const confirmPublishTitle = id
     ? `Are you sure you want to update and publish? This version is ${updateButtonAction === "false" ? UEN : selectedUENNumber} V${displayVersion}.`
-    : !submitTrue?'Are you sure you want to submit and publish?  This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.':`Are you sure you want to submit and publish? `;
+    : !submitTrue?`Are you sure you want to submit and publish?  This version is ${requestPayload.masterDataDetails.unit_effectivity_number} V1.`:`Are you sure you want to submit and publish? `;
 
   const successTitle = id
     ? `You have successfully updated master data. Your version is ${updateButtonAction === "false" ? UEN : selectedUENNumber} V${displayVersion}.`

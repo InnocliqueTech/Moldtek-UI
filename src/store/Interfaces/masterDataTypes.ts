@@ -24,7 +24,7 @@ export interface RequestPayload {
   masterDataDetails: {
     job_master_id: number;
     unit_effectivity_number: string;
-     kldCode:string;
+     kld_code:string;
     customer_name: string;
     customer_logo: string;
     item_code: string;
@@ -152,7 +152,7 @@ export interface LaminationFormData {
 export interface MasterFormData {
   job_master_id: number;
   unit_effectivity_number: string;
-   kldCode:string;
+   kld_code:string;
   customer_name: string;
   customer_logo: string;
   jar_cap: string;
@@ -182,7 +182,7 @@ export interface MasterDataFormErrors {
   ups: string;
   tracks: string;
   unit_effectivity_number: string;
-   kldCode:string;
+   kld_code:string;
   customer_name: string;
   customer_logo: string;
   jar_cap: string;
@@ -317,7 +317,7 @@ export interface PopupState {
 }
 export interface MasterDataState {
   debouncedSearch:string;
-  kldCode:string;
+  kld_code:string;
   PopupState :PopupState;
   masterDataNotifications:MasterDataNotifications[]
   popOver:boolean
