@@ -52,6 +52,8 @@ import {
   setKLDHeaderUploadButton,
   setOpenSliderKld,
 } from "../../store/slices/kldSlice";
+import { setUserEdit, setCreateSliders, setOpenSliderUser } from "../../store/slices/userSlice";
+
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
@@ -473,7 +475,11 @@ const Layout = () => {
       title: "Manage Users",
       button1Text: "Filter",
       button2Text: "Create User",
-      onButton1Click: () => dispatch(setOpenSlider(true)),
+       onButton1Click: () => {
+        // dispatch(setUserEdit(false));
+        console.log("click")
+        dispatch(setOpenSliderUser(true))
+      },
       onButton2Click: () => { navigate("/create-user") },
       filterTitle: "User filter",
       // notificationIcon: true,

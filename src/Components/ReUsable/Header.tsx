@@ -65,6 +65,7 @@ import {
   setKLDHeaderUploadButton,
   setKLDSuccessPopup,
 } from "../../store/slices/kldSlice";
+import FilterUsers from "../../Pages/Users/Filter";
 
 interface HeaderProps {
   title: string;
@@ -558,7 +559,7 @@ const Header: React.FC<HeaderProps> = ({
             <Box display="flex" gap={2}>
               {dropDown &&
                 ((selectedStatus || "").toLowerCase() === "completed" &&
-                role.toLowerCase() !== "admin" ? (
+                  role.toLowerCase() !== "admin" ? (
                   <Box display="flex" alignItems="center" gap={1}>
                     <Typography
                       variant="subtitle2"
@@ -708,7 +709,7 @@ const Header: React.FC<HeaderProps> = ({
         onClose={onClosePopup}
         title="Create a new masterdata"
         confirmText="Continue"
-        onConfirm={() => {}}
+        onConfirm={() => { }}
         text="Upload Picture"
         dropdownOptions={structureOptions}
         upload={true}
@@ -840,6 +841,8 @@ const Header: React.FC<HeaderProps> = ({
       <Filter filterTitle={filterTitle || ""} />
       <FilterDailyPlan filterTitle="Daily Plan Filter" />
       <FilterKld filterTitle="KLD Filter" />
+      <FilterUsers filterTitle="User Filter" />
+
       <KLDSlider
         open={createSlider}
         onClose={() => dispatch(setCreateSlider(false))}
@@ -847,7 +850,7 @@ const Header: React.FC<HeaderProps> = ({
       <VersinDetails />
       <Dialog
         open={confirmDialogOpen}
-        onClose={() => {}}
+        onClose={() => { }}
         PaperProps={{
           sx: {
             borderRadius: 5,

@@ -9,6 +9,7 @@ import viewMasterDataReducer from './slices/viewMasterDataSlice'
 import  viewDailyPlanReducer  from './slices/viewDailyPlanSlice';
 import kldReducer from './slices/kldSlice';
 import { kldApi } from './apis/kldApis';
+import userReducer from './slices/userSlice'
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     viewMasterData: viewMasterDataReducer,
     viewDailyPlan:viewDailyPlanReducer,
     kld: kldReducer,
+    user:userReducer,
     [masterDataApi.reducerPath]: masterDataApi.reducer,
     [dailyPlanApi.reducerPath]: dailyPlanApi.reducer,
      [authenticationApi.reducerPath]: authenticationApi.reducer,
