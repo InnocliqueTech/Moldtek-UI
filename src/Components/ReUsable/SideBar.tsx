@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   // const dynamicTexts = ["Kristin Watson", "Text Two"];
   // const currentText = dynamicTexts[0];
   const [collapsed, setCollapsed] = useState(true);
-
+const role = localStorage.getItem("role") || "";
   const navigate = useNavigate();
   const {
     isDyeCuttingDataSave,
@@ -121,12 +121,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   ];
 
   const preferenceItems = [
+       ...(role.toLowerCase() === "admin"
+    ? [
         {
-      text: "Users",
-      icon: <GroupIcon />,
-      selectedIcon: <GroupIcon />,
-      path: "/users",
-    },
+          text: "Users",
+          icon: <GroupIcon />,
+          selectedIcon: <GroupIcon />,
+          path: "/users",
+        },
+      ]
+    : []),
     {
       text: "Settings",
       icon: <Settings />,
@@ -219,7 +223,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   }));
 
   const userName = localStorage.getItem("userName");
-  const role = localStorage.getItem("role");
+
 
 
   return (
