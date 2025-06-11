@@ -3,15 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface FiltersPayload {
   fromDate: string;
   toDate: string;
-  jarCap:string;
-
+  jarCap: string;
 }
 
-export interface KLDRowData{
-   unitEffectiveNumber: string,
-    jarCap: string,
-    itemCode: string,
-    kldCode: string,
+export interface KLDRowData {
+  unitEffectiveNumber: string;
+  jarCap: string;
+  itemCode: string;
+  kldCode: string;
 }
 
 export interface KldData {
@@ -19,27 +18,35 @@ export interface KldData {
   isSearchTriggered: boolean;
   filtersPayload: FiltersPayload;
   createSlider: boolean;
-  kldEdit:boolean;
-  debouncedSearchKLD:string;
-  rowKldData:KLDRowData
+  kldEdit: boolean;
+  debouncedSearchKLD: string;
+  rowKldData: KLDRowData;
+  kldHeaderUploadButton: boolean;
+  kldHeaderUpload: boolean;
+  kldSuccessPopup: boolean;
+  kldConfirmPopup: boolean;
 }
 
 const initialState: KldData = {
-  rowKldData:{
-     unitEffectiveNumber: "",
+  kldHeaderUploadButton: false,
+  kldHeaderUpload: false,
+  kldSuccessPopup: false,
+  kldConfirmPopup: false,
+  rowKldData: {
+    unitEffectiveNumber: "",
     jarCap: "",
     itemCode: "",
     kldCode: "",
   },
-   debouncedSearchKLD:'',
+  debouncedSearchKLD: "",
   isSearchTriggered: false,
   openSliderKld: false,
   createSlider: false,
-  kldEdit:false,
+  kldEdit: false,
   filtersPayload: {
     fromDate: "",
     toDate: "",
-    jarCap:''
+    jarCap: "",
   },
 };
 
@@ -47,11 +54,23 @@ const KldSlice = createSlice({
   name: "kldSlice",
   initialState,
   reducers: {
-        setDebouncedSearchKLD:(state,action:PayloadAction<string>)=>{
-      state.debouncedSearchKLD = action.payload
+    setKLDHeaderUploadButton: (state, action: PayloadAction<boolean>) => {
+      state.kldHeaderUploadButton = action.payload;
     },
-    setKLDEdit:(state,action:PayloadAction<boolean>)=>{
-    state.kldEdit = action.payload
+    setKLDHeaderUpload: (state, action: PayloadAction<boolean>) => {
+      state.kldHeaderUpload = action.payload;
+    },
+    setKLDSuccessPopup: (state, action: PayloadAction<boolean>) => {
+      state.kldSuccessPopup = action.payload;
+    },
+    setKLDConfirmPopup: (state, action: PayloadAction<boolean>) => {
+      state.kldConfirmPopup = action.payload;
+    },
+    setDebouncedSearchKLD: (state, action: PayloadAction<string>) => {
+      state.debouncedSearchKLD = action.payload;
+    },
+    setKLDEdit: (state, action: PayloadAction<boolean>) => {
+      state.kldEdit = action.payload;
     },
     setCreateSlider: (state, action: PayloadAction<boolean>) => {
       state.createSlider = action.payload;
@@ -65,12 +84,23 @@ const KldSlice = createSlice({
     setFiltersPayload: (state, action: PayloadAction<FiltersPayload>) => {
       state.filtersPayload = action.payload;
     },
-    setRowKLDData:(state,action:PayloadAction<KLDRowData>)=>{
-      state.rowKldData=action.payload
-    }
+    setRowKLDData: (state, action: PayloadAction<KLDRowData>) => {
+      state.rowKldData = action.payload;
+    },
   },
 });
 
-export const { setIsSearchTriggered,setDebouncedSearchKLD, setOpenSliderKld, setFiltersPayload,setCreateSlider,setKLDEdit,setRowKLDData } =
-  KldSlice.actions;
+export const {
+  setKLDConfirmPopup,
+  setKLDSuccessPopup,
+  setKLDHeaderUpload,
+  setKLDHeaderUploadButton,
+  setIsSearchTriggered,
+  setDebouncedSearchKLD,
+  setOpenSliderKld,
+  setFiltersPayload,
+  setCreateSlider,
+  setKLDEdit,
+  setRowKLDData,
+} = KldSlice.actions;
 export default KldSlice.reducer;

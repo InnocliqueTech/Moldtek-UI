@@ -38,12 +38,20 @@ import {
   setShowTabChangeDialog,
   setBackButtonNavigationAllowed,
   setSideNavigationAllowed,
+  setDailyPlanHeaderUpload,
+  setDailyPlanHeaderUploadButton,
   // setPopOverDailyPlan,
   // setDailyPlanDataNotifications,
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
-import { setCreateSlider, setKLDEdit, setOpenSliderKld } from "../../store/slices/kldSlice";
+import {
+  setCreateSlider,
+  setKLDEdit,
+  setKLDHeaderUpload,
+  setKLDHeaderUploadButton,
+  setOpenSliderKld,
+} from "../../store/slices/kldSlice";
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
@@ -55,7 +63,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
- const updateButtonAction = localStorage.getItem("updateButton");
+  const updateButtonAction = localStorage.getItem("updateButton");
   const { hasUnsavedChanges } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
@@ -75,7 +83,7 @@ const Layout = () => {
     masterDataDetails: {
       job_master_id: 0,
       unit_effectivity_number: "",
-       kld_code:"",
+      kld_code: "",
       customer_name: "",
       customer_logo: "",
       item_code: "",
@@ -218,7 +226,7 @@ const Layout = () => {
     }
   };
   const handleCreateMasterData = () => {
-    dispatch(setKldCode(''));
+    dispatch(setKldCode(""));
     dispatch(setSelectedTab(0));
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());
@@ -234,17 +242,19 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
-  const selectedStatus = localStorage.getItem("status")
+  const selectedStatus = localStorage.getItem("status");
 
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")||'';
   const pageData: Record<
     string,
     {
       title: string;
       button1Text?: string;
+      button3Text?: string;
       button2Text?: string;
       onButton1Click?: () => void;
       onButton2Click?: () => void;
+      onButton3Click?: () => void;
       lastUpdate?: string;
       headerButton?: boolean;
       onBack?: () => void;
@@ -259,8 +269,7 @@ const Layout = () => {
       button1Disable?: boolean;
       notificationIcon?: boolean;
       notificationIconOnClick?: () => void;
-      dailyPlanSampleFile?:boolean;
-
+      dailyPlanSampleFile?: boolean;
     }
   > = {
     "/dashboard": {
@@ -302,7 +311,7 @@ const Layout = () => {
       headerButton: true,
       onBack: () => navigate("/masterData"),
       headerButtonColor: true,
-       dailyPlanSampleFile:false,
+      dailyPlanSampleFile: false,
     },
     "/updateMasterData/:id": {
       title: "Update Master Data",
@@ -313,14 +322,14 @@ const Layout = () => {
       uploadTitle: "Update Master Data",
       uploadSubTitle: "Upload Master Data",
       onBack: () => {
-        if (updateButtonAction==='false') {
+        if (updateButtonAction === "false") {
           navigate(`/viewMasterData/${selectedUEN}`);
         } else {
           navigate("/masterData");
         }
       },
       headerButton: true,
-       dailyPlanSampleFile:false,
+      dailyPlanSampleFile: false,
     },
     "/viewMasterData/:id": {
       title: selectedUEN,
@@ -331,7 +340,7 @@ const Layout = () => {
           navigate(`/updateMasterData/${selectedUEN}`);
           dispatch(setSelectedTab(0));
           // dispatch(setUpdateButton(false));
-          localStorage.setItem('updateButton','false');
+          localStorage.setItem("updateButton", "false");
           dispatch(setMasterDataDataTouched(false));
           dispatch(setPrintingDataTouched(false));
           dispatch(setLaminationDataTouched(false));
@@ -369,17 +378,23 @@ const Layout = () => {
     },
     "/kld": {
       title: "KLD Master Data",
-        button1Text: "Filter",
+      button1Text: "Filter",
       button2Text: "Create KLD",
- onButton1Click: () => {
-  dispatch(setKLDEdit(false));
-  dispatch(setOpenSliderKld(true));
- 
-},
+      onButton1Click: () => {
+        dispatch(setKLDEdit(false));
+        dispatch(setOpenSliderKld(true));
+      },
 
       filterTitle: "Kld Data Filter",
-       onButton2Click:() =>{
-  dispatch(setKLDEdit(false)); dispatch(setCreateSlider(true));}
+      onButton2Click: () => {
+        dispatch(setKLDEdit(false));
+        dispatch(setCreateSlider(true));
+      },
+      button3Text: "Upload",
+      onButton3Click: () => {
+        dispatch(setKLDHeaderUpload(true));
+        dispatch(setKLDHeaderUploadButton(true));
+      },
     },
     "/reports": {
       title: "Reports",
@@ -395,20 +410,25 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
-      // notificationIcon: true,
-      // notificationIconOnClick: () => {
-      //   handleDailyPlanNotification();
-      // },
+      button3Text: "Upload",
+      onButton3Click: () => {
+        dispatch(setDailyPlanHeaderUpload(true));
+        dispatch(setDailyPlanHeaderUploadButton(true));
+      },
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
       button1Text: loading ? "Downloading..." : "Download Template",
-      ...((selectedStatus || "").toLowerCase() !== "completed" && { 
-      button2Text: "Upload Job Data",
-      onButton1Click: () => {
-        downloadFile();
-      }}),
-      onButton2Click: () => dispatch(setUploadPopup(true)),
+      ...(((selectedStatus || "").toLowerCase() !== "completed"  || role.toLowerCase() ==='admin') && {
+        button2Text: "Upload Job Data",
+        onButton1Click: () => {
+          downloadFile();
+        },
+      }),
+      onButton2Click: () => {
+        dispatch(setUploadPopup(true));
+        dispatch(setDailyPlanHeaderUploadButton(false));
+      },
       headerButton: true,
       onBack: hasUnsavedChanges
         ? () => {
@@ -424,7 +444,7 @@ const Layout = () => {
       editButton: true,
       editClick: () => dispatch(setIsEditing(true)),
       button1Disable: loading ? true : false,
-      dailyPlanSampleFile:true,
+      dailyPlanSampleFile: true,
     },
     "/createPlan": {
       title: "Create Daily Plan",
@@ -488,8 +508,10 @@ const Layout = () => {
           title={headerData.title}
           button1Text={headerData.button1Text}
           button2Text={headerData.button2Text}
+          button3Text={headerData.button3Text}
           onButton1Click={headerData.onButton1Click}
           onButton2Click={headerData.onButton2Click}
+          onButton3Click={headerData.onButton3Click}
           onMenuClick={toggleSidebar} // Toggle sidebar when menu icon is clicked
           masterDataCreatePopup={masterDataCreatePopup}
           onClosePopup={onClosePopup}

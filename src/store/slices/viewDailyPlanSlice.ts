@@ -111,10 +111,16 @@ export interface viewDailyPlan {
   sideNavigationAllowed:boolean;
   backButtonNavigationAllowed:boolean;
   recentlyCreatedIndentNumber:string;
-  popOverDailyPlan:boolean
+  popOverDailyPlan:boolean;
+  dailyPlanHeaderUploadButton:boolean;
+  dailyPlanHeaderUpload:boolean;
+  dailyPlanSuccessPopup:boolean;
+  dailyPlanConfirmPopup:boolean
 }
 
 const initialState: viewDailyPlan = {
+  dailyPlanHeaderUploadButton:false,
+  dailyPlanHeaderUpload:false,
   debouncedSearchDailyPlan:'',
   dailyPlanDataNotifications:[{
 exceptionMessage: "",
@@ -191,13 +197,27 @@ unitEffectiveNumbers: ""}],
   },
   isEditing:false,
   dailyPlanCancel:false,
-  recentlyCreatedIndentNumber:""
+  recentlyCreatedIndentNumber:"",
+  dailyPlanSuccessPopup:false,
+  dailyPlanConfirmPopup:false
 };
 
 const ViewDailyPanSlice = createSlice({
   name: "viewDailyPanSlice",
   initialState,
   reducers: {
+    setDailyPlanHeaderUploadButton:(state,action:PayloadAction<boolean>)=>{
+      state.dailyPlanHeaderUploadButton = action.payload
+    },
+     setDailyPlanHeaderUpload:(state,action:PayloadAction<boolean>)=>{
+      state.dailyPlanHeaderUpload = action.payload
+    },
+        setDailyPlanSuccessPopup:(state,action:PayloadAction<boolean>)=>{
+      state.dailyPlanSuccessPopup = action.payload
+    },
+     setDailyPlamConfirmPopup:(state,action:PayloadAction<boolean>)=>{
+      state.dailyPlanConfirmPopup = action.payload
+    },
     setDebouncedSearchDailyPlan:(state,action:PayloadAction<string>)=>{
         state.debouncedSearchDailyPlan=action.payload
         },
@@ -315,6 +335,10 @@ const ViewDailyPanSlice = createSlice({
 });
 
 export const {
+  setDailyPlamConfirmPopup,
+  setDailyPlanSuccessPopup,
+  setDailyPlanHeaderUpload,
+  setDailyPlanHeaderUploadButton,
   setDebouncedSearchDailyPlan,
   setSideNavigationAllowed,
   setBackButtonNavigationAllowed,

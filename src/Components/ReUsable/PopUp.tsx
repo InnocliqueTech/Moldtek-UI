@@ -12,7 +12,10 @@ import ReusableInput from "./TextField";
 import DropdownComponent from "./Dropdown";
 import { Close, CloudUpload } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedFile, setUploadedFile } from "../../store/slices/masterDataSlice";
+import {
+  setSelectedFile,
+  setUploadedFile,
+} from "../../store/slices/masterDataSlice";
 import { RootState } from "../../store";
 import { useLocation } from "react-router-dom";
 
@@ -31,11 +34,11 @@ interface ReusablePopupProps {
   cancel?: boolean;
   sampleFile?: boolean;
   handleDownloadSampleFile?: () => void;
-    dailyPlanSampleFile?: boolean;
+  dailyPlanSampleFile?: boolean;
   handleDownloadSampleFileDaiyPlan?: () => void;
   isLoading?: boolean;
   disable?: boolean;
-  popUpClosed?:boolean;
+  popUpClosed?: boolean;
 }
 
 const ReusablePopup: React.FC<ReusablePopupProps> = ({
@@ -55,13 +58,18 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
   handleDownloadSampleFile,
   isLoading,
   popUpClosed,
-      dailyPlanSampleFile,
-  handleDownloadSampleFileDaiyPlan
+  dailyPlanSampleFile,
+  handleDownloadSampleFileDaiyPlan,
 }) => {
-
-  const {selectedFile} = useSelector((state:RootState)=>state.masterData)
+  const { selectedFile } = useSelector((state: RootState) => state.masterData);
+  const { dailyPlanHeaderUploadButton } = useSelector(
+    (state: RootState) => state.viewDailyPlan
+  );
+    const { kldHeaderUploadButton } = useSelector(
+    (state: RootState) => state.kld
+  );
   const [error, setError] = useState<string | null>(null);
-  
+
   const dispatch = useDispatch();
 
   const popUpClose = () => {
@@ -71,11 +79,11 @@ const ReusablePopup: React.FC<ReusablePopupProps> = ({
 
   const location = useLocation();
 
-useEffect(() => {
-  if (open) {
-    popUpClose();
-  }
-}, [location]);
+  useEffect(() => {
+    if (open) {
+      popUpClose();
+    }
+  }, [location]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -90,22 +98,24 @@ useEffect(() => {
 
       if (!validTypes.includes(file.type)) {
         setError("Only Excel files (.xls, .xlsx) are allowed.");
-          dispatch(setSelectedFile(null));
+        dispatch(setSelectedFile(null));
         return;
       }
 
-        dispatch(setSelectedFile(file));
+      dispatch(setSelectedFile(file));
       dispatch(setUploadedFile(file));
       setError(null);
     }
   };
 
+
+
   return (
     <Dialog
       open={open}
-      onClose={()=>{
-        if(popUpClosed){
-          popUpClose()
+      onClose={() => {
+        if (popUpClosed) {
+          popUpClose();
         }
       }}
       maxWidth="xs"
@@ -119,30 +129,29 @@ useEffect(() => {
     >
       {/* Popup Header */}
       {title && (
-      <Box
-  sx={{
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center", // vertically center them
-     px: 2, // horizontal padding if needed
-     pt:1,
-     mb:'-10px'
-  }}
->
-  <DialogTitle sx={{ p:0 }}>{title}</DialogTitle>
-  <Close
-    onClick={popUpClose}
-    sx={{
-      cursor: "pointer",
-      color: "#6e6e6e",
-      "&:hover": {
-        color: "#000",
-      },
-    }}
-  />
-</Box>
-
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center", // vertically center them
+            px: 2, // horizontal padding if needed
+            pt: 1,
+            mb: "-10px",
+          }}
+        >
+          <DialogTitle sx={{ p: 0 }}>{title}</DialogTitle>
+          <Close
+            onClick={popUpClose}
+            sx={{
+              cursor: "pointer",
+              color: "#6e6e6e",
+              "&:hover": {
+                color: "#000",
+              },
+            }}
+          />
+        </Box>
       )}
 
       {/* Popup Body */}
@@ -151,7 +160,17 @@ useEffect(() => {
           {/* Optional Text */}
           {text && <Typography variant="body2">{text}</Typography>}
           {subText && (
-            <Box display="flex" alignItems="center" gap={!dailyPlanSampleFile?"130px":"164px"}>
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={
+                !dailyPlanSampleFile && !dailyPlanHeaderUploadButton && !kldHeaderUploadButton
+                  ? "130px"
+                  : dailyPlanHeaderUploadButton  
+                  ? "154px"
+                  : kldHeaderUploadButton ?'96px':"164px"
+              }
+            >
               <Typography variant="body2" color="gray">
                 {subText}
               </Typography>
@@ -168,7 +187,7 @@ useEffect(() => {
                   Download Sample File
                 </Typography>
               )}
-                {sampleFile && dailyPlanSampleFile && (
+              {sampleFile && dailyPlanSampleFile && (
                 <Typography
                   variant="body2"
                   sx={{
@@ -269,7 +288,7 @@ useEffect(() => {
                   </Typography>
                   <Close
                     onClick={() => {
-                        dispatch(setSelectedFile(null));
+                      dispatch(setSelectedFile(null));
                       setError(null);
                     }}
                     sx={{
@@ -356,7 +375,7 @@ useEffect(() => {
             borderRadius="100px"
             width={cancel ? "" : "100%"}
             loading={isLoading}
-            disabled={selectedFile ? false:true}
+            disabled={selectedFile ? false : true}
           />
         )}
       </DialogActions>
