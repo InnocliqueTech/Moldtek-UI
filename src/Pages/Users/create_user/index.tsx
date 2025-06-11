@@ -5,6 +5,8 @@ import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
+import CreateUserPopups from './CreateUserPopups';
+import { useCreateUserMutation } from '../../../store/apis/manageUsersApi';
 
 interface UserFormField {
   id: string;
@@ -36,6 +38,8 @@ const CreateUser: React.FC = () => {
   const location = useLocation()
   const [formFields, setFormFields] = useState<UserFormField[]>(initialUserFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [openPopup,setOpenPopup] = useState<boolean>(false);
+  const [createUser, { isLoading }] = useCreateUserMutation();
 
   const handleInputChange = (
     fieldId: string,
@@ -92,7 +96,7 @@ const CreateUser: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+    const handleSubmit = async () => {
     if (!validateUserFields()) {
       toast.error('Please correct the errors before submitting');
       return;
@@ -103,9 +107,32 @@ const CreateUser: React.FC = () => {
       return acc;
     }, {} as Record<string, string>);
 
-    console.log('User Data to submit:', userData);
-    toast.success('User created successfully!');
-    // Call an API or dispatch an action here
+    setOpenPopup(true);
+  };
+
+  const handleCreateUser = async () => {
+    try {
+      const userData = formFields.reduce((acc, field) => {
+        acc[field.id] = field.value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      // Map role to userTypeId if needed
+      const payload = {
+        displayName: userData.displayName,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Manager' ? 2 : 3 // Example mapping
+      };
+
+      await createUser(payload).unwrap();
+      return { success: true };
+    } catch (error) {
+      toast.error('Failed to create user');
+      return { success: false, error };
+    }
   };
 
   const rowData = location.state?.rowData
@@ -166,6 +193,12 @@ const CreateUser: React.FC = () => {
           onClick={handleSubmit}
         />
       </Box>
+       <CreateUserPopups 
+        onSubmit={handleCreateUser} 
+        isLoading={isLoading} 
+        open={openPopup}
+        onClose={() => setOpenPopup(false)}
+      />
     </Box>
   );
 };
