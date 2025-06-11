@@ -50,18 +50,30 @@ import {
 } from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";
 import {
+  setDailyPlamConfirmPopup,
   setDailyPlanDataNotifications,
+  setDailyPlanHeaderUpload,
+  setDailyPlanHeaderUploadButton,
+  setDailyPlanSuccessPopup,
   setPopOverDailyPlan,
 } from "../../store/slices/viewDailyPlanSlice";
 import KLDSlider from "../../Pages/Production_Operators/createKLD";
-import { setCreateSlider } from "../../store/slices/kldSlice";
+import {
+  setCreateSlider,
+  setKLDConfirmPopup,
+  setKLDHeaderUpload,
+  setKLDHeaderUploadButton,
+  setKLDSuccessPopup,
+} from "../../store/slices/kldSlice";
 
 interface HeaderProps {
   title: string;
   button1Text?: string;
   button2Text?: string;
+  button3Text?: string;
   onButton1Click?: () => void;
   onButton2Click?: () => void;
+  onButton3Click?: () => void;
   onMenuClick: () => void;
   masterDataCreatePopup: boolean;
   onClosePopup: () => void;
@@ -79,7 +91,7 @@ interface HeaderProps {
   button1Disable?: boolean;
   notificationIcon?: boolean;
   notificationIconOnClick?: () => void;
-  dailyPlanSampleFile?:boolean;
+  dailyPlanSampleFile?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -88,6 +100,8 @@ const Header: React.FC<HeaderProps> = ({
   button2Text,
   onButton1Click,
   onButton2Click,
+  button3Text,
+  onButton3Click,
   onMenuClick,
   masterDataCreatePopup,
   onClosePopup,
@@ -105,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({
   button1Disable,
   notificationIcon,
   notificationIconOnClick,
-  dailyPlanSampleFile
+  dailyPlanSampleFile,
 }) => {
   const structureOptions = ["PET", "PVC", "HDPE", "Glass", "Aluminum"];
   const {
@@ -116,10 +130,22 @@ const Header: React.FC<HeaderProps> = ({
     popOver,
     masterDataNotifications,
   } = useSelector((store: RootState) => store.masterData);
-  const { popOverDailyPlan, dailyPlanDataNotifications,isEditing } = useSelector(
-    (store: RootState) => store.viewDailyPlan
-  );
-  const { createSlider } = useSelector((store: RootState) => store.kld);
+  const {
+    popOverDailyPlan,
+    dailyPlanDataNotifications,
+    isEditing,
+    dailyPlanHeaderUpload,
+    dailyPlanSuccessPopup,
+    dailyPlanConfirmPopup,
+    dailyPlanHeaderUploadButton,
+  } = useSelector((store: RootState) => store.viewDailyPlan);
+  const {
+    createSlider,
+    kldConfirmPopup,
+    kldSuccessPopup,
+    kldHeaderUpload,
+    kldHeaderUploadButton,
+  } = useSelector((store: RootState) => store.kld);
   const [submitPopup, setSubmitPopup] = useState<boolean>(false);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(() => {
@@ -171,7 +197,7 @@ const Header: React.FC<HeaderProps> = ({
   if (UEN) {
     unitEffectiveNumberDaily = UEN;
   }
-
+  const role = localStorage.getItem("role") || "";
   const [updateStatusJob] = useUpdateStatusJobMutation();
 
   const performStatusUpdate = async () => {
@@ -234,6 +260,15 @@ const Header: React.FC<HeaderProps> = ({
     dispatch(setUploadPopup(false));
   };
 
+  const handleHeaderClosePopUp = () => {
+    dispatch(setUploadedFile(null));
+    dispatch(setDailyPlanHeaderUpload(false));
+  };
+  const handleHeaderClosePopUpKLD = () => {
+    dispatch(setUploadedFile(null));
+    dispatch(setKLDHeaderUpload(false));
+  };
+
   const handleSubmitAndPublishPopupOpen = async () => {
     dispatch(setSubmitTrue(true));
     dispatch(setUploadPopup(false));
@@ -246,6 +281,16 @@ const Header: React.FC<HeaderProps> = ({
       dispatch(setSubmitAndPublishPopup(true));
     }
   };
+  const handleSubmitAndPublishPopupHeader = async () => {
+    dispatch(setSubmitTrue(true));
+    dispatch(setDailyPlanHeaderUpload(false));
+    dispatch(setDailyPlamConfirmPopup(true));
+  };
+  const handleSubmitAndPublishPopupKLD = async () => {
+    dispatch(setSubmitTrue(true));
+    dispatch(setKLDHeaderUpload(false));
+    dispatch(setKLDConfirmPopup(true));
+  };
 
   const handleSubmitPopupClose = () => {
     if (submitTrue) {
@@ -253,6 +298,20 @@ const Header: React.FC<HeaderProps> = ({
     }
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopup(false);
+  };
+  const handleSubmitPopupCloseHeader = () => {
+    if (submitTrue) {
+      dispatch(setDailyPlanHeaderUpload(true));
+    }
+    dispatch(setDailyPlamConfirmPopup(false));
+    // setSubmitPopup(false);
+  };
+  const handleSubmitPopupCloseKLD = () => {
+    if (submitTrue) {
+      dispatch(setKLDHeaderUpload(true));
+    }
+    dispatch(setKLDConfirmPopup(false));
+    // setSubmitPopup(false);
   };
 
   const [dailyPlanNotifications] = useLazyDailyPlanNotificationsQuery();
@@ -268,11 +327,19 @@ const Header: React.FC<HeaderProps> = ({
       try {
         await uploadCustomerFile({
           file: uploadFile,
-          unitNumber: unitEffectiveNumberDaily ? unitEffectiveNumberDaily : "", // <-- Replace with actual unit number if needed
+          unitNumber:
+            unitEffectiveNumberDaily && !dailyPlanHeaderUploadButton
+              ? unitEffectiveNumberDaily
+              : "",
           type: "job",
         }).unwrap();
-
-        setSubmitPopupConfirm(true);
+        if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
+          setSubmitPopupConfirm(true);
+        } else if (dailyPlanHeaderUploadButton) {
+          dispatch(setDailyPlanSuccessPopup(true));
+        } else if (kldHeaderUploadButton) {
+          dispatch(setKLDSuccessPopup(true));
+        }
         dispatch(setUploadedFile(null));
 
         localStorage.setItem("showDailyNotificationPopup", "true");
@@ -281,7 +348,9 @@ const Header: React.FC<HeaderProps> = ({
           const shouldShow = localStorage.getItem("showDailyNotificationPopup");
           if (shouldShow === "true") {
             try {
-              const response = await dailyPlanNotifications(uploadFile?.name ?? "").unwrap();
+              const response = await dailyPlanNotifications(
+                uploadFile?.name ?? ""
+              ).unwrap();
               dispatch(
                 setGlobalPopup({
                   open: true,
@@ -327,6 +396,18 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopupConfirm(false);
     dispatch(setSelectedFile(null));
   };
+  const handleSubmitPopupConfirmCloseHeader = () => {
+    dispatch(setDailyPlanSuccessPopup(false));
+    setSubmitPopup(false);
+    dispatch(setDailyPlamConfirmPopup(false));
+    dispatch(setSelectedFile(null));
+  };
+  const handleSubmitPopupConfirmCloseKLD = () => {
+    dispatch(setKLDSuccessPopup(false));
+    setSubmitPopup(false);
+    dispatch(setKLDConfirmPopup(false));
+    dispatch(setSelectedFile(null));
+  };
 
   const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -334,6 +415,20 @@ const Header: React.FC<HeaderProps> = ({
     setSubmitPopupConfirm(false);
     navigate("/dailyPlan");
     dispatch(setSelectedFile(null));
+  };
+  const handleSubmitPopupConfirmClickHeader = () => {
+    dispatch(setDailyPlamConfirmPopup(false));
+    setSubmitPopup(false);
+    dispatch(setDailyPlanSuccessPopup(false));
+    dispatch(setSelectedFile(null));
+    dispatch(setDailyPlanHeaderUploadButton(false));
+  };
+  const handleSubmitPopupConfirmClickKLD = () => {
+    dispatch(setKLDConfirmPopup(false));
+    setSubmitPopup(false);
+    dispatch(setKLDSuccessPopup(false));
+    dispatch(setSelectedFile(null));
+    dispatch(setKLDHeaderUploadButton(false));
   };
 
   const handleDownloadSampleFileMasterData = (filePath: string) => {
@@ -352,7 +447,6 @@ const Header: React.FC<HeaderProps> = ({
       })
       .catch((error) => console.error("Error downloading the file:", error));
   };
-
 
   useEffect(() => {
     if (confirmDialogOpen) {
@@ -378,8 +472,6 @@ const Header: React.FC<HeaderProps> = ({
     newNotifs.splice(index, 1);
     dispatch(setDailyPlanDataNotifications(newNotifs));
   };
-
-
 
   return (
     <>
@@ -441,79 +533,80 @@ const Header: React.FC<HeaderProps> = ({
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
-              {editButton && !isEditing && (selectedStatus || "").toLowerCase() !== "completed" && (
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  <IconButton
-                    onClick={editClick}
-                    color="primary"
-                    aria-label="edit"
-                    sx={{
-                      backgroundColor: "white",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 255, 0.1)",
-                      },
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Box>
-              )}
+              {editButton &&
+                !isEditing &&
+                ((selectedStatus || "").toLowerCase() !== "completed" ||
+                  role.toLowerCase() === "admin") && (
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <IconButton
+                      onClick={editClick}
+                      color="primary"
+                      aria-label="edit"
+                      sx={{
+                        backgroundColor: "white",
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 255, 0.1)",
+                        },
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
+                )}
             </Box>
 
             <Box display="flex" gap={2}>
-{dropDown && (
-  (selectedStatus || "").toLowerCase() === "completed" ? (
-    <Box display="flex" alignItems="center" gap={1}>
-      <Typography
-        variant="subtitle2"
-        sx={{ fontWeight: 500, color: "#1976D2" }}
-      >
-        Status:
-      </Typography>
-      <Box
-        sx={{
-          px: 0,
-          py: 0,
-          color: "#478E30",
-          borderRadius: "20px",
-          fontSize: "14px",
-          fontWeight: 500,
-        }}
-      >
-        Completed
-      </Box>
-    </Box>
-  ) : (
-    <Box display="flex" alignItems="center" gap={1}>
-      <Typography
-        variant="subtitle2"
-        sx={{ fontWeight: 500, color: "#1976D2" }}
-      >
-        Status:
-      </Typography>
-      <Select
-        value={selectedStatus}
-        onChange={handleDropdownChange}
-        displayEmpty
-        size="small"
-        sx={{
-          borderRadius: "20px",
-          border: "1px solid #00000000",
-          background: "#fff",
-          fontSize: "14px",
-          outline: "none",
-          cursor: "pointer",
-        }}
-      >
-        {dropDownOptions.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-    </Box>
-  )
-)}
+              {dropDown &&
+                ((selectedStatus || "").toLowerCase() === "completed" &&
+                role.toLowerCase() !== "admin" ? (
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 500, color: "#1976D2" }}
+                    >
+                      Status:
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: 500,
+                        color: "#388E3C",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      Completed
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 500, color: "#1976D2" }}
+                    >
+                      Status:
+                    </Typography>
+                    <Select
+                      value={selectedStatus}
+                      onChange={handleDropdownChange}
+                      displayEmpty
+                      size="small"
+                      sx={{
+                        borderRadius: "20px",
+                        border: "1px solid #00000000",
+                        background: "#fff",
+                        fontSize: "14px",
+                        outline: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {dropDownOptions.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                ))}
               {notificationIcon && (
                 <IconButton
                   onClick={notificationIconOnClick}
@@ -538,6 +631,26 @@ const Header: React.FC<HeaderProps> = ({
                     <Notifications />
                   </Badge> */}
                 </IconButton>
+              )}
+
+              {button3Text && (
+                <ButtonComponent
+                  onClick={onButton3Click}
+                  color={
+                    headerButton && !headerButtonColor ? "white" : "#0073B7"
+                  }
+                  text={button3Text}
+                  textColor={
+                    headerButton && !headerButtonColor ? "#0E0E0E" : "#FFFFFF"
+                  }
+                  borderRadius="100px"
+                  border={
+                    headerButton && !headerButtonColor
+                      ? "1px solid #E5E5E5"
+                      : "none"
+                  }
+                  p={"14px"}
+                />
               )}
 
               {button1Text && (
@@ -621,10 +734,38 @@ const Header: React.FC<HeaderProps> = ({
         popUpClosed={false}
         dailyPlanSampleFile={dailyPlanSampleFile}
         handleDownloadSampleFileDaiyPlan={() =>
-          handleDownloadSampleFileMasterData(
-            "/Upload_template_after_job.xlsx"
-          )
+          handleDownloadSampleFileMasterData("/Upload_template_after_job.xlsx")
         }
+      />
+      <ReusablePopup
+        open={dailyPlanHeaderUpload}
+        upload={true}
+        onConfirm={handleSubmitAndPublishPopupHeader}
+        confirmText="Submit"
+        title={"Daily Plan Data"}
+        onClose={handleHeaderClosePopUp}
+        subText={"Upload Job Data"}
+        sampleFile={true}
+        handleDownloadSampleFile={() =>
+          handleDownloadSampleFileMasterData("/Upload_template_after_job.xlsx")
+        }
+        disable={uploadFile ? false : true}
+        popUpClosed={false}
+      />
+      <ReusablePopup
+        open={kldHeaderUpload}
+        upload={true}
+        onConfirm={handleSubmitAndPublishPopupKLD}
+        confirmText="Submit"
+        title={"KLD Master Data"}
+        onClose={handleHeaderClosePopUpKLD}
+        subText={"Upload KLD Master Data"}
+        sampleFile={true}
+        handleDownloadSampleFile={() =>
+          handleDownloadSampleFileMasterData("/Upload_template_after_job.xlsx")
+        }
+        disable={uploadFile ? false : true}
+        popUpClosed={false}
       />
       <ConfirmPopup
         open={
@@ -654,13 +795,55 @@ const Header: React.FC<HeaderProps> = ({
         onClick={handleSubmitPopupConfirmClick}
         popUpClosed={false}
       />
+      <ConfirmPopup
+        open={dailyPlanConfirmPopup}
+        title="Are you sure you want submit Daily Plan ?"
+        message=""
+        buttonText="No"
+        buttonText2="Yes,Save it!"
+        gifSrc=""
+        onClose={handleSubmitPopupCloseHeader}
+        onClick={handleSubmitPopupConfirmOpen}
+        isLoading={uploadLoading}
+        popUpClosed={false}
+        noButton={uploadLoading ? true : false}
+      />
+      <SuccessPopup
+        open={dailyPlanSuccessPopup}
+        message={"We are currently processing your data. Please wait a moment"}
+        buttonText="OK"
+        onClose={handleSubmitPopupConfirmCloseHeader}
+        onClick={handleSubmitPopupConfirmClickHeader}
+        popUpClosed={false}
+      />
+      <ConfirmPopup
+        open={kldConfirmPopup}
+        title="Are you sure you want submit KLD Master Data ?"
+        message=""
+        buttonText="No"
+        buttonText2="Yes,Save it!"
+        gifSrc=""
+        onClose={handleSubmitPopupCloseKLD}
+        onClick={handleSubmitPopupConfirmOpen}
+        isLoading={uploadLoading}
+        popUpClosed={false}
+        noButton={uploadLoading ? true : false}
+      />
+      <SuccessPopup
+        open={kldSuccessPopup}
+        message={"We are currently processing your data. Please wait a moment"}
+        buttonText="OK"
+        onClose={handleSubmitPopupConfirmCloseKLD}
+        onClick={handleSubmitPopupConfirmClickKLD}
+        popUpClosed={false}
+      />
       <Filter filterTitle={filterTitle || ""} />
       <FilterDailyPlan filterTitle="Daily Plan Filter" />
-      <FilterKld filterTitle="KLD Filter"/>
+      <FilterKld filterTitle="KLD Filter" />
       <KLDSlider
-  open={createSlider}
-  onClose={()=>dispatch(setCreateSlider(false))}
-/>
+        open={createSlider}
+        onClose={() => dispatch(setCreateSlider(false))}
+      />
       <VersinDetails />
       <Dialog
         open={confirmDialogOpen}

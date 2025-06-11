@@ -38,12 +38,20 @@ import {
   setShowTabChangeDialog,
   setBackButtonNavigationAllowed,
   setSideNavigationAllowed,
+  setDailyPlanHeaderUpload,
+  setDailyPlanHeaderUploadButton,
   // setPopOverDailyPlan,
   // setDailyPlanDataNotifications,
 } from "../../store/slices/viewDailyPlanSlice";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
-import { setCreateSlider, setKLDEdit, setOpenSliderKld } from "../../store/slices/kldSlice";
+import {
+  setCreateSlider,
+  setKLDEdit,
+  setKLDHeaderUpload,
+  setKLDHeaderUploadButton,
+  setOpenSliderKld,
+} from "../../store/slices/kldSlice";
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
 
@@ -218,7 +226,7 @@ const Layout = () => {
     }
   };
   const handleCreateMasterData = () => {
-    dispatch(setKldCode(''));
+    dispatch(setKldCode(""));
     dispatch(setSelectedTab(0));
     dispatch(setRequestPayload(clearRequestPayoad));
     dispatch(clearDyeCuttingFormData());
@@ -234,17 +242,19 @@ const Layout = () => {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB").replace(/\//g, "-");
-  const selectedStatus = localStorage.getItem("status")
+  const selectedStatus = localStorage.getItem("status");
 
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")||'';
   const pageData: Record<
     string,
     {
       title: string;
       button1Text?: string;
+      button3Text?: string;
       button2Text?: string;
       onButton1Click?: () => void;
       onButton2Click?: () => void;
+      onButton3Click?: () => void;
       lastUpdate?: string;
       headerButton?: boolean;
       onBack?: () => void;
@@ -260,7 +270,6 @@ const Layout = () => {
       notificationIcon?: boolean;
       notificationIconOnClick?: () => void;
       dailyPlanSampleFile?: boolean;
-
     }
   > = {
     "/dashboard": {
@@ -374,7 +383,6 @@ const Layout = () => {
       onButton1Click: () => {
         dispatch(setKLDEdit(false));
         dispatch(setOpenSliderKld(true));
-
       },
 
       filterTitle: "Kld Data Filter",
@@ -396,10 +404,11 @@ const Layout = () => {
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
       onButton2Click: () => navigate(`/createPlan`),
       filterTitle: "Daily Plan Filter",
-      // notificationIcon: true,
-      // notificationIconOnClick: () => {
-      //   handleDailyPlanNotification();
-      // },
+      button3Text: "Upload",
+      onButton3Click: () => {
+        dispatch(setDailyPlanHeaderUpload(true));
+        dispatch(setDailyPlanHeaderUploadButton(true));
+      },
     },
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
@@ -513,8 +522,10 @@ const Layout = () => {
           title={headerData.title}
           button1Text={headerData.button1Text}
           button2Text={headerData.button2Text}
+          button3Text={headerData.button3Text}
           onButton1Click={headerData.onButton1Click}
           onButton2Click={headerData.onButton2Click}
+          onButton3Click={headerData.onButton3Click}
           onMenuClick={toggleSidebar} // Toggle sidebar when menu icon is clicked
           masterDataCreatePopup={masterDataCreatePopup}
           onClosePopup={onClosePopup}

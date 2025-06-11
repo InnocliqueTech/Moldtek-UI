@@ -342,9 +342,16 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         { label: "Inactive", value: "Inactive" },
       ],
     },
-    { id: "createdAt", label: "Created On", align: false },
+    { id: "createdAt", label: "Created On", align: false,disableSorting: false, format: (value: string) =>
+        value
+          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
+          : "",
+     },
     // { id: "lastUpdated", label: "Last Updated", align: false },
-    { id: "jobRunDate", label: "Scheduled On", align: false },
+    { id: "jobRunDate", label: "Scheduled On", align: false,disableSorting: false,format: (value: string) =>
+        value
+          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
+          : "", },
   ];
   // if ( companiesError) {
   //   return (

@@ -160,6 +160,8 @@ function ReusableTable<T extends Record<string, any>>({
   //   setAnchorEl(null);
   //   setSelectedRow(null);
   // };
+const role = localStorage.getItem("role") || "";
+
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
@@ -872,7 +874,7 @@ return (sortedData)
                                     )
                                   }
                                   displayEmpty
-                                  disabled={(row[column.id] || "").toLowerCase() === "completed"}
+                                  disabled={(row[column.id] || "").toLowerCase() === "completed" && role.toLowerCase() !=='admin'}
                                   variant="standard"
                                   sx={{
                                     width: 150,

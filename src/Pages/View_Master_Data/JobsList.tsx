@@ -257,7 +257,7 @@ const JobsList: React.FC = () => {
   if (isXs) maxChars = 50;
   else if (isSm) maxChars = 50;
   else if (isMd) maxChars = 32;
-  else if (isLg) maxChars = 40;
+  else if (isLg) maxChars = 36;
   else if (isXl) maxChars = 50;
 
   let maxCharsLabel = 20;
@@ -265,7 +265,7 @@ const JobsList: React.FC = () => {
   if (isXs) maxCharsLabel = 50;
   else if (isSm) maxCharsLabel = 70;
   else if (isMd) maxCharsLabel = 25;
-  else if (isLg) maxCharsLabel = 38;
+  else if (isLg) maxCharsLabel = 30;
   else if (isXl) maxCharsLabel = 90;
 
   const renderValue = (
