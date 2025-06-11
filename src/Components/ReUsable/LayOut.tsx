@@ -471,6 +471,17 @@ const Layout = () => {
       headerButton: true,
       onBack: () => navigate("/users"),
     },
+     "/update-user": {
+      title: "Update User",
+      // button1Text: "Upload Data",
+      // button2Text: "Submit",
+      // onButton1Click: () => dispatch(setUploadPopup(true)),
+      // onButton2Click: () => dispatch(setSubmitAndPublishPopup(true)),
+      uploadTitle: "Create Daily Plan",
+      uploadSubTitle: "Upload Daily Plan",
+      headerButton: true,
+      onBack: () => navigate("/users"),
+    },
     "/users": {
       title: "Manage Users",
       button1Text: "Filter",

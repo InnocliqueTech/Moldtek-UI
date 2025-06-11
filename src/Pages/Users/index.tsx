@@ -108,7 +108,7 @@ const Users: React.FC = () => {
             ),
             onClick: (row: any) => {
                 console.log(row)
-                navigate('/create-user', {state:{rowData:row}})
+                navigate('/update-user', {state:{rowData:row}})
             },
         },
           {

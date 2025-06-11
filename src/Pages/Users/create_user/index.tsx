@@ -6,7 +6,7 @@ import ButtonComponent from '../../../Components/ReUsable/Button';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import CreateUserPopups from './CreateUserPopups';
-import { useCreateUserMutation } from '../../../store/apis/manageUsersApi';
+import { useCreateUserMutation,useUpdateUserMutation } from '../../../store/apis/manageUsersApi';
 
 interface UserFormField {
   id: string;
@@ -40,6 +40,7 @@ const CreateUser: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [openPopup,setOpenPopup] = useState<boolean>(false);
   const [createUser, { isLoading }] = useCreateUserMutation();
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const handleInputChange = (
     fieldId: string,
@@ -121,7 +122,7 @@ const CreateUser: React.FC = () => {
         userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Supervisor' ? 2 : 3 // Example mapping
       };
 
-      await createUser(payload).unwrap();
+      !rowData ? await createUser(payload).unwrap() : await updateUser({ userId:1234, userData: payload }).unwrap();
       setFormFields(initialUserFields);
       return { success: true };
     } catch (error) {
@@ -189,7 +190,7 @@ const CreateUser: React.FC = () => {
       </Box>
        <CreateUserPopups 
         onSubmit={handleCreateUser} 
-        isLoading={isLoading} 
+        isLoading={!rowData ? isLoading  : isUpdating } 
         open={openPopup}
         onClose={() => setOpenPopup(false)}
       />

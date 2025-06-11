@@ -15,7 +15,7 @@ export const manageUsersApis = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: [],
+  tagTypes: ['User'],
   endpoints: (builder) => ({
     createUser: builder.mutation<any, userCreationDataModel>({
       query: (userData) => ({
@@ -23,10 +23,20 @@ export const manageUsersApis = createApi({
         method: 'POST',
         body: userData
       }),
+    invalidatesTags: ['User'], 
+    }),
+    updateUser: builder.mutation<any, { userId: number; userData: UserCreationDataModel }>({
+      query: ({ userId, userData }) => ({
+        url: `/users/updateuser/${userId}`,
+        method: 'POST',
+        body: userData
+      }),
+      invalidatesTags: ['User'],
     }),
   }),
 });
 
 export const {
-  useCreateUserMutation
+  useCreateUserMutation,
+  useUpdateUserMutation,
 } = manageUsersApis;

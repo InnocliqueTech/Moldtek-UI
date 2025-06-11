@@ -43,6 +43,7 @@ const App: React.FC = () => {
               <Route path="/kld" element={<ProductionOperatorsPage/>} />
               <Route path="/users" element={<UsersPage/>} />
               <Route path="/create-user" element={<CreateUserPage/>} />
+              <Route path="/update-user" element={<CreateUserPage/>} />
               <Route path="/settings" element={<SettingsPage/>}/>
               <Route path="/masterData" element={<MasterData />} />
               <Route path="/createMasterData" element={<CreateMasterData />} />
