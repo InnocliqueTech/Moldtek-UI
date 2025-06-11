@@ -4,8 +4,14 @@ export interface FiltersPayload {
     fromDate: string;
     toDate: string;
     role: string;
+    labelType: string[],
 
 }
+export interface LabelType {
+    labelTypeId: number;
+    labelTypeName: string;
+}
+
 
 export interface UserRowData {
     firstName: string,
@@ -13,7 +19,7 @@ export interface UserRowData {
     email: string,
     phoneNumber: string,
     role: string,
-    createdDate: string
+    createdDate: string,
 
 }
 
@@ -24,7 +30,9 @@ export interface UserData {
     createSlider: boolean;
     UserEdit: boolean;
     debouncedSearchUser: string;
-    rowUserData: UserRowData
+    rowUserData: UserRowData;
+      labelTypes: LabelType[];              
+    selectedLabelTypeIds: LabelType[]; 
 }
 
 const initialState: UserData = {
@@ -44,8 +52,11 @@ const initialState: UserData = {
     filtersPayload: {
         fromDate: "",
         toDate: "",
-        role: ''
+        role: '',
+        labelType: [],
     },
+    labelTypes: [],             
+    selectedLabelTypeIds: [],
 };
 
 const UserSlice = createSlice({
@@ -56,13 +67,13 @@ const UserSlice = createSlice({
             state.debouncedSearchUser = action.payload
         },
         setUserEdit: (state, action: PayloadAction<boolean>) => {
-            state.UserEdit= action.payload
+            state.UserEdit = action.payload
         },
         setCreateSliders: (state, action: PayloadAction<boolean>) => {
             state.createSlider = action.payload;
         },
         setOpenSliderUser: (state, action: PayloadAction<boolean>) => {
-            state.openSliderUser= action.payload;
+            state.openSliderUser = action.payload;
         },
         setIsSearchTriggered: (state, action: PayloadAction<boolean>) => {
             state.isSearchTriggered = action.payload;
@@ -72,10 +83,38 @@ const UserSlice = createSlice({
         },
         setRowUserData: (state, action: PayloadAction<UserRowData>) => {
             state.rowUserData = action.payload
-        }
+        },
+        setLabelTypes(state, action: PayloadAction<LabelType[]>) {
+            state.labelTypes = action.payload;
+        },
+        setSelectedLabelTypeIds(state, action: PayloadAction<LabelType[]>) {
+            state.selectedLabelTypeIds = action.payload;
+        },
+        toggleLabelType: (state, action: PayloadAction<LabelType>) => {
+            const { labelTypeId } = action.payload;
+            const exists = state.selectedLabelTypeIds.some((labelType) => labelType.labelTypeId === labelTypeId);
+            if (exists) {
+                state.selectedLabelTypeIds = state.selectedLabelTypeIds.filter(
+                    (labelId) => labelId.labelTypeId !== labelTypeId
+                );
+            } else {
+                state.selectedLabelTypeIds.push(action.payload);
+            }
+        },
     },
 });
 
-export const { setIsSearchTriggered, setDebouncedSearchUser, setOpenSliderUser, setFiltersPayload, setCreateSliders, setUserEdit, setRowUserData } =
+export const { 
+    setIsSearchTriggered, 
+    setDebouncedSearchUser, 
+    setOpenSliderUser, 
+    setFiltersPayload, 
+    setCreateSliders,
+     setUserEdit, 
+     setRowUserData,
+     setLabelTypes,
+     setSelectedLabelTypeIds,
+     toggleLabelType
+     } =
     UserSlice.actions;
 export default UserSlice.reducer;

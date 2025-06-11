@@ -5,28 +5,20 @@ import {
     Box,
     InputAdornment,
     IconButton,
-    Grid,
-    MenuItem, TextField
-    // TextField,
-    // Typography,
+    Grid
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-// import LabelTypeSelector from "./LabelType";
-// import CustomerSelect from "./CustomersData";
 import { RootState } from "../../store";
 import {
     setFiltersPayload,
-    //   setSelectedCustomers,
-    //   setSelectedLabelTypeIds,
 } from "../../store/slices/userSlice";
 import {
     ArrowForward,
     CalendarToday,
     Clear as ClearIcon,
 } from "@mui/icons-material";
-// import SearchIcon from "@mui/icons-material/Search";
 import { LocalDatePayload } from "./Filter";
-import DropdownComponent from "../../Components/ReUsable/Dropdown";
+import LabelTypeSelector from "./LabelTypes";
 
 
 interface FilterFormProps {
@@ -40,14 +32,10 @@ interface FilterFormProps {
 }
 
 
-
 const FilterForm: React.FC<FilterFormProps> = ({
     setLocalDates,
     localDates,
-    searchField,
     setSearchField,
-    selectedRole,
-    setSelectedRole
 
 }) => {
     const dispatch = useDispatch();
@@ -70,15 +58,12 @@ const FilterForm: React.FC<FilterFormProps> = ({
             if (!isSearchTriggered) {
                 dispatch(
                     setFiltersPayload({
-                        // customerName: [],
                         fromDate: "",
                         toDate: "",
                         role: "",
-                        // searchField: "",
+                        labelType: []
                     })
                 );
-                // dispatch(setSelectedCustomers([]));
-                // dispatch(setSelectedLabelTypeIds([]));
                 setLocalDates({ fromDate: null, toDate: null });
                 setSearchField("");
             }
@@ -92,9 +77,6 @@ const FilterForm: React.FC<FilterFormProps> = ({
         setLocalDates((prev) => ({ ...prev, [field]: date }));
     };
 
-
-
-    const roles = ["Admin", "User", "Manager"];
 
     return (
         <>
@@ -234,26 +216,17 @@ const FilterForm: React.FC<FilterFormProps> = ({
                     </Box>
                 </Box>
             </LocalizationProvider>
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    flex="1"
-                    sx={{ mt: 2 }}
-                >
-                    <DropdownComponent
-                        options={roles}
-                        value={selectedRole}
-                        onChange={(e) => setSelectedRole(e.target.value as string)}
-                        isMultiSelect={false}
-                        label="Role"
-                        showAllOption={true}
-                        required={false}
-                        disabled={false}
-                        error={false}
-                        helperText=""
-                        checkbox={false}
-                    />
-                </Box>
+            <Box
+                display="flex"
+                flexDirection="column"
+                flex="1"
+                sx={{ mt: 2 }}
+            >
+
+                <Grid size={{ xs: 12 }}>
+                    <LabelTypeSelector />
+                </Grid>
+            </Box>
 
         </>
     );
