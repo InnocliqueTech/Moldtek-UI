@@ -30,6 +30,7 @@ const Settings = () => {
     oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
+    displayName:''
   });
 
   const handlePersonalChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,10 @@ const Settings = () => {
     }
     if (!personalDetails.lastName.trim()) {
       newErrors.lastName = 'Last Name is required';
+      isValid = false;
+    }
+     if (!personalDetails.displayName.trim()) {
+      newErrors.displayName = 'Display Name is required';
       isValid = false;
     }
 
@@ -98,7 +103,8 @@ const Settings = () => {
 
   const isSaveDisabledPersonalDetails =
   !personalDetails.firstName.trim() ||
-  !personalDetails.lastName.trim() 
+  !personalDetails.lastName.trim() ||
+  !personalDetails.displayName.trim()
  
   const isSaveDisabledPasswordDetails =  !passwordDetails.oldPassword.trim() ||
   !passwordDetails.newPassword.trim() ||
@@ -107,7 +113,7 @@ const Settings = () => {
   return (
     <Box>
       {/* Personal Details Card */}
-      <Paper elevation={3} sx={{ borderRadius: 2, p: 3, mb: 4 }}>
+      <Paper elevation={3} sx={{ borderRadius: '12px', p: 3, mb: 1 }}>
         <Box display="flex" alignItems="center" mb={2}>
           <Person sx={{ mr: 1, color: 'primary.main' }} />
           <Typography variant="h6" fontWeight={600}>
@@ -141,6 +147,9 @@ const Settings = () => {
               label="Display Name"
               value={personalDetails.displayName}
               onChange={handlePersonalChange('displayName')}
+               error={!!errors.displayName}
+              helperText={errors.displayName}
+              required
             />
           </Grid>
          <Grid size={{xs:12,sm:6}}>
@@ -175,7 +184,7 @@ const Settings = () => {
       </Paper>
 
       {/* Update Password Card */}
-      <Paper elevation={3} sx={{ borderRadius: 2, p: 3 }}>
+      <Paper elevation={3} sx={{ borderRadius: '12px', p: 3 }}>
         <Box display="flex" alignItems="center" mb={2}>
           <Lock sx={{ mr: 1, color: 'primary.main' }} />
           <Typography variant="h6" fontWeight={600}>
