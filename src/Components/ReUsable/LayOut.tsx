@@ -322,7 +322,7 @@ const Layout = () => {
       uploadTitle: "Update Master Data",
       uploadSubTitle: "Upload Master Data",
       onBack: () => {
-        if (updateButtonAction === 'false') {
+        if (updateButtonAction === "false") {
           navigate(`/viewMasterData/${selectedUEN}`);
         } else {
           navigate("/masterData");
@@ -340,7 +340,7 @@ const Layout = () => {
           navigate(`/updateMasterData/${selectedUEN}`);
           dispatch(setSelectedTab(0));
           // dispatch(setUpdateButton(false));
-          localStorage.setItem('updateButton', 'false');
+          localStorage.setItem("updateButton", "false");
           dispatch(setMasterDataDataTouched(false));
           dispatch(setPrintingDataTouched(false));
           dispatch(setLaminationDataTouched(false));
@@ -387,8 +387,14 @@ const Layout = () => {
 
       filterTitle: "Kld Data Filter",
       onButton2Click: () => {
-        dispatch(setKLDEdit(false)); dispatch(setCreateSlider(true));
-      }
+        dispatch(setKLDEdit(false));
+        dispatch(setCreateSlider(true));
+      },
+      button3Text: "Upload",
+      onButton3Click: () => {
+        dispatch(setKLDHeaderUpload(true));
+        dispatch(setKLDHeaderUploadButton(true));
+      },
     },
     "/reports": {
       title: "Reports",
@@ -413,20 +419,24 @@ const Layout = () => {
     "/viewDailyPlan/:indentNO": {
       title: "View Daily Plan",
       button1Text: loading ? "Downloading..." : "Download Template",
-      ...((selectedStatus || "").toLowerCase() !== "completed" && {
+      ...(((selectedStatus || "").toLowerCase() !== "completed"  || role.toLowerCase() ==='admin') && {
         button2Text: "Upload Job Data",
         onButton1Click: () => {
           downloadFile();
-        }
+        },
       }),
-      onButton2Click: () => dispatch(setUploadPopup(true)),
+      onButton2Click: () => {
+        dispatch(setUploadPopup(true));
+        dispatch(setDailyPlanHeaderUploadButton(false));
+        dispatch(setKLDHeaderUploadButton(false));
+      },
       headerButton: true,
       onBack: hasUnsavedChanges
         ? () => {
-          dispatch(setShowTabChangeDialog(true)),
-            dispatch(setBackButtonNavigationAllowed(true)),
-            dispatch(setSideNavigationAllowed(false));
-        }
+            dispatch(setShowTabChangeDialog(true)),
+              dispatch(setBackButtonNavigationAllowed(true)),
+              dispatch(setSideNavigationAllowed(false));
+          }
         : () => navigate("/dailyPlan"),
       uploadTitle: "Upload Job Data",
       uploadSubTitle: "Daily Plan Data",
