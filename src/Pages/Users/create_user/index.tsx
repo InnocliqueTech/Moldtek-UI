@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Grid, SelectChangeEvent } from '@mui/material';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
 import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 
 interface UserFormField {
   id: string;
@@ -32,35 +33,36 @@ const initialUserFields: UserFormField[] = [
 ];
 
 const CreateUser: React.FC = () => {
+  const location = useLocation()
   const [formFields, setFormFields] = useState<UserFormField[]>(initialUserFields);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (
-  fieldId: string,
-  value: string | string[] | SelectChangeEvent<string | string[]>
-) => {
-  let extractedValue =
-    typeof value === 'object' && 'target' in value ? value.target.value : value;
+    fieldId: string,
+    value: string | string[] | SelectChangeEvent<string | string[]>
+  ) => {
+    let extractedValue =
+      typeof value === 'object' && 'target' in value ? value.target.value : value;
 
-  // Add any custom logic for specific fields if needed in future
-  if (fieldId === 'email' && typeof extractedValue === 'string') {
-    extractedValue = extractedValue.trim().toLowerCase();
-  }
+    // Add any custom logic for specific fields if needed in future
+    if (fieldId === 'email' && typeof extractedValue === 'string') {
+      extractedValue = extractedValue.trim().toLowerCase();
+    }
 
-  setFormFields(prevFields =>
-    prevFields.map(field =>
-      field.id === fieldId ? { ...field, value: extractedValue as string } : field
-    )
-  );
+    setFormFields(prevFields =>
+      prevFields.map(field =>
+        field.id === fieldId ? { ...field, value: extractedValue as string } : field
+      )
+    );
 
-  if (errors[fieldId]) {
-    setErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[fieldId];
-      return newErrors;
-    });
-  }
-};
+    if (errors[fieldId]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldId];
+        return newErrors;
+      });
+    }
+  };
 
 
   const validateUserFields = () => {
@@ -106,13 +108,26 @@ const CreateUser: React.FC = () => {
     // Call an API or dispatch an action here
   };
 
+  const rowData = location.state?.rowData
+  console.log("rowData", rowData)
+
+  useEffect(() => {
+    if (rowData) {
+      setFormFields((prevFields) =>
+        prevFields.map((field) => ({
+          ...field,
+          value: rowData[field.id] || ''
+        }))
+      )
+    }
+  }, [rowData])
   return (
     <Box style={{ backgroundColor: 'white', borderRadius: '12px', padding: '16px 24px' }}>
-      <Typography variant="h6" gutterBottom>Create User</Typography>
+      <Typography variant="h6" gutterBottom>{rowData ? "Update User" : "Create User"}</Typography>
 
       <Grid container spacing={2}>
         {formFields.map((field) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}  key={field.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
             {field.component === 'dropdown' ? (
               <DropdownComponent
                 label={field.label}
@@ -142,7 +157,7 @@ const CreateUser: React.FC = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
         <ButtonComponent
-          text="Create User"
+          text={rowData ? "Update User" : "Create User"}
           textColor="#ffffff"
           color="#0073B7"
           borderRadius="100px"
