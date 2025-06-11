@@ -21,17 +21,17 @@ interface UserFormField {
 const initialUserFields: UserFormField[] = [
   { id: 'firstName', label: 'First Name', value: '', type: 'text', required: true },
   { id: 'lastName', label: 'Last Name', value: '', type: 'text', required: true },
-  { id: 'displayName', label: 'Display Name', value: '', type: 'text' },
+  { id: 'displayName', label: 'Display Name', value: '', type: 'text' , required: true },
   {
     id: 'role',
     label: 'Role',
     value: '',
     component: 'dropdown',
-    options: ['Admin', 'Manager', 'User'],
+    options: ['Admin', 'Supervisor', 'User'],
     required: true,
   },
   { id: 'email', label: 'Email', value: '', type: 'email', required: true },
-  { id: 'phoneNumber', label: 'Phone Number', value: '', type: 'text', required: true },
+  { id: 'phoneNumber', label: 'Phone Number', value: '', type: 'text',},
 ];
 
 const CreateUser: React.FC = () => {
@@ -85,7 +85,7 @@ const CreateUser: React.FC = () => {
       }
 
       if (field.id === 'phoneNumber' && field.value) {
-        const phoneRegex = /^[0-9]{10,15}$/;
+        const phoneRegex = /^(?:(?:\+?(\d{1,3}))?[\s-.]?)?(?:\(?(\d{1,4})\)?[\s-.]?)?(\d{1,4}[\s-.]?){1,4}\d{1,4}$/;
         if (!phoneRegex.test(field.value)) {
           newErrors[field.id] = 'Invalid phone number';
         }
@@ -101,12 +101,6 @@ const CreateUser: React.FC = () => {
       toast.error('Please correct the errors before submitting');
       return;
     }
-
-    const userData = formFields.reduce((acc, field) => {
-      acc[field.id] = field.value;
-      return acc;
-    }, {} as Record<string, string>);
-
     setOpenPopup(true);
   };
 
@@ -124,10 +118,11 @@ const CreateUser: React.FC = () => {
         lastName: userData.lastName,
         email: userData.email,
         phoneNumber: userData.phoneNumber,
-        userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Manager' ? 2 : 3 // Example mapping
+        userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Supervisor' ? 2 : 3 // Example mapping
       };
 
       await createUser(payload).unwrap();
+      setFormFields(initialUserFields);
       return { success: true };
     } catch (error) {
       toast.error('Failed to create user');
@@ -136,7 +131,6 @@ const CreateUser: React.FC = () => {
   };
 
   const rowData = location.state?.rowData
-  console.log("rowData", rowData)
 
   useEffect(() => {
     if (rowData) {
