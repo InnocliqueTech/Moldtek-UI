@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, SelectChangeEvent } from '@mui/material';
+import { Box, Grid, SelectChangeEvent } from '@mui/material';
 import ReusableInput from '../../../Components/ReUsable/TextField';
 import DropdownComponent from '../../../Components/ReUsable/Dropdown';
 import ButtonComponent from '../../../Components/ReUsable/Button';
@@ -123,7 +123,7 @@ const CreateUser: React.FC = () => {
   }, [rowData])
   return (
     <Box style={{ backgroundColor: 'white', borderRadius: '12px', padding: '16px 24px' }}>
-      <Typography variant="h6" gutterBottom>{rowData ? "Update User" : "Create User"}</Typography>
+      {/* <Typography variant="h6" gutterBottom>{rowData ? "Update User" : "Create User"}</Typography> */}
 
       <Grid container spacing={2}>
         {formFields.map((field) => (
