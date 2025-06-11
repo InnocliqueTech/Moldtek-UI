@@ -428,6 +428,7 @@ const Layout = () => {
       onButton2Click: () => {
         dispatch(setUploadPopup(true));
         dispatch(setDailyPlanHeaderUploadButton(false));
+        dispatch(setKLDHeaderUploadButton(false));
       },
       headerButton: true,
       onBack: hasUnsavedChanges
