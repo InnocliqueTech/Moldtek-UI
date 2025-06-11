@@ -461,38 +461,59 @@ const Header: React.FC<HeaderProps> = ({
             </Box>
 
             <Box display="flex" gap={2}>
-              {dropDown && (
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 500, color: "#1976D2" }}
-                  >
-                    Status:
-                  </Typography>
-                  <Select
-                    value={selectedStatus}
-                    onChange={handleDropdownChange}
-                     disabled={(selectedStatus || "").toLowerCase() === "completed"}
-                    displayEmpty
-                    size="small"
-                    sx={{
-                      borderRadius: "20px",
-                      padding: "0px 0px",
-                      border: "1px solid #00000000",
-                      background: "#fff",
-                      fontSize: "14px",
-                      outline: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {dropDownOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-              )}
+{dropDown && (
+  (selectedStatus || "").toLowerCase() === "completed" ? (
+    <Box display="flex" alignItems="center" gap={1}>
+      <Typography
+        variant="subtitle2"
+        sx={{ fontWeight: 500, color: "#1976D2" }}
+      >
+        Status:
+      </Typography>
+      <Box
+        sx={{
+          px: 0,
+          py: 0,
+          color: "#478E30",
+          borderRadius: "20px",
+          fontSize: "14px",
+          fontWeight: 500,
+        }}
+      >
+        Completed
+      </Box>
+    </Box>
+  ) : (
+    <Box display="flex" alignItems="center" gap={1}>
+      <Typography
+        variant="subtitle2"
+        sx={{ fontWeight: 500, color: "#1976D2" }}
+      >
+        Status:
+      </Typography>
+      <Select
+        value={selectedStatus}
+        onChange={handleDropdownChange}
+        displayEmpty
+        size="small"
+        sx={{
+          borderRadius: "20px",
+          border: "1px solid #00000000",
+          background: "#fff",
+          fontSize: "14px",
+          outline: "none",
+          cursor: "pointer",
+        }}
+      >
+        {dropDownOptions.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </Box>
+  )
+)}
               {notificationIcon && (
                 <IconButton
                   onClick={notificationIconOnClick}
