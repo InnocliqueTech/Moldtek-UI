@@ -31,7 +31,7 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
     (state: RootState) => state.user
   );
 
-  const [selectedrole, setSelectedRole] = useState<number[]>(
+  const [selectedrole, setSelectedRole] = useState<string[]>(
     filtersPayload.roles || []
   );
 
@@ -68,7 +68,9 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         localDates.toDate && localDates.toDate
           ? format(localDates.toDate, "yyyy-MM-dd")
           : "",
-      roles: selectedLabelTypeIds.map((item) => item.labelTypeId),
+      roles: selectedLabelTypeIds.map((item) => item.labelTypeName),
+       labelType: selectedLabelTypeIds.map(item => item.labelTypeName),
+       email:filtersPayload.email
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -85,6 +87,8 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         roles: [],
         fromDate: "",
         toDate: "",
+        labelType:[],
+        email:filtersPayload.email
       })
     );
 

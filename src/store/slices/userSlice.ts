@@ -2,8 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface FiltersPayload {
     fromDate: string;
-    toDate: string;
-    roles: number[];
+    toDate: string;   
+    roles: string[];
+    labelType: string[],
+    email:string
 
 }
 export interface LabelType {
@@ -59,6 +61,9 @@ const initialState: UserData = {
         fromDate: "",
         toDate: "",
         roles: [],
+        email:"",
+        labelType:[]
+
     },
     labelTypes: [],
     selectedLabelTypeIds: [],

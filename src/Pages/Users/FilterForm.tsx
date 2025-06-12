@@ -26,8 +26,8 @@ interface FilterFormProps {
     localDates: LocalDatePayload;
     searchField: string;
     setSearchField: React.Dispatch<React.SetStateAction<string>>;
-    selectedRole: number[];
-    setSelectedRole: React.Dispatch<React.SetStateAction<number[]>>;
+    selectedRole: string[];
+    setSelectedRole: React.Dispatch<React.SetStateAction<string[]>>;
 
 }
 
