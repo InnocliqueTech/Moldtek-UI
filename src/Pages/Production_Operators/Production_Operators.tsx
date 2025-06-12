@@ -176,7 +176,7 @@ const ProductionOperatorsPage: React.FC = () => {
   }, [debouncedSearchKLD]);
 
   useEffect(() => {
-    if (!openSliderKld && !createSlider && page===0) {
+    if (!openSliderKld && !createSlider) {
       kldDataGlobalSearch({
         page,
         size: rowsPerPage,
