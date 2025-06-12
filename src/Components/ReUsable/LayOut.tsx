@@ -394,6 +394,8 @@ const Layout = () => {
       onButton3Click: () => {
         dispatch(setKLDHeaderUpload(true));
         dispatch(setKLDHeaderUploadButton(true));
+          dispatch(setDailyPlanHeaderUpload(false));
+        dispatch(setDailyPlanHeaderUploadButton(false));
       },
     },
     "/reports": {
@@ -414,6 +416,9 @@ const Layout = () => {
       onButton3Click: () => {
         dispatch(setDailyPlanHeaderUpload(true));
         dispatch(setDailyPlanHeaderUploadButton(true));
+        dispatch(setUploadPopup(false));
+        dispatch(setKLDHeaderUploadButton(false));
+         dispatch(setKLDHeaderUpload(false));
       },
     },
     "/viewDailyPlan/:indentNO": {
@@ -429,6 +434,8 @@ const Layout = () => {
         dispatch(setUploadPopup(true));
         dispatch(setDailyPlanHeaderUploadButton(false));
         dispatch(setKLDHeaderUploadButton(false));
+           dispatch(setDailyPlanHeaderUpload(false));
+            dispatch(setKLDHeaderUpload(false));
       },
       headerButton: true,
       onBack: hasUnsavedChanges
