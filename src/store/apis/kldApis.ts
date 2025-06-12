@@ -20,9 +20,7 @@ export const kldApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
- tagTypes: [
-    "KLDMasterDataMetrics",
-    "KLDMasterDataList"],
+  tagTypes: ["KLDMasterDataMetrics", "KLDMasterDataList"],
   endpoints: (builder) => ({
     getKLDmetrics: builder.query<KLDResponse, void>({
       query: () => "kld/kld-metrics",
@@ -47,7 +45,7 @@ export const kldApi = createApi({
         url: "/kld/createKld",
         method: "POST",
         body: newItem,
-         invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
+        invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
       }),
     }),
     updateKldData: builder.mutation<any, any>({
@@ -55,7 +53,7 @@ export const kldApi = createApi({
         url: "/kld/updateKld",
         method: "POST",
         body: newItem,
-         invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
+        invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
       }),
     }),
     getKLDData: builder.mutation<any, any>({
@@ -66,6 +64,24 @@ export const kldApi = createApi({
         providesTags: ["KLDMasterDataList"],
       }),
     }),
+    kldUpload: builder.mutation<any, { file: File }>({
+      query: ({ file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return {
+          url: "/kld/importKldExcel",
+          method: "POST",
+          body: formData,
+        };
+      },
+    }),
+    kldMasterDataNotifications: builder.query<any, string>({
+  query: (newItem) => ({
+    url: `/master/getNotificationForUpload?fileName=${newItem}`,
+    method: "GET",
+  }),
+
+}),
   }),
 });
 
@@ -76,4 +92,7 @@ export const {
   useCreateKldDataMutation,
   useGetKLDDataMutation,
   useUpdateKldDataMutation,
+  useKldUploadMutation,
+  useKldMasterDataNotificationsQuery,
+  useLazyKldMasterDataNotificationsQuery
 } = kldApi;
