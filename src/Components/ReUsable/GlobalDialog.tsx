@@ -38,7 +38,7 @@ const renderFileSummary = () => {
   return PopupState.data?.map((item) => {
     const date = dayjs(item.processedOn).format("DD MMM YYYY");
     const time = dayjs(item.processedOn).format("hh:mm A");
-    const isSuccess = item.fileReadStatus === "Success";
+    const isSuccess = item.fileReadStatus.toLowerCase() === "success";
 
     return (
       <Box
@@ -89,7 +89,7 @@ const renderFileSummary = () => {
           ))
         ) : (
           <Typography variant="body2" mt={2}>
-            No unit data available.
+           
           </Typography>
         )}
       </Box>

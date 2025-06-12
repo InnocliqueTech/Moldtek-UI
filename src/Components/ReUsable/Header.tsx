@@ -67,6 +67,7 @@ import {
 } from "../../store/slices/kldSlice";
 import FilterUsers from "../../Pages/Users/Filter";
 
+
 interface HeaderProps {
   title: string;
   button1Text?: string;
@@ -153,24 +154,7 @@ const Header: React.FC<HeaderProps> = ({
     return localStorage.getItem("status") || "";
   });
 
-  // const isEmptyNotification = (n: any) =>
-  //   !n.fileName &&
-  //   !n.status &&
-  //   !n.processedOn &&
-  //   !n.unitEffectiveNumbers &&
-  //   !n.exceptionMessage;
 
-  // const unreadCountMasterData = Array.isArray(masterDataNotifications)
-  //   ? masterDataNotifications
-  //       .filter((n: any) => !isEmptyNotification(n))
-  //       .filter((n: any) => !n.read).length
-  //   : 0;
-
-  // const unreadCountDailyPlan = Array.isArray(dailyPlanDataNotifications)
-  //   ? dailyPlanDataNotifications
-  //       .filter((n: any) => !isEmptyNotification(n)) // filter out empty
-  //       .filter((n: any) => !n.read).length // count unread
-  //   : 0;
 
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -192,6 +176,8 @@ const Header: React.FC<HeaderProps> = ({
 
   const [uploadCustomerFile, { isLoading: uploadLoading }] =
     useUploadCustomerFileMutation();
+
+  const [kldUpload, { isLoading: kldUploadLoading }] = useKldUploadMutation();
 
   let unitEffectiveNumberDaily: any;
   const UEN = localStorage.getItem("unitEffectiveNumberDaily");
@@ -316,6 +302,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const [dailyPlanNotifications] = useLazyDailyPlanNotificationsQuery();
+  const [kldMasterDataNotifications] = useLazyKldMasterDataNotificationsQuery();
 
   // useEffect(() => {
   //   if (data?.data) {
@@ -326,57 +313,81 @@ const Header: React.FC<HeaderProps> = ({
   const handleSubmitPopupConfirmOpen = async () => {
     if (uploadFile) {
       try {
-        await uploadCustomerFile({
-          file: uploadFile,
-          unitNumber:
-            unitEffectiveNumberDaily && !dailyPlanHeaderUploadButton
-              ? unitEffectiveNumberDaily
-              : "",
-          type: "job",
-        }).unwrap();
-        if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
-          setSubmitPopupConfirm(true);
-        } else if (dailyPlanHeaderUploadButton) {
-          dispatch(setDailyPlanSuccessPopup(true));
-        } else if (kldHeaderUploadButton) {
+        if (kldHeaderUploadButton) {
+          await kldUpload({
+            file: uploadFile,
+          }).unwrap();
           dispatch(setKLDSuccessPopup(true));
-        }
-        dispatch(setUploadedFile(null));
-
-        localStorage.setItem("showDailyNotificationPopup", "true");
-
-        setTimeout(async () => {
-          const shouldShow = localStorage.getItem("showDailyNotificationPopup");
-          if (shouldShow === "true") {
-            try {
-              const response = await dailyPlanNotifications(
-                uploadFile?.name ?? ""
-              ).unwrap();
-              dispatch(
-                setGlobalPopup({
-                  open: true,
-                  data: response && response?.notifications,
-                })
-              );
-
-              localStorage.removeItem("showDailyNotificationPopup");
-            } catch (err) {
-              toast.error("Failed to fetch notifications.");
+          localStorage.setItem("showKldNotificationPopup", "true");
+          setTimeout(async () => {
+            const shouldShowKLD = localStorage.getItem(
+              "showKldNotificationPopup"
+            );
+            if (shouldShowKLD === "true" && kldHeaderUploadButton) {
+              try {
+                const response = await kldMasterDataNotifications(
+                  uploadFile?.name ?? ""
+                ).unwrap();
+                dispatch(
+                  setGlobalPopup({
+                    open: true,
+                    data: response && response?.notifications,
+                  })
+                );
+                localStorage.removeItem("showKldNotificationPopup");
+              } catch (err) {
+                toast.error("Failed to fetch notifications.");
+              }
             }
+          }, 500);
+        } else {
+          await uploadCustomerFile({
+            file: uploadFile,
+            unitNumber:
+              unitEffectiveNumberDaily && !dailyPlanHeaderUploadButton
+                ? unitEffectiveNumberDaily
+                : "",
+            type: "job",
+          }).unwrap();
+          if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
+            setSubmitPopupConfirm(true);
+          } else if (dailyPlanHeaderUploadButton) {
+            dispatch(setDailyPlanSuccessPopup(true));
           }
-        }, 5 * 60 * 1000);
+          localStorage.setItem("showDailyNotificationPopup", "true");
+          setTimeout(async () => {
+            const shouldShow = localStorage.getItem(
+              "showDailyNotificationPopup"
+            );
+            if (shouldShow === "true") {
+              try {
+                const response = await dailyPlanNotifications(
+                  uploadFile?.name ?? ""
+                ).unwrap();
+                dispatch(
+                  setGlobalPopup({
+                    open: true,
+                    data: response && response?.notifications,
+                  })
+                );
+                localStorage.removeItem("showDailyNotificationPopup");
+              } catch (err) {
+                toast.error("Failed to fetch notifications.");
+              }
+            }
+          }, 5 * 60 * 1000);
+        }
+
+        dispatch(setUploadedFile(null));
       } catch (err) {
         console.error("Upload failed:", err);
-
         let message = "Upload failed. Please try again.";
 
-        // Check for RTK Query error format
         if (err && typeof err === "object") {
           const errData = err as {
             data?: { message?: string };
             message?: string;
           };
-
           if (errData?.data?.message) {
             message = errData.data.message;
           } else if (errData?.message) {
@@ -659,7 +670,7 @@ const Header: React.FC<HeaderProps> = ({
                   }}
                 />
               )}
-                            {button3Text && (
+              {button3Text && (
                 <ButtonComponent
                   onClick={onButton3Click}
                   color={
@@ -762,7 +773,7 @@ const Header: React.FC<HeaderProps> = ({
         subText={"Upload KLD Master Data"}
         sampleFile={true}
         handleDownloadSampleFile={() =>
-          handleDownloadSampleFileMasterData("/Upload_template_after_job.xlsx")
+          handleDownloadSampleFileMasterData("/kld_sample_data_updated.xlsx")
         }
         disable={uploadFile ? false : true}
         popUpClosed={false}
@@ -825,9 +836,9 @@ const Header: React.FC<HeaderProps> = ({
         gifSrc=""
         onClose={handleSubmitPopupCloseKLD}
         onClick={handleSubmitPopupConfirmOpen}
-        isLoading={uploadLoading}
+        isLoading={kldUploadLoading}
         popUpClosed={false}
-        noButton={uploadLoading ? true : false}
+        noButton={kldUploadLoading ? true : false}
       />
       <SuccessPopup
         open={kldSuccessPopup}
