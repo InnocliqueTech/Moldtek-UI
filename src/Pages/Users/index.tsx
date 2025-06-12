@@ -103,9 +103,8 @@ const Users: React.FC = () => {
                     : "N/A",
         },
     ];
-    const roleId = localStorage.getItem("userId")
-    console.log(roleId, "roleId")
-    const parsedRoleId = roleId ? Number(roleId) : 0;
+const storedEmail = localStorage.getItem("email") || "";
+console.log("storedEmail", storedEmail)
 
     const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation();
 
@@ -162,6 +161,7 @@ const Users: React.FC = () => {
         if (!openSliderUser) {
           getUsers({
             ...filtersPayload,
+            email:storedEmail,
             page: isSearchTriggered ? 0 : page,
             size: rowsPerPage,
           });
@@ -194,7 +194,7 @@ const Users: React.FC = () => {
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
-        // dispatch(setIsSearchTriggered(false));
+         dispatch(setIsSearchTriggered(false));
         localStorage.setItem(storageKey, newPage.toString());
     };
 

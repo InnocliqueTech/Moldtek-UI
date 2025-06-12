@@ -4,8 +4,6 @@ export interface FiltersPayload {
     fromDate: string;
     toDate: string;
     roles: number[];
-    labelType: number[],
-    email:string
 
 }
 export interface LabelType {
@@ -37,8 +35,7 @@ export interface UserData {
     userSuccessPopup: boolean;
     userConfirmPopup: boolean;
 }
-const storedEmail = localStorage.getItem("email") || "";
-console.log("storedEmail", storedEmail)
+
 
 // const storedRoleType = localStorage.getItem("userId");
 // const parsedRoleType = storedRoleType ? JSON.parse(storedRoleType) : [];
@@ -62,8 +59,6 @@ const initialState: UserData = {
         fromDate: "",
         toDate: "",
         roles: [],
-        labelType: [],
-        email:storedEmail
     },
     labelTypes: [],
     selectedLabelTypeIds: [],
