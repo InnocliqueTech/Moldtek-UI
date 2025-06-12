@@ -341,7 +341,7 @@ const Header: React.FC<HeaderProps> = ({
                 toast.error("Failed to fetch notifications.");
               }
             }
-          }, 500);
+          }, 5 * 60 * 1000);
         } else {
           await uploadCustomerFile({
             file: uploadFile,
