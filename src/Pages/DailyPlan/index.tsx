@@ -229,7 +229,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   }, [debouncedSearchDailyPlan]);
 
   useEffect(() => {
-    if (!openSliderDaily&& page===0) {
+    if (!openSliderDaily) {
       dailyPlanGlobalSearch({
         page: page,
         size: rowsPerPage,

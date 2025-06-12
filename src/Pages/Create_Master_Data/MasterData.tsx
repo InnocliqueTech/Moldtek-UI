@@ -214,7 +214,7 @@ const MasterData: React.FC = () => {
   }, [debouncedSearch]);
 
   useEffect(() => {
-    if (!openSider&& page===0) {
+    if (!openSider) {
         masterDataGlobalSearch({
         page: page,
         size: rowsPerPage,
