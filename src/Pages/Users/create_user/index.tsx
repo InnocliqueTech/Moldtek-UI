@@ -118,11 +118,11 @@ const CreateUser: React.FC = () => {
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,
-        phoneNumber: userData.phoneNumber,
+        phoneNumber: userData.phoneNumber ? userData.phoneNumber : null,
         userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Supervisor' ? 2 : 3 // Example mapping
       };
 
-      !rowData ? await createUser(payload).unwrap() : await updateUser({ userId:1234, userData: payload }).unwrap();
+      !rowData ? await createUser(payload).unwrap() : await updateUser({ userId:rowData?.id, userData: payload }).unwrap();
       setFormFields(initialUserFields);
       return { success: true };
     } catch (error) {
@@ -134,15 +134,33 @@ const CreateUser: React.FC = () => {
   const rowData = location.state?.rowData
 
   useEffect(() => {
-    if (rowData) {
-      setFormFields((prevFields) =>
-        prevFields.map((field) => ({
+  if (rowData) {
+    setFormFields((prevFields) =>
+      prevFields.map((field) => {
+        if (field.id === 'role') {
+          const userTypeId = Number(rowData.userTypeId);
+          const roleMap: Record<number, string> = {
+            1: 'Admin',
+            2: 'Supervisor',
+            3: 'User'
+          };
+          const validUserTypeId = [1, 2, 3].includes(userTypeId) 
+            ? userTypeId as keyof typeof roleMap 
+            : 3; 
+          return {
+            ...field,
+            value: roleMap[validUserTypeId] || ''
+          };
+        }
+        return {
           ...field,
           value: rowData[field.id] || ''
-        }))
-      )
-    }
-  }, [rowData])
+        };
+      })
+    )
+  }
+}, [rowData])
+
   return (
     <Box style={{ backgroundColor: 'white', borderRadius: '12px', padding: '16px 24px' }}>
       {/* <Typography variant="h6" gutterBottom>{rowData ? "Update User" : "Create User"}</Typography> */}
@@ -160,6 +178,7 @@ const CreateUser: React.FC = () => {
                 checkbox={false}
                 error={!!errors[field.id]}
                 helperText={errors[field.id]}
+                required = {field.required}
               />
             ) : (
               <ReusableInput
@@ -171,6 +190,7 @@ const CreateUser: React.FC = () => {
                 }
                 error={!!errors[field.id]}
                 helperText={errors[field.id]}
+                required = {field.required}
               />
             )}
           </Grid>

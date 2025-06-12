@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ConfirmPopup from "../../../Components/ReUsable/ConfirmPopup";
 import SuccessPopup from "../../../Components/ReUsable/SuccessPopup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface CreateUserPopupsProps {
   onSubmit: () => Promise<{ success: boolean; error?: any }>;
@@ -17,7 +17,12 @@ const CreateUserPopups: React.FC<CreateUserPopupsProps> = ({
   onClose
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
+
+  const isUpdateRoute = location.pathname.includes("update-user");
+  const actionText = isUpdateRoute ? "update" : "create";
+  const ActionText = isUpdateRoute ? "Update" : "Create"; // Capitalized for titles
 
   const handleSubmitPopupClose = () => {
     onClose();
@@ -45,10 +50,10 @@ const CreateUserPopups: React.FC<CreateUserPopupsProps> = ({
     <>
       <ConfirmPopup
         open={open && !submitPopupConfirm}
-        title="Are you sure you want to create this user?"
-        message="Please confirm that all the details are correct before submitting."
+        title={`Are you sure you want to ${actionText} this user?`}
+        message={`Please confirm that all the details are correct before ${actionText === "update" ? "updating" : "creating"}.`}
         buttonText="Cancel"
-        buttonText2="Confirm"
+        buttonText2={ActionText}
         gifSrc=""
         onClose={handleSubmitPopupClose}
         onClick={handleSubmitPopupConfirmOpen}
@@ -57,7 +62,7 @@ const CreateUserPopups: React.FC<CreateUserPopupsProps> = ({
       />
       <SuccessPopup
         open={submitPopupConfirm}
-        message="User created successfully!"
+        message={`User ${actionText === "update" ? "updated" : "created"} successfully!`}
         buttonText="View Users"
         onClose={handleSubmitPopupConfirmClose}
         onClick={handleSubmitPopupConfirmClick}

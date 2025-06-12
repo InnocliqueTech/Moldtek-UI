@@ -7,7 +7,7 @@ interface userCreationDataModel {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber: string | null;
   userTypeId: number;
 }
 

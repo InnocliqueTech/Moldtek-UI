@@ -116,7 +116,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
       ) : (
         <Tooltip title={value}>
         <TextField
-  placeholder={`Enter a ${label} value`}
+  placeholder={`Enter a ${label}`}
   value={value}
   onChange={onChange}
   type={showPassword && type === "password" ? "text" : type}
