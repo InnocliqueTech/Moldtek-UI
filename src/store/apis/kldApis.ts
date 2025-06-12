@@ -20,10 +20,13 @@ export const kldApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: [],
+ tagTypes: [
+    "KLDMasterDataMetrics",
+    "KLDMasterDataList"],
   endpoints: (builder) => ({
     getKLDmetrics: builder.query<KLDResponse, void>({
       query: () => "kld/kld-metrics",
+      providesTags: ["KLDMasterDataMetrics"],
     }),
     getKLDCode: builder.mutation<any, any>({
       query: (newItem) => ({
@@ -44,6 +47,7 @@ export const kldApi = createApi({
         url: "/kld/createKld",
         method: "POST",
         body: newItem,
+         invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
       }),
     }),
     updateKldData: builder.mutation<any, any>({
@@ -51,6 +55,7 @@ export const kldApi = createApi({
         url: "/kld/updateKld",
         method: "POST",
         body: newItem,
+         invalidatesTags: ["KLDMasterDataMetrics", "KLDMasterDataList"],
       }),
     }),
     getKLDData: builder.mutation<any, any>({
@@ -58,6 +63,7 @@ export const kldApi = createApi({
         url: "/kld/getAllKldMasterData",
         method: "POST",
         body: newItem,
+        providesTags: ["KLDMasterDataList"],
       }),
     }),
   }),
