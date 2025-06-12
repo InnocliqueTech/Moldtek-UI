@@ -1,14 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_API_URL } from "../../api.config";
+import Users from "../../Pages/Users";
 
-interface userCreationDataModel  {
-      displayName: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      phoneNumber: string;
-      userTypeId: number;
-    }
+interface userCreationDataModel {
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  userTypeId: number;
+}
+
+interface getUsersPayload {
+  email: string;
+  roles: number[];
+  fromDate: string;
+  toDate: string;
+  page: number;
+  size: number
+}
 
 export const manageUsersApis = createApi({
   reducerPath: "manageUsersApis",
@@ -23,9 +33,9 @@ export const manageUsersApis = createApi({
         method: 'POST',
         body: userData
       }),
-    invalidatesTags: ['User'], 
+      invalidatesTags: ['User'],
     }),
-    updateUser: builder.mutation<any, { userId: number; userData: UserCreationDataModel }>({
+    updateUser: builder.mutation<any, { userId: number; userData: userCreationDataModel }>({
       query: ({ userId, userData }) => ({
         url: `/users/updateuser/${userId}`,
         method: 'POST',
@@ -33,10 +43,25 @@ export const manageUsersApis = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    getUsers: builder.query<any, getUsersPayload>({
+      query: (params) => ({
+        url: '/users/getUsers',
+        method: 'POST',
+        body: params
+      }),
+      transformResponse: (response: any) => {
+        return {
+          totalRecords: response.data.totalItems,
+          data: response.data.users,
+        }
+      },
+      providesTags: ['User']
+    })
   }),
 });
 
 export const {
   useCreateUserMutation,
   useUpdateUserMutation,
+  useGetUsersQuery,
 } = manageUsersApis;

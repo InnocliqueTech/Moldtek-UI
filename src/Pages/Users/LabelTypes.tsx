@@ -38,8 +38,6 @@ const LabelTypeSelector: React.FC = () => {
     const staticLabelTypes: LabelType[] = [
         { labelTypeId: 1, labelTypeName: "Admin" },
         { labelTypeId: 2, labelTypeName: "User" },
-        { labelTypeId: 3, labelTypeName: "Supervisor" },
-        { labelTypeId: 4, labelTypeName: "Manager" },
     ];
 
     useEffect(() => {
@@ -101,7 +99,7 @@ const LabelTypeSelector: React.FC = () => {
             </Box>
 
             <Box display="flex" gap={1} flexWrap="wrap">
-                <Box display="flex" gap={1} flexWrap="wrap">
+                <Box display="flex" gap={1} flexWrap="wrap" flexDirection="column">
                     {visibleLabels.map((label) => {
                         const isSelected = selectedLabelTypeIds.some(
                             (selected) => selected.labelTypeId === label.labelTypeId

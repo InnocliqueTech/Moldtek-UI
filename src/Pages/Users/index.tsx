@@ -5,16 +5,11 @@ import { InfoOutline, Delete, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 
-import { userslistOfData } from "./data";
+import { useGetUsersQuery } from "../../store/apis/manageUsersApi";
 
-// import {
-//     useGetMetricsQuery,
-//       useMasterDataGlobalSearchMutation,
-//       useMasterFiltersMutation,
-// } from "../../store/apis/masterDataApis";
+
 
 const Users: React.FC = () => {
-    // const { isLoading } = useGetMetricsQuery();
     const navigate = useNavigate();
     const storageKey = "userDataPage";
     const [page, setPage] = useState(() => {
@@ -79,7 +74,7 @@ const Users: React.FC = () => {
             format: (value: string) => value,
         },
         {
-            id: "role",
+            id: "userTypeName",
             label: "Role",
             align: false,
             disableSorting: false,
@@ -96,7 +91,17 @@ const Users: React.FC = () => {
                     : "N/A",
         },
     ];
-
+    const roleId = localStorage.getItem("userId")
+    console.log(roleId, "roleId")
+    const parsedRoleId = roleId ? Number(roleId) : 0;
+    const { data: userslistOfData, isLoading } = useGetUsersQuery({
+        email: "admin@example.com",
+        roles: [],
+        fromDate: "",
+        toDate: "",
+        page: page,
+        size: rowsPerPage,
+    });
     const baseActions = [
         {
             icon: (
@@ -108,10 +113,10 @@ const Users: React.FC = () => {
             ),
             onClick: (row: any) => {
                 console.log(row)
-                navigate('/update-user', {state:{rowData:row}})
+                navigate('/update-user', { state: { rowData: row } })
             },
         },
-          {
+        {
             icon: (
                 <Tooltip title="Delete" arrow>
                     <IconButton size="small" color="error">
@@ -121,7 +126,7 @@ const Users: React.FC = () => {
             ),
             onClick: (row: any) => {
                 console.log(row.userId)
-                
+
             },
         },
     ];
@@ -144,6 +149,8 @@ const Users: React.FC = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
     };
+
+    console.log(userslistOfData)
 
     return (
         <Box sx={{ p: 0 }}>
@@ -174,21 +181,21 @@ const Users: React.FC = () => {
                     boxShadow={true}
                     columns={columns}
                     pageNumber={page}
-                    data={userslistOfData.data}
+                    data={userslistOfData?.data || []}
 
                     selectable={false}
-                    label={`${userslistOfData.totalRecords
+                    label={`${userslistOfData?.totalRecords || 0
                         } Users`}
                     title="Overview"
                     info={true}
                     searchVisible={true}
                     action={true}
                     actions={baseActions}
-                    // isLoading={listOfCompaniesLoading || searchLoading}
+                    isLoading={isLoading}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handlePageChange}
-                    id={"masterData"}
-                    totalLength={userslistOfData.totalRecords}
+                    id={"userData"}
+                    totalLength={userslistOfData?.totalRecords || 0}
                     pageRange={true}
                     handleRowsPerPageChange={handleRowsPerPageChange}
                 />
