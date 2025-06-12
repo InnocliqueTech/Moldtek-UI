@@ -3,8 +3,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface FiltersPayload {
     fromDate: string;
     toDate: string;
-    role: string;
-    labelType: string[],
+    roles: number[];
+    labelType: number[],
+    email:string
 
 }
 export interface LabelType {
@@ -31,11 +32,19 @@ export interface UserData {
     UserEdit: boolean;
     debouncedSearchUser: string;
     rowUserData: UserRowData;
-      labelTypes: LabelType[];              
-    selectedLabelTypeIds: LabelType[]; 
+    labelTypes: LabelType[];
+    selectedLabelTypeIds: LabelType[];
+    userSuccessPopup: boolean;
+    userConfirmPopup: boolean;
 }
+const storedEmail = localStorage.getItem("email") || "";
+console.log("storedEmail", storedEmail)
 
+// const storedRoleType = localStorage.getItem("userId");
+// const parsedRoleType = storedRoleType ? JSON.parse(storedRoleType) : [];
 const initialState: UserData = {
+    userSuccessPopup: false,
+    userConfirmPopup: false,
     rowUserData: {
         firstName: "",
         latName: "",
@@ -52,10 +61,11 @@ const initialState: UserData = {
     filtersPayload: {
         fromDate: "",
         toDate: "",
-        role: '',
+        roles: [],
         labelType: [],
+        email:storedEmail
     },
-    labelTypes: [],             
+    labelTypes: [],
     selectedLabelTypeIds: [],
 };
 
@@ -101,20 +111,33 @@ const UserSlice = createSlice({
                 state.selectedLabelTypeIds.push(action.payload);
             }
         },
+        setUserSuccessPopup: (state, action: PayloadAction<boolean>) => {
+            state.userSuccessPopup = action.payload
+        },
+        setUserConfirmPopup: (state, action: PayloadAction<boolean>) => {
+            state.userConfirmPopup = action.payload;
+        },
+        setCreateSlider: (state, action: PayloadAction<boolean>) => {
+            state.createSlider = action.payload;
+        },
+  
+
     },
 });
 
-export const { 
-    setIsSearchTriggered, 
-    setDebouncedSearchUser, 
-    setOpenSliderUser, 
-    setFiltersPayload, 
+export const {
+    setIsSearchTriggered,
+    setDebouncedSearchUser,
+    setOpenSliderUser,
+    setFiltersPayload,
     setCreateSliders,
-     setUserEdit, 
-     setRowUserData,
-     setLabelTypes,
-     setSelectedLabelTypeIds,
-     toggleLabelType
-     } =
+    setUserEdit,
+    setRowUserData,
+    setLabelTypes,
+    setSelectedLabelTypeIds,
+    toggleLabelType, 
+    setUserConfirmPopup,
+    setUserSuccessPopup
+} =
     UserSlice.actions;
 export default UserSlice.reducer;

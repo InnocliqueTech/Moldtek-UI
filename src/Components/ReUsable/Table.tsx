@@ -61,6 +61,7 @@ import Loader from "../../Loader";
 import { useLocation } from "react-router-dom";
 import { setDebouncedSearch } from "../../store/slices/masterDataSlice";
 import { setDebouncedSearchKLD } from "../../store/slices/kldSlice";
+import { setDebouncedSearchUser } from "../../store/slices/userSlice";
 
 interface Column {
   id: string;
@@ -160,7 +161,7 @@ function ReusableTable<T extends Record<string, any>>({
   //   setAnchorEl(null);
   //   setSelectedRow(null);
   // };
-const role = localStorage.getItem("role") || "";
+  const role = localStorage.getItem("role") || "";
 
 
   const handleRequestSort = (property: string) => {
@@ -171,22 +172,27 @@ const role = localStorage.getItem("role") || "";
 
 
   useEffect(() => {
-  const handler = setTimeout(() => {
-    if(id==='masterData'){
-    dispatch(setDebouncedSearch(search));
-    }
-    if(id==='dailyPlan'){
-    dispatch(setDebouncedSearchDailyPlan(search));
-    }
-    if(id==='kldData'){
- dispatch(setDebouncedSearchKLD(search));
-    }
-  }, 500); 
+    const handler = setTimeout(() => {
+      if (id === 'masterData') {
+        dispatch(setDebouncedSearch(search));
+      }
+      if (id === 'dailyPlan') {
+        dispatch(setDebouncedSearchDailyPlan(search));
+      }
+      if (id === 'kldData') {
+        dispatch(setDebouncedSearchKLD(search));
+      }
+      {
+        if (id === 'user') {
+          dispatch(setDebouncedSearchUser(search));
+        }
+      }
+    }, 500);
 
-  return () => {
-    clearTimeout(handler);
-  };
-}, [search]);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
 
   const getValue = (row: any, key: string) => {
     if (key === "customer_name")
@@ -213,39 +219,39 @@ const role = localStorage.getItem("role") || "";
         ? 1
         : -1
       : aValue < bValue
-      ? 1
-      : -1;
+        ? 1
+        : -1;
   });
 
   const filteredData = search
     ? sortedData.filter((row) => {
-        const searchValue = search.toLowerCase();
+      const searchValue = search.toLowerCase();
 
-        if (id === "jobsList") {
-          return Object.entries(row).some(([key, value]) => {
-            if (!value) return false;
+      if (id === "jobsList") {
+        return Object.entries(row).some(([key, value]) => {
+          if (!value) return false;
 
-            let stringValue = "";
+          let stringValue = "";
 
-            // Check if the field is a date field — format it as dd-mm-yyyy
-            if (key.toLowerCase().includes("date")) {
-              const date = new Date(value);
-              if (!isNaN(date.getTime())) {
-                stringValue = date
-                  .toLocaleDateString("en-GB")
-                  .replace(/\//g, "-");
-              }
-            } else {
-              stringValue = value.toString();
+          // Check if the field is a date field — format it as dd-mm-yyyy
+          if (key.toLowerCase().includes("date")) {
+            const date = new Date(value);
+            if (!isNaN(date.getTime())) {
+              stringValue = date
+                .toLocaleDateString("en-GB")
+                .replace(/\//g, "-");
             }
+          } else {
+            stringValue = value.toString();
+          }
 
-            return stringValue.toLowerCase().includes(searchValue);
-          });
-        } 
-        else  {
-return (sortedData)
-        }
-      })
+          return stringValue.toLowerCase().includes(searchValue);
+        });
+      }
+      else {
+        return (sortedData)
+      }
+    })
     : sortedData;
 
   const handleSelectAll = () => {
@@ -468,10 +474,9 @@ return (sortedData)
         });
       } else if (successful.length > 0 && failed.length <= 0) {
         toast.success(
-          `${
-            successful.length === 1
-              ? "File downloaded successfully."
-              : "Files downloaded successfully."
+          `${successful.length === 1
+            ? "File downloaded successfully."
+            : "Files downloaded successfully."
           }`
         );
       }
@@ -688,10 +693,10 @@ return (sortedData)
                           indeterminate={
                             selected.length > 0 &&
                             selected.length <
-                              Math.min(
-                                rowsPerPage,
-                                filteredData.length - pageNumber * rowsPerPage
-                              )
+                            Math.min(
+                              rowsPerPage,
+                              filteredData.length - pageNumber * rowsPerPage
+                            )
                           }
                         />
                       </TableCell>
@@ -814,9 +819,9 @@ return (sortedData)
                     (pageRange
                       ? filteredData
                       : filteredData.slice(
-                          pageNumber * rowsPerPage,
-                          pageNumber * rowsPerPage + rowsPerPage
-                        )
+                        pageNumber * rowsPerPage,
+                        pageNumber * rowsPerPage + rowsPerPage
+                      )
                     ).map((row: any, index: any) => {
                       const isItemSelected = isSelected(row);
                       const isRowCheckBoxDisable = checkTheDisableStatus(row);
@@ -874,7 +879,7 @@ return (sortedData)
                                     )
                                   }
                                   displayEmpty
-                                  disabled={(row[column.id] || "").toLowerCase() === "completed" && role.toLowerCase() !=='admin'}
+                                  disabled={(row[column.id] || "").toLowerCase() === "completed" && role.toLowerCase() !== 'admin'}
                                   variant="standard"
                                   sx={{
                                     width: 150,
@@ -909,28 +914,28 @@ return (sortedData)
                               )}
                             </TableCell>
                           ))}
-                         {actions && actions.length > 0  && (
-  <TableCell align="right">
-    <Stack direction="row">
-      {actions.map((action, index) => (
-        <Tooltip key={index} title={action.label} arrow>
-          <IconButton
-            size="small"
-            onClick={() => {
-              action.onClick(row);
-            }}
-            sx={{
-              p: 0.1,
-              color: "inherit", 
-            }}
-          >
-            {action.icon}
-          </IconButton>
-        </Tooltip>
-      ))}
-    </Stack>
-  </TableCell>
-)}
+                          {actions && actions.length > 0 && (
+                            <TableCell align="right">
+                              <Stack direction="row">
+                                {actions.map((action, index) => (
+                                  <Tooltip key={index} title={action.label} arrow>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => {
+                                        action.onClick(row);
+                                      }}
+                                      sx={{
+                                        p: 0.1,
+                                        color: "inherit",
+                                      }}
+                                    >
+                                      {action.icon}
+                                    </IconButton>
+                                  </Tooltip>
+                                ))}
+                              </Stack>
+                            </TableCell>
+                          )}
 
                         </TableRow>
                       );
@@ -938,7 +943,7 @@ return (sortedData)
                   )}
                 </TableBody>
 
-               
+
               </Table>
             </TableContainer>
 
@@ -956,11 +961,11 @@ return (sortedData)
               >
                 {pageRange
                   ? `Page ${pageNumber + 1} of ${Math.ceil(
-                      totalLength / rowsPerPage
-                    )}`
+                    totalLength / rowsPerPage
+                  )}`
                   : `Page ${pageNumber + 1} of ${Math.ceil(
-                      filteredData.length / rowsPerPage
-                    )}`}
+                    filteredData.length / rowsPerPage
+                  )}`}
               </Typography>
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography sx={{ marginRight: "4px", marginTop: "6px" }}>
@@ -1156,7 +1161,7 @@ return (sortedData)
             )}
             <Dialog
               open={!!downloadSummary}
-              onClose={() => {}}
+              onClose={() => { }}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 3 } }}
@@ -1317,7 +1322,7 @@ return (sortedData)
             </Dialog>
             <Dialog
               open={confirmDialogOpen}
-              onClose={() => {}}
+              onClose={() => { }}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 5, p: 0.5 } }}

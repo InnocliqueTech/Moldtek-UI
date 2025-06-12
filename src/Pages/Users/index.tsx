@@ -4,13 +4,25 @@ import Cards from '../../Components/ReUsable/Cards';
 import { InfoOutline, Delete, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 
-import { useGetUsersQuery } from "../../store/apis/manageUsersApi";
+import { useGetUsersMutation } from "../../store/apis/manageUsersApi";
+import { setIsSearchTriggered } from "../../store/slices/userSlice";
 
 
 
 const Users: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { filtersPayload, debouncedSearchUser, isSearchTriggered, openSliderUser } = useSelector(
+        (state: RootState) => state.user
+    )
+
+
+
+
     const storageKey = "userDataPage";
     const [page, setPage] = useState(() => {
         const savedPage = localStorage.getItem(storageKey);
@@ -94,14 +106,20 @@ const Users: React.FC = () => {
     const roleId = localStorage.getItem("userId")
     console.log(roleId, "roleId")
     const parsedRoleId = roleId ? Number(roleId) : 0;
-    const { data: userslistOfData, isLoading } = useGetUsersQuery({
-        email: "admin@example.com",
-        roles: [],
-        fromDate: "",
-        toDate: "",
-        page: page,
-        size: rowsPerPage,
-    });
+
+    const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation();
+
+
+    // const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation(
+    //     //     {
+    //     //     email: "admin@example.com",
+    //     //     roles: [],
+    //     //     fromDate: "",
+    //     //     toDate: "",
+    //     //     page: page,
+    //     //     size: rowsPerPage,
+    //     // }
+    // );
     const baseActions = [
         {
             icon: (
@@ -130,7 +148,44 @@ const Users: React.FC = () => {
             },
         },
     ];
+    console.log("filtersPayload", filtersPayload)
+    // useEffect(() => {
+    //     // fetchUsers();
+    //     getUsers({
+    //     ...filtersPayload,
+    //     page: isSearchTriggered ? 0 : page,
+    //     size: rowsPerPage,
+    //   });
+    // }, [page, rowsPerPage, isSearchTriggered, filtersPayload, ]);
 
+      useEffect(() => {
+        if (!openSliderUser) {
+          getUsers({
+            ...filtersPayload,
+            page: isSearchTriggered ? 0 : page,
+            size: rowsPerPage,
+          });
+        }
+        if (isSearchTriggered) {
+          setPage(0);
+        }
+      }, [page, openSliderUser, filtersPayload, rowsPerPage]);
+    // useEffect(() => {
+    //     if (isSearchTriggered) {
+            
+    //         const payload = {
+    //             email: "admin@example.com", // static email
+    //             roles: filtersPayload.roles ? [Number(filtersPayload.roles)] : [],
+    //             fromDate: filtersPayload.fromDate,
+    //             toDate: filtersPayload.toDate,
+    //             page: page,
+    //             size: rowsPerPage,
+    //         };
+
+    //         getUsers(payload);
+    //         dispatch(setIsSearchTriggered(false));
+    //     }
+    // }, [isSearchTriggered, filtersPayload, page, rowsPerPage]);
 
     useEffect(() => {
         localStorage.setItem(storageKey, page.toString());

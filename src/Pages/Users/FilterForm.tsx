@@ -26,8 +26,8 @@ interface FilterFormProps {
     localDates: LocalDatePayload;
     searchField: string;
     setSearchField: React.Dispatch<React.SetStateAction<string>>;
-    selectedRole: string;
-    setSelectedRole: React.Dispatch<React.SetStateAction<string>>;
+    selectedRole: number[];
+    setSelectedRole: React.Dispatch<React.SetStateAction<number[]>>;
 
 }
 
@@ -60,8 +60,9 @@ const FilterForm: React.FC<FilterFormProps> = ({
                     setFiltersPayload({
                         fromDate: "",
                         toDate: "",
-                        role: "",
-                        labelType: []
+                        roles: [],
+                        labelType: [],
+                        email:""
                     })
                 );
                 setLocalDates({ fromDate: null, toDate: null });

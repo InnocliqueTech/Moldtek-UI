@@ -29,9 +29,12 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         selectedLabelTypeIds
     } = useSelector((state: RootState) => state.user);
 
-    const [selectedrole, setSelectedRole] = useState<string>(
-        filtersPayload.role || ''
+    const [selectedrole, setSelectedRole] = useState<number[]>(
+        filtersPayload.roles || []
     );
+    const [selectedemail, setSelectedEmail] = useState<string>(
+        filtersPayload.email
+    )
 
     const [searchField, setSearchField] = useState<string>('');
     const [localDates, setLocalDates] = useState<LocalDatePayload>({
@@ -60,7 +63,7 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
             return;
         }
 
-
+        console.log("selectedLabelTypeIds", selectedLabelTypeIds)
 
         const finalSearchPayload: FiltersPayload = {
 
@@ -72,8 +75,9 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
                 localDates.toDate && localDates.toDate
                     ? format(localDates.toDate, "yyyy-MM-dd")
                     : "",
-            role: selectedrole ?? '',
-            labelType: selectedLabelTypeIds.map(item => item.labelTypeName),
+            roles: selectedLabelTypeIds.map(item => item.labelTypeId),
+            labelType: selectedLabelTypeIds.map(item => item.labelTypeId),
+            email: selectedemail ?? ''
         };
 
         dispatch(setFiltersPayload(finalSearchPayload));
@@ -87,10 +91,11 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         dispatch(setSelectedLabelTypeIds([]));
         dispatch(
             setFiltersPayload({
-                role: '',
+                roles: [],
                 fromDate: "",
                 toDate: "",
                 labelType: [],
+                email: ''
             })
         );
 

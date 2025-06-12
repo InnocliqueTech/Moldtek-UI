@@ -62,6 +62,7 @@ console.log(response)
         localStorage.setItem("role", response?.data?.userTypeName);
         localStorage.setItem("userName", response?.data?.userName);
         localStorage.setItem("userId", response?.data?.userTypeId);
+        localStorage.setItem("email",response?.data?.email )
 
         if (rememberMe) {
           localStorage.setItem("rememberMeEmail", email);

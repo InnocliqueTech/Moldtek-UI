@@ -43,7 +43,7 @@ export const manageUsersApis = createApi({
       }),
       invalidatesTags: ['User'],
     }),
-    getUsers: builder.query<any, getUsersPayload>({
+   getUsers: builder.mutation<any, getUsersPayload>({
       query: (params) => ({
         url: '/users/getUsers',
         method: 'POST',
@@ -55,13 +55,13 @@ export const manageUsersApis = createApi({
           data: response.data.users,
         }
       },
-      providesTags: ['User']
     })
   }),
+
 });
 
 export const {
   useCreateUserMutation,
   useUpdateUserMutation,
-  useGetUsersQuery,
+   useGetUsersMutation,
 } = manageUsersApis;
