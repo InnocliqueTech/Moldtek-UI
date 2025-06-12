@@ -40,7 +40,7 @@ const MasterData: React.FC = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const [previousPage, setPreviousPage] = useState(0);
+  const previousPage = localStorage.getItem('PreviousPageMasterData');
   const rowsPerPageStorageKey = "masterDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -206,15 +206,15 @@ const MasterData: React.FC = () => {
 
   useEffect(() => {
     if (debouncedSearch !== "") {
-      setPreviousPage(page);
+      localStorage.setItem("PreviousPageMasterData",page.toString());
       setPage(0);
     } else {
-      setPage(previousPage);
+      setPage(Number(previousPage));
     }
   }, [debouncedSearch]);
 
   useEffect(() => {
-    if (!openSider) {
+    if (!openSider&& page===0) {
         masterDataGlobalSearch({
         page: page,
         size: rowsPerPage,

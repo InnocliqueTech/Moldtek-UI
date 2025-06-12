@@ -30,14 +30,19 @@ import { KLDData } from "../../store/apis/kldApis";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: kldMetricsData, isLoading, isError } = useGetKLDmetricsQuery();
+  const {
+    data: kldMetricsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetKLDmetricsQuery();
   const apiStats: KLDData | undefined = kldMetricsData?.data;
   const storageKey = "kldDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const [previousPage, setPreviousPage] = useState(0);
+  const previousPage = localStorage.getItem('PreviousPageKLD');
   const rowsPerPageStorageKey = "kldDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -157,27 +162,28 @@ const ProductionOperatorsPage: React.FC = () => {
       setPage(0);
     }
   }, [page, filtersPayload, rowsPerPage, createSlider]);
+  useEffect(() => {
+    refetch();
+  }, [createSlider]);
 
+  useEffect(() => {
+    if (debouncedSearchKLD !== "") {
+      localStorage.setItem("PreviousPageKLD",page.toString());
+      setPage(0);
+    } else {
+      setPage(Number(previousPage));
+    }
+  }, [debouncedSearchKLD]);
 
-useEffect(() => {
-  if (debouncedSearchKLD !== "") {
-    setPreviousPage(page);
-    setPage(0); 
-  } else {
-    setPage(previousPage);
-  }
-}, [debouncedSearchKLD]);
-
-useEffect(() => {
-  if (!openSliderKld && !createSlider) {
-    kldDataGlobalSearch({
-      page,
-      size: rowsPerPage,
-      searchField: debouncedSearchKLD,
-    });
-  }
-}, [page, rowsPerPage, debouncedSearchKLD, openSliderKld, createSlider]);
-
+  useEffect(() => {
+    if (!openSliderKld && !createSlider && page===0) {
+      kldDataGlobalSearch({
+        page,
+        size: rowsPerPage,
+        searchField: debouncedSearchKLD,
+      });
+    }
+  }, [page, rowsPerPage, debouncedSearchKLD, openSliderKld, createSlider]);
 
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());

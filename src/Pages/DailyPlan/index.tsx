@@ -161,7 +161,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const [previousPage, setPreviousPage] = useState(0);
+   const previousPage = localStorage.getItem('PreviousPageDailyPlan');
   const rowsPerPageStorageKey = "dailyPlanDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -221,15 +221,15 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
 
   useEffect(() => {
     if (debouncedSearchDailyPlan !== "") {
-      setPreviousPage(page);
+      localStorage.setItem("PreviousPageDailyPlan",page.toString());
       setPage(0);
     } else {
-      setPage(previousPage);
+      setPage(Number(previousPage));
     }
   }, [debouncedSearchDailyPlan]);
 
   useEffect(() => {
-    if (!openSliderDaily) {
+    if (!openSliderDaily&& page===0) {
       dailyPlanGlobalSearch({
         page: page,
         size: rowsPerPage,
