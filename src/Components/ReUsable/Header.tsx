@@ -634,26 +634,6 @@ const Header: React.FC<HeaderProps> = ({
                 </IconButton>
               )}
 
-              {button3Text && (
-                <ButtonComponent
-                  onClick={onButton3Click}
-                  color={
-                    headerButton && !headerButtonColor ? "white" : "#0073B7"
-                  }
-                  text={button3Text}
-                  textColor={
-                    headerButton && !headerButtonColor ? "#0E0E0E" : "#FFFFFF"
-                  }
-                  borderRadius="100px"
-                  border={
-                    headerButton && !headerButtonColor
-                      ? "1px solid #E5E5E5"
-                      : "none"
-                  }
-                  p={"14px"}
-                />
-              )}
-
               {button1Text && (
                 <ButtonComponent
                   {...(onButton1Click && { onClick: onButton1Click })}
@@ -677,6 +657,25 @@ const Header: React.FC<HeaderProps> = ({
                     border: "1px solid #2F2F2F",
                     "& .MuiChip-icon": { color: "#2F2F2F" },
                   }}
+                />
+              )}
+                            {button3Text && (
+                <ButtonComponent
+                  onClick={onButton3Click}
+                  color={
+                    headerButton && !headerButtonColor ? "white" : "#0073B7"
+                  }
+                  text={button3Text}
+                  textColor={
+                    headerButton && !headerButtonColor ? "#0E0E0E" : "#FFFFFF"
+                  }
+                  borderRadius="100px"
+                  border={
+                    headerButton && !headerButtonColor
+                      ? "1px solid #E5E5E5"
+                      : "none"
+                  }
+                  p={"14px"}
                 />
               )}
               {button2Text && (
