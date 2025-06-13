@@ -133,6 +133,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
               file: customerLogoFile,
               unitNumber,
               type: "customer",
+              userTypeId:""
             }).unwrap();
           } catch (uploadErr: any) {
             const message =
@@ -177,6 +178,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             file: uploadFile,
             unitNumber: "",
             type: "master",
+            userTypeId:""
           }).unwrap();
 
           dispatch(setSubmitAndPublishPopup(false));

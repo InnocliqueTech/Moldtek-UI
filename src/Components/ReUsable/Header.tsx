@@ -312,6 +312,8 @@ const Header: React.FC<HeaderProps> = ({
   //   }
   // }, [data, dispatch]);
 
+  const userTypeId = localStorage.getItem("userTypeId")||"";
+
   const handleSubmitPopupConfirmOpen = async () => {
     if (uploadFile) {
       try {
@@ -345,11 +347,9 @@ const Header: React.FC<HeaderProps> = ({
         } else {
           await uploadCustomerFile({
             file: uploadFile,
-            unitNumber:
-              unitEffectiveNumberDaily && !dailyPlanHeaderUploadButton
-                ? unitEffectiveNumberDaily
-                : "",
-            type: "job",
+            type: dailyPlanHeaderUploadButton ?"bulkUpload":"job",
+            unitNumber:"",
+            userTypeId:dailyPlanHeaderUploadButton ? userTypeId:""
           }).unwrap();
           if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
             setSubmitPopupConfirm(true);
