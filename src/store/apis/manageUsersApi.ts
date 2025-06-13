@@ -13,7 +13,7 @@ interface userCreationDataModel {
 
 interface getUsersPayload {
   email: string;
-  roles: number[];
+  roles: string[];
   fromDate: string;
   toDate: string;
   page: number;

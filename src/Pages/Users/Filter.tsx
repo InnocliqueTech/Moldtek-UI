@@ -69,8 +69,6 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
           ? format(localDates.toDate, "yyyy-MM-dd")
           : "",
       roles: selectedLabelTypeIds.map((item) => item.labelTypeName),
-       labelType: selectedLabelTypeIds.map(item => item.labelTypeName),
-       email:filtersPayload.email
     };
 
     dispatch(setFiltersPayload(finalSearchPayload));
@@ -87,8 +85,6 @@ const Filter: React.FC<FilterProps> = ({ filterTitle }) => {
         roles: [],
         fromDate: "",
         toDate: "",
-        labelType:[],
-        email:filtersPayload.email
       })
     );
 

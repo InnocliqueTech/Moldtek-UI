@@ -170,22 +170,7 @@ console.log("storedEmail", storedEmail)
           setPage(0);
         }
       }, [page, openSliderUser, filtersPayload, rowsPerPage]);
-    // useEffect(() => {
-    //     if (isSearchTriggered) {
-            
-    //         const payload = {
-    //             email: "admin@example.com", // static email
-    //             roles: filtersPayload.roles ? [Number(filtersPayload.roles)] : [],
-    //             fromDate: filtersPayload.fromDate,
-    //             toDate: filtersPayload.toDate,
-    //             page: page,
-    //             size: rowsPerPage,
-    //         };
 
-    //         getUsers(payload);
-    //         dispatch(setIsSearchTriggered(false));
-    //     }
-    // }, [isSearchTriggered, filtersPayload, page, rowsPerPage]);
 
     useEffect(() => {
         localStorage.setItem(storageKey, page.toString());

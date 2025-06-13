@@ -61,8 +61,6 @@ const FilterForm: React.FC<FilterFormProps> = ({
                         fromDate: "",
                         toDate: "",
                         roles: [],
-                        labelType: [],
-                        email:""
                     })
                 );
                 setLocalDates({ fromDate: null, toDate: null });
