@@ -56,11 +56,12 @@ export const genericApi = createApi({
 
     uploadCustomerFile: builder.mutation<
       any,
-      { file: File; unitNumber: string; type: string }
+      { file: File;unitNumber: string;  type: string ;userTypeId:string}
     >({
-      query: ({ file, unitNumber, type }) => {
+      query: ({ file, unitNumber, type,userTypeId }) => {
         const formData = new FormData();
-        formData.append("unitNumber", unitNumber);
+         formData.append("unitNumber", unitNumber);
+        formData.append("userTypeId", userTypeId);
         formData.append("file", file);
         formData.append("type", type);
 
