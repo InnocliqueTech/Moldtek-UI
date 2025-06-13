@@ -312,7 +312,7 @@ const Header: React.FC<HeaderProps> = ({
   //   }
   // }, [data, dispatch]);
 
-  const userTypeId = localStorage.getItem("userTypeId")||"";
+  const userTypeId = localStorage.getItem("userId")||"";
 
   const handleSubmitPopupConfirmOpen = async () => {
     if (uploadFile) {

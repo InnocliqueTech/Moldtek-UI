@@ -55,13 +55,13 @@ const SignInPage: React.FC = () => {
 
     try {
       const response = await login({ username: email, password: trimmedPassword }).unwrap();
-
-      if (response?.data?.token) {
+ if (response?.data?.token) {
         localStorage.setItem("token", response?.data?.token);
         localStorage.setItem("auth", "true");
         localStorage.setItem("role", response?.data?.userTypeName);
         localStorage.setItem("userName", response?.data?.userName);
-        localStorage.setItem("userTypeId",response?.data?.userTypeId);
+        localStorage.setItem("userId", response?.data?.userTypeId);
+        localStorage.setItem("email",response?.data?.email );
 
         if (rememberMe) {
           localStorage.setItem("rememberMeEmail", email);
