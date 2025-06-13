@@ -321,6 +321,7 @@ const Header: React.FC<HeaderProps> = ({
           await kldUpload({
             file: uploadFile,
           }).unwrap();
+           dispatch(setUploadedFile(null));
           dispatch(setKLDSuccessPopup(true));
           localStorage.setItem("showKldNotificationPopup", "true");
           setTimeout(async () => {
@@ -347,10 +348,11 @@ const Header: React.FC<HeaderProps> = ({
         } else {
           await uploadCustomerFile({
             file: uploadFile,
-            type: dailyPlanHeaderUploadButton ?"bulkUpload":"job",
+            type: "job",
             unitNumber:"",
-            userTypeId:dailyPlanHeaderUploadButton ? userTypeId:""
+            userTypeId:userTypeId
           }).unwrap();
+           dispatch(setUploadedFile(null));
           if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
             setSubmitPopupConfirm(true);
           } else if (dailyPlanHeaderUploadButton) {
@@ -379,8 +381,6 @@ const Header: React.FC<HeaderProps> = ({
             }
           }, 5 * 60 * 1000);
         }
-
-        dispatch(setUploadedFile(null));
       } catch (err) {
         console.error("Upload failed:", err);
         let message = "Upload failed. Please try again.";
