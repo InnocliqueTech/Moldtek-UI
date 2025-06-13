@@ -6,8 +6,10 @@ import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-
-import { useGetUsersMutation } from "../../store/apis/manageUsersApi";
+import { toast } from 'react-toastify';
+import { useGetUsersMutation, useDeactivateUserMutation } from "../../store/apis/manageUsersApi";
+import { Switch, FormControlLabel } from '@mui/material';
+import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { setIsSearchTriggered } from "../../store/slices/userSlice";
 
 
@@ -102,9 +104,42 @@ const Users: React.FC = () => {
                     ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
                     : "N/A",
         },
+        {
+        id: "status",
+        label: "Status",
+        align: false,
+        disableSorting: false,
+        format: (value: boolean, row: any) => (
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={value}
+                        onChange={(e) => handleStatusChange(row.id, e.target.checked)}
+                        color="primary"
+                    />
+                }
+                label={
+                    value ? (
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <CheckCircleOutline style={{ color: 'green', marginRight: 4 }} />
+                            Active
+                        </span>
+                    ) : (
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <HighlightOff style={{ color: 'red', marginRight: 4 }} />
+                            Inactive
+                        </span>
+                    )
+                }
+            />
+        ),
+    },
     ];
-const storedEmail = localStorage.getItem("email") || "";
-console.log("storedEmail", storedEmail)
+   const storedEmail = localStorage.getItem("email") || "";
+   const handleStatusChange = (id: string, newStatus: boolean) => {
+     handleDeactivate(id);
+     console.log({ id, newStatus }, "inside new Status");
+   };
 
     const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation();
 
@@ -119,6 +154,7 @@ console.log("storedEmail", storedEmail)
     //     //     size: rowsPerPage,
     //     // }
     // );
+    const [deactivateUser] = useDeactivateUserMutation();
     const baseActions = [
         {
             icon: (
@@ -133,21 +169,20 @@ console.log("storedEmail", storedEmail)
                 navigate('/update-user', { state: { rowData: row } })
             },
         },
-        {
-            icon: (
-                <Tooltip title="Delete" arrow>
-                    <IconButton size="small" color="error">
-                        <Delete fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-            ),
-            onClick: (row: any) => {
-                console.log(row.userId)
+        // {
+        //     icon: (
+        //         <Tooltip title="Delete" arrow>
+        //             <IconButton size="small" color="error">
+        //                 <Delete fontSize="small" />
+        //             </IconButton>
+        //         </Tooltip>
+        //     ),
+        //     onClick: (row: any) => {
+        //         console.log(row.userId)
 
-            },
-        },
+        //     },
+        // },
     ];
-    console.log("filtersPayload", filtersPayload)
     // useEffect(() => {
     //     // fetchUsers();
     //     getUsers({
@@ -190,7 +225,14 @@ console.log("storedEmail", storedEmail)
         localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
     };
 
-    console.log(userslistOfData)
+    const handleDeactivate = async (userId: string) => {
+      try {
+        await deactivateUser(userId).unwrap();
+        toast.success("User deactivated successfully");
+      } catch (error) {
+        toast.error("Failed to deactivate user");
+      }
+    };
 
     return (
         <Box sx={{ p: 0 }}>
@@ -221,7 +263,7 @@ console.log("storedEmail", storedEmail)
                     boxShadow={true}
                     columns={columns}
                     pageNumber={page}
-                    data={userslistOfData?.data || []}
+                    data={userslistOfData?.data?.map((item:any,index:number)=>({...item,status:index%2 == 0 ? true : false})) || []}
 
                     selectable={false}
                     label={`${userslistOfData?.totalRecords || 0

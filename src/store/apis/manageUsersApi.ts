@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_API_URL } from "../../api.config";
-import Users from "../../Pages/Users";
 
 interface userCreationDataModel {
   displayName: string;
@@ -55,13 +54,21 @@ export const manageUsersApis = createApi({
           data: response.data.users,
         }
       },
-    })
+      
+    }),
+    deactivateUser: builder.mutation<any, string>({
+      query: (userId) => ({
+        url: `/users/deactivate/${userId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
-
 });
 
 export const {
   useCreateUserMutation,
   useUpdateUserMutation,
-   useGetUsersMutation,
+  useGetUsersMutation,
+  useDeactivateUserMutation,
 } = manageUsersApis;
