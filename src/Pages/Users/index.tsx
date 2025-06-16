@@ -258,7 +258,7 @@ const Users: React.FC = () => {
 
   const transformedData = userslistOfData?.data?.map((row: any) => ({
     ...row,
-    userTypeName: row.userType?.userTypeName ?? "N/A",
+    // userTypeName: row.userType?.userTypeName ?? "N/A",
   }))
 
   const transformedSearchData = globalSearchData?.data?.map((row: any) => ({
