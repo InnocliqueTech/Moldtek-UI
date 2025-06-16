@@ -299,7 +299,7 @@ const Layout = () => {
       // },
     },
     "/createMasterData": {
-      title: "Create Master Data",
+      title: "Create Master Data 123",
       button1Text: `Created on: ${formattedDate}`,
       button2Text: "Upload Master Data",
       // onButton1Click: () => alert("Edit Profile Clicked"),
