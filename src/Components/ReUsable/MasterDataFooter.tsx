@@ -209,7 +209,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
         } catch (err) {
           console.error("Upload failed:", err);
 
-          let message = "Upload failed. Please try again.";
+          let message = "Upload failed. Please try again. ";
 
           if (err && typeof err === "object") {
             const errData = err as {
