@@ -16,7 +16,7 @@ interface getUsersPayload {
   fromDate: string;
   toDate: string;
   page: number;
-  size: number
+  size: number;
 }
 
 interface UserMetricResponse {
@@ -26,9 +26,8 @@ interface UserMetricResponse {
   data: {
     totalUsers: number | null;
     inactiveUsers: number | null;
-    activeUsers: number | null
-  }
-
+    activeUsers: number | null;
+  };
 }
 
 export const manageUsersApis = createApi({
@@ -40,33 +39,35 @@ export const manageUsersApis = createApi({
   endpoints: (builder) => ({
     createUser: builder.mutation<any, userCreationDataModel>({
       query: (userData) => ({
-        url: '/users/create',
-        method: 'POST',
-        body: userData
+        url: "/users/create",
+        method: "POST",
+        body: userData,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
-    updateUser: builder.mutation<any, { userId: number; userData: userCreationDataModel }>({
+    updateUser: builder.mutation<
+      any,
+      { userId: number; userData: userCreationDataModel }
+    >({
       query: ({ userId, userData }) => ({
         url: `/users/updateuser/${userId}`,
-        method: 'POST',
-        body: userData
+        method: "POST",
+        body: userData,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
     getUsers: builder.mutation<any, getUsersPayload>({
       query: (params) => ({
-        url: '/users/getUsers',
-        method: 'POST',
-        body: params
+        url: "/users/getUsers",
+        method: "POST",
+        body: params,
       }),
       transformResponse: (response: any) => {
         return {
           totalRecords: response.data.totalItems,
           data: response.data.users,
-        }
+        };
       },
-
     }),
     deactivateUser: builder.mutation<
       void,
@@ -76,19 +77,29 @@ export const manageUsersApis = createApi({
         url: `/users/update-status?userId=${userId}&isActive=${isActive}`,
         method: "POST",
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
-    getUserMetrics: builder.query <UserMetricResponse, void>({
-      query : () => "/users/getUserMetrics",
-      providesTags:["UserMetrics"]
+    getUserMetrics: builder.query<UserMetricResponse, void>({
+      query: () => "/users/getUserMetrics",
+      providesTags: ["UserMetrics"],
     }),
-    userDataGlobalMutation:builder.mutation<any, any>({
-      query:(newItem) => ({
+    userDataGlobalMutation: builder.mutation<any, any>({
+      query: (newItem) => ({
         url: "/users/global-search",
-        method:"POST",
-        body:newItem
-      })
-    })
+        method: "POST",
+        body: newItem,
+      }),
+    }),
+    resetPassword: builder.mutation<any, any>({
+      query: (params) => ({
+        url: "/users/reset-password",
+        method: "POST",
+        body: params,
+      }),
+    }),
+    getPersonalDetails: builder.query<any, any>({
+      query: (email) => `/users/profile?email=${email}`,
+    }),
   }),
 });
 
@@ -98,5 +109,7 @@ export const {
   useGetUsersMutation,
   useDeactivateUserMutation,
   useGetUserMetricsQuery,
-  useUserDataGlobalMutationMutation
+  useResetPasswordMutation,
+  useGetPersonalDetailsQuery,
+  useUserDataGlobalMutationMutation,
 } = manageUsersApis;

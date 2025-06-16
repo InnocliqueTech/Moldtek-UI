@@ -44,7 +44,7 @@ const Users: React.FC = () => {
   });
   const previousPage = localStorage.getItem('PreviousPageUser');
 
-  const { data } = useGetUserMetricsQuery()
+  const { data,isLoading:metricsLoading } = useGetUserMetricsQuery()
   const widgetsData = [
     {
       title: "Total Users",
@@ -287,7 +287,7 @@ const Users: React.FC = () => {
                     sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
                   />
                 }
-                isLoading={searchLoading}
+                isLoading={metricsLoading}
                 infoText={widget.infoText}
               />
             </Grid>
@@ -318,7 +318,7 @@ const Users: React.FC = () => {
           searchVisible={true}
           action={true}
           actions={baseActions}
-          isLoading={isLoading}
+          isLoading={isLoading||searchLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"userData"}

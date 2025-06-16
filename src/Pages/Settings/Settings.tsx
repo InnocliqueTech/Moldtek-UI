@@ -1,22 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
   Paper,
   Grid,
+  Skeleton,
 } from '@mui/material';
 import { Person, Lock } from '@mui/icons-material';
 import ReusableInput from '../../Components/ReUsable/TextField';
 import ReusableButton from '../../Components/ReUsable/Button';
+import { useGetPersonalDetailsQuery, useResetPasswordMutation } from '../../store/apis/manageUsersApi';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
   const [personalDetails, setPersonalDetails] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    displayName: 'Johnny',
-    email: 'john.doe@example.com',
-    phoneNumber: '+1 (555) 123-4567',
+    firstName: '',
+    lastName: '',
+    displayName: '',
+    email: '',
+    phone: '',
   });
+
+  const navigate = useNavigate();
+
+const userTypeId = localStorage.getItem("userId")||"";
+const email = localStorage.getItem("email");
+
+  const [resetPassword,{isLoading}] = useResetPasswordMutation();
+
+  const {data,isLoading:personalDetailsLoading} = useGetPersonalDetailsQuery(email);
+
+
+  useEffect(()=>{
+if(data){
+  setPersonalDetails(data.data)
+}
+  },[data])
 
   const [passwordDetails, setPasswordDetails] = useState({
     oldPassword: '',
@@ -43,27 +63,29 @@ const Settings = () => {
     setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
-  const validatePersonalForm = () => {
-    const newErrors = { ...errors };
-    let isValid = true;
+const validatePersonalForm = () => {
+  const newErrors = { ...errors };
+  let isValid = true;
 
-    if (!personalDetails.firstName.trim()) {
-      newErrors.firstName = 'First Name is required';
-      isValid = false;
-    }
-    if (!personalDetails.lastName.trim()) {
-      newErrors.lastName = 'Last Name is required';
-      isValid = false;
-    }
-     if (!personalDetails.displayName.trim()) {
-      newErrors.displayName = 'Display Name is required';
-      isValid = false;
-    }
+  if (!personalDetails.firstName?.trim()) {
+    newErrors.firstName = 'First Name is required';
+    isValid = false;
+  }
 
+  if (!personalDetails.lastName?.trim()) {
+    newErrors.lastName = 'Last Name is required';
+    isValid = false;
+  }
 
-    setErrors(newErrors);
-    return isValid;
-  };
+  if (!personalDetails.displayName?.trim()) {
+    newErrors.displayName = 'Display Name is required';
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+  return isValid;
+};
+
 
   const validatePasswordForm = () => {
     const newErrors = { ...errors };
@@ -95,20 +117,29 @@ const Settings = () => {
     }
   };
 
-  const handleSavePassword = () => {
-    if (validatePasswordForm()) {
-      console.log('Password Updated:', passwordDetails);
-    }
-  };
+const handleSavePassword = async () => {
+  if (validatePasswordForm()) {
+    try {
+      await resetPassword({
+        userId: Number(userTypeId),
+        newPassword: passwordDetails.newPassword,
+        oldPassword: passwordDetails.oldPassword,
+      }).unwrap();
 
-  const isSaveDisabledPersonalDetails =
-  !personalDetails.firstName.trim() ||
-  !personalDetails.lastName.trim() ||
-  !personalDetails.displayName.trim()
+      toast.success("Password reset successfully. You will be redirected to login. Please login with your new password.");
+      setTimeout(() => {
+        navigate("/"); 
+      }, 2000);
+    } catch (error: any) {
+      const errorMessage = error?.data?.message || "Something went wrong. Please try again.";
+      toast.error(errorMessage); 
+    }
+  }
+};
+
+
  
-  const isSaveDisabledPasswordDetails =  !passwordDetails.oldPassword.trim() ||
-  !passwordDetails.newPassword.trim() ||
-  passwordDetails.newPassword !== passwordDetails.confirmNewPassword;
+
 
   return (
     <Box>
@@ -120,55 +151,67 @@ const Settings = () => {
             Personal Details
           </Typography>
         </Box>
-
-        <Grid container spacing={3}>
-         <Grid size={{xs:12,sm:6}}>
-            <ReusableInput
-              label="First Name"
-              value={personalDetails.firstName}
-              onChange={handlePersonalChange('firstName')}
-              error={!!errors.firstName}
-              helperText={errors.firstName}
-              required
-            />
-          </Grid>
-         <Grid size={{xs:12,sm:6}}>
-            <ReusableInput
-              label="Last Name"
-              value={personalDetails.lastName}
-              onChange={handlePersonalChange('lastName')}
-              error={!!errors.lastName}
-              helperText={errors.lastName}
-              required
-            />
-          </Grid>
-         <Grid size={{xs:12,sm:6}}>
-            <ReusableInput
-              label="Display Name"
-              value={personalDetails.displayName}
-              onChange={handlePersonalChange('displayName')}
-               error={!!errors.displayName}
-              helperText={errors.displayName}
-              required
-            />
-          </Grid>
-         <Grid size={{xs:12,sm:6}}>
-            <ReusableInput
-              label="Email"
-              value={personalDetails.email}
-              onChange={() => {}}
-              disabled
-            />
-          </Grid>
-         <Grid size={{xs:12,sm:6}}>
-            <ReusableInput
-              label="Phone Number"
-              value={personalDetails.phoneNumber}
-              onChange={handlePersonalChange('phoneNumber')}
-              placeholder="+1 (555) 123-4567"
-            />
-          </Grid>
+<Grid container spacing={3}>
+  {personalDetailsLoading ? (
+    <>
+      {[...Array(5)].map((_, index) => (
+        <Grid size={{xs:12,sm:6}} key={index}>
+          <Skeleton variant="rectangular" height={56} sx={{ borderRadius: '8px' }} />
         </Grid>
+      ))}
+    </>
+  ) : (
+    <>
+      <Grid size={{xs:12,sm:6}}>
+        <ReusableInput
+          label="First Name"
+          value={personalDetails.firstName}
+          onChange={handlePersonalChange('firstName')}
+          error={!!errors.firstName}
+          helperText={errors.firstName}
+          required
+        />
+      </Grid>
+      <Grid size={{xs:12,sm:6}}>
+        <ReusableInput
+          label="Last Name"
+          value={personalDetails.lastName}
+          onChange={handlePersonalChange('lastName')}
+          error={!!errors.lastName}
+          helperText={errors.lastName}
+          required
+        />
+      </Grid>
+      <Grid size={{xs:12,sm:6}}>
+        <ReusableInput
+          label="Display Name"
+          value={personalDetails.displayName}
+          onChange={handlePersonalChange('displayName')}
+          error={!!errors.displayName}
+          helperText={errors.displayName}
+          required
+        />
+      </Grid>
+      <Grid size={{xs:12,sm:6}}>
+        <ReusableInput
+          label="Email"
+          value={personalDetails.email}
+          onChange={() => {}}
+          disabled
+        />
+      </Grid>
+      <Grid size={{xs:12,sm:6}}>
+        <ReusableInput
+          label="Phone Number"
+          value={personalDetails.phone}
+          onChange={handlePersonalChange('phone')}
+          placeholder="+1 (555) 123-4567"
+        />
+      </Grid>
+    </>
+  )}
+</Grid>
+
 
         <Box mt={4} display="flex" justifyContent="flex-end">
           <ReusableButton
@@ -178,7 +221,6 @@ const Settings = () => {
             textColor="white"
             p={2}
             onClick={handleSavePersonal}
-            disabled={isSaveDisabledPersonalDetails}
           />
         </Box>
       </Paper>
@@ -236,7 +278,7 @@ const Settings = () => {
             textColor="white"
             p={2}
             onClick={handleSavePassword}
-              disabled={isSaveDisabledPasswordDetails}
+            loading={isLoading}
           />
         </Box>
       </Paper>
