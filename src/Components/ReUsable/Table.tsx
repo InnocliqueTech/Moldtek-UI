@@ -183,8 +183,9 @@ function ReusableTable<T extends Record<string, any>>({
         dispatch(setDebouncedSearchKLD(search));
       }
       {
-        if (id === 'user') {
+        if (id === 'userData') {
           dispatch(setDebouncedSearchUser(search));
+          console.log("setDebouncedSearchUser(search)", setDebouncedSearchUser(search))
         }
       }
     }, 500);

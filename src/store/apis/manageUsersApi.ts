@@ -81,6 +81,13 @@ export const manageUsersApis = createApi({
     getUserMetrics: builder.query <UserMetricResponse, void>({
       query : () => "/users/getUserMetrics",
       providesTags:["UserMetrics"]
+    }),
+    userDataGlobalMutation:builder.mutation<any, any>({
+      query:(newItem) => ({
+        url: "/users/global-search",
+        method:"POST",
+        body:newItem
+      })
     })
   }),
 });
@@ -90,5 +97,6 @@ export const {
   useUpdateUserMutation,
   useGetUsersMutation,
   useDeactivateUserMutation,
-  useGetUserMetricsQuery
+  useGetUserMetricsQuery,
+  useUserDataGlobalMutationMutation
 } = manageUsersApis;
