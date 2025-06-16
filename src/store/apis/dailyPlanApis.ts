@@ -204,13 +204,6 @@ export const dailyPlanApi = createApi({
         },
       ],
     }),
-      dailyPlanNotifications: builder.query<any, string>({
-  query: (newItem) => ({
-    url: `/dailyplan/getJobUploadNotifications?fileName=${newItem}`,
-    method: "GET",
-  }),
-
-}),
 dailyPlanGlobalSearch:builder.mutation<any, any>({
       query: (newItem) => ({
         url: "/dailyplan/globalSearchForDailyJob",
@@ -239,7 +232,5 @@ export const {
   useSaveTravelCardDetailsMutation,
   useSavePrintingReportDetailsMutation,
   useSaveLaminationReportDetailsMutation,
-  useSaveMakeReadyDetailsMutation,
-  useDailyPlanNotificationsQuery,
-  useLazyDailyPlanNotificationsQuery
+  useSaveMakeReadyDetailsMutation
 } = dailyPlanApi;

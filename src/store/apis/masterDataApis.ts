@@ -80,13 +80,6 @@ export const masterDataApi = createApi({
         body: newItem,
       }),
     }),
-masterDataNotifications: builder.query<any, string>({
-  query: (newItem) => ({
-    url: `/master/getNotificationForUpload?fileName=${newItem}`,
-    method: "GET",
-  }),
-
-}),
 masterDataGlobalSearch:builder.mutation<any, any>({
       query: (newItem) => ({
         url: "/master/globalSearchForMasterData",
@@ -106,7 +99,5 @@ export const {
   useCreateMasterDataMutation,
   useVersionHistoryQuery,
   useGetJobsListQuery,
-  useMasterFiltersMutation,
-  useMasterDataNotificationsQuery,
-  useLazyMasterDataNotificationsQuery
+  useMasterFiltersMutation
 } = masterDataApi;

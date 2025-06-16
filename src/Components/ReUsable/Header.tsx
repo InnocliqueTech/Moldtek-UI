@@ -40,13 +40,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/View_Master_Data/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
+import { useLazyGetNotificationsQuery, useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 import {
-  useLazyDailyPlanNotificationsQuery,
-  useUpdateStatusJobMutation,
+  useUpdateStatusJobMutation
 } from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";
 import {
@@ -66,8 +65,7 @@ import {
   setKLDSuccessPopup,
 } from "../../store/slices/kldSlice";
 import {
-  useKldUploadMutation,
-  useLazyKldMasterDataNotificationsQuery,
+  useKldUploadMutation
 } from "../../store/apis/kldApis";
 import FilterUsers from "../../Pages/Users/Filter";
 
@@ -306,8 +304,7 @@ const Header: React.FC<HeaderProps> = ({
     // setSubmitPopup(false);
   };
 
-  const [dailyPlanNotifications] = useLazyDailyPlanNotificationsQuery();
-  const [kldMasterDataNotifications] = useLazyKldMasterDataNotificationsQuery();
+  const [notificationsData] = useLazyGetNotificationsQuery();
 
   // useEffect(() => {
   //   if (data?.data) {
@@ -324,6 +321,7 @@ const Header: React.FC<HeaderProps> = ({
           await kldUpload({
             file: uploadFile,
           }).unwrap();
+           dispatch(setUploadedFile(null));
           dispatch(setKLDSuccessPopup(true));
           localStorage.setItem("showKldNotificationPopup", "true");
           setTimeout(async () => {
@@ -332,7 +330,7 @@ const Header: React.FC<HeaderProps> = ({
             );
             if (shouldShowKLD === "true" && kldHeaderUploadButton) {
               try {
-                const response = await kldMasterDataNotifications(
+                const response = await notificationsData(
                   uploadFile?.name ?? ""
                 ).unwrap();
                 dispatch(
@@ -350,10 +348,11 @@ const Header: React.FC<HeaderProps> = ({
         } else {
           await uploadCustomerFile({
             file: uploadFile,
-            type: dailyPlanHeaderUploadButton ?"bulkUpload":"job",
+            type: "job",
             unitNumber:"",
-            userTypeId:dailyPlanHeaderUploadButton ? userTypeId:""
+            userTypeId:userTypeId
           }).unwrap();
+           dispatch(setUploadedFile(null));
           if (!dailyPlanHeaderUploadButton && !kldHeaderUploadButton) {
             setSubmitPopupConfirm(true);
           } else if (dailyPlanHeaderUploadButton) {
@@ -366,7 +365,7 @@ const Header: React.FC<HeaderProps> = ({
             );
             if (shouldShow === "true") {
               try {
-                const response = await dailyPlanNotifications(
+                const response = await notificationsData(
                   uploadFile?.name ?? ""
                 ).unwrap();
                 dispatch(
@@ -382,8 +381,6 @@ const Header: React.FC<HeaderProps> = ({
             }
           }, 5 * 60 * 1000);
         }
-
-        dispatch(setUploadedFile(null));
       } catch (err) {
         console.error("Upload failed:", err);
         let message = "Upload failed. Please try again.";

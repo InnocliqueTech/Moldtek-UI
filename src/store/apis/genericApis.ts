@@ -87,6 +87,13 @@ export const genericApi = createApi({
       query: (unitEffectiveNumber) =>
         `/master/generateIndent?unitEffectiveNumber=${unitEffectiveNumber}`,
     }),
+     getNotifications: builder.query<any, string>({
+  query: (newItem) => ({
+    url: `/master/getNotificationForUpload?fileName=${newItem}`,
+    method: "GET",
+  }),
+
+}),
   }),
 });
 
@@ -102,4 +109,6 @@ export const {
   useUploadCustomerFileMutation,
   useGetAllUnitEffectiveNumbersQuery,
   useGenerateIndentQuery,
+  useGetNotificationsQuery,
+  useLazyGetNotificationsQuery
 } = genericApi;

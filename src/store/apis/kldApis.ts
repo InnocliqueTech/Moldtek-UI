@@ -75,13 +75,7 @@ export const kldApi = createApi({
         };
       },
     }),
-    kldMasterDataNotifications: builder.query<any, string>({
-  query: (newItem) => ({
-    url: `/master/getNotificationForUpload?fileName=${newItem}`,
-    method: "GET",
-  }),
-
-}),
+   
   }),
 });
 
@@ -93,6 +87,4 @@ export const {
   useGetKLDDataMutation,
   useUpdateKldDataMutation,
   useKldUploadMutation,
-  useKldMasterDataNotificationsQuery,
-  useLazyKldMasterDataNotificationsQuery
 } = kldApi;
