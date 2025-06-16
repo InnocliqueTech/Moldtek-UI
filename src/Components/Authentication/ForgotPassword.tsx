@@ -1,23 +1,13 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
-  Container,
   Typography,
   Button,
-  Paper,
-  TextField,
-  Stack,
-  Fade,
   Alert,
-  InputAdornment,
-  IconButton,
 } from '@mui/material';
 import {
   Lock as LockIcon,
-  Email as EmailIcon,
-  Visibility,
-  VisibilityOff,
   CheckCircle as CheckCircleIcon,
   ArrowBack as ArrowBackIcon,
   EmailOutlined,
@@ -30,6 +20,9 @@ import SignInImage from "../../assets/Images/signIn.png";
 import BackgroundImage from "../../assets/Images/backgroundPatternImage.png";
 import ReusableInput from '../ReUsable/TextField';
 import curveImage from "../../assets/Images/curves.png";
+import { signInSchema } from '../ZodSchemas/signInpageValidation';
+import { useForGotPasswordMutation } from '../../store/apis/authenticationApis';
+import { toast } from 'react-toastify';
 
 
 const ForgotPassword = () => {
@@ -39,17 +32,44 @@ const ForgotPassword = () => {
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [forGotPassword, { isLoading }] = useForGotPasswordMutation();
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (!email) {
       setError('Please enter your email address');
       return;
     }
     setError('');
+
+    // Validate only email with Zod
+    const emailResult = signInSchema.shape.email.safeParse(email);
+
+    let newErrors = '';
+
+    if (!emailResult.success) {
+      newErrors = emailResult.error.issues[0]?.message || "Invalid email";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setError(newErrors);
+      return;
+    }
+
+    try {
+      const response = await forGotPassword({
+        username: email,
+      }).unwrap();
+      if (response?.statusCode ===200) {
+       toast.success(response?.message)
     setStep('code');
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Error Fetching Data");
+      navigate("/");
+    }
   };
 
   const handleVerifyCode = () => {
@@ -92,6 +112,12 @@ const ForgotPassword = () => {
     navigate('/');
   };
 
+    const isFormValid = () => {
+    const emailResult = signInSchema.shape.email.safeParse(email);
+
+    return emailResult.success
+  };
+
   const renderContent = () => {
     switch (step) {
       case 'email':
@@ -124,12 +150,9 @@ const ForgotPassword = () => {
               Enter your email address and we'll send you a verification code to reset your password.
             </Typography>
                       <Box sx={{ textAlign: "left", width: "100%" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
-              Email
-            </Typography>
+           
             <ReusableInput
-              label=""
-              placeholder="Enter your email"
+              label="Email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -145,8 +168,8 @@ const ForgotPassword = () => {
                         width="100%"
                         borderRadius="100px"
                         color="#0073B7"
-                        // disabled={!isFormValid()}
-                        // loading={isLoading}
+                        disabled={!isFormValid()}
+                         loading={isLoading}
                       />
                     </Box>
             </Box>
@@ -183,9 +206,6 @@ const ForgotPassword = () => {
               We've sent a 6-digit verification code to {email}. Please enter it below.
             </Typography>
                                   <Box sx={{ textAlign: "left", width: "100%" }}>
-            {/* <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
-              Verification Code
-            </Typography> */}
             <ReusableInput
               label=" Verification Code"
               onChange={(e) => setCode(e.target.value)}
@@ -238,76 +258,35 @@ const ForgotPassword = () => {
             >
               Create a new password for your account. Make sure it's strong and secure.
             </Typography>
-            <TextField
-              fullWidth
+               <Box sx={{ textAlign: "left", width: "100%" }}>
+            <ReusableInput
               label="New Password"
-              type={showPassword ? 'text' : 'password'}
+            type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon sx={{ color: '#667eea' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 3 }}
+              icon={<LockIcon />}
             />
-            <TextField
-              fullWidth
+          </Box>
+           <Box sx={{ textAlign: "left", width: "100%",mt:2 }}>
+            <ReusableInput
               label="Confirm New Password"
-              type={showConfirmPassword ? 'text' : 'password'}
+            type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon sx={{ color: '#667eea' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      edge="end"
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 3 }}
+              icon={<LockIcon />}
             />
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              onClick={handleResetPassword}
-              sx={{
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                borderRadius: 2,
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600,
-                py: 1.5,
-                mb: 2,
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8, #6a42a0)',
-                },
-              }}
-            >
-              Reset Password
-            </Button>
+          </Box>
+           <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
+                      <ReusableButton
+                        text="Reset Password"
+                        onClick={handleResetPassword}
+                        width="100%"
+                        borderRadius="100px"
+                        color="#0073B7"
+                        // disabled={!isFormValid()}
+                        // loading={isLoading}
+                      />
+                    </Box>
             </Box>
           </>
         );
@@ -379,26 +358,17 @@ const ForgotPassword = () => {
             >
               Your password has been successfully reset. You can now sign in with your new password.
             </Typography>
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              onClick={handleGoToLogin}
-              sx={{
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                borderRadius: 2,
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600,
-                py: 1.5,
-                mb: 2,
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8, #6a42a0)',
-                },
-              }}
-            >
-              Go to Login
-            </Button>
+                      <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2 }}>
+                      <ReusableButton
+                        text="Go to Login"
+                        onClick={handleGoToLogin}
+                        width="40%"
+                        borderRadius="100px"
+                        color="#0073B7"
+                        // disabled={!isFormValid()}
+                        // loading={isLoading}
+                      />
+                    </Box>
           </>
         );
 
