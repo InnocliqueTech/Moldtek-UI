@@ -40,13 +40,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VersinDetails from "../../Pages/View_Master_Data/versionDetails";
 import ConfirmPopup from "./ConfirmPopup";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
+import { useLazyGetNotificationsQuery, useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import SuccessPopup from "./SuccessPopup";
 import {
-  useLazyDailyPlanNotificationsQuery,
-  useUpdateStatusJobMutation,
+  useUpdateStatusJobMutation
 } from "../../store/apis/dailyPlanApis";
 import NotificationPopover from "./NotificationPopOver";
 import {
@@ -66,8 +65,7 @@ import {
   setKLDSuccessPopup,
 } from "../../store/slices/kldSlice";
 import {
-  useKldUploadMutation,
-  useLazyKldMasterDataNotificationsQuery,
+  useKldUploadMutation
 } from "../../store/apis/kldApis";
 
 interface HeaderProps {
@@ -303,8 +301,7 @@ const Header: React.FC<HeaderProps> = ({
     // setSubmitPopup(false);
   };
 
-  const [dailyPlanNotifications] = useLazyDailyPlanNotificationsQuery();
-  const [kldMasterDataNotifications] = useLazyKldMasterDataNotificationsQuery();
+  const [notificationsData] = useLazyGetNotificationsQuery();
 
   // useEffect(() => {
   //   if (data?.data) {
@@ -330,7 +327,7 @@ const Header: React.FC<HeaderProps> = ({
             );
             if (shouldShowKLD === "true" && kldHeaderUploadButton) {
               try {
-                const response = await kldMasterDataNotifications(
+                const response = await notificationsData(
                   uploadFile?.name ?? ""
                 ).unwrap();
                 dispatch(
@@ -365,7 +362,7 @@ const Header: React.FC<HeaderProps> = ({
             );
             if (shouldShow === "true") {
               try {
-                const response = await dailyPlanNotifications(
+                const response = await notificationsData(
                   uploadFile?.name ?? ""
                 ).unwrap();
                 dispatch(

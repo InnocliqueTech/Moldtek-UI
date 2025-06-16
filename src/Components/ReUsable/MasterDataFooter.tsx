@@ -29,11 +29,10 @@ import ConfirmPopup from "./ConfirmPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateMasterDataMutation,
-  useLazyMasterDataNotificationsQuery,
 } from "../../store/apis/masterDataApis";
 import { toast } from "react-toastify";
 import SuccessPopup from "./SuccessPopup";
-import { useUploadCustomerFileMutation } from "../../store/apis/genericApis";
+import { useLazyGetNotificationsQuery, useUploadCustomerFileMutation } from "../../store/apis/genericApis";
 // import { useEffect } from "react";
 
 interface MasterDataFooterProps {
@@ -102,7 +101,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       if (handleSave) handleSave();
     }
   };
-  const [masterDataNotifications] = useLazyMasterDataNotificationsQuery();
+  const [masterDataNotifications] = useLazyGetNotificationsQuery();
+
+  const userTypeId = localStorage.getItem("userId")||"";
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
 
@@ -133,7 +134,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
               file: customerLogoFile,
               unitNumber,
               type: "customer",
-              userTypeId:""
+              userTypeId:userTypeId
             }).unwrap();
           } catch (uploadErr: any) {
             const message =
@@ -178,11 +179,14 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
             file: uploadFile,
             unitNumber: "",
             type: "master",
-            userTypeId:""
+            userTypeId:userTypeId
           }).unwrap();
 
           dispatch(setSubmitAndPublishPopup(false));
           dispatch(setUploadedFile(null));
+          
+      dispatch(setSubmitPopupConfirm(true));
+      dispatch(setSelectedFile(null));
           localStorage.setItem("showNotificationPopup", "true");
           setTimeout(async () => {
             const shouldShow = localStorage.getItem("showNotificationPopup");
@@ -225,9 +229,6 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
       } else {
         toast.warn("No file selected to upload.");
       }
-
-      dispatch(setSubmitPopupConfirm(true));
-      dispatch(setSelectedFile(null));
     }
   };
 
