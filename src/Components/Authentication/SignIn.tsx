@@ -60,7 +60,8 @@ const SignInPage: React.FC = () => {
         localStorage.setItem("auth", "true");
         localStorage.setItem("role", response?.data?.userTypeName);
         localStorage.setItem("userName", response?.data?.userName);
-        localStorage.setItem("userId", response?.data?.userTypeId);
+        localStorage.setItem("userId", response?.data?.userId);
+        localStorage.setItem("userTypeId",response?.data?.userTypeId);
         localStorage.setItem("email",response?.data?.email );
 
         if (rememberMe) {

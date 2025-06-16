@@ -103,7 +103,7 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   };
   const [masterDataNotifications] = useLazyGetNotificationsQuery();
 
-  const userTypeId = localStorage.getItem("userId")||"";
+  const userTypeId = localStorage.getItem("userTypeId")||"";
 
   const handleSubmitPopupClose = () => dispatch(setSubmitPopup(false));
 

@@ -24,7 +24,7 @@ const Settings = () => {
 
   const navigate = useNavigate();
 
-const userTypeId = localStorage.getItem("userId")||"";
+const userId = localStorage.getItem("userId")||"";
 const email = localStorage.getItem("email");
 
   const [resetPassword,{isLoading}] = useResetPasswordMutation();
@@ -121,7 +121,7 @@ const handleSavePassword = async () => {
   if (validatePasswordForm()) {
     try {
       await resetPassword({
-        userId: Number(userTypeId),
+        userId: Number(userId),
         newPassword: passwordDetails.newPassword,
         oldPassword: passwordDetails.oldPassword,
       }).unwrap();

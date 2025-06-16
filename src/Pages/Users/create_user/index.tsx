@@ -41,7 +41,7 @@ const CreateUser: React.FC = () => {
   const [openPopup,setOpenPopup] = useState<boolean>(false);
   const [createUser, { isLoading }] = useCreateUserMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
-
+ const userTypeId = localStorage.getItem("userTypeId")||"";
   const handleInputChange = (
     fieldId: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -119,7 +119,7 @@ const CreateUser: React.FC = () => {
         lastName: userData.lastName,
         email: userData.email,
         phoneNumber: userData.phoneNumber ? userData.phoneNumber : null,
-        userTypeId: userData.role === 'Admin' ? 1 : userData.role === 'Supervisor' ? 2 : 3 // Example mapping
+        userTypeId: Number(userTypeId)
       };
 
       !rowData ? await createUser(payload).unwrap() : await updateUser({ userId:rowData?.id, userData: payload }).unwrap();
