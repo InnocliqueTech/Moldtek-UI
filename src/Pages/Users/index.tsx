@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { Box, Grid, SelectChangeEvent, Tooltip, IconButton } from "@mui/material";
 import Cards from '../../Components/ReUsable/Cards';
-import { InfoOutline, Delete, Edit } from "@mui/icons-material";
+import { InfoOutline, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { toast } from 'react-toastify';
-import { useGetUsersMutation, useDeactivateUserMutation, useGetUserMetricsQuery } from "../../store/apis/manageUsersApi";
+import { useGetUsersMutation, useDeactivateUserMutation,useGetUserMetricsQuery } from "../../store/apis/manageUsersApi";
 import { Switch, FormControlLabel } from '@mui/material';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { setIsSearchTriggered } from "../../store/slices/userSlice";
+import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
 
 
 
@@ -30,7 +31,12 @@ const Users: React.FC = () => {
         const savedPage = localStorage.getItem(storageKey);
         return savedPage !== null ? Number(savedPage) : 0;
     });
-    const [previousPage, setPreviousPage] = useState(0);
+    // const [previousPage, setPreviousPage] = useState(0);
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState('');
+    const [selectedUserStatus, setSelectedUserStatus] = useState(false);
+    const [actionText, setActionText] = useState('');
+    const [isConfirmLoading, setIsConfirmLoading] = useState(false);
     const rowsPerPageStorageKey = "userDataRowsPerPage";
     const [rowsPerPage, setRowsPerPage] = useState(() => {
         const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -38,7 +44,6 @@ const Users: React.FC = () => {
     });
 
     const {data} = useGetUserMetricsQuery()
-    console.log("useGetUserMetricsQuery", data)
     const widgetsData = [
         {
             title: "Total Users",
@@ -108,7 +113,7 @@ const Users: React.FC = () => {
                     : "N/A",
         },
         {
-        id: "status",
+        id: "active",
         label: "Status",
         align: false,
         disableSorting: false,
@@ -140,23 +145,47 @@ const Users: React.FC = () => {
     ];
    const storedEmail = localStorage.getItem("email") || "";
    const handleStatusChange = (id: string, newStatus: boolean) => {
-     handleDeactivate(id);
-     console.log({ id, newStatus }, "inside new Status");
+     setSelectedUserId(id);
+     setSelectedUserStatus(newStatus);
+     setActionText(newStatus ? "activate" : "deactivate");
+
+     setOpenConfirm(true);
    };
 
+    const handleSubmitPopupClose = () => {
+      setOpenConfirm(false);
+      setSelectedUserId("");
+      setSelectedUserStatus(false);
+      setActionText("");
+    };
+
+    const handleSubmitPopupConfirmOpen = async () => {
+    setIsConfirmLoading(true);
+    try {
+        await deactivateUser({
+        userId: selectedUserId,
+        isActive: selectedUserStatus,
+        }).unwrap();
+
+        getUsers({
+        ...filtersPayload,
+        email: storedEmail,
+        page: isSearchTriggered ? 0 : page,
+        size: rowsPerPage,
+        });
+
+        toast.success(
+        `User ${selectedUserStatus ? "activated" : "deactivated"} successfully`
+        );
+    } catch (error) {
+        toast.error("Failed to update user.");
+    } finally {
+        setIsConfirmLoading(false);
+        handleSubmitPopupClose();
+    }
+    };
+
     const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation();
-
-
-    // const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation(
-    //     //     {
-    //     //     email: "admin@example.com",
-    //     //     roles: [],
-    //     //     fromDate: "",
-    //     //     toDate: "",
-    //     //     page: page,
-    //     //     size: rowsPerPage,
-    //     // }
-    // );
     const [deactivateUser] = useDeactivateUserMutation();
     const baseActions = [
         {
@@ -172,29 +201,7 @@ const Users: React.FC = () => {
                 navigate('/update-user', { state: { rowData: row } })
             },
         },
-        // {
-        //     icon: (
-        //         <Tooltip title="Delete" arrow>
-        //             <IconButton size="small" color="error">
-        //                 <Delete fontSize="small" />
-        //             </IconButton>
-        //         </Tooltip>
-        //     ),
-        //     onClick: (row: any) => {
-        //         console.log(row.userId)
-
-        //     },
-        // },
     ];
-    // useEffect(() => {
-    //     // fetchUsers();
-    //     getUsers({
-    //     ...filtersPayload,
-    //     page: isSearchTriggered ? 0 : page,
-    //     size: rowsPerPage,
-    //   });
-    // }, [page, rowsPerPage, isSearchTriggered, filtersPayload, ]);
-
       useEffect(() => {
         if (!openSliderUser) {
           getUsers({
@@ -228,66 +235,67 @@ const Users: React.FC = () => {
         localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
     };
 
-    const handleDeactivate = async (userId: string) => {
-      try {
-        await deactivateUser(userId).unwrap();
-        toast.success("User deactivated successfully");
-      } catch (error) {
-        toast.error("Failed to deactivate user");
-      }
-    };
-
     return (
-        <Box sx={{ p: 0 }}>
-            <Grid container spacing={1}>
-                {widgetsData &&
-                    widgetsData?.map((widget, index) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-                            <Cards
-                                title={widget.title}
-                                value={widget.value}
-                                icon={
-                                    <InfoOutline
-                                        sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                                    />
-                                }
-                                // isLoading={isLoading}
-                                infoText={widget.infoText}
-                            />
-                        </Grid>
-                    ))}
-            </Grid>
-
-            <Box sx={{ paddingTop: 1.5 }}>
-                <ReusableTable
-                    infoText={
-                        "Displays a list of master data entries with their associated SKU information."
-                    }
-                    boxShadow={true}
-                    columns={columns}
-                    pageNumber={page}
-                    data={userslistOfData?.data?.map((item:any,index:number)=>({...item,status:index%2 == 0 ? true : false})) || []}
-
-                    selectable={false}
-                    label={`${userslistOfData?.totalRecords || 0
-                        } Users`}
-                    title="Overview"
-                    info={true}
-                    searchVisible={true}
-                    action={true}
-                    actions={baseActions}
-                    isLoading={isLoading}
-                    rowsPerPage={rowsPerPage}
-                    onPageChange={handlePageChange}
-                    id={"userData"}
-                    totalLength={userslistOfData?.totalRecords || 0}
-                    pageRange={true}
-                    handleRowsPerPageChange={handleRowsPerPageChange}
+      <Box sx={{ p: 0 }}>
+        <Grid container spacing={1}>
+          {widgetsData &&
+            widgetsData?.map((widget, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+                <Cards
+                  title={widget.title}
+                  value={widget.value}
+                  icon={
+                    <InfoOutline
+                      sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                    />
+                  }
+                  // isLoading={isLoading}
+                  infoText={widget.infoText}
                 />
+              </Grid>
+            ))}
+        </Grid>
 
-            </Box>
+        <Box sx={{ paddingTop: 1.5 }}>
+          <ReusableTable
+            infoText={
+              "Displays a list of master data entries with their associated SKU information."
+            }
+            boxShadow={true}
+            columns={columns}
+            pageNumber={page}
+            data={userslistOfData?.data || []}
+            selectable={false}
+            label={`${userslistOfData?.totalRecords || 0} Users`}
+            title="Overview"
+            info={true}
+            searchVisible={true}
+            action={true}
+            actions={baseActions}
+            isLoading={isLoading}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handlePageChange}
+            id={"userData"}
+            totalLength={userslistOfData?.totalRecords || 0}
+            pageRange={true}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+          />
         </Box>
-    )
+
+        <ConfirmPopup
+          open={openConfirm}
+          title={`Are you sure you want to ${actionText} this user?`}
+          message={``}
+          buttonText="Cancel"
+          buttonText2={actionText}
+          gifSrc=""
+          onClose={handleSubmitPopupClose}
+          onClick={handleSubmitPopupConfirmOpen}
+          isLoading={isConfirmLoading}
+          popUpClosed={false}
+        />
+      </Box>
+    );
 }
 
 export default Users;

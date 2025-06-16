@@ -36,7 +36,7 @@ export const manageUsersApis = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: ['User', 'UserMetrics'],
+  tagTypes: ["User", "UserMetrics"],
   endpoints: (builder) => ({
     createUser: builder.mutation<any, userCreationDataModel>({
       query: (userData) => ({
@@ -68,10 +68,13 @@ export const manageUsersApis = createApi({
       },
 
     }),
-    deactivateUser: builder.mutation<any, string>({
-      query: (userId) => ({
-        url: `/users/deactivate/${userId}`,
-        method: 'POST',
+    deactivateUser: builder.mutation<
+      void,
+      { userId: string; isActive: boolean }
+    >({
+      query: ({ userId, isActive }) => ({
+        url: `/users/update-status?userId=${userId}&isActive=${isActive}`,
+        method: "POST",
       }),
       invalidatesTags: ['User'],
     }),
