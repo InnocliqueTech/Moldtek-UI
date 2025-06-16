@@ -289,7 +289,7 @@ const Layout = () => {
     "/masterData": {
       title: "Master Data",
       button1Text: "Filter",
-      button2Text: "Create Master Data",
+      button2Text: "Create Master Data 123",
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
@@ -299,7 +299,7 @@ const Layout = () => {
       // },
     },
     "/createMasterData": {
-      title: "Create Master Data 123",
+      title: "Create Master Data",
       button1Text: `Created on: ${formattedDate}`,
       button2Text: "Upload Master Data",
       // onButton1Click: () => alert("Edit Profile Clicked"),
