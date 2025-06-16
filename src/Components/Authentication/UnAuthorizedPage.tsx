@@ -5,10 +5,8 @@ import {
   Container,
   Typography,
   Button,
-  Paper,
   Stack,
   Fade,
-  useTheme,
 } from '@mui/material';
 import {
   Lock as LockIcon,
@@ -38,17 +36,14 @@ const UnauthorizedPage = () => {
         padding: 2,
       }}
     >
-      <Container maxWidth="sm">
+      <Container>
         <Fade in timeout={800}>
-          <Paper
-            elevation={12}
+          <Box
             sx={{
               padding: { xs: 3, sm: 6 },
               textAlign: 'center',
               borderRadius: 4,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+               width: '100vw'
             }}
           >
             <Box
@@ -145,7 +140,7 @@ const UnauthorizedPage = () => {
                 startIcon={<HomeIcon />}
                 onClick={handleGoHome}
                 sx={{
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  background: '#1976d2',
                   borderRadius: 2,
                   textTransform: 'none',
                   fontSize: '1rem',
@@ -154,17 +149,46 @@ const UnauthorizedPage = () => {
                   py: 1.5,
                   minWidth: 160,
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #5a6fd8, #6a42a0)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                    background: '#1976d2',
+                    transform: 'translateY(-2px)'
                   },
                   transition: 'all 0.3s ease',
                 }}
               >
                 Go Home
               </Button>
+
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<ArrowBackIcon />}
+                onClick={handleGoBack}
+                sx={{
+                  borderColor: '#667eea',
+                  color: '#667eea',
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  px: 4,
+                  py: 1.5,
+                  minWidth: 160,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderColor: '#1976d2',
+                    color: '#1976d2',
+                    backgroundColor: 'rgba(102, 126, 234, 0.04)',
+                    transform: 'translateY(-2px)',
+                    borderWidth: 2,
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                Go Back
+              </Button>
             </Stack>
-          </Paper>
+
+          </Box>
         </Fade>
       </Container>
     </Box>
