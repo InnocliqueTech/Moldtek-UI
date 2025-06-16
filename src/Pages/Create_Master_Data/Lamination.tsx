@@ -377,8 +377,6 @@ const Lamination: React.FC<LaminationProps> = ({
         thirdItem.ratio !== undefined;
     }
   }
-      // Correct logic: allValid means no missing required fields in bondingMaterials
-
   allValid = allRatiosFilled && firstTwoValid && thirdValid;
     }
 
