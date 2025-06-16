@@ -522,7 +522,7 @@ const Header: React.FC<HeaderProps> = ({
             paddingBottom="0px"
             width="100%"
           >
-            <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               {headerButton && (
                 <IconButton
                   onClick={onBack}
@@ -561,7 +561,7 @@ const Header: React.FC<HeaderProps> = ({
                 )}
             </Box>
 
-            <Box display="flex" gap={2}>
+            <Box display="flex" gap={1}>
               {dropDown &&
                 ((selectedStatus || "").toLowerCase() === "completed" &&
                 role.toLowerCase() !== "admin" ? (

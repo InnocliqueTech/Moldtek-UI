@@ -289,7 +289,7 @@ const Layout = () => {
     "/masterData": {
       title: "Master Data",
       button1Text: "Filter",
-      button2Text: "Create Master Data 123",
+      button2Text: "Create Master Data",
       onButton1Click: () => dispatch(setOpenSlider(true)),
       onButton2Click: handleCreateMasterData,
       filterTitle: "Master Data Filter",
