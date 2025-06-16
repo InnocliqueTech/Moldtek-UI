@@ -1,9 +1,21 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute: React.FC = () => {
+interface ProtectedRouteProps {
+  allowedRoles?: string[];
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const isAuthenticated = localStorage.getItem("auth") === "true";
-  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
+  const userRole = localStorage.getItem("role");
+
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+
+  if (allowedRoles && !allowedRoles.includes(userRole ?? "")) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
