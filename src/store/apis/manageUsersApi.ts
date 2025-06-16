@@ -19,12 +19,24 @@ interface getUsersPayload {
   size: number
 }
 
+interface UserMetricResponse {
+  statusCode: number;
+  message: string;
+  payload: null;
+  data: {
+    totalUsers: number | null;
+    inactiveUsers: number | null;
+    activeUsers: number | null
+  }
+
+}
+
 export const manageUsersApis = createApi({
   reducerPath: "manageUsersApis",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
   }),
-  tagTypes: ['User'],
+  tagTypes: ['User', 'UserMetrics'],
   endpoints: (builder) => ({
     createUser: builder.mutation<any, userCreationDataModel>({
       query: (userData) => ({
@@ -42,7 +54,7 @@ export const manageUsersApis = createApi({
       }),
       invalidatesTags: ['User'],
     }),
-   getUsers: builder.mutation<any, getUsersPayload>({
+    getUsers: builder.mutation<any, getUsersPayload>({
       query: (params) => ({
         url: '/users/getUsers',
         method: 'POST',
@@ -54,7 +66,7 @@ export const manageUsersApis = createApi({
           data: response.data.users,
         }
       },
-      
+
     }),
     deactivateUser: builder.mutation<any, string>({
       query: (userId) => ({
@@ -63,6 +75,10 @@ export const manageUsersApis = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    getUserMetrics: builder.query <UserMetricResponse, void>({
+      query : () => "/users/getUserMetrics",
+      providesTags:["UserMetrics"]
+    })
   }),
 });
 
@@ -71,4 +87,5 @@ export const {
   useUpdateUserMutation,
   useGetUsersMutation,
   useDeactivateUserMutation,
+  useGetUserMetricsQuery
 } = manageUsersApis;

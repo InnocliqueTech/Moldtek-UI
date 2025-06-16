@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { toast } from 'react-toastify';
-import { useGetUsersMutation, useDeactivateUserMutation } from "../../store/apis/manageUsersApi";
+import { useGetUsersMutation, useDeactivateUserMutation, useGetUserMetricsQuery } from "../../store/apis/manageUsersApi";
 import { Switch, FormControlLabel } from '@mui/material';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { setIsSearchTriggered } from "../../store/slices/userSlice";
@@ -36,22 +36,25 @@ const Users: React.FC = () => {
         const savedPage = localStorage.getItem(rowsPerPageStorageKey);
         return savedPage !== null ? Number(savedPage) : 10;
     });
+
+    const {data} = useGetUserMetricsQuery()
+    console.log("useGetUserMetricsQuery", data)
     const widgetsData = [
         {
             title: "Total Users",
-            value: 0,
+            value: data?.data?.totalUsers || 0,
             infoText:
                 "Displays the count of total users",
         },
         {
             title: "Total Active Users",
-            value: 0,
+            value: data?.data?.activeUsers || 0,
             infoText:
                 "Displays the total count of active users",
         },
         {
             title: "Total Inactive Users",
-            value: 0,
+            value: data?.data?.inactiveUsers || 0,
             infoText:
                 "Displays the total count of inactive users",
         },
