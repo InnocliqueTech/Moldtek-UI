@@ -360,7 +360,8 @@ const newKldCode = response?.data?.kldCode ?? "";
             ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
             : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
       }
-    } else if (characterFields.includes(field)) {
+    } 
+    else if (characterFields.includes(field)) {
       const onlyLettersRegex = /^[A-Za-z\s]+$/;
 
       if (isImportant && trimmed === "") {
@@ -368,11 +369,17 @@ const newKldCode = response?.data?.kldCode ?? "";
       } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
         errorMessage = "Only letters and spaces are allowed.";
       }
-    } else if (freeTextFields.includes(field)) {
+    }
+     else if (freeTextFields.includes(field)) {
       if (isImportant && trimmed === "") {
         errorMessage = "This field cannot be empty.";
       }
-    } else if (
+    } 
+     else if (isImportant && trimmed === "") {
+        errorMessage = "This field cannot be empty.";
+      }
+    
+    else if (
       field === "label_type" ||
       field === "jar_cap" ||
       field === "structure"
@@ -719,12 +726,13 @@ const newKldCode = response?.data?.kldCode ?? "";
             />
             <Box
               sx={{
-                minHeight: row1HasError && !errors.jar_cap ? 8 : 0,
+                minHeight:
+                  row1HasError && !errors.jar_cap ? 8 : 0,
               }}
             />
             <Box
               sx={{
-                mt: row1HasError ? 2 : 2,
+                mt: row1HasError && !!errors.jar_cap ? 0 : 2,
               }}
             >
               <ReusableInput
@@ -763,9 +771,17 @@ const newKldCode = response?.data?.kldCode ?? "";
               disabled={true}
               required
             />
-            <Box sx={{ minHeight: row1HasError && !errors.kld_code ? 8 : 0 }} />
-
-            <Box sx={{ mt: row1HasError ? 0 : 2 }}>
+            <Box
+              sx={{
+                minHeight:
+                  row1HasError && !errors.kld_code ? 8 : 0,
+              }}
+            />
+            <Box
+              sx={{
+                mt: row1HasError && !!errors.kld_code ? 0 : 2,
+              }}
+            >
               <TextArea
                 label="Brand Name & Pack-Description"
                 value={formData.brand_description}

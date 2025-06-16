@@ -346,43 +346,40 @@ const Lamination: React.FC<LaminationProps> = ({
       ? formData.bondingMaterials
       : [];
     if (bondingMaterials.length > 0) {
-      const hasEmptyRatio = bondingMaterials?.some(
-        (item) =>
-          item.ratio === "" || item.ratio === null || item.ratio === undefined
-      );
+      const allRatiosFilled = bondingMaterials.every(
+    (item) => item.ratio !== "" && item.ratio !== null && item.ratio !== undefined
+  );
 
-      const firstTwoInvalid = bondingMaterials
-        .slice(0, 1)
-        .some(
-          (item) =>
-            !item.code ||
-            !item.brand ||
-            item.ratio === "" ||
-            item.ratio === null ||
-            item.ratio === undefined
-        );
+ const firstTwoValid = bondingMaterials.slice(0, 2).every(
+    (item) =>
+      item.code?.trim() &&
+      item.brand?.trim() &&
+      item.ratio !== "" &&
+      item.ratio !== null &&
+      item.ratio !== undefined
+  );
 
-      const thirdItem = bondingMaterials[2];
-      let thirdInvalid = false;
-      if (thirdItem) {
-        const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
-        if (isEthyl) {
-          thirdInvalid =
-            thirdItem.ratio === "" ||
-            thirdItem.ratio === null ||
-            thirdItem.ratio === undefined;
-        } else {
-          thirdInvalid =
-            !thirdItem.code ||
-            !thirdItem.brand ||
-            thirdItem.ratio === "" ||
-            thirdItem.ratio === null ||
-            thirdItem.ratio === undefined;
-        }
-      }
-
+     let thirdValid = true;
+  const thirdItem = bondingMaterials[2];
+  if (thirdItem) {
+    const isEthyl = thirdItem.type?.toLowerCase() === "ethyl";
+    if (isEthyl) {
+      thirdValid =
+        thirdItem.ratio !== "" &&
+        thirdItem.ratio !== null &&
+        thirdItem.ratio !== undefined;
+    } else {
+      thirdValid =
+        Boolean(thirdItem.code?.trim()) &&
+        Boolean(thirdItem.brand?.trim()) &&
+        thirdItem.ratio !== "" &&
+        thirdItem.ratio !== null &&
+        thirdItem.ratio !== undefined;
+    }
+  }
       // Correct logic: allValid means no missing required fields in bondingMaterials
-      allValid = hasEmptyRatio && firstTwoInvalid && thirdInvalid;
+
+  allValid = allRatiosFilled && firstTwoValid && thirdValid;
     }
 
     const hasErrors = Object.values(errors).some((error) => error);
@@ -390,7 +387,7 @@ const Lamination: React.FC<LaminationProps> = ({
       !isAllFieldFilled ||
       hasErrors ||
       laminationTableValueVaidation ||
-      allValid;
+      !allValid;
     dispatch(setSubmitAndPublishButtonMasterLamination(shouldDisableButton));
      dispatch(setLaminationSave(shouldDisableButton));
   }, [errors, formData, laminationTableValueVaidation]);
