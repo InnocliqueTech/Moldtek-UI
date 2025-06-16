@@ -182,11 +182,6 @@ const Header: React.FC<HeaderProps> = ({
 
   const [kldUpload, { isLoading: kldUploadLoading }] = useKldUploadMutation();
 
-  let unitEffectiveNumberDaily: any;
-  const UEN = localStorage.getItem("unitEffectiveNumberDaily");
-  if (UEN) {
-    unitEffectiveNumberDaily = UEN;
-  }
   const role = localStorage.getItem("role") || "";
   const [updateStatusJob] = useUpdateStatusJobMutation();
 
