@@ -479,6 +479,7 @@ const newKldCode = response?.data?.kldCode ?? "";
   useEffect(() => {
     if (id && viewMasterDataDetails && !masterDataDataTouched) {
       setFormData(sanitizeMasterData(viewMasterDataDetails));
+        dispatch(setKldCode(viewMasterDataDetails.kld_code ? viewMasterDataDetails.kld_code : ""));
     }
   }, [id, viewMasterDataDetails]);
   const { data: LabelTyepsData } = useGetLabelTypesQuery();
@@ -499,6 +500,8 @@ const newKldCode = response?.data?.kldCode ?? "";
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
     dispatch(setMasterDataDetailsSave(hasErrors));
   }, [formData, errors]);
+
+
 
   const handleRemoveImage = () => {
     setFormData((prev) => ({
