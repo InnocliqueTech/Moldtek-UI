@@ -111,7 +111,7 @@ const Users: React.FC = () => {
       disableSorting: false,
       format: (value: string) =>
         value
-          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
+          ? new Date(value).toISOString().split("T")[0].replace(/-/g, "-") 
           : "N/A",
     },
     {
@@ -273,15 +273,17 @@ const Users: React.FC = () => {
 
   const transformedSearchData = globalSearchData?.data?.map((row: any) => ({
     ...row,
-    createdDate: row.createdAt,
-    phoneNumber: row.phone,
-    userTypeName: row.userType?.userTypeName ?? "N/A",
+    // createdDate: row.createdDate,
+    // phoneNumber: row.phoneNumber,
+    // userTypeName: row.userTypeName ?? "N/A",
   }))
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
+  console.log('global', globalSearchData)
+  console.log('userList', userslistOfData)
 
   return (
     <Box sx={{ p: 0 }}>

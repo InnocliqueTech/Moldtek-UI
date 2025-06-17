@@ -64,7 +64,7 @@ export const manageUsersApis = createApi({
       }),
       transformResponse: (response: any) => {
         return {
-          totalRecords: response.data.totalItems,
+          totalRecords: response.data.totalRecords,
           data: response.data.users,
         };
       },
