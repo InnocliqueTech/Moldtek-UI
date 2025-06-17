@@ -1,71 +1,80 @@
 import { useState, useEffect } from "react";
-import { Box, Grid, SelectChangeEvent, Tooltip, IconButton } from "@mui/material";
-import Cards from '../../Components/ReUsable/Cards';
+import {
+  Box,
+  Grid,
+  SelectChangeEvent,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
+import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { toast } from 'react-toastify';
-import { useGetUsersMutation, useDeactivateUserMutation, useGetUserMetricsQuery, useUserDataGlobalMutationMutation } from "../../store/apis/manageUsersApi";
-import { Switch, FormControlLabel } from '@mui/material';
-import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
+import { toast } from "react-toastify";
+import {
+  useGetUsersMutation,
+  useDeactivateUserMutation,
+  useGetUserMetricsQuery,
+  useUserDataGlobalMutationMutation,
+} from "../../store/apis/manageUsersApi";
+import { Switch, FormControlLabel } from "@mui/material";
+import { CheckCircleOutline, HighlightOff } from "@mui/icons-material";
 import { setIsSearchTriggered } from "../../store/slices/userSlice";
 import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
-
-
 
 const Users: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
 
-  const { filtersPayload, debouncedSearchUser, isSearchTriggered, openSliderUser } = useSelector(
-    (state: RootState) => state.user
-  )
-
-
-
+  const {
+    filtersPayload,
+    debouncedSearchUser,
+    isSearchTriggered,
+    openSliderUser,
+  } = useSelector((state: RootState) => state.user);
 
   const storageKey = "userDataPage";
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  // const [previousPage, setPreviousPage] = useState(0);
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserStatus, setSelectedUserStatus] = useState(false);
-  const [actionText, setActionText] = useState('');
+  const [actionText, setActionText] = useState("");
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
   const rowsPerPageStorageKey = "userDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
     return savedPage !== null ? Number(savedPage) : 10;
   });
-  const previousPage = localStorage.getItem('PreviousPageUser');
+  const previousPage = localStorage.getItem("PreviousPageUser");
 
-  const { data, isLoading: metricsLoading } = useGetUserMetricsQuery()
+  const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const widgetsData = [
     {
       title: "Total Users",
       value: data?.data?.totalUsers || 0,
-      infoText:
-        "Displays the count of total users",
+      infoText: "Displays the count of total users",
     },
     {
       title: "Total Active Users",
       value: data?.data?.activeUsers || 0,
-      infoText:
-        "Displays the total count of active users",
+      infoText: "Displays the total count of active users",
     },
     {
       title: "Total Inactive Users",
       value: data?.data?.inactiveUsers || 0,
-      infoText:
-        "Displays the total count of inactive users",
+      infoText: "Displays the total count of inactive users",
     },
-
   ];
 
   const columns = [
@@ -111,7 +120,7 @@ const Users: React.FC = () => {
       disableSorting: false,
       format: (value: string) =>
         value
-          ? new Date(value).toISOString().split("T")[0].replace(/-/g, "-") 
+          ? new Date(value).toISOString().split("T")[0].replace(/-/g, "-")
           : "N/A",
     },
     {
@@ -130,13 +139,15 @@ const Users: React.FC = () => {
           }
           label={
             value ? (
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <CheckCircleOutline style={{ color: 'green', marginRight: 4 }} />
+              <span style={{ display: "flex", alignItems: "center" }}>
+                <CheckCircleOutline
+                  style={{ color: "green", marginRight: 4 }}
+                />
                 Active
               </span>
             ) : (
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <HighlightOff style={{ color: 'red', marginRight: 4 }} />
+              <span style={{ display: "flex", alignItems: "center" }}>
+                <HighlightOff style={{ color: "red", marginRight: 4 }} />
                 Inactive
               </span>
             )
@@ -187,9 +198,10 @@ const Users: React.FC = () => {
     }
   };
 
-  const [getUsers, { data: userslistOfData, isLoading }] = useGetUsersMutation();
+  const [getUsers, { data: userslistOfData, isLoading }] =
+    useGetUsersMutation();
+    
   const [deactivateUser] = useDeactivateUserMutation();
-
 
   const baseActions = [
     {
@@ -201,8 +213,7 @@ const Users: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
-        console.log(row)
-        navigate('/update-user', { state: { rowData: row } })
+        navigate("/update-user", { state: { rowData: row } });
       },
     },
   ];
@@ -211,7 +222,7 @@ const Users: React.FC = () => {
     userDataGlobalSearch,
     { data: globalSearchData, isLoading: searchLoading },
   ] = useUserDataGlobalMutationMutation();
-  console.log("debouncedSearchUser", debouncedSearchUser)
+
   useEffect(() => {
     if (debouncedSearchUser === "" && !openSliderUser) {
       getUsers({
@@ -227,7 +238,6 @@ const Users: React.FC = () => {
   }, [page, openSliderUser, filtersPayload, rowsPerPage]);
 
   useEffect(() => {
-    console.log("debouncedSearchUser", debouncedSearchUser)
     if (debouncedSearchUser !== "") {
       localStorage.setItem("PreviousPageUser", page.toString());
       setPage(0);
@@ -235,6 +245,7 @@ const Users: React.FC = () => {
       setPage(Number(previousPage));
     }
   }, [debouncedSearchUser]);
+
   useEffect(() => {
     if (location.state?.fromConfirm) {
       getUsers({
@@ -245,16 +256,16 @@ const Users: React.FC = () => {
       });
     }
   }, [location.state]);
+
   useEffect(() => {
     if (!openSliderUser) {
       userDataGlobalSearch({
         page: page,
         size: rowsPerPage,
-        searchField: debouncedSearchUser
-      })
-      console.log("userDataGlobalSearch", userDataGlobalSearch)
+        searchField: debouncedSearchUser,
+      });
     }
-  }, [page, rowsPerPage, debouncedSearchUser, openSliderUser])
+  }, [page, rowsPerPage, debouncedSearchUser, openSliderUser]);
   useEffect(() => {
     localStorage.setItem(storageKey, page.toString());
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
@@ -269,21 +280,20 @@ const Users: React.FC = () => {
   const transformedData = userslistOfData?.data?.map((row: any) => ({
     ...row,
     // userTypeName: row.userType?.userTypeName ?? "N/A",
-  }))
+  }));
 
   const transformedSearchData = globalSearchData?.data?.map((row: any) => ({
     ...row,
     // createdDate: row.createdDate,
     // phoneNumber: row.phoneNumber,
     // userTypeName: row.userTypeName ?? "N/A",
-  }))
+  }));
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
-  console.log('global', globalSearchData)
-  console.log('userList', userslistOfData)
+
 
   return (
     <Box sx={{ p: 0 }}>
@@ -314,17 +324,19 @@ const Users: React.FC = () => {
           boxShadow={true}
           columns={columns}
           pageNumber={page}
-          data={debouncedSearchUser
-            ? transformedSearchData ?? []
-            : transformedData ?? []
+          data={
+            debouncedSearchUser
+              ? transformedSearchData ?? []
+              : transformedData ?? []
           }
           // data={userslistOfData?.data || []}
           selectable={false}
           // label={`${userslistOfData?.totalRecords || 0} Users`}
-          label={`${debouncedSearchUser
-            ? globalSearchData?.totalRecords ?? 0
-            : userslistOfData?.totalRecords ?? 0
-            } Users`}
+          label={`${
+            debouncedSearchUser
+              ? globalSearchData?.totalRecords ?? 0
+              : userslistOfData?.totalRecords ?? 0
+          } Users`}
           title="Overview"
           info={true}
           searchVisible={true}
@@ -337,7 +349,8 @@ const Users: React.FC = () => {
           totalLength={
             debouncedSearchUser
               ? globalSearchData?.totalRecords ?? 0
-              : userslistOfData?.totalRecords ?? 0}
+              : userslistOfData?.totalRecords ?? 0
+          }
           // totalLength={userslistOfData?.totalRecords || 0}
           pageRange={true}
           handleRowsPerPageChange={handleRowsPerPageChange}
@@ -358,6 +371,6 @@ const Users: React.FC = () => {
       />
     </Box>
   );
-}
+};
 
 export default Users;

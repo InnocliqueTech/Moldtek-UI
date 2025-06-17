@@ -10,8 +10,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    Chip,
-    Skeleton,
+    Chip
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SearchIcon from "@mui/icons-material/Search";

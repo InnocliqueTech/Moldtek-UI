@@ -100,6 +100,13 @@ export const manageUsersApis = createApi({
     getPersonalDetails: builder.query<any, any>({
       query: (email) => `/users/profile?email=${email}`,
     }),
+    updateProfile:builder.mutation<any, any>({
+      query: (params) => ({
+        url: "/users/update-profile",
+        method: "POST",
+        body: params,
+      }),
+    }),
   }),
 });
 
@@ -112,4 +119,5 @@ export const {
   useResetPasswordMutation,
   useGetPersonalDetailsQuery,
   useUserDataGlobalMutationMutation,
+  useUpdateProfileMutation
 } = manageUsersApis;
