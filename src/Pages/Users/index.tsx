@@ -9,7 +9,7 @@ import {
 import Cards from "../../Components/ReUsable/Cards";
 import { InfoOutline, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { toast } from "react-toastify";
@@ -27,7 +27,6 @@ import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
 const Users: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const location = useLocation();
 
   const {
     filtersPayload,
@@ -246,16 +245,6 @@ const Users: React.FC = () => {
     }
   }, [debouncedSearchUser]);
 
-  useEffect(() => {
-    if (location.state?.fromConfirm) {
-      getUsers({
-        ...filtersPayload,
-        email: storedEmail,
-        page: 0,
-        size: rowsPerPage,
-      });
-    }
-  }, [location.state]);
 
   useEffect(() => {
     if (!openSliderUser) {

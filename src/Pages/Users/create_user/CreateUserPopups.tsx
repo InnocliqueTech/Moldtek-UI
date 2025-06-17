@@ -43,7 +43,7 @@ const CreateUserPopups: React.FC<CreateUserPopupsProps> = ({
   const handleSubmitPopupConfirmClick = () => {
     setSubmitPopupConfirm(false);
     onClose();
-    navigate(`/users`, {state:{fromConfirm: true}});
+    navigate(`/users`);
   };
 
   return (
