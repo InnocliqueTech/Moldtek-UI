@@ -3,7 +3,7 @@ import { Box, Grid, SelectChangeEvent, Tooltip, IconButton } from "@mui/material
 import Cards from '../../Components/ReUsable/Cards';
 import { InfoOutline, Edit } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
 const Users: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
 
   const { filtersPayload, debouncedSearchUser, isSearchTriggered, openSliderUser } = useSelector(
     (state: RootState) => state.user
@@ -44,7 +45,7 @@ const Users: React.FC = () => {
   });
   const previousPage = localStorage.getItem('PreviousPageUser');
 
-  const { data,isLoading:metricsLoading } = useGetUserMetricsQuery()
+  const { data, isLoading: metricsLoading } = useGetUserMetricsQuery()
   const widgetsData = [
     {
       title: "Total Users",
@@ -234,7 +235,16 @@ const Users: React.FC = () => {
       setPage(Number(previousPage));
     }
   }, [debouncedSearchUser]);
-
+  useEffect(() => {
+    if (location.state?.fromConfirm) {
+      getUsers({
+        ...filtersPayload,
+        email: storedEmail,
+        page: 0,
+        size: rowsPerPage,
+      });
+    }
+  }, [location.state]);
   useEffect(() => {
     if (!openSliderUser) {
       userDataGlobalSearch({
@@ -318,7 +328,7 @@ const Users: React.FC = () => {
           searchVisible={true}
           action={true}
           actions={baseActions}
-          isLoading={isLoading||searchLoading}
+          isLoading={isLoading || searchLoading}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}
           id={"userData"}
