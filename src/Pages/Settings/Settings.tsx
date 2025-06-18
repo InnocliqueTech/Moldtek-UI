@@ -20,6 +20,14 @@ const Settings = () => {
     phone: "",
   });
 
+    const [fieldErrors, setFieldErrors] = useState({
+     firstName: "",
+    lastName: "",
+    displayName: "",
+    email: "",
+    phone: "",
+    });
+
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId") || "";
@@ -52,6 +60,7 @@ const Settings = () => {
     newPassword: "",
     confirmNewPassword: "",
     displayName: "",
+    phone:""
   });
 
   const handlePersonalChange =
@@ -66,54 +75,54 @@ const Settings = () => {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     };
 
-  const validatePersonalForm = () => {
-    const newErrors = { ...errors };
-    let isValid = true;
 
-    if (!personalDetails.firstName?.trim()) {
-      newErrors.firstName = "First Name is required";
-      isValid = false;
-    }
+const validatePersonalForm = () => {
+  const newErrors: any = {};
+  let isValid = true;
 
-    if (!personalDetails.lastName?.trim()) {
-      newErrors.lastName = "Last Name is required";
-      isValid = false;
-    }
+  // Regex patterns
+  const nameRegex = /^[A-Za-z\s]+$/;
+  const phoneRegex = /^\d{10}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!personalDetails.displayName?.trim()) {
-      newErrors.displayName = "Display Name is required";
-      isValid = false;
-    }
+  if (!personalDetails.firstName.trim()) {
+    newErrors.firstName = "First Name is required";
+    isValid = false;
+  } else if (!nameRegex.test(personalDetails.firstName)) {
+    newErrors.firstName = "First Name must contain only letters";
+    isValid = false;
+  }
 
-    setErrors(newErrors);
-    return isValid;
-  };
+  if (!personalDetails.lastName.trim()) {
+    newErrors.lastName = "Last Name is required";
+    isValid = false;
+  } else if (!nameRegex.test(personalDetails.lastName)) {
+    newErrors.lastName = "Last Name must contain only letters";
+    isValid = false;
+  }
 
-  const validatePasswordForm = () => {
-    const newErrors = { ...errors };
-    let isValid = true;
+  if (!personalDetails.displayName.trim()) {
+    newErrors.displayName = "Display Name is required";
+    isValid = false;
+  }
 
-    if (!passwordDetails.oldPassword.trim()) {
-      newErrors.oldPassword = "Old Password is required";
-      isValid = false;
-    }
-    if (!passwordDetails.newPassword.trim()) {
-      newErrors.newPassword = "New Password is required";
-      isValid = false;
-    }
-    if (!passwordDetails.confirmNewPassword.trim()) {
-      newErrors.confirmNewPassword = "Confirm New Password is required";
-      isValid = false;
-    } else if (
-      passwordDetails.newPassword !== passwordDetails.confirmNewPassword
-    ) {
-      newErrors.confirmNewPassword = "Passwords do not match";
-      isValid = false;
-    }
+ else if (!phoneRegex.test(personalDetails.phone)) {
+    newErrors.phone = "Phone Number must be 10 digits";
+    isValid = false;
+  }
 
-    setErrors(newErrors);
-    return isValid;
-  };
+  if (!personalDetails.email.trim()) {
+    newErrors.email = "Email is required";
+    isValid = false;
+  } else if (!emailRegex.test(personalDetails.email)) {
+    newErrors.email = "Enter a valid email address";
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+  return isValid;
+};
+
 
   const handleSavePersonal = async () => {
     if (validatePersonalForm()) {
@@ -124,7 +133,7 @@ const Settings = () => {
           firstName: personalDetails.firstName,
           lastName: personalDetails.lastName,
           displayName: personalDetails.displayName,
-          phoneNumber: personalDetails.phone,
+          phoneNumber: `+91${personalDetails.phone}`,
         }).unwrap();
         toast.success(response?.message);
       } catch (error: any) {
@@ -136,7 +145,7 @@ const Settings = () => {
   };
 
   const handleSavePassword = async () => {
-    if (validatePasswordForm()) {
+    if (validatePersonalForm()) {
       try {
         await resetPassword({
           userId: Number(userId),
@@ -226,7 +235,10 @@ const Settings = () => {
                   label="Phone Number"
                   value={personalDetails.phone}
                   onChange={handlePersonalChange("phone")}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+91 1234567891"
+                   error={!!errors.phone}
+                  helperText={errors.phone}
+                  icon={"+91"}
                 />
               </Grid>
             </>

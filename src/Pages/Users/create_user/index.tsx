@@ -118,12 +118,11 @@ const handleSubmit = async () => {
           const userTypeId = Number(rowData.userTypeId);
           const roleMap: Record<number, string> = {
             1: 'Admin',
-            2: 'Supervisor',
-            3: 'User'
+            2: 'User'
           };
-          const validUserTypeId = [1, 2, 3].includes(userTypeId) 
+          const validUserTypeId = [1, 2].includes(userTypeId) 
             ? userTypeId as keyof typeof roleMap 
-            : 3; 
+            : 2; 
           return {
             ...field,
             value: roleMap[validUserTypeId] || ''

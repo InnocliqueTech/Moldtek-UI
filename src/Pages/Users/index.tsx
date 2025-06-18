@@ -54,13 +54,15 @@ const Users: React.FC = () => {
     return savedPage !== null ? Number(savedPage) : 10;
   });
   const previousPage = localStorage.getItem("PreviousPageUser");
+  const storedEmail = localStorage.getItem("email") || "";
 
-  const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
-    undefined,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
+   storedEmail,
+  {
+    refetchOnMountOrArgChange: true,
+  }
+);
+
   const widgetsData = [
     {
       title: "Total Users",
@@ -160,7 +162,7 @@ const Users: React.FC = () => {
       ),
     },
   ];
-  const storedEmail = localStorage.getItem("email") || "";
+
   const handleStatusChange = (id: string, newStatus: boolean) => {
     setSelectedUserId(id);
     setSelectedUserStatus(newStatus);
@@ -265,6 +267,7 @@ dispatch(setDebouncedSearchUser(""))
         page: page,
         size: rowsPerPage,
         searchField: debouncedSearchUser,
+        exludeEmail: storedEmail
       });
     }
   }, [page, rowsPerPage, debouncedSearchUser, openSliderUser]);

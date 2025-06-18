@@ -14,6 +14,7 @@ export interface UserFormField {
   component?: 'dropdown' | 'input';
   options?: string[];
   required?: boolean;
+  oldPassword?:string
 }
   
   // Add this validation function

@@ -79,8 +79,8 @@ export const manageUsersApis = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    getUserMetrics: builder.query<UserMetricResponse, void>({
-      query: () => "/users/getUserMetrics",
+    getUserMetrics: builder.query<UserMetricResponse, string>({
+      query: (email) => `/users/getUserMetrics?userName=${email}`,
       providesTags: ["UserMetrics"],
     }),
     userDataGlobalMutation: builder.mutation<any, any>({
