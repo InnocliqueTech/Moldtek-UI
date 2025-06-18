@@ -53,15 +53,27 @@ const Users: React.FC = () => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
     return savedPage !== null ? Number(savedPage) : 10;
   });
+
+  const [getUsers, { data: userslistOfData, isLoading }] =
+    useGetUsersMutation();
+
+  const [usersData, setUsersData] = useState<any[]>(userslistOfData);
+
+  useEffect(() => {
+    if (userslistOfData?.data) {
+      setUsersData(userslistOfData?.data);
+    }
+  }, [userslistOfData]);
+
   const previousPage = localStorage.getItem("PreviousPageUser");
   const storedEmail = localStorage.getItem("email") || "";
 
-const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
-   storedEmail,
-  {
-    refetchOnMountOrArgChange: true,
-  }
-);
+  const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
+    storedEmail,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const widgetsData = [
     {
@@ -80,8 +92,6 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
       infoText: "Displays the total count of InActive users",
     },
   ];
-
-
 
   const columns = [
     {
@@ -178,10 +188,7 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
     setActionText("");
   };
 
-  
-
-  const [getUsers, { data: userslistOfData, isLoading }] =
-    useGetUsersMutation();
+  const [deactivateUser] = useDeactivateUserMutation();
 
   const handleSubmitPopupConfirmOpen = async () => {
     setIsConfirmLoading(true);
@@ -191,12 +198,13 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
         isActive: selectedUserStatus,
       }).unwrap();
 
-      getUsers({
-        ...filtersPayload,
-        email: storedEmail,
-        page: isSearchTriggered ? 0 : page,
-        size: rowsPerPage,
-      });
+      setUsersData((prev) =>
+        prev.map((user) =>
+          user.id === selectedUserId
+            ? { ...user, active: selectedUserStatus }
+            : user
+        )
+      );
 
       toast.success(
         `User ${selectedUserStatus ? "Activated" : "DeActivated"} successfully`
@@ -209,8 +217,6 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
     }
   };
 
-  const [deactivateUser] = useDeactivateUserMutation();
-
   const baseActions = [
     {
       icon: (
@@ -221,7 +227,7 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
         </Tooltip>
       ),
       onClick: (row: any) => {
-        dispatch(setDebouncedSearchUser(""))
+        dispatch(setDebouncedSearchUser(""));
         navigate("/update-user", { state: { rowData: row } });
       },
     },
@@ -232,11 +238,9 @@ const { data, isLoading: metricsLoading } = useGetUserMetricsQuery(
     { data: globalSearchData, isLoading: searchLoading },
   ] = useUserDataGlobalMutationMutation();
 
-  useEffect(()=>{
-dispatch(setDebouncedSearchUser(""))
-  },[])
-
-  console.log(debouncedSearchUser,openSliderUser,"DEBOUNCEDSEARCHUSER")
+  useEffect(() => {
+    dispatch(setDebouncedSearchUser(""));
+  }, []);
 
   useEffect(() => {
     if (debouncedSearchUser === "" && !openSliderUser) {
@@ -267,7 +271,7 @@ dispatch(setDebouncedSearchUser(""))
         page: page,
         size: rowsPerPage,
         searchField: debouncedSearchUser,
-        exludeEmail: storedEmail
+        exludeEmail: storedEmail,
       });
     }
   }, [page, rowsPerPage, debouncedSearchUser, openSliderUser]);
@@ -282,7 +286,9 @@ dispatch(setDebouncedSearchUser(""))
     localStorage.setItem(storageKey, newPage.toString());
   };
 
-  const transformedData = userslistOfData?.data?.map((row: any) => ({
+  const transformedData = (
+    usersData ? usersData : userslistOfData?.data || []
+  ).map((row: any) => ({
     ...row,
     // userTypeName: row.userType?.userTypeName ?? "N/A",
   }));

@@ -500,7 +500,6 @@ const Layout = () => {
       button2Text: "Create User",
        onButton1Click: () => {
         // dispatch(setUserEdit(false));
-        console.log("click")
         dispatch(setOpenSliderUser(true))
       },
       onButton2Click: () => { navigate("/create-user"),dispatch(setDebouncedSearchUser("")) },

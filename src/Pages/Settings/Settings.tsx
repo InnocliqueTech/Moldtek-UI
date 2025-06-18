@@ -20,14 +20,6 @@ const Settings = () => {
     phone: "",
   });
 
-    const [fieldErrors, setFieldErrors] = useState({
-     firstName: "",
-    lastName: "",
-    displayName: "",
-    email: "",
-    phone: "",
-    });
-
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId") || "";
