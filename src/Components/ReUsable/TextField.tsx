@@ -24,7 +24,7 @@ interface ReusableInputProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   required?: boolean;
-  endIcon?:React.ReactNode;
+  endIcon?: React.ReactNode;
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -42,7 +42,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const onEnter = ()=>{
+  const onEnter = () => {
     console.log("Enter");
   }
 
@@ -114,77 +114,117 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
           />
         </LocalizationProvider>
       ) : (
-        <Tooltip title={value}>
-        <TextField
-  placeholder={`Enter a ${label}`}
-  value={value}
-  onChange={onChange}
-  type={showPassword && type === "password" ? "text" : type}
-  fullWidth
-  variant="outlined"
-  error={error}
-  helperText={helperText}
-  disabled={disabled}
-  InputProps={{
-    startAdornment: icon ? (
-      <InputAdornment position="start">{icon}</InputAdornment>
-    ) : null,
-    endAdornment: (
-      <>
-        {type === "password" ? (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={() => setShowPassword(!showPassword)}
-              edge="end"
-              disableRipple
-              disableFocusRipple
-              sx={{
-                pointerEvents: "auto",
-                "&:focus": { outline: "none" },
+         type !== "password" ? (
+          <Tooltip title={value}>
+            <TextField
+              placeholder={`Enter a ${label}`}
+              value={value}
+              onChange={onChange}
+              type={showPassword && type === "password" ? "text" : type}
+              fullWidth
+              variant="outlined"
+              error={error}
+              helperText={helperText}
+              disabled={disabled}
+              InputProps={{
+                startAdornment: icon ? (
+                  <InputAdornment position="start">{icon}</InputAdornment>
+                ) : null,
+                endAdornment: (
+                  <>
+                    {endIcon && (
+                      <InputAdornment position="end">
+                        <IconButton onClick={onEnter} edge="end" color="primary">
+                          <ArrowForward />
+                        </IconButton>
+                      </InputAdornment>
+                    )}
+                  </>
+                ),
               }}
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ) : endIcon ? (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={onEnter} 
-              edge="end"
-              color="primary"
-            >
-              <ArrowForward />
-            </IconButton>
-          </InputAdornment>
-        ) : null}
-      </>
-    ),
-  }}
-  inputProps={{
-    autoComplete: "new-password",
-    style: {
-      appearance: "none",
-      MozAppearance: "textfield",
-      WebkitAppearance: "none",
-    },
-  }}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      borderRadius: "8px",
-      "& input": {
-        padding: "6px 12px",
-        color: "black",
-        "&::-ms-reveal": {
-          display: "none",
-        },
-        "&::-ms-clear": {
-          display: "none",
-        },
-      },
-    },
-  }}
-/>
-        </Tooltip>
+              inputProps={{
+                autoComplete: "new-password",
+                style: {
+                  appearance: "none",
+                  MozAppearance: "textfield",
+                  WebkitAppearance: "none",
+                },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                  "& input": {
+                    padding: "6px 12px",
+                    color: "black",
+                    "&::-ms-reveal": {
+                      display: "none",
+                    },
+                    "&::-ms-clear": {
+                      display: "none",
+                    },
+                  },
+                },
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <TextField
+            placeholder={`Enter a ${label}`}
+            value={value}
+            onChange={onChange}
+            type={showPassword ? "text" : "password"}
+            fullWidth
+            variant="outlined"
+            error={error}
+            helperText={helperText}
+            disabled={disabled}
+            InputProps={{
+              startAdornment: icon ? (
+                <InputAdornment position="start">{icon}</InputAdornment>
+              ) : null,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    disableRipple
+                    disableFocusRipple
+                    sx={{
+                      pointerEvents: "auto",
+                      "&:focus": { outline: "none" },
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{
+              autoComplete: "new-password",
+              style: {
+                appearance: "none",
+                MozAppearance: "textfield",
+                WebkitAppearance: "none",
+              },
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+                "& input": {
+                  padding: "6px 12px",
+                  color: "black",
+                  "&::-ms-reveal": {
+                    display: "none",
+                  },
+                  "&::-ms-clear": {
+                    display: "none",
+                  },
+                },
+              },
+            }}
+          />
+        )
+
       )}
     </Box>
   );
