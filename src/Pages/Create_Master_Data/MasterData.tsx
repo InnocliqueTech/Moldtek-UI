@@ -22,6 +22,7 @@ import {
   useMasterFiltersMutation,
 } from "../../store/apis/masterDataApis";
 import {
+  setDebouncedSearch,
   setDyeCuttingDataTouched,
   setIsSearchTriggered,
   setLaminationDataTouched,
@@ -92,6 +93,7 @@ const MasterData: React.FC = () => {
             localStorage.setItem("selectedUEN", value);
             localStorage.setItem("selectedVersionNo", row.version_no);
             dispatch(setSelectedTabView(0));
+              dispatch(setDebouncedSearch(""));
             navigate(`/viewMasterData/${value}`);
           }}
         />
@@ -214,7 +216,7 @@ const MasterData: React.FC = () => {
   }, [debouncedSearch]);
 
   useEffect(() => {
-    if (!openSider) {
+    if (!openSider && debouncedSearch !== "") {
         masterDataGlobalSearch({
         page: page,
         size: rowsPerPage,
@@ -272,6 +274,7 @@ const MasterData: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
+        dispatch(setDebouncedSearch(""));
         const selectedUENAction = row?.unit_effectivity_number;
         const versionNoAction = row?.version_no;
         localStorage.setItem("actionSelectedUEN", selectedUENAction);
@@ -294,6 +297,7 @@ const MasterData: React.FC = () => {
               </Tooltip>
             ),
             onClick: (row: any) => {
+              dispatch(setDebouncedSearch(""));
               const selectedUENActionUpdate = row?.unit_effectivity_number;
               const versionNoAction = row?.version_no;
               localStorage.setItem(

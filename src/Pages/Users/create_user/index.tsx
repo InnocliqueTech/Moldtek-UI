@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import CreateUserPopups from './CreateUserPopups';
 import { useCreateUserMutation,useUpdateUserMutation } from '../../../store/apis/manageUsersApi';
+import { validateUserFields } from '../../DailyPlan/createPlan/formValidation';
 
 interface UserFormField {
   id: string;
@@ -27,7 +28,7 @@ const initialUserFields: UserFormField[] = [
     label: 'Role',
     value: '',
     component: 'dropdown',
-    options: ['Admin', 'Supervisor', 'User'],
+    options: ['Admin','User'],
     required: true,
   },
   { id: 'email', label: 'Email', value: '', type: 'email', required: true },
@@ -70,40 +71,16 @@ const CreateUser: React.FC = () => {
   };
 
 
-  const validateUserFields = () => {
-    const newErrors: Record<string, string> = {};
 
-    formFields.forEach(field => {
-      if (field.required && !field.value.trim()) {
-        newErrors[field.id] = `${field.label} is required`;
-      }
 
-      if (field.id === 'email' && field.value) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(field.value)) {
-          newErrors[field.id] = 'Invalid email format';
-        }
-      }
+const handleSubmit = async () => {
+  const isValid = validateUserFields(formFields, setErrors);
 
-      if (field.id === 'phoneNumber' && field.value) {
-        const phoneRegex = /^(?:(?:\+?(\d{1,3}))?[\s-.]?)?(?:\(?(\d{1,4})\)?[\s-.]?)?(\d{1,4}[\s-.]?){1,4}\d{1,4}$/;
-        if (!phoneRegex.test(field.value)) {
-          newErrors[field.id] = 'Invalid phone number';
-        }
-      }
-    });
+  if (isValid) {
+    setOpenPopup(true); 
+  } 
+};
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-    const handleSubmit = async () => {
-    if (!validateUserFields()) {
-      toast.error('Please correct the errors before submitting');
-      return;
-    }
-    setOpenPopup(true);
-  };
 
   const handleCreateUser = async () => {
     try {
@@ -180,19 +157,28 @@ const CreateUser: React.FC = () => {
                 helperText={errors[field.id]}
                 required = {field.required}
               />
-            ) : (
-              <ReusableInput
-                label={field.label}
-                value={field.value}
-                type={field.type || 'text'}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleInputChange(field.id, e.target.value)
-                }
-                error={!!errors[field.id]}
-                helperText={errors[field.id]}
-                required = {field.required}
-              />
-            )}
+            ) : field.id === 'phoneNumber' ? (
+  <ReusableInput
+    label={field.label}
+    value={field.value}
+    type="text"
+    onChange={(e) => handleInputChange(field.id, e.target.value)}
+    error={!!errors[field.id]}
+    helperText={errors[field.id]}
+    required={field.required}
+   icon="+91"
+  />
+) : (
+  <ReusableInput
+    label={field.label}
+    value={field.value}
+    type={field.type || 'text'}
+    onChange={(e) => handleInputChange(field.id, e.target.value)}
+    error={!!errors[field.id]}
+    helperText={errors[field.id]}
+    required={field.required}
+  />
+)}
           </Grid>
         ))}
       </Grid>

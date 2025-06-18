@@ -30,6 +30,7 @@ import { RootState } from "../../store";
 import { setSelectedTabView } from "../../store/slices/viewMasterDataSlice";
 import {
   setBackButtonNavigationAllowed,
+  setDebouncedSearchDailyPlan,
   setIsEditing,
   setIsSearchTriggered,
   setSideNavigationAllowed,
@@ -229,7 +230,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   }, [debouncedSearchDailyPlan]);
 
   useEffect(() => {
-    if (!openSliderDaily) {
+    if (!openSliderDaily && debouncedSearchDailyPlan !== "") {
       dailyPlanGlobalSearch({
         page: page,
         size: rowsPerPage,
@@ -254,6 +255,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
           row={row}
           onClick={() => {
             if (row?.status != "Inactive") {
+
               const uniteffectiveNumber = row.unitEffectivityNumber;
               localStorage.setItem(
                 "unitEffectiveNumberDaily",
@@ -262,6 +264,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
               localStorage.setItem("status", row.status);
               const encodedParam = encodeURIComponent(value);
               navigate(`/viewDailyPlan/${encodedParam}`);
+              dispatch(setDebouncedSearchDailyPlan(""));
               dispatch(setSelectedTabView(0));
               dispatch(setIsEditing(false));
               dispatch(setSideNavigationAllowed(false));

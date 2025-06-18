@@ -18,6 +18,7 @@ import {
   clearMasterDetaisData,
   clearPrintingFormData,
   clearPrintingFormErrors,
+  setDebouncedSearch,
   setDyeCuttingDataTouched,
   setKldCode,
   setLaminationDataTouched,
@@ -40,6 +41,7 @@ import {
   setSideNavigationAllowed,
   setDailyPlanHeaderUpload,
   setDailyPlanHeaderUploadButton,
+  setDebouncedSearchDailyPlan,
   // setPopOverDailyPlan,
   // setDailyPlanDataNotifications,
 } from "../../store/slices/viewDailyPlanSlice";
@@ -47,12 +49,13 @@ import { toast } from "react-toastify";
 import { BASE_API_URL } from "./../../api.config";
 import {
   setCreateSlider,
+  setDebouncedSearchKLD,
   setKLDEdit,
   setKLDHeaderUpload,
   setKLDHeaderUploadButton,
   setOpenSliderKld,
 } from "../../store/slices/kldSlice";
-import {setOpenSliderUser } from "../../store/slices/userSlice";
+import {setDebouncedSearchUser, setOpenSliderUser } from "../../store/slices/userSlice";
 
 // import { useMasterDataNotificationsQuery } from "../../store/apis/masterDataApis";
 // import { useDailyPlanNotificationsQuery } from "../../store/apis/dailyPlanApis";
@@ -228,6 +231,7 @@ const Layout = () => {
     }
   };
   const handleCreateMasterData = () => {
+     dispatch(setDebouncedSearch(""));
     dispatch(setKldCode(""));
     dispatch(setSelectedTab(0));
     dispatch(setRequestPayload(clearRequestPayoad));
@@ -385,6 +389,7 @@ const Layout = () => {
       onButton1Click: () => {
         dispatch(setKLDEdit(false));
         dispatch(setOpenSliderKld(true));
+        dispatch(setDebouncedSearchKLD(""));
       },
 
       filterTitle: "Kld Data Filter",
@@ -412,7 +417,7 @@ const Layout = () => {
       button1Text: "Filter",
       button2Text: "Create Daily Plan",
       onButton1Click: () => dispatch(setOpenSliderDaily(true)),
-      onButton2Click: () => navigate(`/createPlan`),
+      onButton2Click: () => {navigate(`/createPlan`),dispatch(setDebouncedSearchDailyPlan(""))},
       filterTitle: "Daily Plan Filter",
       button3Text: "Upload",
       onButton3Click: () => {
@@ -498,7 +503,7 @@ const Layout = () => {
         console.log("click")
         dispatch(setOpenSliderUser(true))
       },
-      onButton2Click: () => { navigate("/create-user") },
+      onButton2Click: () => { navigate("/create-user"),dispatch(setDebouncedSearchUser("")) },
       filterTitle: "User filter",
       // notificationIcon: true,
       // notificationIconOnClick: () => {

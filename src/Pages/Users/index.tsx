@@ -21,7 +21,10 @@ import {
 } from "../../store/apis/manageUsersApi";
 import { Switch, FormControlLabel } from "@mui/material";
 import { CheckCircleOutline, HighlightOff } from "@mui/icons-material";
-import { setIsSearchTriggered } from "../../store/slices/userSlice";
+import {
+  setDebouncedSearchUser,
+  setIsSearchTriggered,
+} from "../../store/slices/userSlice";
 import ConfirmPopup from "../../Components/ReUsable/ConfirmPopup";
 
 const Users: React.FC = () => {
@@ -67,14 +70,16 @@ const Users: React.FC = () => {
     {
       title: "Total Active Users",
       value: data?.data?.activeUsers || 0,
-      infoText: "Displays the total count of active users",
+      infoText: "Displays the total count of Active users",
     },
     {
       title: "Total Inactive Users",
       value: data?.data?.inactiveUsers || 0,
-      infoText: "Displays the total count of inactive users",
+      infoText: "Displays the total count of InActive users",
     },
   ];
+
+
 
   const columns = [
     {
@@ -159,7 +164,7 @@ const Users: React.FC = () => {
   const handleStatusChange = (id: string, newStatus: boolean) => {
     setSelectedUserId(id);
     setSelectedUserStatus(newStatus);
-    setActionText(newStatus ? "activate" : "deactivate");
+    setActionText(newStatus ? "Activate" : "DeActivate");
 
     setOpenConfirm(true);
   };
@@ -170,6 +175,11 @@ const Users: React.FC = () => {
     setSelectedUserStatus(false);
     setActionText("");
   };
+
+  
+
+  const [getUsers, { data: userslistOfData, isLoading }] =
+    useGetUsersMutation();
 
   const handleSubmitPopupConfirmOpen = async () => {
     setIsConfirmLoading(true);
@@ -187,7 +197,7 @@ const Users: React.FC = () => {
       });
 
       toast.success(
-        `User ${selectedUserStatus ? "activated" : "deactivated"} successfully`
+        `User ${selectedUserStatus ? "Activated" : "DeActivated"} successfully`
       );
     } catch (error) {
       toast.error("Failed to update user.");
@@ -197,9 +207,6 @@ const Users: React.FC = () => {
     }
   };
 
-  const [getUsers, { data: userslistOfData, isLoading }] =
-    useGetUsersMutation();
-    
   const [deactivateUser] = useDeactivateUserMutation();
 
   const baseActions = [
@@ -212,6 +219,7 @@ const Users: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
+        dispatch(setDebouncedSearchUser(""))
         navigate("/update-user", { state: { rowData: row } });
       },
     },
@@ -221,6 +229,12 @@ const Users: React.FC = () => {
     userDataGlobalSearch,
     { data: globalSearchData, isLoading: searchLoading },
   ] = useUserDataGlobalMutationMutation();
+
+  useEffect(()=>{
+dispatch(setDebouncedSearchUser(""))
+  },[])
+
+  console.log(debouncedSearchUser,openSliderUser,"DEBOUNCEDSEARCHUSER")
 
   useEffect(() => {
     if (debouncedSearchUser === "" && !openSliderUser) {
@@ -245,9 +259,8 @@ const Users: React.FC = () => {
     }
   }, [debouncedSearchUser]);
 
-
   useEffect(() => {
-    if (!openSliderUser) {
+    if (debouncedSearchUser !== "" && !openSliderUser) {
       userDataGlobalSearch({
         page: page,
         size: rowsPerPage,
@@ -282,7 +295,6 @@ const Users: React.FC = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(rowsPerPageStorageKey, rowsPerPage.toString());
   };
-
 
   return (
     <Box sx={{ p: 0 }}>

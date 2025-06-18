@@ -4,6 +4,17 @@ interface FormValidation {
     isValid: boolean;
     errorMessage?: string;
   }
+
+  // Interface for individual form field
+export interface UserFormField {
+  id: string;
+  label: string;
+  value: string;
+  type?: string;
+  component?: 'dropdown' | 'input';
+  options?: string[];
+  required?: boolean;
+}
   
   // Add this validation function
 export const validateFormFields = (fields: FormField[]): FormValidation => {
@@ -77,3 +88,50 @@ export const validateFormFields = (fields: FormField[]): FormValidation => {
       ...errors
     };
   };
+
+
+
+// Validation function with proper types
+export const validateUserFields = (
+  formFields: UserFormField[],
+  setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>
+): boolean => {
+  const newErrors: Record<string, string> = {};
+
+  formFields.forEach(field => {
+    const value = field.value.trim();
+
+    // Required check
+    if (field.required && !value) {
+      newErrors[field.id] = `${field.label} is required`;
+    }
+
+    // First/Last Name: Only alphabets
+    if ((field.id === 'firstName' || field.id === 'lastName') && value) {
+      const nameRegex = /^[A-Za-z]+$/;
+      if (!nameRegex.test(value)) {
+        newErrors[field.id] = `${field.label} must contain only alphabets`;
+      }
+    }
+
+    // Email validation
+    if (field.id === 'email' && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        newErrors[field.id] = 'Invalid email format';
+      }
+    }
+
+    // Phone number: Exactly 10 digits
+    if (field.id === 'phoneNumber' && value) {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (!/^\d{10}$/.test(digitsOnly)) {
+        newErrors[field.id] = 'Phone number must be 10 digits';
+      }
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+

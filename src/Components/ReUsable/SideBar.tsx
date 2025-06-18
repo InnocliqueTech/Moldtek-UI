@@ -24,7 +24,7 @@ import {
   TaskOutlined,
   West,
 } from "@mui/icons-material";
-import GroupIcon from '@mui/icons-material/Group';
+import GroupIcon from "@mui/icons-material/Group";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Images/Logo.svg";
 import LogoIcon from "../../assets/Images/logo.png";
@@ -41,17 +41,20 @@ import {
   clearSaveLaminatingFormData,
   clearSaveMasterDetailsData,
   clearSavePrintingFormData,
+  setDebouncedSearch,
   setKldCode,
 } from "../../store/slices/masterDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
   setBackButtonNavigationAllowed,
+  setDebouncedSearchDailyPlan,
   setIsEditing,
   setShowTabChangeDialog,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
-import { setKLDEdit } from "../../store/slices/kldSlice";
+import { setDebouncedSearchKLD, setKLDEdit } from "../../store/slices/kldSlice";
+import { setDebouncedSearchUser } from "../../store/slices/userSlice";
 
 interface SidebarProps {
   open: boolean;
@@ -71,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   // const dynamicTexts = ["Kristin Watson", "Text Two"];
   // const currentText = dynamicTexts[0];
   const [collapsed, setCollapsed] = useState(true);
-const role = localStorage.getItem("role") || "";
+  const role = localStorage.getItem("role") || "";
   const navigate = useNavigate();
   const {
     isDyeCuttingDataSave,
@@ -121,16 +124,16 @@ const role = localStorage.getItem("role") || "";
   ];
 
   const preferenceItems = [
-       ...(role.toLowerCase() === "admin"
-    ? [
-        {
-          text: "Users",
-          icon: <GroupIcon />,
-          selectedIcon: <GroupIcon />,
-          path: "/users",
-        },
-      ]
-    : []),
+    ...(role.toLowerCase() === "admin"
+      ? [
+          {
+            text: "Users",
+            icon: <GroupIcon />,
+            selectedIcon: <GroupIcon />,
+            path: "/users",
+          },
+        ]
+      : []),
     {
       text: "Settings",
       icon: <Settings />,
@@ -148,15 +151,19 @@ const role = localStorage.getItem("role") || "";
   ];
 
   const handleLogOut = () => {
+    dispatch(setDebouncedSearch(""));
+    dispatch(setDebouncedSearchDailyPlan(""));
+    dispatch(setDebouncedSearchKLD(""));
+    dispatch(setDebouncedSearchUser(""));
     navigate("/");
-    dispatch(setKldCode(''));
+    dispatch(setKldCode(""));
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
     localStorage.setItem("auth", "false");
     localStorage.setItem("masterDataPage", (0).toString());
     localStorage.setItem("masterData-page", (0).toString());
-     localStorage.setItem("kldDataPage", (0).toString());
+    localStorage.setItem("kldDataPage", (0).toString());
     localStorage.setItem("kldData-page", (0).toString());
     localStorage.setItem("dailyPlan-page", (0).toString());
     localStorage.setItem("dailyPlanDataPage", (0).toString());
@@ -188,6 +195,10 @@ const role = localStorage.getItem("role") || "";
   const dispatch = useDispatch<AppDispatch>();
 
   const itemClick = () => {
+    dispatch(setDebouncedSearch(""));
+    dispatch(setDebouncedSearchDailyPlan(""));
+    dispatch(setDebouncedSearchKLD(""));
+    dispatch(setDebouncedSearchUser(""));
     toggleMobileSidebar();
     dispatch(setKLDEdit(false));
     if (!isDyeCuttingDataSave) {
@@ -224,349 +235,368 @@ const role = localStorage.getItem("role") || "";
 
   const userName = localStorage.getItem("userName");
 
-
-
   return (
     <>
-    <Drawer
-      variant="permanent"
-      open
-      sx={{
-        display: { xs: "none", md: "block" },
-        width: collapsed ? 50 : 220,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
+      <Drawer
+        variant="permanent"
+        open
+        sx={{
+          display: { xs: "none", md: "block" },
           width: collapsed ? 50 : 220,
-          transition: "width 0.3s",
-          boxSizing: "border-box",
-          padding: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: collapsed ? "center" : "flex-start",
-          overflowX: "hidden", // prevent horizontal scroll
-          overflowY: collapsed ? "hidden" : "auto", // disable vertical scroll when collapsed
-          height: "100vh",
-        },
-      }}
-    >
-      {/* Top Section with Logo and User Info */}
-      <Box>
-        {!collapsed ? (
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-            <img src={Logo} alt="Logo" />
-          </Box>
-        ) : (
-          <Box sx={{ display: "flex", justifyContent: "center" }} >
-            <img src={LogoIcon} alt="Logo" style={{width:'50px',marginBottom:'2px',marginLeft:'0.32px'}} />
-          </Box>
-        )}
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: collapsed ? 50 : 220,
+            transition: "width 0.3s",
+            boxSizing: "border-box",
+            padding: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: collapsed ? "center" : "flex-start",
+            overflowX: "hidden", // prevent horizontal scroll
+            overflowY: collapsed ? "hidden" : "auto", // disable vertical scroll when collapsed
+            height: "100vh",
+          },
+        }}
+      >
+        {/* Top Section with Logo and User Info */}
+        <Box>
+          {!collapsed ? (
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+              <img src={Logo} alt="Logo" />
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <img
+                src={LogoIcon}
+                alt="Logo"
+                style={{
+                  width: "50px",
+                  marginBottom: "2px",
+                  marginLeft: "0.32px",
+                }}
+              />
+            </Box>
+          )}
 
-        <LightTooltip
-          title={
-            collapsed ? (
-              <Box>
-                <Typography sx={{ fontWeight: 600 }}>{userName}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {role}
-                </Typography>
-              </Box>
-            ) : (
-              ""
-            )
-          }
-          placement="right"
-          arrow={false}
-          slotProps={{
-            popper: {
-              modifiers: [
-                {
-                  name: "offset",
-                  options: {
-                    offset: [0, -14],
+          <LightTooltip
+            title={
+              collapsed ? (
+                <Box>
+                  <Typography sx={{ fontWeight: 600 }}>{userName}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {role}
+                  </Typography>
+                </Box>
+              ) : (
+                ""
+              )
+            }
+            placement="right"
+            arrow={false}
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -14],
+                    },
                   },
-                },
-              ],
-            },
-          }}
-          sx={{
-            ".MuiTooltip-tooltip": {
-              fontSize: "0.875rem",
-              padding: "8px 12px",
-              borderRadius: "8px",
-            },
-          }}
-        >
-          <Box
+                ],
+              },
+            }}
             sx={{
-              backgroundColor: collapsed ? "transparent" : "white",
-              boxShadow: collapsed ? 0 : 3,
-              px: 1,
-              py: 0,
-              borderRadius: collapsed ? 0 : 2,
-              mb: 2,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              justifyContent: collapsed ? "center" : "flex-start",
-              cursor: collapsed ? "pointer" : "default",
+              ".MuiTooltip-tooltip": {
+                fontSize: "0.875rem",
+                padding: "8px 12px",
+                borderRadius: "8px",
+              },
             }}
           >
-            <Avatar
-              alt="User Avatar"
+            <Box
               sx={{
-                width: 40,
-                height: 40,
-                bgcolor: "#0073B7",
-                color: "white",
-                fontWeight: 600,
+                backgroundColor: collapsed ? "transparent" : "white",
+                boxShadow: collapsed ? 0 : 3,
+                px: 1,
+                py: 0,
+                borderRadius: collapsed ? 0 : 2,
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                justifyContent: collapsed ? "center" : "flex-start",
+                cursor: collapsed ? "pointer" : "default",
               }}
             >
-              {userName?.charAt(0)?.toUpperCase()}
-            </Avatar>
-
-            {!collapsed && (
-              <Box sx={{ flexGrow: 1, p: 1 }}>
-                <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>{userName}</Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {role}
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </LightTooltip>
-
-        {/* Main Menu */}
-        {!collapsed && (
-          <Typography
-            variant="subtitle2"
-            sx={{
-              mt: 1,
-              mb: 0.5,
-              px: 1,
-              fontWeight: "500",
-              color: "#A3A3A3",
-            }}
-          >
-            Main Menu
-          </Typography>
-        )}
-        <List sx={{ py: 0 }}>
-          {menuItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-
-            return (
-              <LightTooltip
-                title={collapsed ? item.text : ""}
-                placement="right"
-                arrow={false}
-                key={index}
-                slotProps={{
-                  popper: {
-                    modifiers: [
-                      {
-                        name: "offset",
-                        options: {
-                          offset: [0, -14],
-                        },
-                      },
-                    ],
-                  },
-                }}
+              <Avatar
+                alt="User Avatar"
                 sx={{
-                  ".MuiTooltip-tooltip": {
-                    fontSize: "0.875rem",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                  },
+                  width: 40,
+                  height: 40,
+                  bgcolor: "#0073B7",
+                  color: "white",
+                  fontWeight: 600,
                 }}
               >
-                <ListItem
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  sx={{
-                    py: !collapsed ? 0.5 : 1.3,
-                    bgcolor:
-                      isSelected && !collapsed
-                        ? "white"
-                        : collapsed && isSelected
-                        ? "transparent"
-                        : "transparent",
-                    boxShadow:
-                      isSelected && !collapsed
-                        ? 3
-                        : collapsed && isSelected
-                        ? 0
-                        : 0,
-                    borderRadius: collapsed && isSelected ? 0 : 2,
-                    "&:hover": {
-                      bgcolor: "transparent",
-                      "& .MuiListItemText-primary": {
-                        color: "#0073B7",
-                      },
+                {userName?.charAt(0)?.toUpperCase()}
+              </Avatar>
+
+              {!collapsed && (
+                <Box sx={{ flexGrow: 1, p: 1 }}>
+                  <Typography sx={{ whiteSpace: "nowrap", fontSize: "14px" }}>
+                    {userName}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {role}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </LightTooltip>
+
+          {/* Main Menu */}
+          {!collapsed && (
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mt: 1,
+                mb: 0.5,
+                px: 1,
+                fontWeight: "500",
+                color: "#A3A3A3",
+              }}
+            >
+              Main Menu
+            </Typography>
+          )}
+          <List sx={{ py: 0 }}>
+            {menuItems.map((item, index) => {
+              const isSelected = location.pathname === item.path;
+
+              return (
+                <LightTooltip
+                  title={collapsed ? item.text : ""}
+                  placement="right"
+                  arrow={false}
+                  key={index}
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [0, -14],
+                          },
+                        },
+                      ],
                     },
-                    pl: "8px",
-                    pr: 0,
-                    justifyContent: collapsed ? "center" : "flex-start",
-                    cursor: "pointer",
                   }}
-                  onClick={() => {
-                    if (hasUnsavedChanges) {
-                      dispatch(setShowTabChangeDialog(true));
-                      localStorage.setItem("navigation", item.path);
-                      dispatch(setSideNavigationAllowed(true));
-                      dispatch(setBackButtonNavigationAllowed(false));
-                    } else {
-                      itemClick();
-                      navigate(item.path);
-                      dispatch(setIsEditing(false));
-                      dispatch(setSideNavigationAllowed(false));
-                    }
+                  sx={{
+                    ".MuiTooltip-tooltip": {
+                      fontSize: "0.875rem",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                    },
                   }}
                 >
-                  <ListItemIcon
+                  <ListItem
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
                     sx={{
-                      minWidth: 30,
-                      color: isSelected || hoveredIndex === index ? "#0073B7" : "",
-                    }}
-                  >
-                    {isSelected || hoveredIndex === index ? item.selectedIcon : item.icon}
-                  </ListItemIcon>
-
-                  {!collapsed && (
-                    <ListItemText
-                      primary={item.text}
-                      primaryTypographyProps={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                      }}
-                      sx={{
-                        color: isSelected ? "#0073B7" : "#737373",
-                        whiteSpace: "nowrap",
-                      }}
-                    />
-                  )}
-                </ListItem>
-              </LightTooltip>
-            );
-          })}
-        </List>
-
-        {/* Preferences */}
-        {!collapsed && (
-          <Typography
-            variant="subtitle2"
-            sx={{
-              mt: 1,
-              mb: 0.5,
-              px: 1,
-              fontWeight: "500",
-              color: "#A3A3A3",
-            }}
-          >
-            Preferences
-          </Typography>
-        )}
-        <List sx={{ py: 0 }}>
-          {preferenceItems.map((item, index) => {
-            const isSelected = location.pathname === item.path;
-
-            return (
-              <LightTooltip
-                title={collapsed ? item.text : ""}
-                placement="right"
-                arrow={false}
-                key={index}
-                slotProps={{
-                  popper: {
-                    modifiers: [
-                      {
-                        name: "offset",
-                        options: {
-                          offset: [0, -14],
+                      py: !collapsed ? 0.5 : 1.3,
+                      bgcolor:
+                        isSelected && !collapsed
+                          ? "white"
+                          : collapsed && isSelected
+                          ? "transparent"
+                          : "transparent",
+                      boxShadow:
+                        isSelected && !collapsed
+                          ? 3
+                          : collapsed && isSelected
+                          ? 0
+                          : 0,
+                      borderRadius: collapsed && isSelected ? 0 : 2,
+                      "&:hover": {
+                        bgcolor: "transparent",
+                        "& .MuiListItemText-primary": {
+                          color: "#0073B7",
                         },
                       },
-                    ],
-                  },
-                }}
-                sx={{
-                  ".MuiTooltip-tooltip": {
-                    fontSize: "0.875rem",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                  },
-                }}
-              >
-                <ListItem
-                  onMouseEnter={() => setHoveredIndex(menuItems.length + index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  sx={{
-                    py: !collapsed ? 0.5 : 1.3,
-                    bgcolor:
-                      isSelected && !collapsed
-                        ? "white"
-                        : collapsed && isSelected
-                        ? "transparent"
-                        : "transparent",
-                    cursor: "pointer",
-                    boxShadow:
-                      isSelected && !collapsed
-                        ? 3
-                        : collapsed && isSelected
-                        ? 0
-                        : 0,
-                    borderRadius: collapsed && isSelected ? 0 : 2,
-                    "&:hover": {
-                      bgcolor: "transparent",
-                      "& .MuiListItemText-primary": {
-                        color: "#0073B7",
-                      },
-                    },
-                    pl: "8px",
-                    pr: 0,
-                    justifyContent: collapsed ? "center" : "flex-start",
-                  }}
-                  onClick={() => {
-                    if (hasUnsavedChanges) {
-                      dispatch(setShowTabChangeDialog(true));
-                      localStorage.setItem("navigation", item.path);
-                      dispatch(setSideNavigationAllowed(true));
-                      dispatch(setBackButtonNavigationAllowed(false));
-                    } else {
-                      itemClick();
-                      navigate(item.path);
-                      dispatch(setIsEditing(false));
-                      dispatch(setSideNavigationAllowed(false));
-                    }
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 30,
-                      color: isSelected || hoveredIndex === menuItems.length + index ? "#0073B7" : "",
+                      pl: "8px",
+                      pr: 0,
+                      justifyContent: collapsed ? "center" : "flex-start",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (hasUnsavedChanges) {
+                        dispatch(setShowTabChangeDialog(true));
+                        localStorage.setItem("navigation", item.path);
+                        dispatch(setSideNavigationAllowed(true));
+                        dispatch(setBackButtonNavigationAllowed(false));
+                      } else {
+                        itemClick();
+                        navigate(item.path);
+                        dispatch(setIsEditing(false));
+                        dispatch(setSideNavigationAllowed(false));
+                      }
                     }}
                   >
-                    {isSelected || hoveredIndex === menuItems.length + index ? item.selectedIcon : item.icon}
-                  </ListItemIcon>
-
-                  {!collapsed && (
-                    <ListItemText
-                      primary={item.text}
-                      primaryTypographyProps={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                      }}
+                    <ListItemIcon
                       sx={{
-                        color: isSelected ? "#0073B7" : "#737373",
-                        whiteSpace: "nowrap",
+                        minWidth: 30,
+                        color:
+                          isSelected || hoveredIndex === index ? "#0073B7" : "",
                       }}
-                    />
-                  )}
-                </ListItem>
-              </LightTooltip>
-            );
-          })}
-        </List>
+                    >
+                      {isSelected || hoveredIndex === index
+                        ? item.selectedIcon
+                        : item.icon}
+                    </ListItemIcon>
+
+                    {!collapsed && (
+                      <ListItemText
+                        primary={item.text}
+                        primaryTypographyProps={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                        }}
+                        sx={{
+                          color: isSelected ? "#0073B7" : "#737373",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
+                    )}
+                  </ListItem>
+                </LightTooltip>
+              );
+            })}
+          </List>
+
+          {/* Preferences */}
+          {!collapsed && (
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mt: 1,
+                mb: 0.5,
+                px: 1,
+                fontWeight: "500",
+                color: "#A3A3A3",
+              }}
+            >
+              Preferences
+            </Typography>
+          )}
+          <List sx={{ py: 0 }}>
+            {preferenceItems.map((item, index) => {
+              const isSelected = location.pathname === item.path;
+
+              return (
+                <LightTooltip
+                  title={collapsed ? item.text : ""}
+                  placement="right"
+                  arrow={false}
+                  key={index}
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [0, -14],
+                          },
+                        },
+                      ],
+                    },
+                  }}
+                  sx={{
+                    ".MuiTooltip-tooltip": {
+                      fontSize: "0.875rem",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                    },
+                  }}
+                >
+                  <ListItem
+                    onMouseEnter={() =>
+                      setHoveredIndex(menuItems.length + index)
+                    }
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    sx={{
+                      py: !collapsed ? 0.5 : 1.3,
+                      bgcolor:
+                        isSelected && !collapsed
+                          ? "white"
+                          : collapsed && isSelected
+                          ? "transparent"
+                          : "transparent",
+                      cursor: "pointer",
+                      boxShadow:
+                        isSelected && !collapsed
+                          ? 3
+                          : collapsed && isSelected
+                          ? 0
+                          : 0,
+                      borderRadius: collapsed && isSelected ? 0 : 2,
+                      "&:hover": {
+                        bgcolor: "transparent",
+                        "& .MuiListItemText-primary": {
+                          color: "#0073B7",
+                        },
+                      },
+                      pl: "8px",
+                      pr: 0,
+                      justifyContent: collapsed ? "center" : "flex-start",
+                    }}
+                    onClick={() => {
+                      if (hasUnsavedChanges) {
+                        dispatch(setShowTabChangeDialog(true));
+                        localStorage.setItem("navigation", item.path);
+                        dispatch(setSideNavigationAllowed(true));
+                        dispatch(setBackButtonNavigationAllowed(false));
+                      } else {
+                        itemClick();
+                        navigate(item.path);
+                        dispatch(setIsEditing(false));
+                        dispatch(setSideNavigationAllowed(false));
+                      }
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 30,
+                        color:
+                          isSelected ||
+                          hoveredIndex === menuItems.length + index
+                            ? "#0073B7"
+                            : "",
+                      }}
+                    >
+                      {isSelected || hoveredIndex === menuItems.length + index
+                        ? item.selectedIcon
+                        : item.icon}
+                    </ListItemIcon>
+
+                    {!collapsed && (
+                      <ListItemText
+                        primary={item.text}
+                        primaryTypographyProps={{
+                          fontSize: "14px",
+                          fontWeight: 400,
+                        }}
+                        sx={{
+                          color: isSelected ? "#0073B7" : "#737373",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
+                    )}
+                  </ListItem>
+                </LightTooltip>
+              );
+            })}
+          </List>
           <Box
             sx={{
               display: "flex",
@@ -584,13 +614,13 @@ const role = localStorage.getItem("role") || "";
 
         {/* Bottom logout section */}
         <Box sx={{ borderTop: "1px solid #ECECEC" }}>
-              <ListItem
-                sx={{
+          <ListItem
+            sx={{
               color: "#C82333",
-                  cursor: "pointer",
-                }}
-                onClick={handleLogOut}
-              >
+              cursor: "pointer",
+            }}
+            onClick={handleLogOut}
+          >
             <ListItemIcon
               sx={{
                 color: "#C82333",
@@ -622,18 +652,18 @@ const role = localStorage.getItem("role") || "";
                   },
                 }}
               >
-                  <ExitToApp />
+                <ExitToApp />
               </LightTooltip>
-                </ListItemIcon>
-                {!collapsed && (
+            </ListItemIcon>
+            {!collapsed && (
               <ListItemText
                 primary="Logout Account"
                 sx={{ whiteSpace: "nowrap" }}
               />
-                )}
-              </ListItem>
-      </Box>
-    </Drawer>
+            )}
+          </ListItem>
+        </Box>
+      </Drawer>
 
       {/* Sidebar for Mobile & Tablet */}
       <Drawer

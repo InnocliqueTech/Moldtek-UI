@@ -18,6 +18,7 @@ import { AppDispatch, RootState } from "../../store";
 import { setIsSearchTriggered } from "../../store/slices/masterDataSlice";
 import {
   setCreateSlider,
+  setDebouncedSearchKLD,
   setKLDEdit,
   setRowKLDData,
 } from "../../store/slices/kldSlice";
@@ -176,7 +177,7 @@ const ProductionOperatorsPage: React.FC = () => {
   }, [debouncedSearchKLD]);
 
   useEffect(() => {
-    if (!openSliderKld && !createSlider) {
+    if (!openSliderKld && !createSlider && debouncedSearchKLD !== "") {
       kldDataGlobalSearch({
         page,
         size: rowsPerPage,
@@ -206,6 +207,7 @@ const ProductionOperatorsPage: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
+          dispatch(setDebouncedSearchKLD(""));
         dispatch(setRowKLDData(row));
         dispatch(setKLDEdit(true));
         dispatch(setCreateSlider(true));
