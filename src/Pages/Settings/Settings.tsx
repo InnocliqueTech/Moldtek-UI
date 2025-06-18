@@ -133,7 +133,7 @@ const validatePersonalForm = () => {
           firstName: personalDetails.firstName,
           lastName: personalDetails.lastName,
           displayName: personalDetails.displayName,
-          phoneNumber: `+91${personalDetails.phone}`,
+          phoneNumber: personalDetails.phone,
         }).unwrap();
         toast.success(response?.message);
       } catch (error: any) {
