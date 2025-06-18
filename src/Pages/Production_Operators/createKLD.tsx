@@ -44,13 +44,59 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
     kldCode: "",
   });
 
+  const [fieldErrors, setFieldErrors] = useState({
+    itemCode: "",
+    unitEffectiveNumber: "",
+  });
+
   const [createKldData, { isLoading }] = useCreateKldDataMutation();
   const [updateKldData, { isLoading: kldUpdateLoading }] =
     useUpdateKldDataMutation();
   useUpdateKldDataMutation;
 
   const onSubmit = () => {
-    setSubmitAndPublishPopup(true);
+    const { unitEffectiveNumber, jarCap, itemCode } = formValues;
+
+    const errors: { itemCode: string; unitEffectiveNumber: string } = {
+      itemCode: "",
+      unitEffectiveNumber: "",
+    };
+
+    let hasError = false;
+
+    const uenRegex = /^\d+$/;
+    if (!uenRegex.test(unitEffectiveNumber)) {
+      errors.unitEffectiveNumber =
+        "Unit Effective Number must be numeric only.";
+      hasError = true;
+    }
+
+    const prefixMap: Record<string, string> = {
+      JAR: "LJ",
+      CAP: "LL",
+      "JAR&CAP": "LS",
+    };
+    const expectedPrefix = prefixMap[jarCap?.toUpperCase() ?? ""];
+
+    if (expectedPrefix && !itemCode.startsWith(expectedPrefix)) {
+      errors.itemCode = `Item Code must start with '${expectedPrefix}' for ${jarCap}`;
+      hasError = true;
+    }
+
+    if (itemCode && !itemCode.includes(`-${unitEffectiveNumber}`)) {
+      errors.itemCode = `${
+        errors.itemCode ? errors.itemCode + ". " : ""
+      }Item Code must include '-${unitEffectiveNumber}'`;
+      hasError = true;
+    }
+
+    if (hasError) {
+      setFieldErrors(errors); 
+      return; 
+    } else if (!hasError) {
+      setFieldErrors({ itemCode: "", unitEffectiveNumber: "" });
+      setSubmitAndPublishPopup(true);
+    }
   };
 
   const successTitle = kldEdit
@@ -168,11 +214,19 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
     }
   };
 
+  const handleDrawerClose = () => {
+    setFieldErrors({
+      itemCode: "",
+      unitEffectiveNumber: "",
+    });
+    onClose(); 
+  };
+
   return (
     <Drawer
       anchor="right"
       open={open}
-      onClose={onClose}
+      onClose={handleDrawerClose}
       PaperProps={{
         sx: {
           width: isMobile ? "100%" : isTablet ? 300 : 400,
@@ -211,6 +265,8 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
               onChange={handleChange("unitEffectiveNumber")}
               required
               disabled={kldEdit ? true : false}
+              error={!!fieldErrors.unitEffectiveNumber}
+              helperText={fieldErrors.unitEffectiveNumber}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -231,6 +287,8 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
               value={formValues.itemCode ?? ""}
               onChange={handleChange("itemCode")}
               required
+              error={!!fieldErrors.itemCode}
+              helperText={fieldErrors.itemCode}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
