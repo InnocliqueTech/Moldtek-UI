@@ -63,6 +63,7 @@ const SignInPage: React.FC = () => {
         localStorage.setItem("userId", response?.data?.userId);
         localStorage.setItem("userTypeId",response?.data?.userTypeId);
         localStorage.setItem("email",response?.data?.email );
+        localStorage.setItem("firstLogin", String(response?.data?.firstLogin));
 
         if (rememberMe) {
           localStorage.setItem("rememberMeEmail", email);
@@ -72,7 +73,11 @@ const SignInPage: React.FC = () => {
           localStorage.removeItem("rememberMePassword");
         }
 
-        navigate(from, { replace: true });
+      if (response?.data?.firstLogin === true) {
+    navigate("/resetPassword");
+  } else {
+    navigate(from, { replace: true }); 
+  }
       } else {
         localStorage.clear();
         toast.error("Login failed: No token received");

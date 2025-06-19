@@ -11,10 +11,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
 import ReusableInput from '../ReUsable/TextField';
 import ReusableButton from '../ReUsable/Button';
-
 import { signInSchema } from '../ZodSchemas/signInpageValidation';
 import indicator from "../../assets/Images/indicator.png";
 import Logo from "../../assets/Images/Logo.svg";
@@ -24,7 +22,7 @@ import curveImage from "../../assets/Images/curves.png";
 import { useResetPasswordMutation } from '../../store/apis/manageUsersApi';
 
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [email, setEmail] = useState('');
@@ -320,4 +318,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

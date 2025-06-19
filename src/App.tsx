@@ -33,6 +33,9 @@ const ViewDailyPlan = lazy(() => import("./Pages/DailyPlan/View_Daily_Plan"));
 const ForgotPassword = lazy(
   () => import("./Components/Authentication/ForgotPassword")
 );
+const ResetPassword = lazy(
+  () => import("./Components/Authentication/ResetPasword")
+);
 const Unauthorized = lazy(() => import("./Components/Authentication/UnAuthorizedPage"));
 
 
@@ -46,6 +49,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<SignInPage />} />
           <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
