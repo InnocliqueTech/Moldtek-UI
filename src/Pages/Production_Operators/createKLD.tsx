@@ -45,7 +45,6 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
   });
 
   const [fieldErrors, setFieldErrors] = useState({
-    itemCode: "",
     unitEffectiveNumber: "",
   });
 
@@ -55,10 +54,9 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
   useUpdateKldDataMutation;
 
   const onSubmit = () => {
-    const { unitEffectiveNumber, jarCap, itemCode } = formValues;
+    const { unitEffectiveNumber} = formValues;
 
-    const errors: { itemCode: string; unitEffectiveNumber: string } = {
-      itemCode: "",
+    const errors: { unitEffectiveNumber: string } = {
       unitEffectiveNumber: "",
     };
 
@@ -71,30 +69,12 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
       hasError = true;
     }
 
-    const prefixMap: Record<string, string> = {
-      JAR: "LJ",
-      CAP: "LL",
-      "JAR&CAP": "LS",
-    };
-    const expectedPrefix = prefixMap[jarCap?.toUpperCase() ?? ""];
-
-    if (expectedPrefix && !itemCode.startsWith(expectedPrefix)) {
-      errors.itemCode = `Item Code must start with '${expectedPrefix}' for ${jarCap}`;
-      hasError = true;
-    }
-
-    if (itemCode && !itemCode.includes(`-${unitEffectiveNumber}`)) {
-      errors.itemCode = `${
-        errors.itemCode ? errors.itemCode + ". " : ""
-      }Item Code must include '-${unitEffectiveNumber}'`;
-      hasError = true;
-    }
-
+   
     if (hasError) {
       setFieldErrors(errors); 
       return; 
     } else if (!hasError) {
-      setFieldErrors({ itemCode: "", unitEffectiveNumber: "" });
+      setFieldErrors({  unitEffectiveNumber: "" });
       setSubmitAndPublishPopup(true);
     }
   };
@@ -216,7 +196,6 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
 
   const handleDrawerClose = () => {
     setFieldErrors({
-      itemCode: "",
       unitEffectiveNumber: "",
     });
     onClose(); 
@@ -287,8 +266,6 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
               value={formValues.itemCode ?? ""}
               onChange={handleChange("itemCode")}
               required
-              error={!!fieldErrors.itemCode}
-              helperText={fieldErrors.itemCode}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>

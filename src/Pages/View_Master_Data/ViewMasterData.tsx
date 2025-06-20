@@ -50,6 +50,12 @@ const ViewMasterData: React.FC = () => {
 
   const UnitEffectiveNumber = localStorage.getItem("UEN");
   const VersionNumber = localStorage.getItem("VersionNumber");
+  const selectedJar = localStorage.getItem("JARCAP");
+      const jar = localStorage.getItem("selectedJar");
+  let jarValue: any;
+  if (jar) {
+    jarValue = jar;
+  }
   const versionNumber = VersionNumber
     ? VersionNumber.replace(/[^\d]/g, "")
     : undefined;
@@ -57,6 +63,8 @@ const ViewMasterData: React.FC = () => {
   const { data, isLoading } = useViewMasterDataQuery({
     ueNumber: path ? UnitEffectiveNumber : selectedUEN,
     versionNo: path ? versionNumber : versionNo,
+ jar_cap: path ?selectedJar:jarValue,
+
   });
 
   const tabs = [

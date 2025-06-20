@@ -485,6 +485,94 @@ function ReusableTable<T extends Record<string, any>>({
     }
   };
 
+    const handleBulkDelete = async () => {
+    if (selected.length === 0) {
+      toast.warning("Please select at least one row!");
+      return;
+    }
+
+    setLoaderDownload(true);
+    const results: {
+      indentNumber: string;
+      status: "success" | "error";
+      message?: string;
+      blob?: Blob;
+    }[] = [];
+
+    try {
+      const downloadTasks = selected.map(async (row) => {
+        const unitNumber = row.unitEffectivityNumber;
+        const indentNumber = decodeURIComponent(row.indentNumber || "");
+        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+
+        try {
+          const response = await fetch(url, { method: "GET" });
+          if (!response.ok) {
+            const errorData = await response.json();
+            results.push({
+              indentNumber,
+              status: "error",
+              message: errorData?.message || "Download failed.",
+            });
+          } else {
+            const blob = await response.blob();
+            results.push({
+              indentNumber,
+              status: "success",
+              blob,
+            });
+          }
+        } catch (err) {
+          results.push({
+            indentNumber,
+            status: "error",
+            message: err instanceof Error ? err.message : "Unknown error",
+          });
+        }
+      });
+
+      await Promise.all(downloadTasks);
+
+      // Handle successful downloads
+      results
+        .filter((result) => result.status === "success")
+        .forEach(({ indentNumber, blob }) => {
+          if (blob) {
+            const fileUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = fileUrl;
+            link.download = `${indentNumber}.xlsx`;
+            link.click();
+            URL.revokeObjectURL(fileUrl);
+          }
+        });
+
+      const successful = results
+        .filter((r) => r.status === "success")
+        .map((r) => r.indentNumber);
+      const failed = results
+        .filter((r) => r.status === "error")
+        .map((r) => `${r.message}`);
+
+      if (failed.length > 0) {
+        setDownloadSummary({
+          total: selected.length,
+          downloaded: successful,
+          errors: failed,
+        });
+      } else if (successful.length > 0 && failed.length <= 0) {
+        toast.success(
+          `${successful.length === 1
+            ? "File downloaded successfully."
+            : "Files downloaded successfully."
+          }`
+        );
+      }
+    } finally {
+      setLoaderDownload(false);
+    }
+  };
+
   const getStatusStyles = (status: string): SxProps<Theme> => {
     switch (status.toLowerCase()) {
       case "active":
@@ -1145,10 +1233,17 @@ function ReusableTable<T extends Record<string, any>>({
               /> */}
 
                     <ButtonComponent
-                      text={
-                        loaderDownload ? "Downloading..." : "Download Template"
+                      text={ id ==='dailyPlan' ?
+                        loaderDownload ? "Downloading..." : "Download Template":id==='kldData' &&loaderDownload ? "Deleting..." : "Delete KLD's"
                       }
-                      onClick={handleBulkDownload}
+                     onClick={
+  id === 'dailyPlan'
+    ? handleBulkDownload
+    : id === 'kldData'
+    ? handleBulkDelete
+    : undefined
+}
+
                       textColor="#0073B7"
                       color="white"
                       borderRadius="100px"

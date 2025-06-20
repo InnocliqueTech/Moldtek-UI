@@ -436,16 +436,24 @@ const CreateMasterData: React.FC = () => {
   if (version) {
     versionNo = version;
   }
+    const jar = localStorage.getItem("actionJar");
+  let jarValue: any;
+  if (jar) {
+    jarValue = jar;
+  }
 
   const updateButtonAction = localStorage.getItem("updateButton");
 
     const selectedUENNumber = localStorage.getItem("selectedUEN");
   const selectedVersion = localStorage.getItem("selectedVersionNo");
+  const selectedJar = localStorage.getItem("selectedJar");
+  
   const { id } = useParams();
   const { data, isLoading } = useViewMasterDataQuery(
      {
       ueNumber: updateButtonAction==='false' ? selectedUENNumber :selectedUEN,
       versionNo: updateButtonAction==='false' ?selectedVersion:versionNo,
+      jar_cap: updateButtonAction==='false' ?selectedJar:jarValue,
     },
     { skip: !id }
   );

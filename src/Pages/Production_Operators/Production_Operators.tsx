@@ -10,7 +10,7 @@ import {
   Skeleton,
 } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
-import { Edit, InfoOutline } from "@mui/icons-material";
+import { Delete, Edit, InfoOutline } from "@mui/icons-material";
 import ReusableTable from "../../Components/ReUsable/Table";
 // import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,7 +43,7 @@ const ProductionOperatorsPage: React.FC = () => {
     const savedPage = localStorage.getItem(storageKey);
     return savedPage !== null ? Number(savedPage) : 0;
   });
-  const previousPage = localStorage.getItem('PreviousPageKLD');
+  const previousPage = localStorage.getItem("PreviousPageKLD");
   const rowsPerPageStorageKey = "kldDataRowsPerPage";
   const [rowsPerPage, setRowsPerPage] = useState(() => {
     const savedPage = localStorage.getItem(rowsPerPageStorageKey);
@@ -169,7 +169,7 @@ const ProductionOperatorsPage: React.FC = () => {
 
   useEffect(() => {
     if (debouncedSearchKLD !== "") {
-      localStorage.setItem("PreviousPageKLD",page.toString());
+      localStorage.setItem("PreviousPageKLD", page.toString());
       setPage(0);
     } else {
       setPage(Number(previousPage));
@@ -207,10 +207,22 @@ const ProductionOperatorsPage: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
-          dispatch(setDebouncedSearchKLD(""));
+        dispatch(setDebouncedSearchKLD(""));
         dispatch(setRowKLDData(row));
         dispatch(setKLDEdit(true));
         dispatch(setCreateSlider(true));
+      },
+    },
+    {
+      icon: (
+        <Tooltip title="Delete" arrow>
+          <IconButton size="small" color="error">
+            <Delete fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+      onClick: (row: any) => {
+        console.log(row);
       },
     },
   ];
@@ -263,7 +275,7 @@ const ProductionOperatorsPage: React.FC = () => {
               ? globalSearchData?.data ?? []
               : listOfCompaniesData?.data?.content ?? []
           }
-          selectable={false}
+          selectable={true}
           label={`${
             debouncedSearchKLD
               ? globalSearchData?.totalRecords ?? 0

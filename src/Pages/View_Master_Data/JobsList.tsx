@@ -225,6 +225,11 @@ const JobsList: React.FC = () => {
 
   const versionNumber = localStorage.getItem("actionVersionNo");
   const id = localStorage.getItem("actionSelectedUEN");
+    const jar = localStorage.getItem("actionJar");
+  let jarValue: any;
+  if (jar) {
+    jarValue = jar;
+  }
   const { data, isLoading } = useGetJobsListQuery({
     unitEffectiveNumber: selectedUEN,
   });
@@ -235,6 +240,7 @@ const JobsList: React.FC = () => {
     {
       ueNumber: id ? id : selectedUEN,
       versionNo: versionNumber ? versionNumber : "",
+        jar_cap: jarValue?jarValue:'',
     },
     { refetchOnMountOrArgChange: true }
   );

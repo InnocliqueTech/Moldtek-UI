@@ -92,12 +92,19 @@ const MasterData: React.FC = () => {
           onClick={() => {
             localStorage.setItem("selectedUEN", value);
             localStorage.setItem("selectedVersionNo", row.version_no);
+            localStorage.setItem("selectedJar",row.jar_cap);
             dispatch(setSelectedTabView(0));
               dispatch(setDebouncedSearch(""));
             navigate(`/viewMasterData/${value}`);
           }}
         />
       ),
+      disableSorting: false,
+    },
+        {
+      id: "jar_cap",
+      label: "JAR/CAP",
+      align: true,
       disableSorting: false,
     },
     {
@@ -277,8 +284,10 @@ const MasterData: React.FC = () => {
         dispatch(setDebouncedSearch(""));
         const selectedUENAction = row?.unit_effectivity_number;
         const versionNoAction = row?.version_no;
+        const jarAction = row?.jar_cap;
         localStorage.setItem("actionSelectedUEN", selectedUENAction);
         localStorage.setItem("actionVersionNo", versionNoAction);
+        localStorage.setItem("actionJar",jarAction);
         navigate(`/viewJobsList`);
       },
     },
@@ -300,11 +309,13 @@ const MasterData: React.FC = () => {
               dispatch(setDebouncedSearch(""));
               const selectedUENActionUpdate = row?.unit_effectivity_number;
               const versionNoAction = row?.version_no;
+               const jarAction = row?.jar_cap;
               localStorage.setItem(
                 "actionSelectedUEN",
                 selectedUENActionUpdate
               );
               localStorage.setItem("actionVersionNo", versionNoAction);
+               localStorage.setItem("actionJar",jarAction);
               localStorage.setItem("updateButton", "true");
 
               navigate(`/updateMasterData/${selectedUENActionUpdate}`);
