@@ -147,6 +147,7 @@ const transformJobDataList = (
       image: "",
       customerName: job.customerName || "--",
     },
+    jarCap:job.jarCap,
     indentNumber: job.indentNumber || "--",
     masterVersionNo: job.masterVersionNo || "--",
     labelType: job.labelType || "--",
@@ -262,6 +263,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
                 uniteffectiveNumber
               );
               localStorage.setItem("status", row.status);
+              localStorage.setItem("jarCapdaily",row.jarCap);
               const encodedParam = encodeURIComponent(value);
               navigate(`/viewDailyPlan/${encodedParam}`);
               dispatch(setDebouncedSearchDailyPlan(""));
@@ -279,6 +281,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
       label: "Unit Effective Number",
       align: false,
     },
+
     {
       id: "customer",
       label: "Customer",

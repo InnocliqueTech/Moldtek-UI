@@ -194,6 +194,8 @@ function ReusableTable<T extends Record<string, any>>({
     };
   }, [search]);
 
+
+
   const getValue = (row: any, key: string) => {
     if (key === "customer_name")
       return row.customer_name?.customer?.toLowerCase() || "";
@@ -253,6 +255,8 @@ function ReusableTable<T extends Record<string, any>>({
       }
     })
     : sortedData;
+
+      console.log(filteredData,sortedData,"DATAOFTABLE")
 
   const handleSelectAll = () => {
     const allSelected = filteredData
@@ -413,9 +417,11 @@ function ReusableTable<T extends Record<string, any>>({
 
     try {
       const downloadTasks = selected.map(async (row) => {
+        console.log(row,"ROWSDTATA")
         const unitNumber = row.unitEffectivityNumber;
         const indentNumber = decodeURIComponent(row.indentNumber || "");
-        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+        const jarCap = row.jarCap;
+        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}&jarCap=${jarCap}`;
 
         try {
           const response = await fetch(url, { method: "GET" });

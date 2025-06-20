@@ -240,7 +240,7 @@ const JobsList: React.FC = () => {
     {
       ueNumber: id ? id : selectedUEN,
       versionNo: versionNumber ? versionNumber : "",
-        jar_cap: jarValue?jarValue:'',
+        jarCap: jarValue?jarValue:'',
     },
     { refetchOnMountOrArgChange: true }
   );

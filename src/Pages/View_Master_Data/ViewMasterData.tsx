@@ -63,7 +63,7 @@ const ViewMasterData: React.FC = () => {
   const { data, isLoading } = useViewMasterDataQuery({
     ueNumber: path ? UnitEffectiveNumber : selectedUEN,
     versionNo: path ? versionNumber : versionNo,
- jar_cap: path ?selectedJar:jarValue,
+ jarCap: path ?selectedJar:jarValue,
 
   });
 

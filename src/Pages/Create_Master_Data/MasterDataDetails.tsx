@@ -179,7 +179,7 @@ const newKldCode = response?.data?.kldCode ?? "";
       ueNumber:
         updateButtonAction === "false" ? selectedUENNumber : selectedUEN,
       versionNo: updateButtonAction === "false" ? selectedVersion : versionNo,
-        jar_cap: updateButtonAction==='false' ?selectedJar:jarValue,
+        jarCap: updateButtonAction==='false' ?selectedJar:jarValue,
     },
     {
       skip: !id,
