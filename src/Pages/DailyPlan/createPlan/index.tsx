@@ -44,8 +44,8 @@ interface ProductUnit {
 }
 
 const initialFormFields: FormField[] = [
+    { id: 'indentNumber', label: 'Indent Number:', value: '' },
   { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
-  { id: 'indentNumber', label: 'Indent Number:', value: '' },
   { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
   { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: [] },
   { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: [] },

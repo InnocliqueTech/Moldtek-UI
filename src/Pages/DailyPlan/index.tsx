@@ -281,7 +281,12 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
       label: "Unit Effective Number",
       align: false,
     },
-
+  {
+      id: "jarCap",
+      label: "JAR/CAP",
+      align: true,
+      disableSorting: false,
+    },
     {
       id: "customer",
       label: "Customer",
