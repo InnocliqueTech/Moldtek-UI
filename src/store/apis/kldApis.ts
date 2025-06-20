@@ -75,6 +75,14 @@ export const kldApi = createApi({
         };
       },
     }),
+     kldDelete: builder.mutation<any, any>({
+      query: (newItem) => ({
+        url: "/kld/deleteKld",
+        method: "Delete",
+        body: newItem,
+      }),
+    }),
+
    
   }),
 });
@@ -87,4 +95,5 @@ export const {
   useGetKLDDataMutation,
   useUpdateKldDataMutation,
   useKldUploadMutation,
+  useKldDeleteMutation,
 } = kldApi;

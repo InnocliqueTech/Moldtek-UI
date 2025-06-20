@@ -25,6 +25,7 @@ export interface KldData {
   kldHeaderUpload: boolean;
   kldSuccessPopup: boolean;
   kldConfirmPopup: boolean;
+  deleteButton:boolean;
 }
 
 const initialState: KldData = {
@@ -48,12 +49,16 @@ const initialState: KldData = {
     toDate: "",
     jarCap: "",
   },
+  deleteButton:false
 };
 
 const KldSlice = createSlice({
   name: "kldSlice",
   initialState,
   reducers: {
+    setDelete:(state,action:PayloadAction<boolean>)=>{
+   state.deleteButton = action.payload
+    },
     setKLDHeaderUploadButton: (state, action: PayloadAction<boolean>) => {
       state.kldHeaderUploadButton = action.payload;
     },
@@ -102,5 +107,6 @@ export const {
   setCreateSlider,
   setKLDEdit,
   setRowKLDData,
+  setDelete
 } = KldSlice.actions;
 export default KldSlice.reducer;

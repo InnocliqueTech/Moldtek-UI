@@ -52,7 +52,10 @@ import CancelIcon from "../../assets/Images/cancel.png";
 import ButtonComponent from "./Button";
 import { useUpdateStatusJobMutation } from "../../store/apis/dailyPlanApis";
 import { useDispatch, useSelector } from "react-redux";
-import { setDebouncedSearchDailyPlan, setDropDown } from "../../store/slices/viewDailyPlanSlice";
+import {
+  setDebouncedSearchDailyPlan,
+  setDropDown,
+} from "../../store/slices/viewDailyPlanSlice";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
 import { BASE_API_URL } from "../../api.config";
@@ -60,8 +63,9 @@ import ErrorIcon from "@mui/icons-material/Error";
 import Loader from "../../Loader";
 import { useLocation } from "react-router-dom";
 import { setDebouncedSearch } from "../../store/slices/masterDataSlice";
-import { setDebouncedSearchKLD } from "../../store/slices/kldSlice";
+import { setDebouncedSearchKLD, setDelete } from "../../store/slices/kldSlice";
 import { setDebouncedSearchUser } from "../../store/slices/userSlice";
+import { useKldDeleteMutation } from "../../store/apis/kldApis";
 
 interface Column {
   id: string;
@@ -163,27 +167,25 @@ function ReusableTable<T extends Record<string, any>>({
   // };
   const role = localStorage.getItem("role") || "";
 
-
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
-
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (id === 'masterData') {
+      if (id === "masterData") {
         dispatch(setDebouncedSearch(search));
       }
-      if (id === 'dailyPlan') {
+      if (id === "dailyPlan") {
         dispatch(setDebouncedSearchDailyPlan(search));
       }
-      if (id === 'kldData') {
+      if (id === "kldData") {
         dispatch(setDebouncedSearchKLD(search));
       }
       {
-        if (id === 'userData') {
+        if (id === "userData") {
           dispatch(setDebouncedSearchUser(search));
         }
       }
@@ -193,8 +195,6 @@ function ReusableTable<T extends Record<string, any>>({
       clearTimeout(handler);
     };
   }, [search]);
-
-
 
   const getValue = (row: any, key: string) => {
     if (key === "customer_name")
@@ -221,42 +221,41 @@ function ReusableTable<T extends Record<string, any>>({
         ? 1
         : -1
       : aValue < bValue
-        ? 1
-        : -1;
+      ? 1
+      : -1;
   });
 
   const filteredData = search
     ? sortedData.filter((row) => {
-      const searchValue = search.toLowerCase();
+        const searchValue = search.toLowerCase();
 
-      if (id === "jobsList") {
-        return Object.entries(row).some(([key, value]) => {
-          if (!value) return false;
+        if (id === "jobsList") {
+          return Object.entries(row).some(([key, value]) => {
+            if (!value) return false;
 
-          let stringValue = "";
+            let stringValue = "";
 
-          // Check if the field is a date field — format it as dd-mm-yyyy
-          if (key.toLowerCase().includes("date")) {
-            const date = new Date(value);
-            if (!isNaN(date.getTime())) {
-              stringValue = date
-                .toLocaleDateString("en-GB")
-                .replace(/\//g, "-");
+            // Check if the field is a date field — format it as dd-mm-yyyy
+            if (key.toLowerCase().includes("date")) {
+              const date = new Date(value);
+              if (!isNaN(date.getTime())) {
+                stringValue = date
+                  .toLocaleDateString("en-GB")
+                  .replace(/\//g, "-");
+              }
+            } else {
+              stringValue = value.toString();
             }
-          } else {
-            stringValue = value.toString();
-          }
 
-          return stringValue.toLowerCase().includes(searchValue);
-        });
-      }
-      else {
-        return (sortedData)
-      }
-    })
+            return stringValue.toLowerCase().includes(searchValue);
+          });
+        } else {
+          return sortedData;
+        }
+      })
     : sortedData;
 
-      console.log(filteredData,sortedData,"DATAOFTABLE")
+  console.log(filteredData, sortedData, "DATAOFTABLE");
 
   const handleSelectAll = () => {
     const allSelected = filteredData
@@ -401,6 +400,8 @@ function ReusableTable<T extends Record<string, any>>({
     errors: string[];
   }>(null);
 
+  const [kldDelete] = useKldDeleteMutation();
+
   const handleBulkDownload = async () => {
     if (selected.length === 0) {
       toast.warning("Please select at least one row!");
@@ -417,7 +418,7 @@ function ReusableTable<T extends Record<string, any>>({
 
     try {
       const downloadTasks = selected.map(async (row) => {
-        console.log(row,"ROWSDTATA")
+        console.log(row, "ROWSDTATA");
         const unitNumber = row.unitEffectivityNumber;
         const indentNumber = decodeURIComponent(row.indentNumber || "");
         const jarCap = row.jarCap;
@@ -480,9 +481,10 @@ function ReusableTable<T extends Record<string, any>>({
         });
       } else if (successful.length > 0 && failed.length <= 0) {
         toast.success(
-          `${successful.length === 1
-            ? "File downloaded successfully."
-            : "Files downloaded successfully."
+          `${
+            successful.length === 1
+              ? "File downloaded successfully."
+              : "Files downloaded successfully."
           }`
         );
       }
@@ -491,89 +493,37 @@ function ReusableTable<T extends Record<string, any>>({
     }
   };
 
-    const handleBulkDelete = async () => {
+  const handleBulkDelete = async () => {
     if (selected.length === 0) {
       toast.warning("Please select at least one row!");
       return;
     }
 
     setLoaderDownload(true);
-    const results: {
-      indentNumber: string;
-      status: "success" | "error";
-      message?: string;
-      blob?: Blob;
-    }[] = [];
+    console.log(selected, "SELECTDAPI");
+    const deletePayload = selected.map((row) => ({
+      unitEffectiveNumber: row.unitEffectiveNumber,
+      jarCap: row.jarCap,
+    }));
 
     try {
-      const downloadTasks = selected.map(async (row) => {
-        const unitNumber = row.unitEffectivityNumber;
-        const indentNumber = decodeURIComponent(row.indentNumber || "");
-        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}`;
+      const response = await kldDelete(deletePayload);
 
-        try {
-          const response = await fetch(url, { method: "GET" });
-          if (!response.ok) {
-            const errorData = await response.json();
-            results.push({
-              indentNumber,
-              status: "error",
-              message: errorData?.message || "Download failed.",
-            });
-          } else {
-            const blob = await response.blob();
-            results.push({
-              indentNumber,
-              status: "success",
-              blob,
-            });
-          }
-        } catch (err) {
-          results.push({
-            indentNumber,
-            status: "error",
-            message: err instanceof Error ? err.message : "Unknown error",
-          });
-        }
-      });
-
-      await Promise.all(downloadTasks);
-
-      // Handle successful downloads
-      results
-        .filter((result) => result.status === "success")
-        .forEach(({ indentNumber, blob }) => {
-          if (blob) {
-            const fileUrl = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = fileUrl;
-            link.download = `${indentNumber}.xlsx`;
-            link.click();
-            URL.revokeObjectURL(fileUrl);
-          }
-        });
-
-      const successful = results
-        .filter((r) => r.status === "success")
-        .map((r) => r.indentNumber);
-      const failed = results
-        .filter((r) => r.status === "error")
-        .map((r) => `${r.message}`);
-
-      if (failed.length > 0) {
-        setDownloadSummary({
-          total: selected.length,
-          downloaded: successful,
-          errors: failed,
-        });
-      } else if (successful.length > 0 && failed.length <= 0) {
+      if (response?.data?.statusCode === 200) {
         toast.success(
-          `${successful.length === 1
-            ? "File downloaded successfully."
-            : "Files downloaded successfully."
-          }`
+          deletePayload.length === 1
+            ? "Record deleted successfully."
+            : `${deletePayload.length} records deleted successfully.`
         );
+        setSelected([]);
+        dispatch(setDelete(true));
+        setShowSelectionBar(false);
+      } else {
+        dispatch(setDelete(false));
+        toast.error(response.data.message || "Failed to delete records.");
       }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete records.");
     } finally {
       setLoaderDownload(false);
     }
@@ -620,7 +570,6 @@ function ReusableTable<T extends Record<string, any>>({
     }
   }, [location]);
 
-
   return (
     <Paper
       elevation={0}
@@ -628,7 +577,13 @@ function ReusableTable<T extends Record<string, any>>({
     >
       <>
         {loaderDownload ? (
-          <Loader text="Please wait, the downloading of your files takes some time." />
+          <Loader
+            text={`${
+              id === "kldData"
+                ? "Please wait, the deleting of your files takes some time."
+                : "Please wait, the downloading of your files takes some time."
+            }`}
+          />
         ) : (
           <>
             <Toolbar
@@ -787,10 +742,10 @@ function ReusableTable<T extends Record<string, any>>({
                           indeterminate={
                             selected.length > 0 &&
                             selected.length <
-                            Math.min(
-                              rowsPerPage,
-                              filteredData.length - pageNumber * rowsPerPage
-                            )
+                              Math.min(
+                                rowsPerPage,
+                                filteredData.length - pageNumber * rowsPerPage
+                              )
                           }
                         />
                       </TableCell>
@@ -913,9 +868,9 @@ function ReusableTable<T extends Record<string, any>>({
                     (pageRange
                       ? filteredData
                       : filteredData.slice(
-                        pageNumber * rowsPerPage,
-                        pageNumber * rowsPerPage + rowsPerPage
-                      )
+                          pageNumber * rowsPerPage,
+                          pageNumber * rowsPerPage + rowsPerPage
+                        )
                     ).map((row: any, index: any) => {
                       const isItemSelected = isSelected(row);
                       const isRowCheckBoxDisable = checkTheDisableStatus(row);
@@ -973,7 +928,11 @@ function ReusableTable<T extends Record<string, any>>({
                                     )
                                   }
                                   displayEmpty
-                                  disabled={(row[column.id] || "").toLowerCase() === "completed" && role.toLowerCase() !== 'admin'}
+                                  disabled={
+                                    (row[column.id] || "").toLowerCase() ===
+                                      "completed" &&
+                                    role.toLowerCase() !== "admin"
+                                  }
                                   variant="standard"
                                   sx={{
                                     width: 150,
@@ -1012,7 +971,11 @@ function ReusableTable<T extends Record<string, any>>({
                             <TableCell align="right">
                               <Stack direction="row">
                                 {actions.map((action, index) => (
-                                  <Tooltip key={index} title={action.label} arrow>
+                                  <Tooltip
+                                    key={index}
+                                    title={action.label}
+                                    arrow
+                                  >
                                     <IconButton
                                       size="small"
                                       onClick={() => {
@@ -1030,14 +993,11 @@ function ReusableTable<T extends Record<string, any>>({
                               </Stack>
                             </TableCell>
                           )}
-
                         </TableRow>
                       );
                     })
                   )}
                 </TableBody>
-
-
               </Table>
             </TableContainer>
 
@@ -1055,11 +1015,11 @@ function ReusableTable<T extends Record<string, any>>({
               >
                 {pageRange
                   ? `Page ${pageNumber + 1} of ${Math.ceil(
-                    totalLength / rowsPerPage
-                  )}`
+                      totalLength / rowsPerPage
+                    )}`
                   : `Page ${pageNumber + 1} of ${Math.ceil(
-                    filteredData.length / rowsPerPage
-                  )}`}
+                      filteredData.length / rowsPerPage
+                    )}`}
               </Typography>
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography sx={{ marginRight: "4px", marginTop: "6px" }}>
@@ -1239,22 +1199,29 @@ function ReusableTable<T extends Record<string, any>>({
               /> */}
 
                     <ButtonComponent
-                      text={ id ==='dailyPlan' ?
-                        loaderDownload ? "Downloading..." : "Download Template":id==='kldData' &&loaderDownload ? "Deleting..." : "Delete KLD's"
+                      text={
+                        id === "dailyPlan"
+                          ? loaderDownload
+                            ? "Downloading..."
+                            : "Download Template"
+                          : id === "kldData" && loaderDownload
+                          ? "Deleting..."
+                          : "Delete KLD's"
                       }
-                     onClick={
-  id === 'dailyPlan'
-    ? handleBulkDownload
-    : id === 'kldData'
-    ? handleBulkDelete
-    : undefined
-}
-
-                      textColor="#0073B7"
+                      onClick={
+                        id === "dailyPlan"
+                          ? handleBulkDownload
+                          : id === "kldData"
+                          ? handleBulkDelete
+                          : undefined
+                      }
+                      textColor={id === "kldData" ? "#EF4444" : "#0073B7"}
                       color="white"
                       borderRadius="100px"
                       p={2}
-                      border="1px solid #0073B7"
+                      border={`1px solid ${
+                        id === "kldData" ? "#EF4444" : "#0073B7"
+                      }`} 
                     />
                   </Box>
                 </Slide>
@@ -1262,7 +1229,7 @@ function ReusableTable<T extends Record<string, any>>({
             )}
             <Dialog
               open={!!downloadSummary}
-              onClose={() => { }}
+              onClose={() => {}}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 3 } }}
@@ -1423,7 +1390,7 @@ function ReusableTable<T extends Record<string, any>>({
             </Dialog>
             <Dialog
               open={confirmDialogOpen}
-              onClose={() => { }}
+              onClose={() => {}}
               maxWidth="sm"
               fullWidth
               PaperProps={{ sx: { borderRadius: 5, p: 0.5 } }}

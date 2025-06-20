@@ -8,6 +8,12 @@ import {
   Typography,
   Alert,
   Skeleton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  CircularProgress,
 } from "@mui/material";
 import Cards from "../../Components/ReUsable/Cards";
 import { Delete, Edit, InfoOutline } from "@mui/icons-material";
@@ -26,8 +32,10 @@ import {
   useGetKLDDataMutation,
   useGetKLDmetricsQuery,
   useKldDataGlobalSearchMutation,
+  useKldDeleteMutation,
 } from "../../store/apis/kldApis";
 import { KLDData } from "../../store/apis/kldApis";
+import { toast } from "react-toastify";
 
 const ProductionOperatorsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,6 +79,9 @@ const ProductionOperatorsPage: React.FC = () => {
       infoText: "Displays the total count of Cap KLD sets.",
     },
   ];
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingRow, setDeletingRow] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRowsPerPageChange = (event: SelectChangeEvent<string>): void => {
     setPage(0);
@@ -133,12 +144,15 @@ const ProductionOperatorsPage: React.FC = () => {
     },
   ];
 
+  const [kldDelete] = useKldDeleteMutation();
+
   const {
     filtersPayload,
     openSliderKld,
     isSearchTriggered,
     debouncedSearchKLD,
     createSlider,
+    deleteButton
   } = useSelector((state: RootState) => state.kld);
 
   const [
@@ -197,6 +211,18 @@ const ProductionOperatorsPage: React.FC = () => {
     localStorage.setItem(storageKey, newPage.toString());
   };
 
+useEffect(()=>{
+if(deleteButton){
+                 getKLDData({
+                  ...filtersPayload,
+                  page: isSearchTriggered ? 0 : page,
+                  size: rowsPerPage,
+                });
+                refetch();
+
+}
+},[deleteButton])
+
   const actions = [
     {
       icon: (
@@ -222,84 +248,153 @@ const ProductionOperatorsPage: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
-        console.log(row);
+        setDeletingRow(row);
+        setDeleteDialogOpen(true);
       },
     },
   ];
 
   return (
-    <Box sx={{ p: 0 }}>
-      <Grid container spacing={1}>
-        {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
-              <Skeleton
-                variant="rectangular"
-                height={120}
-                sx={{ borderRadius: 2 }}
-              />
+    <>
+      <Box sx={{ p: 0 }}>
+        <Grid container spacing={1}>
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={i}>
+                <Skeleton
+                  variant="rectangular"
+                  height={120}
+                  sx={{ borderRadius: 2 }}
+                />
+              </Grid>
+            ))
+          ) : isError ? (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="error">
+                Failed to fetch KLD metrics. Please try again later.
+              </Alert>
             </Grid>
-          ))
-        ) : isError ? (
-          <Grid size={{ xs: 12 }}>
-            <Alert severity="error">
-              Failed to fetch KLD metrics. Please try again later.
-            </Alert>
-          </Grid>
-        ) : (
-          stats.map((stat, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-              <Cards
-                title={stat.title}
-                value={stat.value}
-                icon={
-                  <InfoOutline
-                    sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
-                  />
-                }
-                infoText={stat.infoText}
-              />
-            </Grid>
-          ))
-        )}
-      </Grid>
+          ) : (
+            stats.map((stat, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+                <Cards
+                  title={stat.title}
+                  value={stat.value}
+                  icon={
+                    <InfoOutline
+                      sx={{ color: "#9F9F9F", width: "20px", height: "20px" }}
+                    />
+                  }
+                  infoText={stat.infoText}
+                />
+              </Grid>
+            ))
+          )}
+        </Grid>
 
-      <Box sx={{ paddingTop: 1.5 }}>
-        <ReusableTable
-          infoText={"Displays a list of KLD Master Data entries"}
-          boxShadow={true}
-          columns={columns}
-          pageNumber={page}
-          data={
-            debouncedSearchKLD
-              ? globalSearchData?.data ?? []
-              : listOfCompaniesData?.data?.content ?? []
-          }
-          selectable={true}
-          label={`${
-            debouncedSearchKLD
-              ? globalSearchData?.totalRecords ?? 0
-              : listOfCompaniesData?.data?.totalItems ?? 0
-          } klds`}
-          title="KLD Overview"
-          info={true}
-          searchVisible={true}
-          action={true}
-          actions={actions}
-          isLoading={listOfCompaniesLoading || searchLoading}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          id={"kldData"}
-          totalLength={
-            debouncedSearchKLD
-              ? globalSearchData?.totalRecords ?? 0
-              : listOfCompaniesData?.data?.totalItems ?? 0
-          }
-          pageRange={true}
-          handleRowsPerPageChange={handleRowsPerPageChange}
-        />
+        <Box sx={{ paddingTop: 1.5 }}>
+          <ReusableTable
+            infoText={"Displays a list of KLD Master Data entries"}
+            boxShadow={true}
+            columns={columns}
+            pageNumber={page}
+            data={
+              debouncedSearchKLD
+                ? globalSearchData?.data ?? []
+                : listOfCompaniesData?.data?.content ?? []
+            }
+            selectable={true}
+            label={`${
+              debouncedSearchKLD
+                ? globalSearchData?.totalRecords ?? 0
+                : listOfCompaniesData?.data?.totalItems ?? 0
+            } klds`}
+            title="KLD Overview"
+            info={true}
+            searchVisible={true}
+            action={true}
+            actions={actions}
+            isLoading={listOfCompaniesLoading || searchLoading}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handlePageChange}
+            id={"kldData"}
+            totalLength={
+              debouncedSearchKLD
+                ? globalSearchData?.totalRecords ?? 0
+                : listOfCompaniesData?.data?.totalItems ?? 0
+            }
+            pageRange={true}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+          />
+        </Box>
       </Box>
-    </Box>
+      <Dialog
+        maxWidth="xs"
+        fullWidth
+        sx={{
+          "& .MuiPaper-root": {
+            borderRadius: "16px",
+          },
+        }}
+        disableEscapeKeyDown
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this record?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteDialogOpen(false)}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            sx={{
+              borderRadius: "20px",
+              position: "relative",
+              minWidth: 120,
+              height: 36,
+            }}
+            disabled={isDeleting}
+            onClick={async () => {
+              try {
+                setIsDeleting(true);
+                await kldDelete([
+                  {
+                    unitEffectiveNumber: deletingRow?.unitEffectiveNumber,
+                    jarCap: deletingRow?.jarCap,
+                  },
+                ]);
+                toast.success("Deleted successfully!");
+                setDeleteDialogOpen(false);
+                setDeletingRow(null);
+                getKLDData({
+                  ...filtersPayload,
+                  page: isSearchTriggered ? 0 : page,
+                  size: rowsPerPage,
+                });
+                refetch();
+              } catch (error) {
+                toast.error("Failed to delete. Please try again.");
+              } finally {
+                setIsDeleting(false);
+              }
+            }}
+          >
+            {isDeleting ? (
+              <CircularProgress size={20} sx={{ color: "#fff" }} />
+            ) : (
+              "Yes, Delete"
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

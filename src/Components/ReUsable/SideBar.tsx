@@ -53,7 +53,7 @@ import {
   setShowTabChangeDialog,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
-import { setDebouncedSearchKLD, setKLDEdit } from "../../store/slices/kldSlice";
+import { setDebouncedSearchKLD, setDelete, setKLDEdit } from "../../store/slices/kldSlice";
 import { setDebouncedSearchUser } from "../../store/slices/userSlice";
 
 interface SidebarProps {
@@ -151,6 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   ];
 
   const handleLogOut = () => {
+    dispatch(setDelete(false));
     dispatch(setDebouncedSearch(""));
     dispatch(setDebouncedSearchDailyPlan(""));
     dispatch(setDebouncedSearchKLD(""));
@@ -195,6 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleMobileSidebar }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const itemClick = () => {
+     dispatch(setDelete(false));
     dispatch(setDebouncedSearch(""));
     dispatch(setDebouncedSearchDailyPlan(""));
     dispatch(setDebouncedSearchKLD(""));
