@@ -146,11 +146,8 @@ const SignInPage: React.FC = () => {
           </Typography>
 
           <Box sx={{ textAlign: "left", width: "100%" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
-              Email
-            </Typography>
             <ReusableInput
-              label=""
+              label="Email"
               placeholder="Enter your email"
               type="email"
               value={email}
@@ -162,11 +159,8 @@ const SignInPage: React.FC = () => {
           </Box>
 
           <Box sx={{ textAlign: "left", width: "100%", mt: 2 }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, marginBottom: "4px" }} color="#656565">
-              Password
-            </Typography>
             <ReusableInput
-              label=""
+              label="Password"
               placeholder="Enter your password"
               type="password"
               value={password}
