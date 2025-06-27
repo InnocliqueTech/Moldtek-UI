@@ -136,7 +136,7 @@ const Users: React.FC = () => {
       disableSorting: false,
       format: (value: string) =>
         value
-          ? new Date(value).toISOString().split("T")[0].replace(/-/g, "-")
+          ?new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
           : "N/A",
     },
     {

@@ -22,6 +22,8 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const { recentlyCreatedIndentNumber } = useSelector(
     (store: RootState) => store.viewDailyPlan
   );
+
+  const encodedParam = encodeURIComponent(recentlyCreatedIndentNumber);
   const [submitPopupConfirm, setSubmitPopupConfirm] = useState<boolean>(false);
   const handleSubmitPopupClose = () => {
     dispatch(setSubmitAndPublishPopup(false));
@@ -37,7 +39,7 @@ const SubmitPopups: React.FC<SubmitPopupsProps> = ({onSubmit,isLoading}) => {
   const handleSubmitPopupConfirmClick = () => {
     dispatch(setSubmitAndPublishPopup(false));
     setSubmitPopupConfirm(false);
-    navigate(`/viewDailyPlan/${recentlyCreatedIndentNumber}`);
+    navigate(`/viewDailyPlan/${encodedParam}`);
     localStorage.setItem('dailyPlanDataPage','0')
     dispatch(setSelectedTabView(0));
     localStorage.setItem("status","Active");

@@ -255,7 +255,7 @@ function ReusableTable<T extends Record<string, any>>({
       })
     : sortedData;
 
-  console.log(filteredData, sortedData, "DATAOFTABLE");
+
 
   const handleSelectAll = () => {
     const allSelected = filteredData

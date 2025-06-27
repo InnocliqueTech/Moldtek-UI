@@ -42,7 +42,6 @@ const CreateUser: React.FC = () => {
   const [openPopup,setOpenPopup] = useState<boolean>(false);
   const [createUser, { isLoading }] = useCreateUserMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
- const userTypeId = localStorage.getItem("userTypeId")||"";
   const handleInputChange = (
     fieldId: string,
     value: string | string[] | SelectChangeEvent<string | string[]>
@@ -88,7 +87,7 @@ const handleSubmit = async () => {
         acc[field.id] = field.value;
         return acc;
       }, {} as Record<string, string>);
-
+console.log(userData.role,"USERDATA")
       // Map role to userTypeId if needed
       const payload = {
         displayName: userData.displayName,
@@ -96,7 +95,7 @@ const handleSubmit = async () => {
         lastName: userData.lastName,
         email: userData.email,
         phoneNumber: userData.phoneNumber ? userData.phoneNumber : null,
-        userTypeId: Number(userTypeId)
+        userTypeId: userData.role==='User'?3:1
       };
 
       !rowData ? await createUser(payload).unwrap() : await updateUser({ userId:rowData?.id, userData: payload }).unwrap();

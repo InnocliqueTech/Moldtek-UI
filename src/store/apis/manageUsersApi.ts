@@ -34,6 +34,15 @@ export const manageUsersApis = createApi({
   reducerPath: "manageUsersApis",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
+     prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
   }),
   tagTypes: ["User", "UserMetrics"],
   endpoints: (builder) => ({

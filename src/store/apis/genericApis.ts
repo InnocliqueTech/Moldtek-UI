@@ -5,11 +5,21 @@ interface UnitEffectiveNumber {
   unitEffectiveNumber: string;
   customerName: string;
   brandDescription: string;
+  jarCap:string;
 }
 export const genericApi = createApi({
-  reducerPath: "genericApi",
+   reducerPath: "genericApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_API_URL,
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
   }),
   tagTypes: ["UnitEffectiveNumbers"],
   endpoints: (builder) => ({

@@ -133,7 +133,6 @@ const SignInPage: React.FC = () => {
           <img src={Logo} alt="Company Logo" style={{ maxWidth: "150px" }} />
         </Box>
 
-        {/* Sign In Form */}
         <form
           onSubmit={(e) => {
             e.preventDefault();

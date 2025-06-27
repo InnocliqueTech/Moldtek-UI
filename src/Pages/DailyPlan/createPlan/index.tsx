@@ -1,159 +1,224 @@
-import { Box, Typography, Grid,SelectChangeEvent} from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import ReusableInput from '../../../Components/ReUsable/TextField';
-import DropdownComponent from '../../../Components/ReUsable/Dropdown';
-import ButtonComponent from '../../../Components/ReUsable/Button';
-import { toast } from 'react-toastify';
-import SubmitPopups from './submitPopups';
+import { Box, Typography, Grid, SelectChangeEvent } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import ReusableInput from "../../../Components/ReUsable/TextField";
+import DropdownComponent from "../../../Components/ReUsable/Dropdown";
+import ButtonComponent from "../../../Components/ReUsable/Button";
+import { toast } from "react-toastify";
+import SubmitPopups from "./submitPopups";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from '../../../store';
-import { setPrintingDropDownValues, setSubmitAndPublishPopup } from '../../../store/slices/masterDataSlice';
-import { listOfLables } from '../../Create_Master_Data/data';
-import { validateFormFields } from './formValidation';
+import { AppDispatch, RootState } from "../../../store";
+import {
+  setPrintingDropDownValues,
+  setSubmitAndPublishPopup,
+} from "../../../store/slices/masterDataSlice";
+import { listOfLables } from "../../Create_Master_Data/data";
+import { validateFormFields } from "./formValidation";
 import {
   useSegmentsDropdownMutation,
   useSubStrateDropDownMutation,
   useGenerateIndentQuery,
   useGetAllUnitEffectiveNumbersQuery,
 } from "../../../store/apis/genericApis";
-import { SaveDailyJobRequest } from '../../../store/Interfaces/createDailyPlanTypes';
-import DropdownTextComponent from '../../../Components/ReUsable/DropdownText';
-import AutoSuggest from '../../../Components/ReUsable/AutoSuggest';
+import { SaveDailyJobRequest } from "../../../store/Interfaces/createDailyPlanTypes";
+import DropdownTextComponent from "../../../Components/ReUsable/DropdownText";
+import AutoSuggest from "../../../Components/ReUsable/AutoSuggest";
 // import { unitEffectiveNumbersResp } from './mockData';
-import { setRecentlyCreatedIndentNumber } from '../../../store/slices/viewDailyPlanSlice';
-import { useSaveDailyJobMutation } from '../../../store/apis/dailyPlanApis';
-import CircularProgress from '@mui/material/CircularProgress';
+import { setRecentlyCreatedIndentNumber } from "../../../store/slices/viewDailyPlanSlice";
+import { useSaveDailyJobMutation } from "../../../store/apis/dailyPlanApis";
+import CircularProgress from "@mui/material/CircularProgress";
 
-
-const LOCAL_STORAGE_KEY = 'savedPlansData';
+const LOCAL_STORAGE_KEY = "savedPlansData";
 
 export interface FormField {
   id: string;
   label: string;
   value: string | string[];
   type?: string;
-  component?: 'dropdown' | 'input';
+  component?: "dropdown" | "input";
   options?: string[];
-  allowTextFiled?:boolean
+  allowTextFiled?: boolean;
 }
 
 interface ProductUnit {
   unitEffectiveNumber: string;
   customerName: string;
   brandDescription: string;
+  jarCap:string
 }
 
 const initialFormFields: FormField[] = [
-    { id: 'indentNumber', label: 'Indent Number:', value: '' },
-  { id: 'unitEffectivityNumber', label: 'Unit Effective Number:', value: '' },
-  { id: 'jobRunDate', label: 'Job Run Date', type: 'date', value: '' },
-  { id: 'segment', label: 'Segment', component: 'dropdown', value: '', options: [] },
-  { id: 'labelType', label: 'Type of Label', value: '', component: 'dropdown', options: [] },
-  { id: 'ppcIndentQtyNos', label: 'PPC Indent Qty (NOS):', value: '' },
-  { id: 'noOfColorsSetting', label: 'No of Colors for settings', value: '' },
-  { id: 'noOfSpecialColors', label: 'No of special colors', value: '' },
-  { id: 'webLengthForColorMatch', label: '1 Web Length for Colours Match', value: '' },
-  { id: 'numberOfRolls', label: 'No of Rolls', component: 'dropdown', options: ['1','2','3','4','5','6'], value: '' },
-  { id: 'balanceIndentQtyPlanned', label: 'Bal to Print Indent Qty (Mtrs) planned', value: '' },
-  { id: 'customerName', label: 'Customer Name', type: 'text', value: '' },
-  { id: 'brandName', label: 'Brand Name & Pack-size', type: 'text', value: '' },
-  { id: 'jarCap', label: 'Jar/Cap', type: 'text',value:'',component:"dropdown",options:["JAR","CAP","JAR&CAP"] },
-  { id: 'width', label: 'Width', value: '' },
-  { id: 'thickness', label: 'Thickness', type: 'text', value: '' },
-  { id: 'substrateType', label: 'Substrate Type', type: 'text', value: '',component:"dropdown",options:[], allowTextFiled: true},
-  { id: 'gsm', label: 'GSM', type: 'text', value: '' },
-  { id: 'repeatLength', label: 'Repeat Length', value: '' },
-  { id: 'ups', label: 'UPS', value: '' },
-  { id: 'dyne', label: 'Dyne', value: '' },
-  { id: 'substrate', label: 'Printing Substrate', value: ''},
-  { id: 'lamSubstrate', label: 'Lamination Substrate', value: '' },
+  { id: "unitEffectivityNumber", label: "Unit Effective Number:", value: "" },
+  {
+    id: "jarCap",
+    label: "Jar/Cap",
+    type: "text",
+    value: "",
+    component: "dropdown",
+    options: ["JAR", "CAP", "JAR&CAP"],
+  },
+  { id: "indentNumber", label: "Indent Number:", value: "" },
+  { id: "jobRunDate", label: "Job Run Date", type: "date", value: "" },
+  {
+    id: "segment",
+    label: "Segment",
+    component: "dropdown",
+    value: "",
+    options: [],
+  },
+  {
+    id: "labelType",
+    label: "Type of Label",
+    value: "",
+    component: "dropdown",
+    options: [],
+  },
+  { id: "ppcIndentQtyNos", label: "PPC Indent Qty (NOS):", value: "" },
+  { id: "noOfColorsSetting", label: "No of Colors for settings", value: "" },
+  { id: "noOfSpecialColors", label: "No of special colors", value: "" },
+  {
+    id: "webLengthForColorMatch",
+    label: "1 Web Length for Colours Match",
+    value: "",
+  },
+  {
+    id: "numberOfRolls",
+    label: "No of Rolls",
+    component: "dropdown",
+    options: ["1", "2", "3", "4", "5", "6"],
+    value: "",
+  },
+  {
+    id: "balanceIndentQtyPlanned",
+    label: "Bal to Print Indent Qty (Mtrs) planned",
+    value: "",
+  },
+  { id: "customerName", label: "Customer Name", type: "text", value: "" },
+  { id: "brandName", label: "Brand Name & Pack-size", type: "text", value: "" },
+  { id: "width", label: "Width", value: "" },
+  { id: "thickness", label: "Thickness", type: "text", value: "" },
+  {
+    id: "substrateType",
+    label: "Substrate Type",
+    type: "text",
+    value: "",
+    component: "dropdown",
+    options: [],
+    allowTextFiled: true,
+  },
+  { id: "gsm", label: "GSM", type: "text", value: "" },
+  { id: "repeatLength", label: "Repeat Length", value: "" },
+  { id: "ups", label: "UPS", value: "" },
+  { id: "dyne", label: "Dyne", value: "" },
+  { id: "substrate", label: "Printing Substrate", value: "" },
+  { id: "lamSubstrate", label: "Lamination Substrate", value: "" },
 ];
 
-// const unitEffectiveNoData : ProductUnit[] = unitEffectiveNumbersResp;
-// const unitEffectiveNoList = unitEffectiveNoData.map((item:ProductUnit)=>{
-//   return  item.unitEffectiveNumber
-// })
+
 
 const CreatePlan: React.FC = () => {
-  
   const dispatch = useDispatch<AppDispatch>();
   const [subStrateDropDown] = useSubStrateDropDownMutation();
-  const { data:unitEffNumData, error, isLoading:unitEffNumLoading } = useGetAllUnitEffectiveNumbersQuery();
-  // const unitEffectiveNoData : ProductUnit[] = unitEffNumData;
-  const unitEffectiveNoList = unitEffNumData?.map((item:ProductUnit)=>{
-  return  item.unitEffectiveNumber
-  })
-  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>('');
-  const [unitEffectivityOptions, setUnitEffectivityOptions] = useState<string[]>(unitEffectiveNoList || []);
-  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(null);
+  const {
+    data: unitEffNumData,
+    error,
+    isLoading: unitEffNumLoading,
+  } = useGetAllUnitEffectiveNumbersQuery();
+
+//Remove the duplicate values from the array and spread the remaining values in an array by uisng ...new Set
+
+const unitEffectiveNoList = [
+  ...new Set(
+    unitEffNumData?.map((item: ProductUnit) => item.unitEffectiveNumber)
+  ),
+];
+  const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>("");
+  const [unitEffectivityOptions, setUnitEffectivityOptions] = useState<
+    string[]
+  >(unitEffectiveNoList || []);
+  const [selectedUnitMeta, setSelectedUnitMeta] = useState<ProductUnit | null>(
+    null
+  );
   const typeOfLabelOptions = listOfLables.map((option) => option.labelTypeName);
-  const {dropDownValuesPrinting} = useSelector((state:RootState)=>state.masterData)
-  const [segmentsDropdown,{data:segmentData}] = useSegmentsDropdownMutation();
+  const { dropDownValuesPrinting } = useSelector(
+    (state: RootState) => state.masterData
+  );
+  const [segmentsDropdown, { data: segmentData }] =
+    useSegmentsDropdownMutation();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
   const {
-    data: generatedIndentNumber,
-    // error: generateIndentNoError,
-    isLoading: generateIndentNoLoading,
-  } = useGenerateIndentQuery(selectedUnitNumber);
-  
+  data: generatedIndentNumber,
+  isLoading: generateIndentNoLoading,
+} = useGenerateIndentQuery(selectedUnitNumber, {
+  skip: !selectedUnitNumber, 
+   refetchOnMountOrArgChange: true, 
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
+});
+
+
   useEffect(() => {
-      segmentsDropdown({
-        segment: "",
-      });
-    }, []);
+    segmentsDropdown({
+      segment: "",
+    });
+  }, []);
 
   useEffect(() => {
-      const fetchDropdownValues = async () => {
-        const response = await subStrateDropDown({
-          substrate: "",
-          substrateType: "printing",
-        }).unwrap();
-        const substrateList = response?.data?.map((item: any) => item.substrate);
-        dispatch(setPrintingDropDownValues(substrateList));
-      };
-  
-      fetchDropdownValues();
-    }, [subStrateDropDown, dispatch]);
-  const segmentNames = segmentData?.statusCode === 200 ? segmentData?.data?.map((item: any) => item.segment) : [];
+    const fetchDropdownValues = async () => {
+      const response = await subStrateDropDown({
+        substrate: "",
+        substrateType: "printing",
+      }).unwrap();
+      const substrateList = response?.data?.map((item: any) => item.substrate);
+      dispatch(setPrintingDropDownValues(substrateList));
+    };
 
+    fetchDropdownValues();
+  }, [subStrateDropDown, dispatch]);
+  const segmentNames =
+    segmentData?.statusCode === 200
+      ? segmentData?.data?.map((item: any) => item.segment)
+      : [];
 
-useEffect(() => {
-  setFormFields(prevFields =>
-    prevFields.map(field => {
-      if (field.id === 'segment' && segmentNames.length) {
-        return { ...field, options: segmentNames };
-      }
-      if (field.id === 'labelType' && typeOfLabelOptions.length) {
-        return { ...field, options: typeOfLabelOptions };
-      }
-      if (field.id === 'substrateType' && dropDownValuesPrinting.length) {
-        return { ...field, options: dropDownValuesPrinting };
-      }
-      return field;
-    })
-  );
-  if(unitEffNumData && unitEffNumData?.length > 0){
-    setUnitEffectivityOptions(unitEffectiveNoList || []);
-  }
-}, [segmentNames.join(), typeOfLabelOptions.join(), dropDownValuesPrinting.join(),unitEffNumData]);
-
-useEffect(() => {
-  if (generateIndentNoLoading) {
-    handleInputChange("indentNumber", "Loading...");
-  }else{
-    handleInputChange("indentNumber", "");
-  }
-  if (formFields.find((form) => form.id == "unitEffectivityNumber")?.value) {
-    handleInputChange(
-      "indentNumber",
-      generatedIndentNumber?.generatedIndentNumber
+  useEffect(() => {
+    setFormFields((prevFields) =>
+      prevFields.map((field) => {
+        if (field.id === "segment" && segmentNames.length) {
+          return { ...field, options: segmentNames };
+        }
+        if (field.id === "labelType" && typeOfLabelOptions.length) {
+          return { ...field, options: typeOfLabelOptions };
+        }
+        if (field.id === "substrateType" && dropDownValuesPrinting.length) {
+          return { ...field, options: dropDownValuesPrinting };
+        }
+        return field;
+      })
     );
-  }
-}, [generatedIndentNumber, selectedUnitNumber, generateIndentNoLoading]);
+    if (unitEffNumData && unitEffNumData?.length > 0) {
+      setUnitEffectivityOptions(unitEffectiveNoList || []);
+    }
+  }, [
+    segmentNames.join(),
+    typeOfLabelOptions.join(),
+    dropDownValuesPrinting.join(),
+    unitEffNumData,
+  ]);
 
+  useEffect(() => {
+    if (generateIndentNoLoading) {
+      handleInputChange("indentNumber", "Loading...");
+    } else {
+      handleInputChange("indentNumber", "");
+    }
+    if (formFields.find((form) => form.id == "unitEffectivityNumber")?.value) {
+      handleInputChange(
+        "indentNumber",
+        generatedIndentNumber?.generatedIndentNumber
+      );
+    }
+  }, [generatedIndentNumber, selectedUnitNumber, generateIndentNoLoading]);
 
-  
   // const fieldsToSkipForRepeat = [
   //   'customerName',
   //   'brandName',
@@ -172,26 +237,23 @@ useEffect(() => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
-  // const jobType: 'Repeat' = 'Repeat'; 
-
-
-
-  
+  // const jobType: 'Repeat' = 'Repeat';
 
   const allowedFields = [
-    'unitEffectivityNumber',
-    'indentNumber',
-    'jobRunDate',
-    'ppcIndentQtyNos',
-    'numberOfRolls',
-    'balanceIndentQtyPlanned',
-    'webLengthForColorMatch',
+    "unitEffectivityNumber",
+    "indentNumber",
+    "jarCap",
+    "jobRunDate",
+    "ppcIndentQtyNos",
+    "numberOfRolls",
+    "balanceIndentQtyPlanned",
+    "webLengthForColorMatch",
     // 'substrate',
     // 'lamSubstrate'
   ];
 
   const shouldShowField = (fieldId: string): boolean => {
-    return allowedFields.includes(fieldId); 
+    return allowedFields.includes(fieldId);
   };
 
   const handleInputChange = (
@@ -199,42 +261,59 @@ useEffect(() => {
     value: string | string[] | SelectChangeEvent<string | string[]>
   ) => {
     let extractedValue =
-      typeof value === 'object' && 'target' in value ? value.target.value : value;
-  
+      typeof value === "object" && "target" in value
+        ? value.target.value
+        : value;
+
     if (fieldId === "substrateType" && Array.isArray(extractedValue)) {
-      extractedValue = extractedValue.filter(Boolean).map(v => v.trim()).join(" ");
+      extractedValue = extractedValue
+        .filter(Boolean)
+        .map((v) => v.trim())
+        .join(" ");
     }
-  
-    if (fieldId === 'unitEffectivityNumber') {
-      const selected = unitEffNumData?.find(
-        (item) => item.unitEffectiveNumber === extractedValue
-      );
-      setSelectedUnitMeta(selected || null);
-      setSelectedUnitNumber(extractedValue as string);
-    }
-  
-    setFormFields(prevFields =>
-      prevFields.map(field =>
+
+if (fieldId === "unitEffectivityNumber" || fieldId === "jarCap") {
+
+  const unitEffValue =
+    fieldId === "unitEffectivityNumber" ? extractedValue : formFields.find(f => f.id === "unitEffectivityNumber")?.value;
+  const jarCapValue =
+    fieldId === "jarCap" ? extractedValue : formFields.find(f => f.id === "jarCap")?.value;
+
+  if (unitEffValue && jarCapValue) {
+    const selected = unitEffNumData?.find(
+      (item) =>
+        item.unitEffectiveNumber === unitEffValue &&
+        item.jarCap === jarCapValue
+    );
+
+    setSelectedUnitMeta(selected || null);
+    setSelectedUnitNumber(unitEffValue as string);
+  }
+}
+
+
+
+    setFormFields((prevFields) =>
+      prevFields.map((field) =>
         field.id === fieldId ? { ...field, value: extractedValue } : field
       )
     );
-  
+
     if (errors[fieldId]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[fieldId];
         return newErrors;
       });
     }
   };
-  
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
-    
-    formFields.forEach(field => {
+
+    formFields.forEach((field) => {
       if (allowedFields.includes(field.id)) {
-        if (['ppcIndentQtyNos', 'numberOfRolls'].includes(field.id)) {
+        if (["ppcIndentQtyNos", "numberOfRolls"].includes(field.id)) {
           formData[field.id] = Number(field.value) || 0;
         } else {
           formData[field.id] = field.value;
@@ -243,7 +322,9 @@ useEffect(() => {
     });
 
     if (formData.jobRunDate) {
-      formData.jobRunDate = new Date(formData.jobRunDate).toISOString().split('T')[0];
+      formData.jobRunDate = new Date(formData.jobRunDate)
+        .toISOString()
+        .split("T")[0];
     }
 
     //formData.jobType = jobType;
@@ -252,19 +333,24 @@ useEffect(() => {
   };
 
   const handleSubmit = async () => {
-    const validation = validateFormFields(formFields.filter(f => shouldShowField(f.id)));
+    const validation = validateFormFields(
+      formFields.filter((f) => shouldShowField(f.id))
+    );
     if (!validation.isValid) {
       // Extract errors from validation object
       const { isValid, errorMessage, ...errorFields } = validation;
       setErrors(errorFields);
-      toast.error('Please Enter valid data before submitting');
+      toast.error("Please Enter valid data before submitting");
       return;
     }
     setErrors({});
     dispatch(setSubmitAndPublishPopup(true));
   };
 
-  const submitFormData = async (): Promise<{ success: boolean; error?: any }> => {
+  const submitFormData = async (): Promise<{
+    success: boolean;
+    error?: any;
+  }> => {
     const formData = prepareSubmitData();
     try {
       const data = await saveDailyJob(formData).unwrap();
@@ -272,10 +358,10 @@ useEffect(() => {
         dispatch(setRecentlyCreatedIndentNumber(formData.indentNumber));
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setFormFields(initialFormFields);
-        setSelectedUnitNumber('');
+        setSelectedUnitNumber("");
         return { success: true };
       } else {
-        toast.error(data?.message?data?.message:"Error Fetching Data");
+        toast.error(data?.message ? data?.message : "Error Fetching Data");
         return { success: false };
       }
     } catch (err) {
@@ -284,54 +370,52 @@ useEffect(() => {
       return { success: false, error: err };
     }
   };
-  
 
   useEffect(() => {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
-        if (parsedData && typeof parsedData === 'object') {
-          const loadedFields = initialFormFields.map(field => {
+        if (parsedData && typeof parsedData === "object") {
+          const loadedFields = initialFormFields.map((field) => {
             return {
               ...field,
-              value: parsedData[field.id] || field.value
+              value: parsedData[field.id] || field.value,
             };
           });
           setFormFields(loadedFields);
-          setSelectedUnitNumber(parsedData['unitEffectivityNumber'] || '');
+          setSelectedUnitNumber(parsedData["unitEffectivityNumber"] || "");
         }
       } catch (error) {
-        console.error('Failed to parse saved data:', error);
+        console.error("Failed to parse saved data:", error);
       }
     }
   }, []);
-  
 
-
-if (unitEffNumLoading) return (
-  <Box sx={{
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
-}}>
-
-    <CircularProgress />
-  </Box>
-);
-if (error) return <div>Error: Something Went Wrong...</div>;
-
-
+  if (unitEffNumLoading)
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  if (error) return <div>Error: Something Went Wrong...</div>;
 
   return (
-   <Box style={{
-  backgroundColor: 'white',
-  borderRadius: '12px', 
-  padding: '8px 20px'    
-}}>
-
+    <Box
+      style={{
+        backgroundColor: "white",
+        borderRadius: "12px",
+        padding: "8px 20px",
+      }}
+    >
       <Box sx={{ mb: 1, pb: 1 }}>
         {/* <Box sx={{ mb: 3 }}>
           <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
@@ -394,7 +478,9 @@ if (error) return <div>Error: Something Went Wrong...</div>;
                     }
                     error={!!errors[field.id]}
                     helperText={errors[field.id]}
-                    disabled={field.id == "indentNumber" && generateIndentNoLoading}
+                    disabled={
+                      field.id == "indentNumber" && generateIndentNoLoading
+                    }
                   />
                 )}
               </Grid>
@@ -427,7 +513,7 @@ if (error) return <div>Error: Something Went Wrong...</div>;
         >
           * All fields are mandatory
         </Typography>
-       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           {/* <ButtonComponent
             text="Save"
             textColor="#0073B7"

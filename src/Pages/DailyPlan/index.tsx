@@ -35,6 +35,8 @@ import {
   setIsSearchTriggered,
   setSideNavigationAllowed,
 } from "../../store/slices/viewDailyPlanSlice";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 interface DailyPlanProps {
   title?: string;
@@ -156,6 +158,8 @@ const transformJobDataList = (
     status: job.status,
   }));
 };
+
+dayjs.extend(customParseFormat);
 
 const DailyPlan: React.FC<DailyPlanProps> = () => {
   const storageKey = "dailyPlanDataPage";
@@ -353,16 +357,26 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
         { label: "Inactive", value: "Inactive" },
       ],
     },
-    { id: "createdAt", label: "Created On", align: false,disableSorting: false, format: (value: string) =>
-        value
-          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
-          : "",
-     },
+   {
+  id: "createdAt",
+  label: "Created On",
+  align: false,
+  disableSorting: false,
+ format: (value: string) => {
+  const parsed = dayjs(value, "DD/MM/YYYY", true); 
+  const formatted = parsed.isValid() ? parsed.format("DD-MM-YYYY") : "Invalid date";
+  return formatted;
+}
+
+},
+
     // { id: "lastUpdated", label: "Last Updated", align: false },
-    { id: "jobRunDate", label: "Scheduled On", align: false,disableSorting: false,format: (value: string) =>
-        value
-          ? new Date(value).toLocaleDateString("en-GB").replace(/\//g, "-")
-          : "", },
+    { id: "jobRunDate", label: "Scheduled On", align: false,disableSorting: false, format: (value: string) => {
+  const parsed = dayjs(value, "DD/MM/YYYY", true); 
+  const formatted = parsed.isValid() ? parsed.format("DD-MM-YYYY") : "Invalid date";
+  return formatted;
+}
+    }
   ];
   // if ( companiesError) {
   //   return (

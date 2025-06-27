@@ -25,6 +25,8 @@ interface ReusableInputProps {
   disabled?: boolean;
   required?: boolean;
   endIcon?: React.ReactNode;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+
 }
 
 const ReusableInput: React.FC<ReusableInputProps> = ({
@@ -38,7 +40,8 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
   icon,
   disabled,
   required = false,
-  endIcon
+  endIcon,
+ onKeyDown 
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -178,6 +181,7 @@ const ReusableInput: React.FC<ReusableInputProps> = ({
             error={error}
             helperText={helperText}
             disabled={disabled}
+            onKeyDown={onKeyDown}
             InputProps={{
               startAdornment: icon ? (
                 <InputAdornment position="start">{icon}</InputAdornment>
