@@ -145,6 +145,9 @@ const unitEffectiveNoList = [
   const [segmentsDropdown, { data: segmentData }] =
     useSegmentsDropdownMutation();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
+  const [selectedUnitNumberValue, setSelectedUnitNumberValue] = useState("");
+const [selectedJarCap, setSelectedJarCap] = useState("");
+
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
   const {
   data: generatedIndentNumber,
@@ -272,24 +275,14 @@ const unitEffectiveNoList = [
         .join(" ");
     }
 
-if (fieldId === "unitEffectivityNumber" || fieldId === "jarCap") {
-
-  const unitEffValue =
-    fieldId === "unitEffectivityNumber" ? extractedValue : formFields.find(f => f.id === "unitEffectivityNumber")?.value;
-  const jarCapValue =
-    fieldId === "jarCap" ? extractedValue : formFields.find(f => f.id === "jarCap")?.value;
-
-  if (unitEffValue && jarCapValue) {
-    const selected = unitEffNumData?.find(
-      (item) =>
-        item.unitEffectiveNumber === unitEffValue &&
-        item.jarCap === jarCapValue
-    );
-
-    setSelectedUnitMeta(selected || null);
-    setSelectedUnitNumber(unitEffValue as string);
-  }
+ if (fieldId === "unitEffectivityNumber" && typeof extractedValue === "string") {
+  setSelectedUnitNumber(extractedValue);
 }
+
+if (fieldId === "jarCap" && typeof extractedValue === "string") {
+  setSelectedJarCap(extractedValue);
+}
+
 
 
 
@@ -307,6 +300,22 @@ if (fieldId === "unitEffectivityNumber" || fieldId === "jarCap") {
       });
     }
   };
+
+
+  useEffect(() => {
+  if (selectedUnitNumber && selectedJarCap) {
+    const selected = unitEffNumData?.find(
+      (item) =>
+        item.unitEffectiveNumber?.toLowerCase() ===
+          selectedUnitNumber.toLowerCase() &&
+        item.jarCap?.toLowerCase() === selectedJarCap.toLowerCase()
+    );
+
+    setSelectedUnitMeta(selected || null);
+     setSelectedUnitNumber(selectedUnitNumber as string);
+  }
+}, [selectedUnitNumber, selectedJarCap, unitEffNumData]);
+
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
@@ -407,6 +416,9 @@ if (fieldId === "unitEffectivityNumber" || fieldId === "jarCap") {
       </Box>
     );
   if (error) return <div>Error: Something Went Wrong...</div>;
+
+
+  console.log(selectedUnitMeta,"UNITEFFECTIVENUMBER1");
 
   return (
     <Box

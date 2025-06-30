@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Box, Typography, Alert } from "@mui/material";
-import {
-  EmailOutlined,
-} from "@mui/icons-material";
+import { EmailOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -55,60 +53,65 @@ const ForgotPassword = () => {
 
   const renderContent = () => {
     return (
-       <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSendEmail();
-          }}
-          style={{ width: "100%", maxWidth: "500px", textAlign: "center", marginTop: "5rem" }}
-        >
-      <Box
-        sx={{
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSendEmail();
+        }}
+        style={{
           width: "100%",
           maxWidth: "500px",
           textAlign: "center",
           marginTop: "5rem",
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: 600, color: "#2d3748", mb: 2 }}
-        >
-          Forgot Password
-        </Typography>
-        <Typography variant="body1" sx={{ color: "#718096", mb: 4 }}>
-          Enter your email to receive reset instructions.
-        </Typography>
-
-        <Box sx={{ textAlign: "left", width: "100%" }}>
-               <ReusableInput
-  label="Email"
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  icon={<EmailOutlined />}
-/>
-        </Box>
-
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
             width: "100%",
-            mt: 3,
+            maxWidth: "500px",
+            textAlign: "center",
+            marginTop: "5rem",
           }}
         >
-          <ReusableButton
-            text="Send Email"
-            onClick={handleSendEmail}
-            width="100%"
-            borderRadius="100px"
-            color="#0073B7"
-            loading={sending}
-            type="submit"
-          />
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 600, color: "#2d3748", mb: 2 }}
+          >
+            Forgot Password
+          </Typography>
+          <Typography variant="body1" sx={{ color: "#718096", mb: 4 }}>
+            Enter your email to receive reset instructions.
+          </Typography>
+
+          <Box sx={{ textAlign: "left", width: "100%" }}>
+            <ReusableInput
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              icon={<EmailOutlined />}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              mt: 3,
+            }}
+          >
+            <ReusableButton
+              text="Send Email"
+              onClick={handleSendEmail}
+              width="100%"
+              borderRadius="100px"
+              color="#0073B7"
+              loading={sending}
+              type="submit"
+            />
+          </Box>
         </Box>
-      </Box>
       </form>
     );
   };
