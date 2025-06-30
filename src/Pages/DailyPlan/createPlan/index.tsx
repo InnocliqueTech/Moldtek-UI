@@ -302,19 +302,19 @@ if (fieldId === "jarCap" && typeof extractedValue === "string") {
   };
 
 
-  useEffect(() => {
+useEffect(() => {
   if (selectedUnitNumberValue && selectedJarCap) {
     const selected = unitEffNumData?.find(
       (item) =>
-        item.unitEffectiveNumber?.toLowerCase() ===
-          selectedUnitNumber.toLowerCase() &&
+        item.unitEffectiveNumber?.toLowerCase() === selectedUnitNumberValue.toLowerCase() &&
         item.jarCap?.toLowerCase() === selectedJarCap.toLowerCase()
     );
 
     setSelectedUnitMeta(selected || null);
-     setSelectedUnitNumber(selectedUnitNumberValue as string);
+    setSelectedUnitNumber(selectedUnitNumberValue); 
   }
 }, [selectedUnitNumberValue, selectedJarCap, unitEffNumData]);
+
 
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
@@ -418,7 +418,6 @@ if (fieldId === "jarCap" && typeof extractedValue === "string") {
   if (error) return <div>Error: Something Went Wrong...</div>;
 
 
-  console.log(selectedUnitMeta,"UNITEFFECTIVENUMBER1");
 
   return (
     <Box
