@@ -276,7 +276,7 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
     }
 
  if (fieldId === "unitEffectivityNumber" && typeof extractedValue === "string") {
-  setSelectedUnitNumber(extractedValue);
+  setSelectedUnitNumberValue(extractedValue);
 }
 
 if (fieldId === "jarCap" && typeof extractedValue === "string") {
@@ -303,7 +303,7 @@ if (fieldId === "jarCap" && typeof extractedValue === "string") {
 
 
   useEffect(() => {
-  if (selectedUnitNumber && selectedJarCap) {
+  if (selectedUnitNumberValue && selectedJarCap) {
     const selected = unitEffNumData?.find(
       (item) =>
         item.unitEffectiveNumber?.toLowerCase() ===
@@ -312,9 +312,9 @@ if (fieldId === "jarCap" && typeof extractedValue === "string") {
     );
 
     setSelectedUnitMeta(selected || null);
-     setSelectedUnitNumber(selectedUnitNumber as string);
+     setSelectedUnitNumber(selectedUnitNumberValue as string);
   }
-}, [selectedUnitNumber, selectedJarCap, unitEffNumData]);
+}, [selectedUnitNumberValue, selectedJarCap, unitEffNumData]);
 
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
