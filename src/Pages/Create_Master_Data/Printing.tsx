@@ -10,7 +10,7 @@ import {
   setPrintingDropDownValues,
   setPrintingDataTouched,
   setPrintingSave,
-  setPrintngFormErros,
+  // setPrintngFormErros,
   setSavePrintingFormData,
   setSubmitAndPublishButtonPrinting,
   setMountinTapeDropDownValues,
@@ -18,7 +18,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import {
-  PrintingFormErrors,
+  // PrintingFormErrors,
   PrintingFormValues,
   PrintingTableRow,
 } from "../../store/Interfaces/masterDataTypes";
@@ -287,9 +287,9 @@ const Printing: React.FC<PrintingProps> = ({
 
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
-    const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
+    // const onlyLettersRegex = /^[a-zA-Z\s]+$/; // only letters, spaces
 
-    let errorMsg = "";
+    // let errorMsg = "";
     let finalValue: string | number | string[] = newValue;
 
     // // Validate number fields

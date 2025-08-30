@@ -54,7 +54,7 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
   useUpdateKldDataMutation;
 
   const onSubmit = () => {
-    const { unitEffectiveNumber} = formValues;
+    // const { unitEffectiveNumber} = formValues;
 
     const errors: { unitEffectiveNumber: string } = {
       unitEffectiveNumber: "",

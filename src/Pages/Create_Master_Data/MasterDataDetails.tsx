@@ -28,7 +28,7 @@ import {
   setLaminatingDetails,
   setMasterDataDataTouched,
   setMasterDataDetailsSave,
-  setMasterDataFormErros,
+  // setMasterDataFormErros,
   setPrintingDetails,
   setSaveFormData,
   setSaveMasterDataDetailsData,
@@ -52,7 +52,7 @@ import {
   setViewMasterDataDetails,
 } from "../../store/slices/viewMasterDataSlice";
 import {
-  MasterDataFormErrors,
+  // MasterDataFormErrors,
   MasterFormData,
 } from "../../store/Interfaces/masterDataTypes";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
@@ -135,7 +135,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             unitEffectiveNumber: formData.unit_effectivity_number.toString(),
             jarCap: formData.jar_cap,
           }).unwrap();
-const newKldCode = response?.data?.kldCode ?? "";
+// const newKldCode = response?.data?.kldCode ?? "";
 
           if (response?.statusCode === 400) {
     //         setErrors((prev) => ({
@@ -163,6 +163,7 @@ const newKldCode = response?.data?.kldCode ?? "";
         const errorMessage =
           error?.data?.message ||
           "Unit Effective Number does not exist. Please create new KLD Code.";
+          console.log("errorMessage", errorMessage);
 
         // setErrors((prev) => ({
         //   ...prev,
@@ -285,12 +286,12 @@ const newKldCode = response?.data?.kldCode ?? "";
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [formInitialized, setFormInitialized] = useState(false);
 
-  const numericFields: (keyof MasterFormData)[] = [
-    "repeat_length",
-    "ups",
-    "unit_effectivity_number",
-    "tracks",
-  ];
+  // const numericFields: (keyof MasterFormData)[] = [
+  //   "repeat_length",
+  //   "ups",
+  //   "unit_effectivity_number",
+  //   "tracks",
+  // ];
 
   const importantFields: (keyof MasterFormData)[] = [
     "unit_effectivity_number",
@@ -304,11 +305,11 @@ const newKldCode = response?.data?.kldCode ?? "";
     "noOfSpecialColors",
     "kld_code",
   ];
-  const characterFields: (keyof MasterFormData)[] = ["customer_name"];
-  const freeTextFields: (keyof MasterFormData)[] = [
-    "brand_description",
-    "item_code",
-  ];
+  // const characterFields: (keyof MasterFormData)[] = ["customer_name"];
+  // const freeTextFields: (keyof MasterFormData)[] = [
+  //   "brand_description",
+  //   "item_code",
+  // ];
 
   const handleChange = (
     field: keyof MasterFormData,
@@ -345,11 +346,11 @@ const newKldCode = response?.data?.kldCode ?? "";
     }
 
     let finalValue: string | number = newValue as string;
-    let errorMessage = "";
+    // let errorMessage = "";
 
-    const trimmed = (newValue as string).trim();
+    // const trimmed = (newValue as string).trim();
 
-    const isImportant = importantFields.includes(field);
+    // const isImportant = importantFields.includes(field);
 
     // if (numericFields.includes(field)) {
     //   const numericValue = trimmed.replace("%", ""); // Remove percentage sign if it exists

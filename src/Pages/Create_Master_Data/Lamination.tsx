@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
   setLaminationDataTouched,
   setLaminationFormData,
-  setLaminationFormErros,
+  // setLaminationFormErros,
   setLaminationSave,
   setlaminationDropDownValues,
   setSubmitAndPublishButtonMasterLamination,
@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 import {
   LaminatingTableRow,
   LaminationFormData,
-  LaminationFormErrors,
+  // LaminationFormErrors,
 } from "../../store/Interfaces/masterDataTypes";
 import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import {
@@ -43,7 +43,7 @@ const Lamination: React.FC<LaminationProps> = ({
     laminationFormErrors,
     laminationDataTouched,
     laminatingDetails,
-    laminationTableValueVaidation,
+    // laminationTableValueVaidation,
     saveButtonLaminatingData,
     saveLaminatingData,
     dropDownValuesLamination,
@@ -272,7 +272,7 @@ const Lamination: React.FC<LaminationProps> = ({
         errorMessage = "";
       }
     }
-
+    console.log(errorMessage,"Lamination errorMessage");
     // // Dispatch the errors to Redux
     // const updatedErrors = {
     //   ...errors,
@@ -380,7 +380,7 @@ const Lamination: React.FC<LaminationProps> = ({
   }
   allValid = allRatiosFilled && firstTwoValid && thirdValid;
     }
-
+     console.log(allValid,"allValid");
     // const hasErrors = Object.values(errors).some((error) => error);
     const shouldDisableButton =
       !isAllFieldFilled

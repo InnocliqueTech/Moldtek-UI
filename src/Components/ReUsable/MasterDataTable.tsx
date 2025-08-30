@@ -19,10 +19,10 @@ import { AutocompleteCell } from "../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
-  setInvalidFieldsTable,
+  // setInvalidFieldsTable,
   setLaminationFormData,
-  setLaminationTableValueVaidation,
-  setPrintingTableValueVaidation,
+  // setLaminationTableValueVaidation,
+  // setPrintingTableValueVaidation,
   setSavePrintingFormData,
 } from "../../store/slices/masterDataSlice";
 import {
@@ -190,17 +190,17 @@ const DataTable = <T extends Record<string, any>>({
   }, [invalidFieldsTable]);
 
   const hardenerCodeOptions = ["KN75"];
-  const laminationFields = ["ratio", "code", "brand"];
-  const printingFields = [
-    "lf_value",
-    "lpcm",
-    "station_no",
-    "mptl_code",
-    "mixing_on_gec",
-    "uv_led_intensity",
-    "volume",
-    "color_pantone",
-  ];
+  // const laminationFields = ["ratio", "code", "brand"];
+  // const printingFields = [
+  //   "lf_value",
+  //   "lpcm",
+  //   "station_no",
+  //   "mptl_code",
+  //   "mixing_on_gec",
+  //   "uv_led_intensity",
+  //   "volume",
+  //   "color_pantone",
+  // ];
 
 
   return (
@@ -361,7 +361,7 @@ const DataTable = <T extends Record<string, any>>({
                                   //   column.id,
                                   //   inputValue
                                   // );
-                                  const key = `${rowIndex}_${column.id}`;
+                                  // const key = `${rowIndex}_${column.id}`;
                                   // const updatedInvalidFields = {
                                   //   ...invalidFields,
                                   //   [key]: !isValid,
@@ -371,12 +371,12 @@ const DataTable = <T extends Record<string, any>>({
                                   //   setInvalidFieldsTable(updatedInvalidFields)
                                   // );
 
-                                  const isLaminationField =
-                                    laminationFields.some((field) =>
-                                      column.id
-                                        .toLowerCase()
-                                        .includes(field.toLowerCase())
-                                    );
+                                  // const isLaminationField =
+                                  //   laminationFields.some((field) =>
+                                  //     column.id
+                                  //       .toLowerCase()
+                                  //       .includes(field.toLowerCase())
+                                  //   );
                                   // dispatch(
                                     // setLaminationTableValueVaidation(
                                     //   isLaminationField && !isValid
@@ -385,12 +385,12 @@ const DataTable = <T extends Record<string, any>>({
                                     // )
                                   // );
 
-                                  const isPrintingField = printingFields.some(
-                                    (field) =>
-                                      column.id
-                                        .toLowerCase()
-                                        .includes(field.toLowerCase())
-                                  );
+                                  // const isPrintingField = printingFields.some(
+                                  //   (field) =>
+                                  //     column.id
+                                  //       .toLowerCase()
+                                  //       .includes(field.toLowerCase())
+                                  // );
                                   // dispatch(
                                     // setPrintingTableValueVaidation(
                                     //   isPrintingField && !isValid ? true : false
@@ -615,12 +615,12 @@ const DataTable = <T extends Record<string, any>>({
                               //   column.id,
                               //   inputValue
                               // );
-                              const isLaminationField = laminationFields.some(
-                                (field) =>
-                                  column.id
-                                    .toLowerCase()
-                                    .includes(field.toLowerCase())
-                              );
+                              // const isLaminationField = laminationFields.some(
+                              //   (field) =>
+                              //     column.id
+                              //       .toLowerCase()
+                              //       .includes(field.toLowerCase())
+                              // );
 
                               // if (isLaminationField && !isValid) {
                               //   dispatch(
@@ -631,12 +631,12 @@ const DataTable = <T extends Record<string, any>>({
                               //     setLaminationTableValueVaidation(false)
                               //   );
                               // }
-                              const isPrintingField = printingFields.some(
-                                (field) =>
-                                  column.id
-                                    .toLowerCase()
-                                    .includes(field.toLowerCase())
-                              );
+                              // const isPrintingField = printingFields.some(
+                              //   (field) =>
+                              //     column.id
+                              //       .toLowerCase()
+                              //       .includes(field.toLowerCase())
+                              // );
 
                               // if (isPrintingField && !isValid) {
                               //   dispatch(setPrintingTableValueVaidation(true));
@@ -644,7 +644,7 @@ const DataTable = <T extends Record<string, any>>({
                               //   dispatch(setPrintingTableValueVaidation(false));
                               // }
 
-                              const key = `${rowIndex}_${column.id}`;
+                              // const key = `${rowIndex}_${column.id}`;
                               // const updatedInvalidFileds = {
                               //   ...invalidFields,
                               //   [key]: !isValid,

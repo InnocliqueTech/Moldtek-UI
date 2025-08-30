@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import {
   setDyeCuttingDataTouched,
   setDyeCuttingFormData,
-  setDyeCuttingFormErros,
-  setSubmitAndPublishButtonDyeCutting,
+  // setDyeCuttingFormErros,
+  // setSubmitAndPublishButtonDyeCutting,
 } from "../../store/slices/masterDataSlice";
 import { useParams } from "react-router-dom";
 import DropdownComponent from "../../Components/ReUsable/Dropdown";
@@ -123,7 +123,7 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
         errorMessage = "Invalid input";
       }
     }
-
+    console.log(errorMessage,"DyeCutting errorMessage");
     const updated = {
       ...formData,
       [key]: finalValue,
