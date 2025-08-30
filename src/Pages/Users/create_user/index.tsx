@@ -87,8 +87,6 @@ const handleSubmit = async () => {
         acc[field.id] = field.value;
         return acc;
       }, {} as Record<string, string>);
-console.log(userData.role,"USERDATA")
-      // Map role to userTypeId if needed
       const payload = {
         displayName: userData.displayName,
         firstName: userData.firstName,

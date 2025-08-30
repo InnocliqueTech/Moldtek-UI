@@ -83,24 +83,25 @@ const Lamination: React.FC<LaminationProps> = ({
     },
   ];
 
-  const [errors, setErrors] = useState<LaminationFormErrors>({
-    zone1_temp: "",
-    zone2_temp: "",
-    nip_pressure_bar: "",
-    speed: "",
-    lami_set_tension: "",
-    rewinder_tension: "",
-    printed_film_tension: "",
-    laminate_film_tension: "",
-    viscosity_range: "",
-    adhesive_gsm: "",
-    substrate_type: "",
-    supplier: "",
-    dyne_level: "",
-    width: "",
-    thickness: "",
-    density: "",
-  });
+  // const [errors, setErrors] = useState<LaminationFormErrors>({
+  //   zone1_temp: "",
+  //   zone2_temp: "",
+  //   nip_pressure_bar: "",
+  //   speed: "",
+  //   lami_set_tension: "",
+  //   rewinder_tension: "",
+  //   printed_film_tension: "",
+  //   laminate_film_tension: "",
+  //   viscosity_range: "",
+  //   adhesive_gsm: "",
+  //   substrate_type: "",
+  //   supplier: "",
+  //   dyne_level: "",
+  //   width: "",
+  //   thickness: "",
+  //   density: "",
+  // });
+
   function sanitizeMasterData(data: any): LaminationFormData {
     return {
       laminationConditions: {
@@ -272,13 +273,13 @@ const Lamination: React.FC<LaminationProps> = ({
       }
     }
 
-    // Dispatch the errors to Redux
-    const updatedErrors = {
-      ...errors,
-      [field]: errorMessage,
-    };
-    setErrors(updatedErrors);
-    dispatch(setLaminationFormErros(updatedErrors));
+    // // Dispatch the errors to Redux
+    // const updatedErrors = {
+    //   ...errors,
+    //   [field]: errorMessage,
+    // };
+    // setErrors(updatedErrors);
+    // dispatch(setLaminationFormErros(updatedErrors));
 
     // Save to the form data and dispatch to Redux
     const updatedFormData = {
@@ -380,15 +381,15 @@ const Lamination: React.FC<LaminationProps> = ({
   allValid = allRatiosFilled && firstTwoValid && thirdValid;
     }
 
-    const hasErrors = Object.values(errors).some((error) => error);
+    // const hasErrors = Object.values(errors).some((error) => error);
     const shouldDisableButton =
-      !isAllFieldFilled ||
-      hasErrors ||
-      laminationTableValueVaidation ||
-      !allValid;
+      !isAllFieldFilled
+      // hasErrors ||
+      // laminationTableValueVaidation ||
+      // !allValid;
     dispatch(setSubmitAndPublishButtonMasterLamination(shouldDisableButton));
      dispatch(setLaminationSave(shouldDisableButton));
-  }, [errors, formData, laminationTableValueVaidation]);
+  }, [formData]);
 
   // useEffect(() => {
   //   const importantFields = [
@@ -485,10 +486,10 @@ const Lamination: React.FC<LaminationProps> = ({
       setFormData(saveLaminatingData);
       setFormInitialized(true);
     }
-    if (laminationFormErrors) {
-      setErrors(laminationFormErrors);
-      setFormInitialized(true);
-    }
+    // if (laminationFormErrors) {
+    //   setErrors(laminationFormErrors);
+    //   setFormInitialized(true);
+    // }
   }, [
     laminaionFormData,
     laminationFormErrors,
@@ -597,8 +598,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={Boolean(errors.zone1_temp)}
-                helperText={errors.zone1_temp}
+                // error={Boolean(errors.zone1_temp)}
+                // helperText={errors.zone1_temp}
                 required
               />
             </Grid>
@@ -617,8 +618,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.zone2_temp}
-                helperText={errors.zone2_temp}
+                // error={!!errors.zone2_temp}
+                // helperText={errors.zone2_temp}
                 required
               />
             </Grid>
@@ -637,8 +638,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={Boolean(errors.nip_pressure_bar)}
-                helperText={errors.nip_pressure_bar}
+                // error={Boolean(errors.nip_pressure_bar)}
+                // helperText={errors.nip_pressure_bar}
                 required
               />
             </Grid>
@@ -653,8 +654,8 @@ const Lamination: React.FC<LaminationProps> = ({
                 onChange={(e) =>
                   handleChange("laminationConditions", "speed", e.target.value)
                 }
-                error={!!errors.speed}
-                helperText={errors.speed}
+                // error={!!errors.speed}
+                // helperText={errors.speed}
                 required
               />
             </Grid>
@@ -673,8 +674,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.printed_film_tension}
-                helperText={errors.printed_film_tension}
+                // error={!!errors.printed_film_tension}
+                // helperText={errors.printed_film_tension}
                 required
               />
             </Grid>
@@ -689,8 +690,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.laminate_film_tension}
-                helperText={errors.laminate_film_tension}
+                // error={!!errors.laminate_film_tension}
+                // helperText={errors.laminate_film_tension}
                 required
               />
             </Grid>
@@ -709,8 +710,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.lami_set_tension}
-                helperText={errors.lami_set_tension}
+                // error={!!errors.lami_set_tension}
+                // helperText={errors.lami_set_tension}
                 required
               />
             </Grid>
@@ -729,8 +730,8 @@ const Lamination: React.FC<LaminationProps> = ({
                     e.target.value
                   )
                 }
-                error={!!errors.rewinder_tension}
-                helperText={errors.rewinder_tension}
+                // error={!!errors.rewinder_tension}
+                // helperText={errors.rewinder_tension}
                 required
               />
             </Grid>
@@ -763,8 +764,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   checkbox={false}
                   required
                   allowNewOption
-                  error={!!errors.substrate_type}
-                  helperText={errors.substrate_type}
+                  // error={!!errors.substrate_type}
+                  // helperText={errors.substrate_type}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -796,8 +797,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
-                  error={!!errors.dyne_level}
-                  helperText={errors.dyne_level}
+                  // error={!!errors.dyne_level}
+                  // helperText={errors.dyne_level}
                   required
                 />
               </Grid>
@@ -812,8 +813,8 @@ const Lamination: React.FC<LaminationProps> = ({
                   onChange={(e) =>
                     handleChange("laminationSubstrate", "width", e.target.value)
                   }
-                  error={!!errors.width}
-                  helperText={errors.width}
+                  // error={!!errors.width}
+                  // helperText={errors.width}
                   required
                 />
               </Grid>
@@ -832,8 +833,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
-                  error={!!errors.thickness}
-                  helperText={errors.thickness}
+                  // error={!!errors.thickness}
+                  // helperText={errors.thickness}
                   required
                 />
               </Grid>
@@ -852,8 +853,8 @@ const Lamination: React.FC<LaminationProps> = ({
                       e.target.value
                     )
                   }
-                  error={!!errors.density}
-                  helperText={errors.density}
+                  // error={!!errors.density}
+                  // helperText={errors.density}
                   required
                 />
               </Grid>
@@ -932,8 +933,8 @@ const Lamination: React.FC<LaminationProps> = ({
                 onChange={(e) =>
                   handleChange("laminationConditions", key, e.target.value)
                 }
-                error={!!errors[key]}
-                helperText={errors[key]}
+                // error={!!errors[key]}
+                // helperText={errors[key]}
                 required
               />
             </Grid>

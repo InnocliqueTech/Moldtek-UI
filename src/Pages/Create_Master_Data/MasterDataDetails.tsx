@@ -107,24 +107,24 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   const selectedVersion = localStorage.getItem("selectedVersionNo");
   const selectedJar = localStorage.getItem("selectedJar");
 
-  const [errors, setErrors] = useState<MasterDataFormErrors>({
-    job_master_id: "",
-    repeat_length: "",
-    ups: "",
-    tracks: "",
-    unit_effectivity_number: "",
-    kld_code: "",
-    customer_name: "",
-    customer_logo: "",
-    jar_cap: "",
-    item_code: "",
-    structure: "",
-    brand_description: "",
-    label_type: "",
-    segment: "",
-    noOfColorsSetting: "",
-    noOfSpecialColors: "",
-  });
+  // const [errors, setErrors] = useState<MasterDataFormErrors>({
+  //   job_master_id: "",
+  //   repeat_length: "",
+  //   ups: "",
+  //   tracks: "",
+  //   unit_effectivity_number: "",
+  //   kld_code: "",
+  //   customer_name: "",
+  //   customer_logo: "",
+  //   jar_cap: "",
+  //   item_code: "",
+  //   structure: "",
+  //   brand_description: "",
+  //   label_type: "",
+  //   segment: "",
+  //   noOfColorsSetting: "",
+  //   noOfSpecialColors: "",
+  // });
 
   useEffect(() => {
     const fetchKLDCode = async () => {
@@ -138,25 +138,25 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
 const newKldCode = response?.data?.kldCode ?? "";
 
           if (response?.statusCode === 400) {
-            setErrors((prev) => ({
-              ...prev,
-    kld_code: response.message || "KLD entry not found",
-            }));
+    //         setErrors((prev) => ({
+    //           ...prev,
+    // kld_code: response.message || "KLD entry not found",
+    //         }));
             setFormData((prev) => ({
               ...prev,
     kld_code: "",
             }));
   dispatch(setKldCode(""));
           } else {
-  dispatch(setKldCode(newKldCode ? newKldCode : ""));
-            setFormData((prev) => ({
-              ...prev,
-              kld_code: newKldCode,
-            }));
-            setErrors((prev) => ({
-              ...prev,
-              kld_code: "",
-            }));
+  dispatch(setKldCode( formData.kld_code));
+            // setFormData((prev) => ({
+            //   ...prev,
+            //   kld_code: form,
+            // }));
+            // setErrors((prev) => ({
+            //   ...prev,
+            //   kld_code: "",
+            // }));
           }
         }
       } catch (error: any) {
@@ -164,10 +164,10 @@ const newKldCode = response?.data?.kldCode ?? "";
           error?.data?.message ||
           "Unit Effective Number does not exist. Please create new KLD Code.";
 
-        setErrors((prev) => ({
-          ...prev,
-          kld_code: errorMessage,
-        }));
+        // setErrors((prev) => ({
+        //   ...prev,
+        //   kld_code: errorMessage,
+        // }));
       }
     };
 
@@ -318,6 +318,9 @@ const newKldCode = response?.data?.kldCode ?? "";
       dispatch(setMasterDataDataTouched(true));
     }
 
+    if(field === "kld_code"){
+      setKldCode(value as string)
+    }
     if (field === "jar_cap") {
       setJarCapManuallyChanged(true);
     }
@@ -348,56 +351,56 @@ const newKldCode = response?.data?.kldCode ?? "";
 
     const isImportant = importantFields.includes(field);
 
-    if (numericFields.includes(field)) {
-      const numericValue = trimmed.replace("%", ""); // Remove percentage sign if it exists
+    // if (numericFields.includes(field)) {
+    //   const numericValue = trimmed.replace("%", ""); // Remove percentage sign if it exists
 
-      // Handle empty fields with `isImportant`
-      if (isImportant && trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      }
-      // Ensure the value is a valid number or percentage, including `0` and decimals
-      else if (trimmed !== "" && isNaN(Number(numericValue))) {
-        errorMessage = "Please enter a valid number.";
-      } else {
-        // If the field is empty, set finalValue to an empty string
-        finalValue =
-          trimmed === ""
-            ? ""
-            : trimmed.includes("%") // If there's a '%' sign, keep it as percentage
-            ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
-            : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
-      }
-    } 
-    else if (characterFields.includes(field)) {
-      const onlyLettersRegex = /^[A-Za-z\s]+$/;
+    //   // Handle empty fields with `isImportant`
+    //   if (isImportant && trimmed === "") {
+    //     errorMessage = "This field cannot be empty.";
+    //   }
+    //   // Ensure the value is a valid number or percentage, including `0` and decimals
+    //   else if (trimmed !== "" && isNaN(Number(numericValue))) {
+    //     errorMessage = "Please enter a valid number.";
+    //   } else {
+    //     // If the field is empty, set finalValue to an empty string
+    //     finalValue =
+    //       trimmed === ""
+    //         ? ""
+    //         : trimmed.includes("%") // If there's a '%' sign, keep it as percentage
+    //         ? `${parseFloat(numericValue)}%` // Keep the percentage as string (e.g., "12%")
+    //         : Number(numericValue); // Otherwise, keep it as a number (e.g., "12" becomes 12)
+    //   }
+    // } 
+    // else if (characterFields.includes(field)) {
+    //   const onlyLettersRegex = /^[A-Za-z\s]+$/;
 
-      if (isImportant && trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
-        errorMessage = "Only letters and spaces are allowed.";
-      }
-    }
-     else if (freeTextFields.includes(field)) {
-      if (isImportant && trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      }
-    } 
-     else if (isImportant && trimmed === "") {
-        errorMessage = "This field cannot be empty.";
-      }
+    //   if (isImportant && trimmed === "") {
+    //     errorMessage = "This field cannot be empty.";
+    //   } else if (trimmed !== "" && !onlyLettersRegex.test(trimmed)) {
+    //     errorMessage = "Only letters and spaces are allowed.";
+    //   }
+    // }
+    //  else if (freeTextFields.includes(field)) {
+    //   if (isImportant && trimmed === "") {
+    //     errorMessage = "This field cannot be empty.";
+    //   }
+    // } 
+    //  else if (isImportant && trimmed === "") {
+    //     errorMessage = "This field cannot be empty.";
+    //   }
     
-    else if (
-      field === "label_type" ||
-      field === "jar_cap" ||
-      field === "structure"
-    ) {
-      finalValue = Array.isArray(newValue) ? newValue[0] : newValue;
-    }
+    // else if (
+    //   field === "label_type" ||
+    //   field === "jar_cap" ||
+    //   field === "structure"
+    // ) {
+    //   finalValue = Array.isArray(newValue) ? newValue[0] : newValue;
+    // }
 
-    const updatedErrors = {
-      ...errors,
-      [field]: errorMessage,
-    };
+    // const updatedErrors = {
+    //   ...errors,
+    //   [field]: errorMessage,
+    // };
 
     const updatedFormData = {
       ...formData,
@@ -406,8 +409,8 @@ const newKldCode = response?.data?.kldCode ?? "";
 
     setFormData(updatedFormData);
     dispatch(setSaveFormData(updatedFormData));
-    dispatch(setMasterDataFormErros(updatedErrors));
-    setErrors(updatedErrors);
+    // dispatch(setMasterDataFormErros(updatedErrors));
+    // setErrors(updatedErrors);
     if (!id) {
       dispatch(setSaveMasterDataDetailsData(updatedFormData));
     }
@@ -453,9 +456,9 @@ const newKldCode = response?.data?.kldCode ?? "";
       setFormData(saveFormData);
       setFormInitialized(true);
     }
-    if (masterDataFormErrors) {
-      setErrors(masterDataFormErrors);
-    }
+    // if (masterDataFormErrors) {
+    //   setErrors(masterDataFormErrors);
+    // }
     if (!id && saveButtonMasterData && saveMasterDataDetailsData) {
       setFormData(saveMasterDataDetailsData);
       setFormInitialized(true);
@@ -505,7 +508,7 @@ const newKldCode = response?.data?.kldCode ?? "";
   useEffect(() => {
     const hasErrors = importantFields.some(
       (field) =>
-        errors[field] !== "" ||
+        // errors[field] !== "" ||
         formData[field] === "" ||
         formData[field] === null ||
         formData[field] === undefined
@@ -513,7 +516,7 @@ const newKldCode = response?.data?.kldCode ?? "";
 
     dispatch(setSubmitAndPublishButtonMasterData(hasErrors));
     dispatch(setMasterDataDetailsSave(hasErrors));
-  }, [formData, errors]);
+  }, [formData]);
 
 
 
@@ -523,10 +526,10 @@ const newKldCode = response?.data?.kldCode ?? "";
       customer_logo: "",
     }));
   };
-  const row1HasError =
-    !!errors.unit_effectivity_number || !!errors.kld_code || !!errors.jar_cap;
-  const row2HasError =
-    !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
+  // const row1HasError =
+  //   !!errors.unit_effectivity_number || !!errors.kld_code || !!errors.jar_cap;
+  // const row2HasError =
+  //   !!errors.item_code || !!errors.brand_description || !!errors.customer_name;
 
   useEffect(() => {
     if (isPreviewOpen) {
@@ -683,32 +686,32 @@ const newKldCode = response?.data?.kldCode ?? "";
               onChange={(e) =>
                 handleChange("unit_effectivity_number", e.target.value)
               }
-              error={!!errors.unit_effectivity_number}
-              helperText={errors.unit_effectivity_number}
+              // error={!!errors.unit_effectivity_number}
+              // helperText={errors.unit_effectivity_number}
               disabled={id ? true : false}
               required
               endIcon={false}
             />
             <Box
-              sx={{
-                minHeight:
-                  row1HasError && !errors.unit_effectivity_number ? 8 : 0,
-              }}
+              // sx={{
+              //   minHeight:
+              //     row1HasError && !errors.unit_effectivity_number ? 8 : 0,
+              // }}
             />
             <Box
               sx={{
-                mt: row1HasError && !!errors.unit_effectivity_number ? 0 : 2,
+                mt: 2,
               }}
             >
               <ReusableInput
                 label="ITEM Code"
                 value={formData.item_code}
                 onChange={(e) => handleChange("item_code", e.target.value)}
-                error={!!errors.item_code}
-                helperText={errors.item_code}
+                // error={!!errors.item_code}
+                // helperText={errors.item_code}
               />
             </Box>
-            <Box sx={{ mt: row2HasError && !!errors.item_code ? 0 : 2 }}>
+            <Box sx={{ mt: 2 }}>
               <DropdownTextComponent
                 label="Structure"
                 options={dropDownValuesStructure}
@@ -732,30 +735,30 @@ const newKldCode = response?.data?.kldCode ?? "";
               required
             />
             <Box
-              sx={{
-                minHeight:
-                  row1HasError && !errors.jar_cap ? 8 : 0,
-              }}
+              // sx={{
+              //   minHeight:
+              //     row1HasError && !errors.jar_cap ? 8 : 0,
+              // }}
             />
             <Box
               sx={{
-                mt: row1HasError && !!errors.jar_cap ? 0 : 2,
+                mt: 2,
               }}
             >
               <ReusableInput
                 label="Customer"
                 value={formData.customer_name}
                 onChange={(e) => handleChange("customer_name", e.target.value)}
-                error={!!errors.customer_name}
-                helperText={errors.customer_name}
+                // error={!!errors.customer_name}
+                // helperText={errors.customer_name}
                 required
               />
 
               <Box
-                sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
+                // sx={{ minHeight: row2HasError && !errors.item_code ? 8 : 0 }}
               />
             </Box>
-            <Box sx={{ mt: row2HasError ? "-16px" : 2 }}>
+            <Box sx={{ mt:  2 }}>
               <DropdownComponent
                 label="Type of Label"
                 options={dropdownOptions ? dropdownOptions : []}
@@ -773,20 +776,20 @@ const newKldCode = response?.data?.kldCode ?? "";
               label="KLD CODE"
               value={formData.kld_code}
               onChange={(e) => handleChange("kld_code", e.target.value)}
-              error={!!errors.kld_code}
-              helperText={errors.kld_code}
-              disabled={true}
-              required
+              // error={!!errors.kld_code}
+              // helperText={errors.kld_code}
+              // disabled={true}
+              // required
+            />
+            <Box
+              // sx={{
+              //   minHeight:
+              //     row1HasError && !errors.kld_code ? 8 : 0,
+              // }}
             />
             <Box
               sx={{
-                minHeight:
-                  row1HasError && !errors.kld_code ? 8 : 0,
-              }}
-            />
-            <Box
-              sx={{
-                mt: row1HasError && !!errors.kld_code ? 0 : 2,
+                mt:2,
               }}
             >
               <TextArea
@@ -797,14 +800,14 @@ const newKldCode = response?.data?.kldCode ?? "";
                 }
                 placeholder="Enter your text..."
                 rows={0}
-                error={!!errors.brand_description}
-                helperText={errors.brand_description}
+                // error={!!errors.brand_description}
+                // helperText={errors.brand_description}
                 required
                 multiline={false}
               />
             </Box>
 
-            <Box sx={{ mt: row1HasError ? 2 : 2 }}>
+            <Box sx={{ mt:  2 }}>
               <DropdownComponent
                 label="Segment"
                 options={segmentNames}
@@ -835,8 +838,8 @@ const newKldCode = response?.data?.kldCode ?? "";
               label="Repeat"
               value={formData.repeat_length}
               onChange={(e) => handleChange("repeat_length", e.target.value)}
-              error={!!errors.repeat_length}
-              helperText={errors.repeat_length}
+              // error={!!errors.repeat_length}
+              // helperText={errors.repeat_length}
               required
             />
           </Grid>
@@ -845,8 +848,8 @@ const newKldCode = response?.data?.kldCode ?? "";
               label="UPs"
               value={formData.ups}
               onChange={(e) => handleChange("ups", e.target.value)}
-              error={!!errors.ups}
-              helperText={errors.ups}
+              // error={!!errors.ups}
+              // helperText={errors.ups}
               required
             />
           </Grid>
@@ -855,8 +858,8 @@ const newKldCode = response?.data?.kldCode ?? "";
               label="Tracks"
               value={formData.tracks}
               onChange={(e) => handleChange("tracks", e.target.value)}
-              error={!!errors.tracks}
-              helperText={errors.tracks}
+              // error={!!errors.tracks}
+              // helperText={errors.tracks}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -866,8 +869,8 @@ const newKldCode = response?.data?.kldCode ?? "";
               onChange={(e) =>
                 handleChange("noOfColorsSetting", e.target.value)
               }
-              error={!!errors.noOfColorsSetting}
-              helperText={errors.noOfColorsSetting}
+              // error={!!errors.noOfColorsSetting}
+              // helperText={errors.noOfColorsSetting}
               required
             />
           </Grid>
@@ -878,8 +881,8 @@ const newKldCode = response?.data?.kldCode ?? "";
               onChange={(e) =>
                 handleChange("noOfSpecialColors", e.target.value)
               }
-              error={!!errors.noOfSpecialColors}
-              helperText={errors.noOfSpecialColors}
+              // error={!!errors.noOfSpecialColors}
+              // helperText={errors.noOfSpecialColors}
               required
             />
           </Grid>

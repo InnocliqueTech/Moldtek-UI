@@ -80,37 +80,37 @@ const DataTable = <T extends Record<string, any>>({
   const [invalidFields, setInvalidFields] = useState<{
     [key: string]: boolean;
   }>({});
-  const validateInput = (columnId: string, value: string): boolean => {
-    const numericFields = [
-      "station_no",
-      "ratio",
-      "uv_led_intensity",
-      "volume",
-      "lf_value",
-    ];
-    const laminationFields = ["code", "brand"];
-    const printingFields = ["color_pantone"];
+  // const validateInput = (columnId: string, value: string): boolean => {
+  //   // const numericFields = [
+  //   //   "station_no",
+  //   //   "ratio",
+  //   //   "uv_led_intensity",
+  //   //   "volume",
+  //   //   "lf_value",
+  //   // ];
+  //   const laminationFields = ["code", "brand"];
+  //   const printingFields = ["color_pantone"];
 
-    if (value === "") return true;
+  //   if (value === "") return true;
 
-    if (numericFields.includes(columnId)) {
-      // Allow any digits (including leading zeros) with optional decimal part
-      const isValidDecimal = /^\d+(\.\d+)?$/.test(value);
-      const isValidPercentage = /^\d+(\.\d+)?%$/.test(value);
+  //   if (numericFields.includes(columnId)) {
+  //     // Allow any digits (including leading zeros) with optional decimal part
+  //     const isValidDecimal = /^\d+(\.\d+)?$/.test(value);
+  //     const isValidPercentage = /^\d+(\.\d+)?%$/.test(value);
 
-      return isValidDecimal || isValidPercentage;
-    }
+  //     return isValidDecimal || isValidPercentage;
+  //   }
 
-    if (id === "lamination" && laminationFields.includes(columnId)) {
-      return /^[a-zA-Z0-9\s]*$/.test(value);
-    }
+  //   if (id === "lamination" && laminationFields.includes(columnId)) {
+  //     return /^[a-zA-Z0-9\s]*$/.test(value);
+  //   }
 
-    if (id === "printing" && printingFields.includes(columnId)) {
-      return /^[\x20-\x7E]*$/.test(value);
-    }
+  //   if (id === "printing" && printingFields.includes(columnId)) {
+  //     return /^[\x20-\x7E]*$/.test(value);
+  //   }
 
-    return true;
-  };
+  //   return true;
+  // };
 
   const handleChange = <K extends keyof T>(
     rowIndex: number,
@@ -357,19 +357,19 @@ const DataTable = <T extends Record<string, any>>({
                                 value={row[column.id]}
                                 onChange={(e) => {
                                   const inputValue = e.target.value;
-                                  const isValid = validateInput(
-                                    column.id,
-                                    inputValue
-                                  );
+                                  // const isValid = validateInput(
+                                  //   column.id,
+                                  //   inputValue
+                                  // );
                                   const key = `${rowIndex}_${column.id}`;
-                                  const updatedInvalidFields = {
-                                    ...invalidFields,
-                                    [key]: !isValid,
-                                  };
-                                  setInvalidFields(updatedInvalidFields);
-                                  dispatch(
-                                    setInvalidFieldsTable(updatedInvalidFields)
-                                  );
+                                  // const updatedInvalidFields = {
+                                  //   ...invalidFields,
+                                  //   [key]: !isValid,
+                                  // };
+                                  // setInvalidFields(updatedInvalidFields);
+                                  // dispatch(
+                                  //   setInvalidFieldsTable(updatedInvalidFields)
+                                  // );
 
                                   const isLaminationField =
                                     laminationFields.some((field) =>
@@ -377,13 +377,13 @@ const DataTable = <T extends Record<string, any>>({
                                         .toLowerCase()
                                         .includes(field.toLowerCase())
                                     );
-                                  dispatch(
-                                    setLaminationTableValueVaidation(
-                                      isLaminationField && !isValid
-                                        ? true
-                                        : false
-                                    )
-                                  );
+                                  // dispatch(
+                                    // setLaminationTableValueVaidation(
+                                    //   isLaminationField && !isValid
+                                    //     ? true
+                                    //     : false
+                                    // )
+                                  // );
 
                                   const isPrintingField = printingFields.some(
                                     (field) =>
@@ -391,11 +391,11 @@ const DataTable = <T extends Record<string, any>>({
                                         .toLowerCase()
                                         .includes(field.toLowerCase())
                                   );
-                                  dispatch(
-                                    setPrintingTableValueVaidation(
-                                      isPrintingField && !isValid ? true : false
-                                    )
-                                  );
+                                  // dispatch(
+                                    // setPrintingTableValueVaidation(
+                                    //   isPrintingField && !isValid ? true : false
+                                    // )
+                                  // );
 
                                   handleChange(
                                     rowIndex,
@@ -611,10 +611,10 @@ const DataTable = <T extends Record<string, any>>({
                             value={row[column?.id] ? row[column?.id] : ""} // only the number
                             onChange={(e) => {
                               let inputValue = e.target.value;
-                              const isValid = validateInput(
-                                column.id,
-                                inputValue
-                              );
+                              // const isValid = validateInput(
+                              //   column.id,
+                              //   inputValue
+                              // );
                               const isLaminationField = laminationFields.some(
                                 (field) =>
                                   column.id
@@ -622,15 +622,15 @@ const DataTable = <T extends Record<string, any>>({
                                     .includes(field.toLowerCase())
                               );
 
-                              if (isLaminationField && !isValid) {
-                                dispatch(
-                                  setLaminationTableValueVaidation(true)
-                                );
-                              } else if (isLaminationField && isValid) {
-                                dispatch(
-                                  setLaminationTableValueVaidation(false)
-                                );
-                              }
+                              // if (isLaminationField && !isValid) {
+                              //   dispatch(
+                              //     setLaminationTableValueVaidation(true)
+                              //   );
+                              // } else if (isLaminationField && isValid) {
+                              //   dispatch(
+                              //     setLaminationTableValueVaidation(false)
+                              //   );
+                              // }
                               const isPrintingField = printingFields.some(
                                 (field) =>
                                   column.id
@@ -638,21 +638,21 @@ const DataTable = <T extends Record<string, any>>({
                                     .includes(field.toLowerCase())
                               );
 
-                              if (isPrintingField && !isValid) {
-                                dispatch(setPrintingTableValueVaidation(true));
-                              } else if (isPrintingField && isValid) {
-                                dispatch(setPrintingTableValueVaidation(false));
-                              }
+                              // if (isPrintingField && !isValid) {
+                              //   dispatch(setPrintingTableValueVaidation(true));
+                              // } else if (isPrintingField && isValid) {
+                              //   dispatch(setPrintingTableValueVaidation(false));
+                              // }
 
                               const key = `${rowIndex}_${column.id}`;
-                              const updatedInvalidFileds = {
-                                ...invalidFields,
-                                [key]: !isValid,
-                              };
-                              setInvalidFields(updatedInvalidFileds);
-                              dispatch(
-                                setInvalidFieldsTable(updatedInvalidFileds)
-                              );
+                              // const updatedInvalidFileds = {
+                              //   ...invalidFields,
+                              //   [key]: !isValid,
+                              // };
+                              // setInvalidFields(updatedInvalidFileds);
+                              // dispatch(
+                              //   setInvalidFieldsTable(updatedInvalidFileds)
+                              // );
 
                               handleChange(
                                 rowIndex,

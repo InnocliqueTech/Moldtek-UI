@@ -22,14 +22,14 @@ interface DyeCuttingProps {
 }
 
 const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
-  const [errors, setErrors] = useState<DyeCuttingFormErrors>({
-    job_master_id: "",
-    dye_cutting_id: "",
-    machine_type: "",
-    machine_name: "",
-    dye_code: "",
-    run_speed: "",
-  });
+  // const [errors, setErrors] = useState<DyeCuttingFormErrors>({
+  //   job_master_id: "",
+  //   dye_cutting_id: "",
+  //   machine_type: "",
+  //   machine_name: "",
+  //   dye_code: "",
+  //   run_speed: "",
+  // });
   const [formInitialized, setFormInitialized] = useState(false);
 
   const {
@@ -131,13 +131,13 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
 
     setFormData(updated);
 
-    const updatedErrors: DyeCuttingFormErrors = {
-      ...errors,
-      [key]: errorMessage,
-    };
+    // const updatedErrors: DyeCuttingFormErrors = {
+    //   ...errors,
+    //   [key]: errorMessage,
+    // };
 
-    setErrors(updatedErrors);
-    dispatch(setDyeCuttingFormErros(updatedErrors));
+    // setErrors(updatedErrors);
+    // dispatch(setDyeCuttingFormErros(updatedErrors));
     dispatch(setDyeCuttingFormData(updated));
   };
 
@@ -156,10 +156,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
     }
   }, [id]);
 
-  useEffect(() => {
-    const hasAnyErrors = Object.values(errors).some((e) => e !== "");
-    dispatch(setSubmitAndPublishButtonDyeCutting(hasAnyErrors));
-  }, [errors]);
+  // useEffect(() => {
+  //   const hasAnyErrors = Object.values(errors).some((e) => e !== "");
+  //   dispatch(setSubmitAndPublishButtonDyeCutting(hasAnyErrors));
+  // }, [errors]);
 
   useEffect(() => {
     if (formInitialized) return;
@@ -179,10 +179,10 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
       setFormData(dyeCuttingFormData);
       setFormInitialized(true);
     }
-    if (dyeCuttingErrors) {
-      setErrors(dyeCuttingErrors);
-      setFormInitialized(true);
-    }
+    // if (dyeCuttingErrors) {
+    //   setErrors(dyeCuttingErrors);
+    //   setFormInitialized(true);
+    // }
   }, [dyeCuttingFormData, dyeCuttingErrors, id, formInitialized]);
 
   useEffect(() => {
@@ -233,8 +233,8 @@ const DyeCutting: React.FC<DyeCuttingProps> = ({ formData, setFormData }) => {
                       e.target.value
                     )
                   }
-                  error={!!errors[key as keyof DyeCuttingFormErrors]}
-                  helperText={errors[key as keyof DyeCuttingFormErrors]}
+                  // error={!!errors[key as keyof DyeCuttingFormErrors]}
+                  // helperText={errors[key as keyof DyeCuttingFormErrors]}
                 />
               </Grid>
             ))}

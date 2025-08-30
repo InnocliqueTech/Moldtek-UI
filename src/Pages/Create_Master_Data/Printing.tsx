@@ -182,26 +182,26 @@ const Printing: React.FC<PrintingProps> = ({
     },
   ];
 
-  const [errors, setErrors] = useState<PrintingFormErrors>({
-    cylinder_teeth: "",
-    tension: "",
-    static_charge: "",
-    format_correct: "",
-    dyne_level: "",
-    width: "",
-    thickness: "",
-    density: "",
-    color_pantone: "",
-    lf_value: "",
-    ink_supplier: "",
-    lpcm: "",
-    volume: "",
-    uv_led: "",
-    uv_led_intensity: "",
-    mixing_on_gec: "",
-    mptl_code: "",
-    mounting_tape: "",
-  });
+  // const [errors, setErrors] = useState<PrintingFormErrors>({
+  //   cylinder_teeth: "",
+  //   tension: "",
+  //   static_charge: "",
+  //   format_correct: "",
+  //   dyne_level: "",
+  //   width: "",
+  //   thickness: "",
+  //   density: "",
+  //   color_pantone: "",
+  //   lf_value: "",
+  //   ink_supplier: "",
+  //   lpcm: "",
+  //   volume: "",
+  //   uv_led: "",
+  //   uv_led_intensity: "",
+  //   mixing_on_gec: "",
+  //   mptl_code: "",
+  //   mounting_tape: "",
+  // });
 
   function sanitizeMasterData(data: any): PrintingFormValues {
     return {
@@ -274,16 +274,16 @@ const Printing: React.FC<PrintingProps> = ({
       }
     }
 
-    const isNumberField = [
-      "width",
-      "density",
-      "unwinder",
-      "infeed",
-      "outfeed",
-      "dyne_level",
-      "tension",
-      "lf_value",
-    ].includes(field);
+    // const isNumberField = [
+    //   "width",
+    //   "density",
+    //   "unwinder",
+    //   "infeed",
+    //   "outfeed",
+    //   "dyne_level",
+    //   "tension",
+    //   "lf_value",
+    // ].includes(field);
 
     const isMachineField = machineFields.some((f) => f.id === field);
     const isSubstrateField = substrateFields.some((f) => f.id === field);
@@ -292,85 +292,85 @@ const Printing: React.FC<PrintingProps> = ({
     let errorMsg = "";
     let finalValue: string | number | string[] = newValue;
 
-    // Validate number fields
-    if (isNumberField) {
-      const stringValue = newValue.toString().trim();
+    // // Validate number fields
+    // if (isNumberField) {
+    //   const stringValue = newValue.toString().trim();
 
-      // Allow "0" or "0.0" or other decimal values
-      if (stringValue === "0" || stringValue === "0.0" || stringValue === "") {
-        finalValue = stringValue; // Allow 0 and empty
-        errorMsg = ""; // No error
-      }
-      if (isNumberField) {
-        if (newValue === "" || newValue === null || isNaN(Number(newValue))) {
-          errorMsg = `${field.replace(/_/g, " ")} is required`;
-        }
-      } else {
-        // Regex to validate decimal or percentage with optional "%"
-        const regex = /^(\d+(\.\d+)?)(%)?$/;
-        const match = stringValue.match(regex);
+    //   // Allow "0" or "0.0" or other decimal values
+    //   if (stringValue === "0" || stringValue === "0.0" || stringValue === "") {
+    //     finalValue = stringValue; // Allow 0 and empty
+    //     errorMsg = ""; // No error
+    //   }
+    //   if (isNumberField) {
+    //     if (newValue === "" || newValue === null || isNaN(Number(newValue))) {
+    //       errorMsg = `${field.replace(/_/g, " ")} is required`;
+    //     }
+    //   } else {
+    //     // Regex to validate decimal or percentage with optional "%"
+    //     const regex = /^(\d+(\.\d+)?)(%)?$/;
+    //     const match = stringValue.match(regex);
 
-        if (match) {
-          finalValue = stringValue; // Keep the value as a string with or without percentage
-          errorMsg = ""; // Valid number or percentage
-        } else {
-          errorMsg = "Invalid number or percentage";
-        }
-      }
-    }
+    //     if (match) {
+    //       finalValue = stringValue; // Keep the value as a string with or without percentage
+    //       errorMsg = ""; // Valid number or percentage
+    //     } else {
+    //       errorMsg = "Invalid number or percentage";
+    //     }
+    //   }
+    // }
 
     // Validate thickness field (alphanumeric check)
-    else if (field === "thickness") {
-      const trimmed = (newValue as string).trim();
+    // else if (field === "thickness") {
+    //   const trimmed = (newValue as string).trim();
 
-      if (trimmed === "") {
-        errorMsg = "Thickness cannot be empty.";
-        finalValue = "";
-      } else if (!/^[a-zA-Z0-9.\- ]+$/.test(trimmed)) {
-        errorMsg = "Thickness must be alphanumeric.";
-      } else {
-        errorMsg = "";
-        finalValue = trimmed;
-      }
-    }
+    //   if (trimmed === "") {
+    //     errorMsg = "Thickness cannot be empty.";
+    //     finalValue = "";
+    //   } else if (!/^[a-zA-Z0-9.\- ]+$/.test(trimmed)) {
+    //     errorMsg = "Thickness must be alphanumeric.";
+    //   } else {
+    //     errorMsg = "";
+    //     finalValue = trimmed;
+    //   }
+    // }
     // For other string-based fields
-    else if (typeof newValue === "string") {
-      const trimmed = newValue.trim();
-      const skipRequiredFields = ["static_charge", "format_correct"];
-      if (trimmed === "" && !skipRequiredFields.includes(field)) {
-        errorMsg = `${field.replace(/_/g, " ")} is required`;
-      } else if (
-        !onlyLettersRegex.test(trimmed) &&
-        field !== "cylinder_teeth" &&
-        field !== "tension" &&
-        field !== "format_correct" &&
-        field !== "static_charge" &&
-        field !== "printing_machine_name" &&
-        field !== "rewinder" &&
-        field !== "substrate_type"
-      ) {
-        errorMsg =
-          "Only alphabets are allowed — no numbers or special characters";
-      }
-    }
+    // else if (typeof newValue === "string") {
+    //   const trimmed = newValue.trim();
+    //   const skipRequiredFields = ["static_charge", "format_correct"];
+    //   if (trimmed === "" && !skipRequiredFields.includes(field)) {
+    //     errorMsg = `${field.replace(/_/g, " ")} is required`;
+    //   } else if (
+    //     !onlyLettersRegex.test(trimmed) &&
+    //     field !== "cylinder_teeth" &&
+    //     field !== "tension" &&
+    //     field !== "format_correct" &&
+    //     field !== "static_charge" &&
+    //     field !== "printing_machine_name" &&
+    //     field !== "rewinder" &&
+    //     field !== "substrate_type"
+    //   ) {
+    //     errorMsg =
+    //       "Only alphabets are allowed — no numbers or special characters";
+    //   }
+    // }
 
     // Update errors
-    const updatedErrors = { ...errors };
+    // const updatedErrors = { ...errors };
 
-    if (field !== "printing_machine_name") {
-      updatedErrors[field] = errorMsg;
-    } else {
-      delete updatedErrors[field]; // Remove error if no issues
-    }
+    // if (field !== "printing_machine_name") {
+    //   updatedErrors[field] = errorMsg;
+    // } else {
+    //   delete updatedErrors[field]; // Remove error if no issues
+    // }
 
-    if (field !== "supplier") {
-      updatedErrors[field] = errorMsg;
-    } else {
-      delete updatedErrors[field]; // Remove error if no issues
-    }
+    // if (field !== "supplier") {
+    //   updatedErrors[field] = errorMsg;
+    // } else {
+    //   delete updatedErrors[field]; // Remove error if no issues
+    // }
 
-    setErrors(updatedErrors);
-    dispatch(setPrintngFormErros(updatedErrors));
+    // setErrors(updatedErrors);
+    // dispatch(setPrintngFormErros(updatedErrors));
 
     const updatedFormData = {
       ...formValues,
@@ -419,7 +419,7 @@ const Printing: React.FC<PrintingProps> = ({
         ]
       : "";
 
-    const error = errors[field.id] || "";
+    // const error = errors[field.id] || "";
 
     if (field.options && !field.allowTextFiled) {
       return (
@@ -457,8 +457,8 @@ const Printing: React.FC<PrintingProps> = ({
         label={field.label}
         value={value as string | number}
         onChange={(val) => handleChange(field.id, val)}
-        error={!!error}
-        helperText={error}
+        // error={!!error}
+        // helperText={error}
         required={
           field.label === "Static Charge" || field.label === "Format Correct"
             ? false
@@ -491,7 +491,7 @@ const Printing: React.FC<PrintingProps> = ({
       }
     }
     if (printingFormErrors) {
-      setErrors(printingFormErrors);
+      // setErrors(printingFormErrors);
       setFormInitialized(true);
     }
     if (!id && saveButtonPrintingData && savePrintingData) {
@@ -580,12 +580,12 @@ const Printing: React.FC<PrintingProps> = ({
       return stationResult;
     });
 
-    const hasErrors = Object.values(errors).some((error) => error);
+    // const hasErrors = Object.values(errors).some((error) => error);
     const shouldDisableButton =
-      !isAllFieldFilled || hasErrors || printingTableValueVaidation;
+      !isAllFieldFilled ||  printingTableValueVaidation;
     dispatch(setSubmitAndPublishButtonPrinting(shouldDisableButton));
     dispatch(setPrintingSave(shouldDisableButton));
-  }, [formValues, errors, printingTableValueVaidation]);
+  }, [formValues,  printingTableValueVaidation]);
 
   // useEffect(() => {
   //   const importantFields = [

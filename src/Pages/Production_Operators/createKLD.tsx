@@ -62,12 +62,12 @@ const KLDSlider: React.FC<KLDSliderProps> = ({ open, onClose }) => {
 
     let hasError = false;
 
-    const uenRegex = /^\d+$/;
-    if (!uenRegex.test(unitEffectiveNumber)) {
-      errors.unitEffectiveNumber =
-        "Unit Effective Number must be numeric only.";
-      hasError = true;
-    }
+    // const uenRegex = /^\d+$/;
+    // if (!uenRegex.test(unitEffectiveNumber)) {
+    //   errors.unitEffectiveNumber =
+    //     "Unit Effective Number must be numeric only.";
+    //   hasError = true;
+    // }
 
    
     if (hasError) {
