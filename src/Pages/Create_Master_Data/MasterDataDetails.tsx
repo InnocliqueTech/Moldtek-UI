@@ -126,7 +126,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   //   noOfSpecialColors: "",
   // });
 
-  useEffect(() => {
+useEffect(() => {
     const fetchKLDCode = async () => {
       try {
         if (formData.unit_effectivity_number && formData.jar_cap) {
@@ -135,7 +135,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             unitEffectiveNumber: formData.unit_effectivity_number.toString(),
             jarCap: formData.jar_cap,
           }).unwrap();
-// const newKldCode = response?.data?.kldCode ?? "";
+const newKldCode = response?.data?.kldCode ?? "";
 
           if (response?.statusCode === 400) {
     //         setErrors((prev) => ({
@@ -148,11 +148,11 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
             }));
   dispatch(setKldCode(""));
           } else {
-  dispatch(setKldCode( formData.kld_code));
-            // setFormData((prev) => ({
-            //   ...prev,
-            //   kld_code: form,
-            // }));
+  dispatch(setKldCode(newKldCode ? newKldCode : ""));
+            setFormData((prev) => ({
+              ...prev,
+              kld_code: newKldCode,
+            }));
             // setErrors((prev) => ({
             //   ...prev,
             //   kld_code: "",
