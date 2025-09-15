@@ -418,14 +418,23 @@ function ReusableTable<T extends Record<string, any>>({
 
     try {
       const downloadTasks = selected.map(async (row) => {
-        console.log(row, "ROWSDTATA");
         const unitNumber = row.unitEffectivityNumber;
         const indentNumber = decodeURIComponent(row.indentNumber || "");
         const jarCap = row.jarCap;
-        const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}&jarCap=${jarCap}`;
+           const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
 
         try {
-          const response = await fetch(url, { method: "GET" });
+              const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      unitNumber,
+      indentNumber,
+      jarCap,
+    }),
+  });
           if (!response.ok) {
             const errorData = await response.json();
             results.push({

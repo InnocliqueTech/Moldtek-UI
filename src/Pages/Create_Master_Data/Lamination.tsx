@@ -753,20 +753,14 @@ const Lamination: React.FC<LaminationProps> = ({
             </Typography>
             <Grid container spacing={2} pt={1}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <DropdownTextComponent
-                  label="Substrate Type"
-                  options={dropDownValuesLamination}
-                  value={formData.laminationSubstrate?.substrate_type}
-                  onChange={(value) =>
+                     <ReusableInput
+                label="Substrate Type"
+               value={formData.laminationSubstrate?.substrate_type}
+                required
+                onChange={(value) =>
                     handleChange("laminationSubstrate", "substrate_type", value)
                   }
-                  isMultiSelect={false}
-                  checkbox={false}
-                  required
-                  allowNewOption
-                  // error={!!errors.substrate_type}
-                  // helperText={errors.substrate_type}
-                />
+              />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <DropdownTextComponent

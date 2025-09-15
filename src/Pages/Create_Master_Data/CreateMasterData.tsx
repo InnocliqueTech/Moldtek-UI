@@ -336,40 +336,31 @@ const CreateMasterData: React.FC = () => {
         ...finalLaminationData,
         laminationConditions: {
           ...finalLaminationData.laminationConditions,
-          zone1_temp: Number(
-            finalLaminationData.laminationConditions.zone1_temp
-          ),
-          zone2_temp: Number(
-            finalLaminationData.laminationConditions.zone2_temp
-          ),
-          nip_pressure_bar: Number(
-            finalLaminationData.laminationConditions.nip_pressure_bar
-          ),
-          speed: Number(finalLaminationData.laminationConditions.speed),
-          lami_set_tension: Number(
-            finalLaminationData.laminationConditions.lami_set_tension
-          ),
-          rewinder_tension: Number(
-            finalLaminationData.laminationConditions.rewinder_tension
-          ),
-          printed_film_tension: Number(
-            finalLaminationData.laminationConditions.printed_film_tension
-          ),
-          laminate_film_tension: Number(
-            finalLaminationData.laminationConditions.laminate_film_tension
-          ),
-          adhesive_gsm: Number(
-            finalLaminationData.laminationConditions.adhesive_gsm
-          ),
+          zone1_temp: 
+            finalLaminationData.laminationConditions.zone1_temp,
+          zone2_temp:
+            finalLaminationData.laminationConditions.zone2_temp,
+          nip_pressure_bar: 
+            finalLaminationData.laminationConditions.nip_pressure_bar,
+          speed: finalLaminationData.laminationConditions.speed,
+          lami_set_tension:
+            finalLaminationData.laminationConditions.lami_set_tension,
+          rewinder_tension:
+            finalLaminationData.laminationConditions.rewinder_tension,
+          printed_film_tension:
+            finalLaminationData.laminationConditions.printed_film_tension,
+          laminate_film_tension:
+            finalLaminationData.laminationConditions.laminate_film_tension,
+          adhesive_gsm:
+            finalLaminationData.laminationConditions.adhesive_gsm,
         },
         laminationSubstrate: {
           ...finalLaminationData.laminationSubstrate,
-          dyne_level: Number(
-            finalLaminationData.laminationSubstrate.dyne_level
-          ),
+          dyne_level:
+            finalLaminationData.laminationSubstrate.dyne_level,
           thickness: String(finalLaminationData.laminationSubstrate.thickness),
-          width: Number(finalLaminationData.laminationSubstrate.width),
-          density: Number(finalLaminationData.laminationSubstrate.density),
+          width:finalLaminationData.laminationSubstrate.width,
+          density: finalLaminationData.laminationSubstrate.density,
         },
       };
     }
@@ -380,38 +371,36 @@ const CreateMasterData: React.FC = () => {
         cylinder_teeth: String(
           finalPrintingData.printingDetails.cylinder_teeth
         ),
-        tension: Number(finalPrintingData.printingDetails.tension),
-        infeed: Number(finalPrintingData.printingDetails.infeed),
-        outfeed: Number(finalPrintingData.printingDetails.outfeed),
-        rewinder: String(finalPrintingData.printingDetails.rewinder),
-        unwinder: Number(finalPrintingData.printingDetails.unwinder),
+        tension: finalPrintingData.printingDetails.tension,
+        infeed: finalPrintingData.printingDetails.infeed,
+        outfeed: finalPrintingData.printingDetails.outfeed,
+        rewinder: finalPrintingData.printingDetails.rewinder,
+        unwinder: finalPrintingData.printingDetails.unwinder,
       },
       printingSubstrateSettings: {
         ...finalPrintingData.printingSubstrateSettings,
-        dyne_level: Number(
-          finalPrintingData.printingSubstrateSettings.dyne_level
-        ),
+        dyne_level:
+          finalPrintingData.printingSubstrateSettings.dyne_level,
         thickness: String(
           finalPrintingData.printingSubstrateSettings.thickness
         ),
-        width: Number(finalPrintingData.printingSubstrateSettings.width),
-        density: Number(finalPrintingData.printingSubstrateSettings.density),
+        width: finalPrintingData.printingSubstrateSettings.width,
+        density:finalPrintingData.printingSubstrateSettings.density,
       },
       stationWiseMetrics: finalPrintingData.stationWiseMetrics.map(
         (station: any) => ({
           ...station,
-          volume: Number(station.volume) || "",
-          uv_led_intensity: Number(station.uv_led_intensity) || "",
-          lf_value: Number(station.lf_value) || "",
+          volume: station.volume || "",
+          uv_led_intensity:station.uv_led_intensity || "",
+          lf_value: station.lf_value || "",
         })
       ),
     };
 
     const masterDataDetails = {
       ...finalMasterDataDetails,
-      unit_effectivity_number: Number(
-        finalMasterDataDetails.unit_effectivity_number
-      ),
+      unit_effectivity_number:
+        finalMasterDataDetails.unit_effectivity_number,
       customer_logo: id
         ? data?.data.masterDataDetails.customer_logo
         : customerLogoFile?.name,

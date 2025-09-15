@@ -504,7 +504,7 @@ const newKldCode = response?.data?.kldCode ?? "";
 
   const dropdownOptions =
     LabelTyepsData &&
-    LabelTyepsData?.map((option: any) => option.labelTypeName);
+    LabelTyepsData?.map((option: unknown) => option.labelTypeName);
 
   useEffect(() => {
     const hasErrors = importantFields.some(
@@ -713,15 +713,10 @@ const newKldCode = response?.data?.kldCode ?? "";
               />
             </Box>
             <Box sx={{ mt: 2 }}>
-              <DropdownTextComponent
+                 <ReusableInput
                 label="Structure"
-                options={dropDownValuesStructure}
                 value={formData.structure}
                 onChange={(e) => handleChange("structure", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
-                allowNewOption
-                dropdown="structure"
               />
             </Box>
           </Grid>
@@ -760,15 +755,12 @@ const newKldCode = response?.data?.kldCode ?? "";
               />
             </Box>
             <Box sx={{ mt:  2 }}>
-              <DropdownComponent
+              <ReusableInput
                 label="Type of Label"
-                options={dropdownOptions ? dropdownOptions : []}
                 value={formData.label_type}
                 onChange={(e) => handleChange("label_type", e.target.value)}
-                isMultiSelect={false}
-                checkbox={false}
                 required
-              />
+                />
             </Box>
           </Grid>
 

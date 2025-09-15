@@ -105,10 +105,10 @@ const Printing: React.FC<PrintingProps> = ({
     },
     { id: "cylinder_teeth", label: "Cylinder Teeth" },
     { id: "tension", label: "Tension" },
-    { id: "unwinder", label: "Unwinder", options: ["110", "6"] },
-    { id: "infeed", label: "Infeed", options: ["110", "5"] },
-    { id: "outfeed", label: "Outfeed", options: ["120", "8"] },
-    { id: "rewinder", label: "Rewinder", options: ["50%", "7.5"] },
+    { id: "unwinder", label: "Unwinder"},
+    { id: "infeed", label: "Infeed" },
+    { id: "outfeed", label: "Outfeed" },
+    { id: "rewinder", label: "Rewinder" },
     { id: "static_charge", label: "Static Charge" },
     { id: "format_correct", label: "Format Correct" },
   ];
@@ -117,8 +117,6 @@ const Printing: React.FC<PrintingProps> = ({
     {
       id: "substrate_type",
       label: "Substrate Type",
-      options: dropDownValuesPrinting,
-      allowTextFiled: true,
     },
     {
       id: "supplier",
