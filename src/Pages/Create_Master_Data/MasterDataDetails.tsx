@@ -37,7 +37,7 @@ import {
 } from "../../store/slices/masterDataSlice";
 import { useLocation, useParams } from "react-router-dom";
 import {
-  useGetLabelTypesQuery,
+  // useGetLabelTypesQuery,
   useSegmentsDropdownMutation,
   useStructureDropdownMutation,
 } from "../../store/apis/genericApis";
@@ -55,7 +55,7 @@ import {
   // MasterDataFormErrors,
   MasterFormData,
 } from "../../store/Interfaces/masterDataTypes";
-import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
+// import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
 import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
 import { useGetKLDCodeMutation } from "../../store/apis/kldApis";
@@ -76,7 +76,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
     masterDataDataTouched,
     saveMasterDataDetailsData,
     saveButtonMasterData,
-    dropDownValuesStructure,
+    // dropDownValuesStructure,
   } = useSelector((state: RootState) => state.masterData);
   const [jarCapManuallyChanged, setJarCapManuallyChanged] = useState(false);
 
@@ -500,11 +500,11 @@ const newKldCode = response?.data?.kldCode ?? "";
         dispatch(setKldCode(viewMasterDataDetails.kld_code ? viewMasterDataDetails.kld_code : ""));
     }
   }, [id, viewMasterDataDetails]);
-  const { data: LabelTyepsData } = useGetLabelTypesQuery();
+  // const { data: LabelTyepsData } = useGetLabelTypesQuery();
 
-  const dropdownOptions =
-    LabelTyepsData &&
-    LabelTyepsData?.map((option: unknown) => option.labelTypeName);
+  // const dropdownOptions =
+  //   LabelTyepsData &&
+  //   LabelTyepsData?.map((option: unknown) => option.labelTypeName);
 
   useEffect(() => {
     const hasErrors = importantFields.some(

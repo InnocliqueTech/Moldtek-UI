@@ -46,7 +46,7 @@ const Lamination: React.FC<LaminationProps> = ({
     // laminationTableValueVaidation,
     saveButtonLaminatingData,
     saveLaminatingData,
-    dropDownValuesLamination,
+    // dropDownValuesLamination,
     dropDownValuesSupplierLamination,
   } = useSelector((state: RootState) => state.masterData);
   const {

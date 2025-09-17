@@ -89,7 +89,7 @@ const Printing: React.FC<PrintingProps> = ({
     printingTableValueVaidation,
     saveButtonPrintingData,
     savePrintingData,
-    dropDownValuesPrinting,
+    // dropDownValuesPrinting,
     dropDownValuesMountingTape,
     dropDownValuesSupplierPrinting,
     kld_code,
@@ -458,7 +458,7 @@ const Printing: React.FC<PrintingProps> = ({
         // error={!!error}
         // helperText={error}
         required={
-          field.label === "Static Charge" || field.label === "Format Correct"
+          field.label === "Static Charge" || field.label === "Format Correct" || field.label === "Tension"
             ? false
             : true
         }
@@ -530,7 +530,6 @@ const Printing: React.FC<PrintingProps> = ({
     const importantFields = [
       "printing_machine_name",
       "cylinder_teeth",
-      "tension",
       "unwinder",
       "rewinder",
       "infeed",
