@@ -202,10 +202,21 @@ const Layout = () => {
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
-    const url = `${BASE_API_URL}/master/downloadDailyJobTemplate?unitNumber=${unitNumber}&indentNumber=${indentNumber}&jarCap=${jarCap}`;
-    setLoading(true);
-    try {
-      const response = await fetch(url, { method: "GET" });
+     const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
+     setLoading(true);
+
+        try {
+              const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      unitNumber,
+      indentNumber,
+      jarCap,
+    }),
+  });
 
       if (!response.ok) {
         const errorData = await response.json();
