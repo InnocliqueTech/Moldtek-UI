@@ -72,7 +72,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
       debouncedFetch(inputValue);
     } else {
       const filtered = staticOptions.filter(opt =>
-        opt.toLowerCase().includes(inputValue.toLowerCase())
+        opt?.toLowerCase()?.includes(inputValue?.toLowerCase())
       );
       setOptions(filtered);
     }
