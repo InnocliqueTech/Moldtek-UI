@@ -24,7 +24,7 @@ export const dataofCards= {
             "brand_description": "1250 ML_GP (With WAD), Mix - Veg Pickle, Aarafh Foods , IML Containers.",
             "jar_cap": "101",
             "structure": null,
-            "label_type": "THINWALL",
+            "label_type": "Mono Layer",
             "repeat_length": 927,
             "ups": 1,
             "tracks": 1,
@@ -78,7 +78,7 @@ export const dataofCards= {
             "brand_description": "0_LTR_AP_DTS_LWT <APEX ULTIMA PROTEK TOPCOAT> [CODE:P34779J] (IML) ASIAN PAINTS",
             "jar_cap": "N/A (For flexible packaging)",
             "structure": "PET",
-            "label_type": "THINWALL",
+            "label_type": "Mono Layer",
             "repeat_length": 53,
             "ups": 273,
             "tracks": 246,
@@ -97,7 +97,7 @@ export const dataofCards= {
         },
         {
             "labelTypeId": 2,
-            "labelTypeName": "THINWALL"
+            "labelTypeName": "Mono Layer"
         },
         {
             "labelTypeId": 3,
@@ -115,7 +115,7 @@ export const dataofCards= {
       "brand_description": "1250 ML_GP (With WAD), Mix - Veg Pickle, Aarafh Foods , IML Containers.",
       "jar_cap": "101",
       "structure": null,
-      "label_type": "THINWALL",
+      "label_type": "Mono Layer",
       "repeat_length": 927,
       "ups": 1,
       "tracks": 1,
@@ -252,7 +252,7 @@ export const labelTypesData =[
     },
     {
         "labelTypeId": 2,
-        "labelTypeName": "THINWALL"
+        "labelTypeName": "Mono Layer"
     },
     {
         "labelTypeId": 3,

@@ -6,8 +6,8 @@ interface DailyPlan {
   unitEffectivityNumber: string;
   indentNumber: string;
   customerName: string;
-  brandNamePack: string;
-  ppcIndentQty: number;
+  brandName: string;
+  ppcIndentQtyNos: number;
   targetLabelsQty: number;
   targetFilmMtrs: number;
   filmRequiredPrintingMtrs: number | null;
@@ -158,8 +158,8 @@ unitEffectiveNumbers: ""}],
     unitEffectivityNumber: "",
     indentNumber: "",
     customerName: "",
-    brandNamePack: "",
-    ppcIndentQty: 0,
+    brandName: "",
+    ppcIndentQtyNos: 0,
     targetLabelsQty: 0,
     targetFilmMtrs: 0,
     filmRequiredPrintingMtrs: null,

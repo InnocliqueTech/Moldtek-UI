@@ -73,9 +73,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
   const [uploadCustomerFile, { isLoading: uploadLoading }] =
     useUploadCustomerFileMutation();
   const skipLamination =
-    saveFormData.label_type === "THINWALL" || saveFormData.segment === "TW";
+    saveFormData.label_type === "Mono Layer" || saveFormData.segment === "TW";
   const skipLaminationButton =
-    viewMasterDataDetails.label_type === "THINWALL" ||
+    viewMasterDataDetails.label_type === "Mono Layer" ||
     viewMasterDataDetails.segment === "TW";
   const buttonText = [
     "Next: Master Data - Printing",
@@ -298,9 +298,9 @@ const MasterDataFooter: React.FC<MasterDataFooterProps> = ({
     >
       {selectedTab === 3 ||
       (selectedTab === 2 &&
-        (saveFormData.label_type === "THINWALL" ||
+        (saveFormData.label_type === "Mono Layer" ||
           saveFormData.segment === "TW" ||
-          viewMasterDataDetails.label_type === "THINWALL" ||
+          viewMasterDataDetails.label_type === "Mono Layer" ||
           viewMasterDataDetails.segment === "TW")) ? (
         <ReusableButton
           text={id ? "Update and Publish" : "Submit and Publish"}

@@ -8,7 +8,7 @@ export const  mockData = {
       "brand_description": "1250 ML_GP (With WAD), Mix - Veg Pickle, Aarafh Foods , IML Containers.",
       "jar_cap": "101",
       "structure": null,
-      "label_type": "THINWALL",
+      "label_type": "Mono Layer",
       "repeat_length": 927,
       "ups": 1,
       "tracks": 1,

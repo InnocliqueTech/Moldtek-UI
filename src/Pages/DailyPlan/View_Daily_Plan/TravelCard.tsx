@@ -209,7 +209,7 @@ row.category === "Inspection Wastage" ? { ...row, rowEditIcon: true } : row
           }}
         />
       </Box>
-      {(dailyPlan.labelType !== "THINWALL" || dailyPlan.segment !== "TW") && (
+      {(dailyPlan.labelType !== "Mono Layer" || dailyPlan.segment !== "TW") && (
         <Box sx={{ borderRadius: "0px", p: 1 }}>
           <TitledDataTable
             title="Lamination Machine"

@@ -152,7 +152,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   PPC Indent Qty
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                  {renderValue(dailyPlan?.ppcIndentQty || "N/A",maxChars)}
+                  {renderValue(dailyPlan?.ppcIndentQtyNos || "N/A",maxChars)}
                 </Typography>
               </Box>
 
@@ -263,7 +263,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(dailyPlan.brandNamePack || "N/A",maxChars)}
+                  {renderValue(dailyPlan.brandName || "N/A",maxChars)}
                 </Typography>
 
               <Box mt={2}>

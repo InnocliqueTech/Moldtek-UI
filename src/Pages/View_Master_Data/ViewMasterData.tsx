@@ -70,7 +70,7 @@ const ViewMasterData: React.FC = () => {
   const tabs = [
     "Master Data - Printing",
     ...(data?.data?.masterDataDetails &&
-    data.data.masterDataDetails?.label_type !== "THINWALL" &&
+    data.data.masterDataDetails?.label_type !== "Mono Layer" &&
     data.data.masterDataDetails?.segment !== "TW"
       ? ["Master Data - Lamination"]
       : []),
@@ -118,10 +118,10 @@ const ViewMasterData: React.FC = () => {
     <Box
       sx={{
         height:
-          (data?.data.masterDataDetails.label_type !== "THINWALL" &&
+          (data?.data.masterDataDetails.label_type !== "Mono Layer" &&
             data?.data.masterDataDetails.label_type !== "TW" &&
             selectedTabView !== 2) ||
-          ((data?.data.masterDataDetails.label_type === "THINWALL" ||
+          ((data?.data.masterDataDetails.label_type === "Mono Layer" ||
             data?.data.masterDataDetails.label_type === "TW") &&
             selectedTabView !== 1)
             ? {
@@ -192,7 +192,7 @@ const ViewMasterData: React.FC = () => {
               {selectedTabView === 0 && <ViewPrinting />}
               {selectedTabView === 1 &&
               !(
-                data?.data.masterDataDetails.label_type === "THINWALL" ||
+                data?.data.masterDataDetails.label_type === "Mono Layer" ||
                 data?.data.masterDataDetails.segment === "TW"
               ) ? (
                 <ViewLamination />

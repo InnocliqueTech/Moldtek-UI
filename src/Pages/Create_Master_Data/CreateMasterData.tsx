@@ -274,7 +274,7 @@ const CreateMasterData: React.FC = () => {
         ? data?.data.masterDataDyeCutting
         : dyeCuttingFormData;
     const skipLamination =
-      finalMasterDataDetails.label_type === "THINWALL" ||
+      finalMasterDataDetails.label_type === "Mono Layer" ||
       finalMasterDataDetails.segment === "TW";
 
     let masterDataLamination;
@@ -462,9 +462,9 @@ const CreateMasterData: React.FC = () => {
   "Master Data Details",
   "Master Data - Printing",
   ...(
-    saveFormData.label_type === "THINWALL" ||
+    saveFormData.label_type === "Mono Layer" ||
     saveFormData.segment === "TW" ||
-    (id && viewMasterDataDetails.label_type === "THINWALL" && formData.label_type === "THINWALL" ) ||
+    (id && viewMasterDataDetails.label_type === "Mono Layer" && formData.label_type === "Mono Layer" ) ||
     (id &&viewMasterDataDetails.segment === "TW" && formData.segment === "TW")
       ? []
       : ["Master Data - Lamination"]
@@ -619,9 +619,9 @@ const CreateMasterData: React.FC = () => {
             )}
             {selectedTab === 2 &&
             !(
-              saveFormData.label_type === "THINWALL" ||
+              saveFormData.label_type === "Mono Layer" ||
               saveFormData.segment === "TW" ||
-              (id && viewMasterDataDetails.label_type === "THINWALL") ||
+              (id && viewMasterDataDetails.label_type === "Mono Layer") ||
               viewMasterDataDetails.segment === "TW"
             ) ? (
               <Lamination
@@ -664,10 +664,10 @@ const CreateMasterData: React.FC = () => {
                     ? handleSavePrinting
                     : selectedTab === 2 &&
                       !(
-                        saveFormData.label_type === "THINWALL" ||
+                        saveFormData.label_type === "Mono Layer" ||
                         saveFormData.segment === "TW" ||
                         (id &&
-                          viewMasterDataDetails.label_type === "THINWALL") ||
+                          viewMasterDataDetails.label_type === "Mono Layer") ||
                         viewMasterDataDetails.segment === "TW"
                       )
                     ? handleSaveLamination

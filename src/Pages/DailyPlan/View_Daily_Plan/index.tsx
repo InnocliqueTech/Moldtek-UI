@@ -171,7 +171,7 @@ const ViewDailyPlan: React.FC = () => {
           break;
         }
         case 2:
-          if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW') {
+          if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW') {
             await saveLabelCuttingDetails(payload).unwrap();
             toast.success("Label cutting details saved successfully!");
           } else {
@@ -181,7 +181,7 @@ const ViewDailyPlan: React.FC = () => {
 
           break;
         case 3:
-           if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW') {
+           if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW') {
             await saveTravelCardDetails(payload).unwrap();
             toast.success("Travel card details saved successfully!");
           } else {
@@ -192,7 +192,7 @@ const ViewDailyPlan: React.FC = () => {
           break;
 
         case 4:
-           if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW') return null;
+           if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW') return null;
           await saveTravelCardDetails(payload).unwrap();
           toast.success("Travel card details saved successfully!");
           break;
@@ -275,7 +275,7 @@ const ViewDailyPlan: React.FC = () => {
   const tabs = [
     "Make Ready",
     "Printing Report",
-    ...(dailyPlan.labelType === "THINWALL" ? [] : ["Lamination Report"]),
+    ...(dailyPlan.labelType === "Mono Layer" ? [] : ["Lamination Report"]),
     "Label Cutting",
     "Travel Card",
   ].filter(Boolean);
@@ -300,7 +300,7 @@ const ViewDailyPlan: React.FC = () => {
           />
         );
       case 2:
-         if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW')
+         if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW')
           return (
             <LabelCutting
               indentNumber={decodedIndentNo}
@@ -317,7 +317,7 @@ const ViewDailyPlan: React.FC = () => {
         );
 
       case 3:
-         if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW')
+         if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW')
           return (
             <TravelCard
               indentNumber={decodedIndentNo}
@@ -333,7 +333,7 @@ const ViewDailyPlan: React.FC = () => {
           />
         );
       case 4:
-         if (dailyPlan.labelType === "THINWALL"||dailyPlan.segment ==='TW') return null;
+         if (dailyPlan.labelType === "Mono Layer"||dailyPlan.segment ==='TW') return null;
         return (
           <TravelCard
             indentNumber={decodedIndentNo}
@@ -450,7 +450,7 @@ const ViewDailyPlan: React.FC = () => {
           />
 
           {/* Next */}
-          {(dailyPlan.labelType === "THINWALL" ||dailyPlan.segment ==='TW'
+          {(dailyPlan.labelType === "Mono Layer" ||dailyPlan.segment ==='TW'
             ? selectedTabView != 3
             : selectedTabView != 4) && (
             <ButtonComponent

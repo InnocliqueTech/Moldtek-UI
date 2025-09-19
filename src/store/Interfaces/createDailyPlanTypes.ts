@@ -24,8 +24,8 @@ export interface DailyJob {
   status: string
   indentNumber: string | null
   customerName: string | null
-  brandNamePack: string | null
-  ppcIndentQty: number | null
+  brandName: string | null
+  ppcIndentQtyNos: number | null
   targetLabelsQty: number
   targetFilmMtrs: number | null
   filmRequiredPrintingMtrs: number | null
@@ -164,8 +164,8 @@ export interface DailyPlan {
   status: string
   indentNumber: string
   customerName: string
-  brandNamePack: string
-  ppcIndentQty: number
+  brandName: string
+  ppcIndentQtyNos: number
   targetLabelsQty: number
   targetFilmMtrs: number
   filmRequiredPrintingMtrs: number | null
