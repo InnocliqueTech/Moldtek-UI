@@ -539,6 +539,7 @@ const Printing: React.FC<PrintingProps> = ({
       "width",
       "thickness",
       "density",
+      "substrate_type"
     ] as (
       | keyof PrintingFormValues["printingDetails"]
       | keyof PrintingFormValues["printingSubstrateSettings"]
