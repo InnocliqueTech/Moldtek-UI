@@ -460,7 +460,7 @@ const Printing: React.FC<PrintingProps> = ({
         // error={!!error}
         // helperText={error}
         required={
-          field.label === "Static Charge" || field.label === "Format Correct" || field.label === "Tension"
+          field.label === "Static Charge" || field.label === "Format Correct" || field.label === "Tension" || field.label === "Cylinder Teeth"
             ? false
             : true
         }
@@ -531,7 +531,6 @@ const Printing: React.FC<PrintingProps> = ({
   useEffect(() => {
     const importantFields = [
       "printing_machine_name",
-      "cylinder_teeth",
       "unwinder",
       "rewinder",
       "infeed",
