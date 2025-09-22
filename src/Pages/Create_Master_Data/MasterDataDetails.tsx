@@ -59,6 +59,7 @@ import DropdownTextComponent from "../../Components/ReUsable/DropdownText";
 import Loader from "../../Loader";
 import { useViewMasterDataQuery } from "../../store/apis/masterDataApis";
 import { useGetKLDCodeMutation } from "../../store/apis/kldApis";
+import { formatMeridiem } from "@mui/x-date-pickers/internals";
 
 interface MasterDataProps {
   formData: MasterFormData;
@@ -125,7 +126,7 @@ const MasterDataDetails: React.FC<MasterDataProps> = ({
   //   noOfColorsSetting: "",
   //   noOfSpecialColors: "",
   // });
-
+console.log(formData.structure,"STUCTURE")
 useEffect(() => {
     const fetchKLDCode = async () => {
       try {
@@ -303,7 +304,6 @@ const newKldCode = response?.data?.kldCode ?? "";
     "ups",
     "noOfColorsSetting",
     "noOfSpecialColors",
-    "kld_code",
   ];
   // const characterFields: (keyof MasterFormData)[] = ["customer_name"];
   // const freeTextFields: (keyof MasterFormData)[] = [

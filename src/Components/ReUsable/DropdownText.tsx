@@ -84,16 +84,30 @@ const DropdownTextComponent: React.FC<DropdownProps> = ({
     }
   }, [initialOptions]);
 
-  const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
-    let selectedValues = event.target.value as string[];
+const handleSelectChange = (event: SelectChangeEvent<string[] | string>) => {
+  // Ensure selectedValues is always an array
+  let selectedValues: string[] = Array.isArray(event.target.value)
+    ? event.target.value
+    : [event.target.value];
 
-    if (!isMultiSelect) {
-      selectedValues = selectedValues.slice(-1); // only last value
-    }
+  if (!isMultiSelect) {
+    selectedValues = selectedValues.slice(-1); // only last value
+  }
 
-      setSelectedOptions(selectedValues);
-      onChange(event);
-  };
+  // Update selected options
+  setSelectedOptions(selectedValues);
+  onChange({
+    ...event,
+    target: { value: selectedValues },
+  } as SelectChangeEvent<string[]>);
+
+  // Keep removed options in the dropdown
+  setOptions(prev => {
+    // Combine previous options and selectedValues, remove duplicates
+    const merged = Array.from(new Set([...prev, ...selectedValues]));
+    return merged;
+  });
+};
 
   const handleNewOptionChange = (
     event: React.ChangeEvent<HTMLInputElement>
