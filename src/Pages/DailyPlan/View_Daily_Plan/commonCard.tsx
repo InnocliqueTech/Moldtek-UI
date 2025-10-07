@@ -168,6 +168,20 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   {renderValue(dailyPlan?.jarCap || "N/A",maxChars)}
                 </Typography>
               </Box>
+              <Box mt={2}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontWeight={500}
+                >
+                  Date
+                </Typography>
+                <Typography variant="body1" mt={0.5}>
+                  {dailyPlan?.date
+                    ? new Date(dailyPlan.date).toLocaleDateString("en-GB") // dd/mm/yyyy
+                    : "N/A"}
+                </Typography>
+              </Box>
             </Grid>
 
             <Grid size={{ xs: 12, md: 3 }}>
@@ -205,6 +219,27 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                 <Typography variant="body1" mt={0.5}>
                  {dailyPlan.kldCode ?dailyPlan.kldCode: "N/A"}
                 </Typography>
+              </Box>
+                 <Box mt={2}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontWeight={500}
+                >
+                  Shift
+                </Typography>
+                {isEditing ? (
+                  <ReusableInput
+                    label=""
+                    value={editValues.shift}
+                    onChange={handleChange("shift")}
+                    placeholder="Enter shift"
+                  />
+                ) : (
+                  <Typography variant="body1" mt={0.5}>
+                    {renderValue(dailyPlan?.shift || "N/A",maxChars)}
+                  </Typography>
+                )}
               </Box>
             </Grid>
 
@@ -244,6 +279,19 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                 <Typography variant="body1" mt={0.5}>
                  {dailyPlan.itemCode ?dailyPlan.itemCode: "N/A"}
                 </Typography>
+              </Box>
+                                             <Box mt={2}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontWeight={500}
+                >
+                  Mould Code
+                </Typography>
+                  <Typography variant="body1" mt={0.5}>
+                    {renderValue(dailyPlan?.mouldCode || "N/A",maxChars)}
+                  </Typography>
+                {/* )} */}
               </Box>
             </Grid>
 
@@ -301,46 +349,6 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                 )}
               </Box>
             </Grid>
-              <Grid size={{ xs: 12, md: 3 }}>
-              <Box mt={0}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  fontWeight={500}
-                >
-                  Date
-                </Typography>
-                <Typography variant="body1" mt={0.5}>
-                  {dailyPlan?.date
-                    ? new Date(dailyPlan.date).toLocaleDateString("en-GB") // dd/mm/yyyy
-                    : "N/A"}
-                </Typography>
-              </Box>
-                            </Grid>
-                            <Grid>
-              
-              <Box mt={0}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  fontWeight={500}
-                >
-                  Shift
-                </Typography>
-                {isEditing ? (
-                  <ReusableInput
-                    label=""
-                    value={editValues.shift}
-                    onChange={handleChange("shift")}
-                    placeholder="Enter shift"
-                  />
-                ) : (
-                  <Typography variant="body1" mt={0.5}>
-                    {renderValue(dailyPlan?.shift || "N/A",maxChars)}
-                  </Typography>
-                )}
-              </Box>
-                            </Grid>
 
           </Grid>
         </Box>

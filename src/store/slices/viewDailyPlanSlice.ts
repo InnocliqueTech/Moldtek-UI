@@ -18,6 +18,7 @@ interface DailyPlan {
   jobMasterId: number;
   labelType:string;
   segment:string;
+  mouldCode:string | null | number
 }
 
 export interface InkCoatingSpecification {
@@ -162,6 +163,7 @@ unitEffectiveNumbers: ""}],
     ppcIndentQtyNos: 0,
     targetLabelsQty: 0,
     targetFilmMtrs: 0,
+    mouldCode:'',
     filmRequiredPrintingMtrs: null,
     jarCap: "",
     date: "",

@@ -34,6 +34,7 @@ export interface DailyJob {
   shift: string
   workOrderNumber: string | null
   jobMasterId: string | null
+  mouldCode:string |null |number
 }
 
 export interface DailyJobsListResponse {
@@ -168,6 +169,7 @@ export interface DailyPlan {
   ppcIndentQtyNos: number
   targetLabelsQty: number
   targetFilmMtrs: number
+  mouldCode:string | null |number
   filmRequiredPrintingMtrs: number | null
   jarCap: string
   date: string

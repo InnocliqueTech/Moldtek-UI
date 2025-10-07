@@ -56,6 +56,7 @@ const initialFormFields: FormField[] = [
     component: "dropdown",
     options: ["JAR", "CAP", "JAR&CAP"],
   },
+
   { id: "indentNumber", label: "Indent Number:", value: "" },
   { id: "jobRunDate", label: "Job Run Date", type: "date", value: "" },
   {
@@ -90,6 +91,12 @@ const initialFormFields: FormField[] = [
   {
     id: "balanceIndentQtyPlanned",
     label: "Bal to Print Indent Qty (Mtrs) planned",
+    value: "",
+  },
+   {
+    id: "mouldCode",
+    label: "Mould Code",
+    type: "text",
     value: "",
   },
   { id: "customerName", label: "Customer Name", type: "text", value: "" },
@@ -251,6 +258,7 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
     "numberOfRolls",
     "balanceIndentQtyPlanned",
     "webLengthForColorMatch",
+    "mouldCode"
     // 'substrate',
     // 'lamSubstrate'
   ];
