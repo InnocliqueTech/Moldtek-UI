@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Typography, Grid, SelectChangeEvent } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ReusableInput from "../../../Components/ReUsable/TextField";
@@ -351,6 +352,7 @@ const CreatePlan: React.FC = () => {
     );
     if (!validation.isValid) {
       // Extract errors from validation object
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { isValid, errorMessage, ...errorFields } = validation;
       setErrors(errorFields);
       toast.error("Please Enter valid data before submitting");
