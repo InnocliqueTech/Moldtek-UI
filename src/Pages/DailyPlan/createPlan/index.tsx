@@ -22,7 +22,6 @@ import {
 import { SaveDailyJobRequest } from "../../../store/Interfaces/createDailyPlanTypes";
 import DropdownTextComponent from "../../../Components/ReUsable/DropdownText";
 import AutoSuggest from "../../../Components/ReUsable/AutoSuggest";
-// import { unitEffectiveNumbersResp } from './mockData';
 import { setRecentlyCreatedIndentNumber } from "../../../store/slices/viewDailyPlanSlice";
 import { useSaveDailyJobMutation } from "../../../store/apis/dailyPlanApis";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -43,11 +42,22 @@ interface ProductUnit {
   unitEffectiveNumber: string;
   customerName: string;
   brandDescription: string;
-  jarCap:string
+  jarCap: string;
 }
 
 const initialFormFields: FormField[] = [
   { id: "unitEffectivityNumber", label: "Unit Effective Number:", value: "" },
+  { id: "ppcIndentQtyNos", label: "PPC Indent Qty (NOS):", value: "" },
+  {
+    id: "balanceIndentQtyPlanned",
+    label: "Bal to Print Indent Qty (Mtrs) planned",
+    value: "",
+  },
+  {
+    id: "webLengthForColorMatch",
+    label: "1 Web Length for Colours Match",
+    value: "",
+  },
   {
     id: "jarCap",
     label: "Jar/Cap",
@@ -56,7 +66,6 @@ const initialFormFields: FormField[] = [
     component: "dropdown",
     options: ["JAR", "CAP", "JAR&CAP"],
   },
-
   { id: "indentNumber", label: "Indent Number:", value: "" },
   { id: "jobRunDate", label: "Job Run Date", type: "date", value: "" },
   {
@@ -73,14 +82,6 @@ const initialFormFields: FormField[] = [
     component: "dropdown",
     options: [],
   },
-  { id: "ppcIndentQtyNos", label: "PPC Indent Qty (NOS):", value: "" },
-  { id: "noOfColorsSetting", label: "No of Colors for settings", value: "" },
-  { id: "noOfSpecialColors", label: "No of special colors", value: "" },
-  {
-    id: "webLengthForColorMatch",
-    label: "1 Web Length for Colours Match",
-    value: "",
-  },
   {
     id: "numberOfRolls",
     label: "No of Rolls",
@@ -89,11 +90,6 @@ const initialFormFields: FormField[] = [
     value: "",
   },
   {
-    id: "balanceIndentQtyPlanned",
-    label: "Bal to Print Indent Qty (Mtrs) planned",
-    value: "",
-  },
-   {
     id: "mouldCode",
     label: "Mould Code",
     type: "text",
@@ -120,7 +116,14 @@ const initialFormFields: FormField[] = [
   { id: "lamSubstrate", label: "Lamination Substrate", value: "" },
 ];
 
-
+const rollFields = [
+  { id: "ppcIndentQtyNos", label: "PPC Indent Qty (NOS):" },
+  {
+    id: "balanceIndentQtyPlanned",
+    label: "Bal to Print Indent Qty (Mtrs) planned",
+  },
+  { id: "webLengthForColorMatch", label: "1 Web Length for Colours Match" },
+];
 
 const CreatePlan: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -131,14 +134,15 @@ const CreatePlan: React.FC = () => {
     isLoading: unitEffNumLoading,
   } = useGetAllUnitEffectiveNumbersQuery();
 
-//Remove the duplicate values from the array and spread the remaining values in an array by uisng ...new Set
+  //Remove the duplicate values from the array and spread the remaining values in an array by uisng ...new Set
 
-const unitEffectiveNoList = [
-  ...new Set(
-    unitEffNumData?.map((item: ProductUnit) => item.unitEffectiveNumber)
-  ),
-];
+  const unitEffectiveNoList = [
+    ...new Set(
+      unitEffNumData?.map((item: ProductUnit) => item.unitEffectiveNumber)
+    ),
+  ];
   const [selectedUnitNumber, setSelectedUnitNumber] = useState<string>("");
+  const [numberOfRolls, setNumberOfRolls] = useState<number>(0);
   const [unitEffectivityOptions, setUnitEffectivityOptions] = useState<
     string[]
   >(unitEffectiveNoList || []);
@@ -153,19 +157,16 @@ const unitEffectiveNoList = [
     useSegmentsDropdownMutation();
   const [formFields, setFormFields] = useState<FormField[]>(initialFormFields);
   const [selectedUnitNumberValue, setSelectedUnitNumberValue] = useState("");
-const [selectedJarCap, setSelectedJarCap] = useState("");
+  const [selectedJarCap, setSelectedJarCap] = useState("");
 
   const [saveDailyJob, { isLoading }] = useSaveDailyJobMutation();
-  const {
-  data: generatedIndentNumber,
-  isLoading: generateIndentNoLoading,
-} = useGenerateIndentQuery(selectedUnitNumber, {
-  skip: !selectedUnitNumber, 
-   refetchOnMountOrArgChange: true, 
-  refetchOnFocus: true,
-  refetchOnReconnect: true,
-});
-
+  const { data: generatedIndentNumber, isLoading: generateIndentNoLoading } =
+    useGenerateIndentQuery(selectedUnitNumber, {
+      skip: !selectedUnitNumber,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    });
 
   useEffect(() => {
     segmentsDropdown({
@@ -182,7 +183,6 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
       const substrateList = response?.data?.map((item: any) => item.substrate);
       dispatch(setPrintingDropDownValues(substrateList));
     };
-
     fetchDropdownValues();
   }, [subStrateDropDown, dispatch]);
   const segmentNames =
@@ -228,24 +228,8 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
       );
     }
   }, [generatedIndentNumber, selectedUnitNumber, generateIndentNoLoading]);
-
-  // const fieldsToSkipForRepeat = [
-  //   'customerName',
-  //   'brandName',
-  //   'jarCap',
-  //   'width',
-  //   'thickness',
-  //   'subStrateType',
-  //   'gsm',
-  //   'repeatLength',
-  //   'ups',
-  //   'substrate',
-  //   'lamSubstrate',
-  //   'dyne',
-  //   'substrateType'
-  // ];
-
   const [errors, setErrors] = useState<Record<string, string>>({});
+
   // const [jobType, setJobType] = useState<'New' | 'Repeat'>('New');
   // const jobType: 'Repeat' = 'Repeat';
 
@@ -254,11 +238,8 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
     "indentNumber",
     "jarCap",
     "jobRunDate",
-    "ppcIndentQtyNos",
     "numberOfRolls",
-    "balanceIndentQtyPlanned",
-    "webLengthForColorMatch",
-    "mouldCode"
+    "mouldCode",
     // 'substrate',
     // 'lamSubstrate'
   ];
@@ -283,16 +264,18 @@ const [selectedJarCap, setSelectedJarCap] = useState("");
         .join(" ");
     }
 
- if (fieldId === "unitEffectivityNumber" && typeof extractedValue === "string") {
-  setSelectedUnitNumberValue(extractedValue);
-}
+    if (
+      fieldId === "unitEffectivityNumber" &&
+      typeof extractedValue === "string"
+    ) {
+      setSelectedUnitNumberValue(extractedValue);
+    }
 
-if (fieldId === "jarCap" && typeof extractedValue === "string") {
-  setSelectedJarCap(extractedValue);
-}
-
-
-
+    if (fieldId === "jarCap" && typeof extractedValue === "string") {
+      setSelectedJarCap(extractedValue);
+    }
+    if (fieldId === "numberOfRolls" && typeof extractedValue === "string")
+      setNumberOfRolls(Number(extractedValue));
 
     setFormFields((prevFields) =>
       prevFields.map((field) =>
@@ -309,28 +292,26 @@ if (fieldId === "jarCap" && typeof extractedValue === "string") {
     }
   };
 
-
-useEffect(() => {
-  if (selectedUnitNumberValue && selectedJarCap) {
-    const selected = unitEffNumData?.find(
-      (item) =>
-        item.unitEffectiveNumber?.toLowerCase() === selectedUnitNumberValue.toLowerCase() &&
-        item.jarCap?.toLowerCase() === selectedJarCap.toLowerCase()
-    );
-
-    setSelectedUnitMeta(selected || null);
-    setSelectedUnitNumber(selectedUnitNumberValue); 
-  }
-}, [selectedUnitNumberValue, selectedJarCap, unitEffNumData]);
-
-
+  useEffect(() => {
+    if (selectedUnitNumberValue && selectedJarCap) {
+      const selected = unitEffNumData?.find(
+        (item) =>
+          item.unitEffectiveNumber?.toLowerCase() ===
+            selectedUnitNumberValue.toLowerCase() &&
+          item.jarCap?.toLowerCase() === selectedJarCap.toLowerCase()
+      );
+      setSelectedUnitMeta(selected || null);
+      setSelectedUnitNumber(selectedUnitNumberValue);
+    }
+  }, [selectedUnitNumberValue, selectedJarCap, unitEffNumData]);
 
   const prepareSubmitData = (): SaveDailyJobRequest => {
     const formData: any = {};
 
+    // Regular fields
     formFields.forEach((field) => {
       if (allowedFields.includes(field.id)) {
-        if (["ppcIndentQtyNos", "numberOfRolls"].includes(field.id)) {
+        if (["numberOfRolls"].includes(field.id)) {
           formData[field.id] = Number(field.value) || 0;
         } else {
           formData[field.id] = field.value;
@@ -338,13 +319,28 @@ useEffect(() => {
       }
     });
 
+    // Roll fields
+    const rolls: any[] = [];
+    for (let rollNumber = 1; rollNumber <= numberOfRolls; rollNumber++) {
+      const rollData: any = { rollNumber };
+      rollFields.forEach((field) => {
+        const fieldValues = formFields.find((f) => f.id === field.id)?.value as
+          | Record<number, string>
+          | undefined;
+        rollData[field.id] = fieldValues
+          ? Number(fieldValues[rollNumber] || 0)
+          : 0;
+      });
+      rolls.push(rollData);
+    }
+
+    formData.rolls = rolls;
+
     if (formData.jobRunDate) {
       formData.jobRunDate = new Date(formData.jobRunDate)
         .toISOString()
         .split("T")[0];
     }
-
-    //formData.jobType = jobType;
 
     return formData as SaveDailyJobRequest;
   };
@@ -425,8 +421,6 @@ useEffect(() => {
     );
   if (error) return <div>Error: Something Went Wrong...</div>;
 
-
-
   return (
     <Box
       style={{
@@ -435,125 +429,156 @@ useEffect(() => {
         padding: "8px 20px",
       }}
     >
-      <Box sx={{ mb: 1, pb: 1 }}>
-        {/* <Box sx={{ mb: 3 }}>
-          <Typography sx={{ fontWeight: 500 }}>Job Type:</Typography>
-          <RadioGroup
-            row
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value as "New" | "Repeat")}
-          >
-            <FormControlLabel value="New" control={<Radio />} label="New" />
-            <FormControlLabel value="Repeat" control={<Radio />} label="Repeat" />
-          </RadioGroup>
-        </Box> */}
-        <Grid container spacing={2} pt={1}>
-          {formFields
-            .filter((f) => shouldShowField(f.id))
-            .map((field) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
-                {field.id === "unitEffectivityNumber" ? (
-                  <AutoSuggest
-                    label="Unit Effective Number"
-                    value={selectedUnitNumber}
-                    onChange={(val) =>
-                      handleInputChange("unitEffectivityNumber", val)
-                    }
-                    staticOptions={unitEffectivityOptions}
-                    error={!!errors[field.id]}
-                    helperText={errors[field.id]}
-                  />
-                ) : field.component === "dropdown" && !field.allowTextFiled ? (
-                  <DropdownComponent
-                    label={field.label}
-                    options={field.options || []}
-                    value={field.value}
-                    onChange={(value) => handleInputChange(field.id, value)}
-                    isMultiSelect={false}
-                    checkbox={false}
-                    error={!!errors[field.id]}
-                    helperText={errors[field.id]}
-                  />
-                ) : field.component === "dropdown" && field.allowTextFiled ? (
-                  <DropdownTextComponent
-                    label={field.label}
-                    options={field.options || []}
-                    value={field.value}
-                    onChange={(value) => handleInputChange(field.id, value)}
-                    isMultiSelect={false}
-                    checkbox={false}
-                    error={!!errors[field.id]}
-                    helperText={errors[field.id]}
-                    dropdown="printingDailyPlan"
-                    allowNewOption
-                  />
-                ) : (
-                  <ReusableInput
-                    label={field.label}
-                    value={field.value}
-                    type={field.type || "text"}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(field.id, e.target.value)
-                    }
-                    error={!!errors[field.id]}
-                    helperText={errors[field.id]}
-                    disabled={
-                      field.id == "indentNumber" && generateIndentNoLoading
-                    }
-                  />
-                )}
-              </Grid>
-            ))}
-          {selectedUnitMeta && (
-            <>
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                <ReusableInput
-                  label="Customer Name"
-                  value={selectedUnitMeta.customerName}
-                  type="text"
-                  onChange={() => {}}
-                  disabled
+      <Grid container spacing={2} pt={1}>
+        {formFields
+          .filter((f) => shouldShowField(f.id))
+          .map((field) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={field.id}>
+              {field.id === "unitEffectivityNumber" ? (
+                <AutoSuggest
+                  label="Unit Effective Number"
+                  value={selectedUnitNumber}
+                  onChange={(val) =>
+                    handleInputChange("unitEffectivityNumber", val)
+                  }
+                  staticOptions={unitEffectivityOptions}
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
                 />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                <ReusableInput
-                  label="Brand Description"
-                  value={selectedUnitMeta.brandDescription}
-                  type="text"
-                  onChange={() => {}}
-                  disabled
+              ) : field.component === "dropdown" && !field.allowTextFiled ? (
+                <DropdownComponent
+                  label={field.label}
+                  options={field.options || []}
+                  value={field.value}
+                  onChange={(value) => handleInputChange(field.id, value)}
+                  isMultiSelect={false}
+                  checkbox={false}
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
                 />
-              </Grid>
-            </>
-          )}
-        </Grid>
-        <Typography
-          sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}
-        >
-          * All fields are mandatory
-        </Typography>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {/* <ButtonComponent
-            text="Save"
-            textColor="#0073B7"
-            color="white"
-            borderRadius="100px"
-            p={2}
-            border="1px solid #0073B7"
-            styles={{ marginRight: '.5rem' }}
-            onClick={handleSave}
-          /> */}
-          <ButtonComponent
-            text="Submit"
-            textColor="#ffffff"
-            color="#0073B7"
-            borderRadius="100px"
-            p={2}
-            border="1px solid #0073B7"
-            onClick={handleSubmit}
-          />
-        </Box>
+              ) : field.component === "dropdown" && field.allowTextFiled ? (
+                <DropdownTextComponent
+                  label={field.label}
+                  options={field.options || []}
+                  value={field.value}
+                  onChange={(value) => handleInputChange(field.id, value)}
+                  isMultiSelect={false}
+                  checkbox={false}
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
+                  dropdown="printingDailyPlan"
+                  allowNewOption
+                />
+              ) : (
+                <ReusableInput
+                  label={field.label}
+                  value={field.value}
+                  type={field.type || "text"}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(field.id, e.target.value)
+                  }
+                  error={!!errors[field.id]}
+                  helperText={errors[field.id]}
+                  disabled={
+                    field.id == "indentNumber" && generateIndentNoLoading
+                  }
+                />
+              )}
+            </Grid>
+          ))}
+        {selectedUnitMeta && (
+          <>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <ReusableInput
+                label="Customer Name"
+                value={selectedUnitMeta.customerName}
+                type="text"
+                onChange={() => {}}
+                disabled
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <ReusableInput
+                label="Brand Description"
+                value={selectedUnitMeta.brandDescription}
+                type="text"
+                onChange={() => {}}
+                disabled
+              />
+            </Grid>
+          </>
+        )}
+        {numberOfRolls > 0 &&
+          Array.from({ length: numberOfRolls }, (_, rollIndex) => {
+            const rollNumber = rollIndex + 1;
+
+            return (
+              <Box>
+                <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                  Roll {rollNumber}
+                </Typography>
+                <Grid container spacing={2} pt={1}>
+                  {rollFields.map((field) => {
+                    const fieldKey = `${field.id}-roll-${rollNumber}`;
+                    const fieldValue =
+                      ((formFields.find((f) => f.id === field.id)
+                        ?.value as Record<number, string>) || {})[rollNumber] ||
+                      "";
+
+                    return (
+                      <Grid
+                        size={{ xs: 12, sm: 6, md: 4, lg: 4 }}
+                        key={fieldKey}
+                      >
+                        <ReusableInput
+                          label={field.label}
+                          value={fieldValue}
+                          type="text"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            console.log(val, formFields, "VALUESOFTHEDATA");
+                            setFormFields((prev: any) =>
+                              prev.map((f: any) => {
+                                if (f.id === field.id) {
+                                  return {
+                                    ...f,
+                                    // Ensure value is an object and set the roll number
+                                    value: {
+                                      ...((f.value as Record<number, string>) ||
+                                        {}),
+                                      [rollNumber]: val,
+                                    },
+                                  };
+                                }
+                                return f;
+                              })
+                            );
+                          }}
+                        />
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Box>
+            );
+          })}
+      </Grid>
+
+      <Typography sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}>
+        * All fields are mandatory
+      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <ButtonComponent
+          text="Submit"
+          textColor="#ffffff"
+          color="#0073B7"
+          borderRadius="100px"
+          p={2}
+          border="1px solid #0073B7"
+          onClick={handleSubmit}
+        />
       </Box>
+
       <SubmitPopups onSubmit={submitFormData} isLoading={isLoading} />
     </Box>
   );
