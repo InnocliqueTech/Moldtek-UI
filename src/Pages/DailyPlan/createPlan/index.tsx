@@ -510,12 +510,13 @@ const CreatePlan: React.FC = () => {
             </Grid>
           </>
         )}
-        {numberOfRolls > 0 &&
+      </Grid>
+ {numberOfRolls > 0 &&
           Array.from({ length: numberOfRolls }, (_, rollIndex) => {
             const rollNumber = rollIndex + 1;
 
             return (
-              <Box>
+              <Box sx={{mt:2}}>
                 <Typography sx={{ fontWeight: "bold", mb: 1 }}>
                   Roll {rollNumber}
                 </Typography>
@@ -564,8 +565,6 @@ const CreatePlan: React.FC = () => {
               </Box>
             );
           })}
-      </Grid>
-
       <Typography sx={{ fontSize: "0.75rem", color: "text.secondary", mt: 2 }}>
         * All fields are mandatory
       </Typography>
