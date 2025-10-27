@@ -97,14 +97,31 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   isEditing,
   onDataChange,
 }) => {
+  const [rollCount, setRollCount] = useState<number>(
+    Number(sessionStorage.getItem("rollCount")) || 1
+  );
   const [getLaminationReportDetails,{ data, isLoading, isError, error }] =
     useGetLaminationReportDetailsMutation();
   useEffect(()=>{
 getLaminationReportDetails(
   {indentNumber,
-    rollNumber:1}
+    rollNumber:Number(rollCount)}
 )
-  },[indentNumber])
+  },[indentNumber,rollCount])
+
+  useEffect(() => {
+    const handleRollChangeEvent = () => {
+      const updatedRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+      setRollCount(updatedRollCount);
+    };
+  
+    window.addEventListener("rollCountChanged", handleRollChangeEvent);
+  
+    return () => {
+      window.removeEventListener("rollCountChanged", handleRollChangeEvent);
+    };
+  }, []);
+
   const { dailyPlanSave, dailyPlanCancel } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );

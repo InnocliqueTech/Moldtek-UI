@@ -27,11 +27,26 @@ interface PrintingReportsProps {
 const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, onDataChange }) => {
   const dispatch = useDispatch();
   const [getPrintingReportDetails,{ data: printingReportsData, isLoading, isError, }] = useGetPrintingReportDetailsMutation();
-
+const [rollCount, setRollCount] = useState<number>(
+  Number(sessionStorage.getItem("rollCount")) || 1
+);
   useEffect(()=>{
 getPrintingReportDetails({indentNumber:indentNO,
-    rollNumber:3})
-  },[indentNO])
+    rollNumber:Number(rollCount)})
+  },[indentNO,rollCount])
+
+  useEffect(() => {
+    const handleRollChangeEvent = () => {
+      const updatedRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+      setRollCount(updatedRollCount);
+    };
+  
+    window.addEventListener("rollCountChanged", handleRollChangeEvent);
+  
+    return () => {
+      window.removeEventListener("rollCountChanged", handleRollChangeEvent);
+    };
+  }, []);
 
   const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);

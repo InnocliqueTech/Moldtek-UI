@@ -58,7 +58,9 @@ const ViewDailyPlan: React.FC = () => {
   const [savePrintingReportDetails] = useSavePrintingReportDetailsMutation();
   const [saveMakeReadyDetails] = useSaveMakeReadyDetailsMutation();
   const [savingTabIndex, setSavingTabIndex] = useState<number | null>(null);
-
+const [rollCount, setRollCount] = useState<number>(
+  Number(sessionStorage.getItem("rollCount")) || 1
+);
   const navigate = useNavigate();
 
   let unitEffectiveNumberDaily: number | undefined;
@@ -75,13 +77,27 @@ const ViewDailyPlan: React.FC = () => {
     isError,
     // error,
   }] = useGetMakeReadyDetailsMutation();
+useEffect(() => {
+  if (!decodedIndentNo) return;
+  getMakeReadyDetails({
+    indentNumber: decodedIndentNo,
+    rollNumber: rollCount,
+  });
+}, [decodedIndentNo, rollCount]);
 
-  useEffect(()=>{
-getMakeReadyDetails({
-   indentNumber:decodedIndentNo,
-    rollNumber:1
-})
-  },[decodedIndentNo])
+// Listen to changes from the Select component
+useEffect(() => {
+  const handleRollChangeEvent = () => {
+    const updatedRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+    setRollCount(updatedRollCount);
+  };
+
+  window.addEventListener("rollCountChanged", handleRollChangeEvent);
+
+  return () => {
+    window.removeEventListener("rollCountChanged", handleRollChangeEvent);
+  };
+}, []);
 
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTabView } = useSelector(
@@ -155,7 +171,7 @@ getMakeReadyDetails({
         case 0:
           const makeReadyPayload = {
             ...updateDailyPlanPayload,
-            rollNumber: 1,
+            rollNumber: Number(rollCount),
             dailyPlan: {
               unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
               indentNumber: decodedIndentNo,
@@ -169,7 +185,7 @@ getMakeReadyDetails({
         case 1: {
           const printingPayload = {
             ...updateDailyPlanPayload,
-            rollNumber: 1,
+            rollNumber: Number(rollCount),
             dailyPlan: {
               unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
               indentNumber: decodedIndentNo,
@@ -224,7 +240,7 @@ getMakeReadyDetails({
         ...updateDailyPlanPayload,
         ...updateCommonCard,
         indentNumber: decodedIndentNo,
-          rollNumber:1
+          rollNumber:Number(rollCount)
       };
 
       await saveTabData(

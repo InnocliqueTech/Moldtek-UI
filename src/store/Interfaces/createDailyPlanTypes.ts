@@ -177,6 +177,7 @@ export interface DailyPlan {
   workOrderNumber: string
   jobMasterId: number
   segment:string
+  numberOfRolls:number
 }
 
 export interface GetReadyInkCoatingSpecification {

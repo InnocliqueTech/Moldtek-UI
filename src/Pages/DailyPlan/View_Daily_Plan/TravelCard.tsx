@@ -39,14 +39,32 @@ const TravelCard: React.FC<TravelCardProps> = ({
   onDataChange,
 }) => {
   const dispatch = useDispatch();
+  const [rollCount, setRollCount] = useState<number>(
+    Number(sessionStorage.getItem("rollCount")) || 1
+  );
   const[getTravelCardDetails, { data, isLoading, isError }] =
     useGetTravelCardDetailsMutation();
   useEffect(()=>{
 getTravelCardDetails(
   {indentNumber,
-    rollNumber:1}
+    rollNumber:Number(rollCount)}
 )
-  },[indentNumber])
+  },[indentNumber,rollCount])
+
+
+  useEffect(() => {
+    const handleRollChangeEvent = () => {
+      const updatedRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+      setRollCount(updatedRollCount);
+    };
+  
+    window.addEventListener("rollCountChanged", handleRollChangeEvent);
+  
+    return () => {
+      window.removeEventListener("rollCountChanged", handleRollChangeEvent);
+    };
+  }, []);
+
   const [editableData, setEditableData] =
     useState<EditableTravelCardData | null>(null);
   const { dailyPlan,dailyPlanCancel,dailyPlanSave } = useSelector((state: RootState) => state.viewDailyPlan);

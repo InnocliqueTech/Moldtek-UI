@@ -41,14 +41,27 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
     isError,
     error,
   }] = useGetLabelCuttingDetailsMutation();
-
+const [rollCount, setRollCount] = useState<number>(
+  Number(sessionStorage.getItem("rollCount")) || 1
+);
   useEffect(()=>{
 getLabelCuttingDetails(
   {indentNumber,
-    rollNumber:1}
+    rollNumber:Number(rollCount)}
 )
-  },[indentNumber])
+  },[indentNumber,rollCount])
+useEffect(() => {
+  const handleRollChangeEvent = () => {
+    const updatedRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+    setRollCount(updatedRollCount);
+  };
 
+  window.addEventListener("rollCountChanged", handleRollChangeEvent);
+
+  return () => {
+    window.removeEventListener("rollCountChanged", handleRollChangeEvent);
+  };
+}, []);
   // State to manage editable data
   const [editableData, setEditableData] = useState<LabelCuttingData | null>(
     null

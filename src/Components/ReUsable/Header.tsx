@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   AppBar,
@@ -143,6 +144,7 @@ const Header: React.FC<HeaderProps> = ({
     dailyPlanSuccessPopup,
     dailyPlanConfirmPopup,
     dailyPlanHeaderUploadButton,
+    dailyPlan
   } = useSelector((store: RootState) => store.viewDailyPlan);
   const {
     createSlider,
@@ -176,7 +178,27 @@ const Header: React.FC<HeaderProps> = ({
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [statusChangeMessage, setStatusChangeMessage] =
     useState<React.ReactNode>("");
+  const initialRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+  const [rollCount, setRollCountState] = useState(initialRollCount);
 
+  // Update Redux and sessionStorage whenever rollCount changes
+useEffect(() => {
+  const initialRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+  setRollCountState(initialRollCount);
+}, []);
+
+
+
+useEffect(() => {
+  // Check if the current path matches /viewDailyPlan/:id
+  const viewDailyPlanMatch = /^\/viewDailyPlan\/[^/]+$/.test(location.pathname);
+
+  if (!viewDailyPlanMatch) {
+    setRollCountState(1); // Reset rollCount
+    sessionStorage.removeItem("rollCount");
+    window.dispatchEvent(new Event("rollCountChanged")); // notify other components if needed
+  }
+}, [location.pathname]);
   const [uploadCustomerFile, { isLoading: uploadLoading }] =
     useUploadCustomerFileMutation();
 
@@ -562,6 +584,40 @@ const Header: React.FC<HeaderProps> = ({
                     </IconButton>
                   </Box>
                 )}
+                <Box display="flex" alignItems="center" gap={1}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 500, color: "#1976D2" }}
+                >
+                  Roll Number:
+                </Typography>
+                <Select
+                  value={rollCount}
+  onChange={(e) => {
+    const value = Number(e.target.value);
+    setRollCountState(value); // <-- update state
+    sessionStorage.setItem("rollCount", value.toString());
+    window.dispatchEvent(new Event("rollCountChanged"));
+  }}
+                 displayEmpty
+                  size="small"
+                  sx={{
+                    borderRadius: "20px",
+                    border: "1px solid #00000000",
+                    background: "#fff",
+                    fontSize: "14px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <MenuItem value="">Select</MenuItem>
+                  {[...Array(dailyPlan?.numberOfRolls || 0)].map((_, index) => (
+                    <MenuItem key={index + 1} value={index + 1}>
+                      {index + 1}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
             </Box>
 
             <Box display="flex" gap={1}>

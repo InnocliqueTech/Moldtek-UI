@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface DailyPlan {
+  numberOfRolls: number;
   itemCode:string;
   kldCode:string;
   unitEffectivityNumber: string;
@@ -18,7 +20,7 @@ interface DailyPlan {
   jobMasterId: number;
   labelType:string;
   segment:string;
-  mouldCode:string | null | number
+  mouldCode:string | null | number;
 }
 
 export interface InkCoatingSpecification {
@@ -116,7 +118,7 @@ export interface viewDailyPlan {
   dailyPlanHeaderUploadButton:boolean;
   dailyPlanHeaderUpload:boolean;
   dailyPlanSuccessPopup:boolean;
-  dailyPlanConfirmPopup:boolean
+  dailyPlanConfirmPopup:boolean;
 }
 
 const initialState: viewDailyPlan = {
@@ -171,7 +173,8 @@ unitEffectiveNumbers: ""}],
     workOrderNumber: "",
     jobMasterId: 0,
     labelType:"",
-    segment:""
+    segment:"",
+    numberOfRolls:0
   },
   inkCoatingSpecifications: [],
   analoxSpecifications: [],
@@ -332,7 +335,7 @@ const ViewDailyPanSlice = createSlice({
     },
     setRecentlyCreatedIndentNumber:(state, action:PayloadAction<string>)=>{
       state.recentlyCreatedIndentNumber = action.payload;
-    }
+    },
    },
 });
 
