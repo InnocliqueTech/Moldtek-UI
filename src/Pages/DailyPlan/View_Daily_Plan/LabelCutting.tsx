@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import {
@@ -6,7 +7,7 @@ import {
   approvalColumns,
 } from "../data";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetLabelCuttingDetailsQuery } from "../../../store/apis/dailyPlanApis";
+import { useGetLabelCuttingDetailsMutation } from "../../../store/apis/dailyPlanApis";
 import {
   setDailyPlanCancel,
   setDailyPlanSave,
@@ -34,12 +35,19 @@ const LabelCutting: React.FC<LabelCuttingDetailsProps> = ({
   onDataChange,
 }) => {
   const dispatch = useDispatch();
-  const {
+  const [getLabelCuttingDetails,{
     data: labelCuttingData,
     isLoading,
     isError,
     error,
-  } = useGetLabelCuttingDetailsQuery(indentNumber);
+  }] = useGetLabelCuttingDetailsMutation();
+
+  useEffect(()=>{
+getLabelCuttingDetails(
+  {indentNumber,
+    rollNumber:1}
+)
+  },[indentNumber])
 
   // State to manage editable data
   const [editableData, setEditableData] = useState<LabelCuttingData | null>(

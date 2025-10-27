@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_API_URL } from "../../api.config";
 import {
@@ -99,38 +100,72 @@ export const dailyPlanApi = createApi({
             ]
           : [{ type: "DailyJobs", id: "LIST" }],
     }),
-    getPrintingReportDetails: builder.query<PrintingReportResponse, string>({
-      query: (jobId) =>
-        `/dailyplan/getDailyPlanprintingReportDetails?indentNumber=${jobId}`,
-      providesTags: (_result, _error, jobId) => [
-        { type: "PrintingReport", id: jobId },
-      ],
-    }),
-    getMakeReadyDetails: builder.query<MakeReadyDetailsResponse, string>({
-      query: (jobId) =>
-        `/dailyplan/getDailyPlanMakeReadyDetails?indentNumber=${jobId}`,
-      providesTags: (_result, _error, jobId) => [
-        { type: "MakeReadyDetails", id: jobId },
-      ],
-    }),
-    getLabelCuttingDetails: builder.query<LabelCuttingDetailsResponse, string>({
-      query: (indentNumber) => ({
-        url: "/dailyplan/getDailyPlanLabelCuttingDetails",
-        params: { indentNumber },
-      }),
-      providesTags: (_result, _error, indentNumber) => [
-        { type: "LabelCuttingDetails", id: indentNumber },
-      ],
-    }),
-    getTravelCardDetails: builder.query<TravelCardDetailsResponse, string>({
-      query: (indentNumber) => ({
-        url: "/dailyplan/getDailyPlanTravelCardDetails",
-        params: { indentNumber },
-      }),
-      providesTags: (_result, _error, indentNumber) => [
-        { type: "TravelCardDetails", id: indentNumber },
-      ],
-    }),
+getPrintingReportDetails: builder.mutation<
+  PrintingReportResponse,
+  { indentNumber: string; rollNumber: number }
+>({
+  query: ({ indentNumber, rollNumber }) => ({
+    url: "/dailyplan/getDailyPlanprintingReportDetails",
+    method: "POST",
+    body: { indentNumber, rollNumber },
+  }),
+  invalidatesTags: (_result, _error, { indentNumber }) => [
+    { type: "PrintingReport", id: indentNumber },
+  ],
+}),
+
+getLaminationReportDetails: builder.mutation<
+  LaminationReportResponse,
+  { indentNumber: string; rollNumber: number }
+>({
+  query: ({ indentNumber, rollNumber }) => ({
+    url: "/dailyplan/getDailyPlanLaminationReportDetails",
+    method: "POST",
+    body: { indentNumber, rollNumber },
+  }),
+  invalidatesTags: (_result, _error, { indentNumber }) => [
+    { type: "LaminationReport", id: indentNumber },
+  ],
+}),
+
+getLabelCuttingDetails: builder.mutation<
+  LabelCuttingDetailsResponse,
+  { indentNumber: string; rollNumber: number }
+>({
+  query: ({ indentNumber, rollNumber }) => ({
+    url: "/dailyplan/getDailyPlanLabelCuttingDetails",
+    method: "POST",
+    body: { indentNumber, rollNumber },
+  }),
+  invalidatesTags: (_result, _error, { indentNumber }) => [
+    { type: "LabelCuttingDetails", id: indentNumber },
+  ],
+}),
+
+getTravelCardDetails: builder.mutation<
+  TravelCardDetailsResponse,
+  { indentNumber: string; rollNumber: number }
+>({
+  query: ({ indentNumber, rollNumber }) => ({
+    url: "/dailyplan/getDailyPlanTravelCardDetails",
+    method: "POST",
+    body: { indentNumber, rollNumber },
+  }),
+  invalidatesTags: (_result, _error, { indentNumber }) => [
+    { type: "TravelCardDetails", id: indentNumber },
+  ],
+}),
+
+getMakeReadyDetails: builder.mutation<MakeReadyDetailsResponse, { indentNumber: string; rollNumber: number }>({
+  query: ({ indentNumber, rollNumber }) => ({
+    url: "/dailyplan/getDailyPlanMakeReadyDetails",
+    method: "POST",
+    body: { indentNumber: indentNumber, rollNumber: rollNumber },
+  }),
+  invalidatesTags: (_result, _error, { indentNumber }) => [
+    { type: "MakeReadyDetails", id: indentNumber },
+  ],
+}),
     saveDailyJob: builder.mutation<SaveDailyJobResponse, SaveDailyJobRequest>({
       query: (jobData) => ({
         url: "/dailyplan/saveDailyJob",
@@ -139,16 +174,6 @@ export const dailyPlanApi = createApi({
       }),
       invalidatesTags: ["DailyJobs"], // Invalidates cached job lists
     }),
-    getLaminationReportDetails: builder.query<LaminationReportResponse, string>(
-      {
-        query: (indentNumber) =>
-          `/dailyplan/getDailyPlanLaminationReportDetails?indentNumber=${indentNumber}`,
-        providesTags: (_result, _error, indentNumber) => [
-          { type: "LaminationReport", id: indentNumber },
-        ],
-      }
-    ),
-
     saveLaminationReportDetails: builder.mutation<any, any>({
       query: (laminationReportData) => ({
         url: "/dailyplan/saveLaminationReport",
@@ -229,13 +254,18 @@ export const {
   useDailyPlanGlobalSearchMutation,
   useGetDailyJobMetricsQuery,
   useGetDailyJobsListQuery,
-  useGetPrintingReportDetailsQuery,
-  useGetMakeReadyDetailsQuery,
-  useGetLabelCuttingDetailsQuery,
-  useGetTravelCardDetailsQuery,
+//  useGetPrintingReportDetailsQuery,
+  // useGetMakeReadyDetailsQuery,
+  useGetMakeReadyDetailsMutation,
+  // useGetLabelCuttingDetailsQuery,
+  // useGetTravelCardDetailsQuery,
   useDailyPlanFiltersMutation,
   useSaveDailyJobMutation,
-  useGetLaminationReportDetailsQuery,
+  useGetPrintingReportDetailsMutation,
+  useGetLabelCuttingDetailsMutation,
+  useGetLaminationReportDetailsMutation,
+  useGetTravelCardDetailsMutation,
+  // useGetLaminationReportDetailsQuery,
   useUpdateStatusJobMutation,
   useSaveLabelCuttingDetailsMutation,
   useSaveTravelCardDetailsMutation,

@@ -1,3 +1,5 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -35,7 +37,7 @@ import {
   setDailyPlanCancel,
 } from "../../../store/slices/viewDailyPlanSlice";
 import {
-  useGetMakeReadyDetailsQuery,
+  useGetMakeReadyDetailsMutation,
   useSaveLabelCuttingDetailsMutation,
   useSaveLaminationReportDetailsMutation,
   useSaveTravelCardDetailsMutation,
@@ -67,12 +69,19 @@ const ViewDailyPlan: React.FC = () => {
   }
 
   const decodedIndentNo = decodeURIComponent(indentNo || "");
-  const {
+  const[getMakeReadyDetails, {
     data: makeReady,
     isLoading,
     isError,
     // error,
-  } = useGetMakeReadyDetailsQuery(decodedIndentNo);
+  }] = useGetMakeReadyDetailsMutation();
+
+  useEffect(()=>{
+getMakeReadyDetails({
+   indentNumber:decodedIndentNo,
+    rollNumber:1
+})
+  },[decodedIndentNo])
 
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTabView } = useSelector(
@@ -146,11 +155,12 @@ const ViewDailyPlan: React.FC = () => {
         case 0:
           const makeReadyPayload = {
             ...updateDailyPlanPayload,
+            rollNumber: 1,
             dailyPlan: {
               unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
               indentNumber: decodedIndentNo,
               shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
-              workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
+              workOrderNumber: updateCommonCard.workOrderNumber ?? ""
             },
           };
           await saveMakeReadyDetails(makeReadyPayload).unwrap();
@@ -159,11 +169,12 @@ const ViewDailyPlan: React.FC = () => {
         case 1: {
           const printingPayload = {
             ...updateDailyPlanPayload,
+            rollNumber: 1,
             dailyPlan: {
               unitEffectivityNumber: unitEffectiveNumberDaily?.toString() ?? "",
               indentNumber: decodedIndentNo,
               shift: updateCommonCard.shift ?? "", // adjust based on your actual structure
-              workOrderNumber: updateCommonCard.workOrderNumber ?? "", // adjust as needed
+              workOrderNumber: updateCommonCard.workOrderNumber ?? ""
             },
           };
           await savePrintingReportDetails(printingPayload).unwrap();
@@ -213,6 +224,7 @@ const ViewDailyPlan: React.FC = () => {
         ...updateDailyPlanPayload,
         ...updateCommonCard,
         indentNumber: decodedIndentNo,
+          rollNumber:1
       };
 
       await saveTabData(

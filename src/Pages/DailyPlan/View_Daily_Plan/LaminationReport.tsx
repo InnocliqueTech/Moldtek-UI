@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetLaminationReportDetailsQuery } from "../../../store/apis/dailyPlanApis";
+import { useGetLaminationReportDetailsMutation } from "../../../store/apis/dailyPlanApis";
 import {
   transformZoneTempData,
   transformUnwindRewindData,
@@ -96,9 +97,14 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
   isEditing,
   onDataChange,
 }) => {
-  const { data, isLoading, isError, error } =
-    useGetLaminationReportDetailsQuery(indentNumber);
-
+  const [getLaminationReportDetails,{ data, isLoading, isError, error }] =
+    useGetLaminationReportDetailsMutation();
+  useEffect(()=>{
+getLaminationReportDetails(
+  {indentNumber,
+    rollNumber:1}
+)
+  },[indentNumber])
   const { dailyPlanSave, dailyPlanCancel } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
@@ -108,7 +114,7 @@ const LaminationReport: React.FC<LaminationReportProps> = ({
     LaminationReportResponse["data"] | null
   >(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);
-  const usage = data && data.data.plainFilmLeftOverRoll;
+  const usage = data && data.data?.plainFilmLeftOverRoll;
   const info: InfoItem[] = [
     {
       label: "Plain Film LeftOverRoll Meters",

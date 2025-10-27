@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Box , Typography} from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
-import { useGetPrintingReportDetailsQuery } from "../../../store/apis/dailyPlanApis";
+import { useGetPrintingReportDetailsMutation } from "../../../store/apis/dailyPlanApis";
 import {
   transformTensionData,
   transformPrintingProcessDataList,
@@ -25,7 +26,12 @@ interface PrintingReportsProps {
 
 const PrintingReport: React.FC<PrintingReportsProps> = ({ indentNO, isEditing, onDataChange }) => {
   const dispatch = useDispatch();
-  const { data: printingReportsData, isLoading, isError, } = useGetPrintingReportDetailsQuery(indentNO);
+  const [getPrintingReportDetails,{ data: printingReportsData, isLoading, isError, }] = useGetPrintingReportDetailsMutation();
+
+  useEffect(()=>{
+getPrintingReportDetails({indentNumber:indentNO,
+    rollNumber:3})
+  },[indentNO])
 
   const [editableData, setEditableData] = useState<PrintingReportResponse["data"] | null>(null);
   const [infoItems, setInfoItems] = useState<InfoItem[]>([]);

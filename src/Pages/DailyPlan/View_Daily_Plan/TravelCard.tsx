@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
@@ -7,7 +8,7 @@ import {
   labelCuttingColumns,
   labelDispatchColums,
 } from "../data";
-import { useGetTravelCardDetailsQuery } from "../../../store/apis/dailyPlanApis";
+import { useGetTravelCardDetailsMutation } from "../../../store/apis/dailyPlanApis";
 import Loader from "../../../Loader";
 import { transformJobDetails } from "./tableTransfermationFunctions";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,9 +39,14 @@ const TravelCard: React.FC<TravelCardProps> = ({
   onDataChange,
 }) => {
   const dispatch = useDispatch();
-  const { data, isLoading, isError } =
-    useGetTravelCardDetailsQuery(indentNumber);
-
+  const[getTravelCardDetails, { data, isLoading, isError }] =
+    useGetTravelCardDetailsMutation();
+  useEffect(()=>{
+getTravelCardDetails(
+  {indentNumber,
+    rollNumber:1}
+)
+  },[indentNumber])
   const [editableData, setEditableData] =
     useState<EditableTravelCardData | null>(null);
   const { dailyPlan,dailyPlanCancel,dailyPlanSave } = useSelector((state: RootState) => state.viewDailyPlan);
