@@ -426,7 +426,7 @@ function ReusableTable<T extends Record<string, any>>({
         const indentNumber = decodeURIComponent(row.indentNumber || "");
         const jarCap = row.jarCap;
          const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
-         const rollNumber = row.rollNumber;
+         const rollNumber = row.numberOfRolls;
 
         try {
               const response = await fetch(url, {
@@ -438,7 +438,8 @@ function ReusableTable<T extends Record<string, any>>({
       unitNumber,
       indentNumber,
       jarCap,
-      rollNumber:rollNumber?rollNumber:1
+      rollNumber : rollNumber && rollNumber > 0 ? rollNumber : 1
+
     }),
   });
           if (!response.ok) {
