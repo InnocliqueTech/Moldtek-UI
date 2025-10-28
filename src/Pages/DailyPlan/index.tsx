@@ -63,6 +63,8 @@ interface TableDataModel {
   createdAt: string;
   jobRunDate: string;
   status: string;
+  numberOfRolls:number;
+  rollNumber:number
 }
 
 const transformApiDataToStats = (
@@ -140,6 +142,8 @@ const transformJobDataList = (
         createdAt: "--",
         jobRunDate: "--",
         status: "--",
+        numberOfRolls:0,
+        rollNumber:0
       },
     ];
   }
@@ -158,6 +162,8 @@ const transformJobDataList = (
     createdAt: formatDate(job.createdAt),
     jobRunDate: formatDate(job.jobRunDate),
     status: job.status,
+    numberOfRolls:job.numberOfRolls,
+    rollNumber:job.rollNumber
   }));
 };
 
@@ -378,7 +384,7 @@ const DailyPlan: React.FC<DailyPlanProps> = () => {
   const formatted = parsed.isValid() ? parsed.format("DD-MM-YYYY") : "Invalid date";
   return formatted;
 }
-    }
+  }
   ];
   // if ( companiesError) {
   //   return (

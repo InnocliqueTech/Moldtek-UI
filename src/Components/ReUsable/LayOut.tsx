@@ -71,7 +71,7 @@ const Layout = () => {
   const [masterDataCreatePopup, setMasterDataCreatePopup] = useState(false);
   const navigate = useNavigate();
   const updateButtonAction = localStorage.getItem("updateButton");
-  const { hasUnsavedChanges } = useSelector(
+  const { hasUnsavedChanges,dailyPlan } = useSelector(
     (state: RootState) => state.viewDailyPlan
   );
   const UEN = localStorage.getItem("selectedUEN");
@@ -201,6 +201,7 @@ const Layout = () => {
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const jarCap = localStorage.getItem("jarCapdaily")
 const initialRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
+const numberOfRolls=dailyPlan?.numberOfRolls
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
@@ -217,7 +218,8 @@ const initialRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
       unitNumber,
       indentNumber,
       jarCap,
-      rollNumber:initialRollCount
+      rollNumber:initialRollCount,
+      numberOfRolls:numberOfRolls
     }),
   });
 

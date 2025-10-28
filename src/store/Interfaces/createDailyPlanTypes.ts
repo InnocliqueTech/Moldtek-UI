@@ -35,6 +35,8 @@ export interface DailyJob {
   workOrderNumber: string | null
   jobMasterId: string | null
   mouldCode:string |null |number
+  numberOfRolls:number
+  rollNumber:number
 }
 
 export interface DailyJobsListResponse {
