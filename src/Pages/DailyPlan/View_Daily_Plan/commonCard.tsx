@@ -178,7 +178,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
                   {dailyPlan?.date
-                    ? new Date(dailyPlan.date).toLocaleDateString("en-GB") // dd/mm/yyyy
+                    ? new Date(dailyPlan?.date).toLocaleDateString("en-GB") // dd/mm/yyyy
                     : "N/A"}
                 </Typography>
               </Box>
@@ -217,7 +217,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   KLD
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                 {dailyPlan.kldCode ?dailyPlan.kldCode: "N/A"}
+                 {dailyPlan?.kldCode ?dailyPlan?.kldCode: "N/A"}
                 </Typography>
               </Box>
                  <Box mt={2}>
@@ -277,7 +277,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                   Item Code
                 </Typography>
                 <Typography variant="body1" mt={0.5}>
-                 {dailyPlan.itemCode ?dailyPlan.itemCode: "N/A"}
+                 {dailyPlan?.itemCode ?dailyPlan?.itemCode: "N/A"}
                 </Typography>
               </Box>
                                              <Box mt={2}>
@@ -311,7 +311,7 @@ const renderValue = (value: string | number | null | undefined,MAX_LENGTH:number
                     whiteSpace: "pre-line",
                   }}
                 >
-                  {renderValue(dailyPlan.brandName || "N/A",maxChars)}
+                  {renderValue(dailyPlan?.brandName || "N/A",maxChars)}
                 </Typography>
 
               <Box mt={2}>

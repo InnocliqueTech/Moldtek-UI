@@ -303,7 +303,7 @@ useEffect(() => {
   const tabs = [
     "Make Ready",
     "Printing Report",
-    ...(dailyPlan.labelType === "Mono Layer" ? [] : ["Lamination Report"]),
+    ...(dailyPlan?.labelType === "Mono Layer" ? [] : ["Lamination Report"]),
     "Label Cutting",
     "Travel Card",
   ].filter(Boolean);

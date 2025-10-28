@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useLocation,
   Outlet,
@@ -198,7 +200,7 @@ const Layout = () => {
 
   const decodedIndentNo = decodeURIComponent(indentNo || "");
   const jarCap = localStorage.getItem("jarCapdaily")
-
+const initialRollCount = Number(sessionStorage.getItem("rollCount")) || 1;
   const downloadFile = async () => {
     const unitNumber = unitEffectiveNumberDaily;
     const indentNumber = decodedIndentNo;
@@ -215,6 +217,7 @@ const Layout = () => {
       unitNumber,
       indentNumber,
       jarCap,
+      rollNumber:initialRollCount
     }),
   });
 

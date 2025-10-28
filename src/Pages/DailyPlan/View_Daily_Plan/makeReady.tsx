@@ -1,3 +1,6 @@
+/* eslint-disable prefer-const */
+/* eslint-disable no-case-declarations */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import TitledDataTable from "../../../Components/ReUsable/TitledDataTable";
@@ -98,37 +101,37 @@ const MakeReady: React.FC<MakeReadyProps> = ({
   const report: InfoItem[] = [
     {
       label: "Plates Inspection",
-      value: plateMountingSupervisorReport.platesInspection ?? "",
+      value: plateMountingSupervisorReport?.platesInspection ?? "",
       editable: true,
       keyName: "platesInspection",
     },
     {
       label: "Mounter",
-      value: plateMountingSupervisorReport.mounter,
+      value: plateMountingSupervisorReport?.mounter,
       editable: true,
       keyName: "mounter",
     },
     {
       label: "Approver",
-      value: plateMountingSupervisorReport.approver,
+      value: plateMountingSupervisorReport?.approver,
       editable: true,
       keyName: "approver",
     },
     {
       label: "Ink Kitchen Supervisor",
-      value: plateMountingSupervisorReport.inkKitchenSupervisor,
+      value: plateMountingSupervisorReport?.inkKitchenSupervisor,
       editable: true,
       keyName: "inkKitchenSupervisor",
     },
     {
       label: "Plate Mounting Supervisor Report",
-      value: plateMountingSupervisorReport.plateMountingSupervisor,
+      value: plateMountingSupervisorReport?.plateMountingSupervisor,
       editable: true,
       keyName: "plateMountingSupervisor",
     },
     {
       label: "Shift QC Incharge",
-      value: plateMountingSupervisorReport.shiftQcIncharge,
+      value: plateMountingSupervisorReport?.shiftQcIncharge,
       editable: true,
       keyName: "shiftQcIncharge",
     },

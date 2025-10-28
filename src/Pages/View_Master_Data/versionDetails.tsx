@@ -12,7 +12,6 @@ const VersinDetails: React.FC = () => {
         align: true,
         format: (_: any, row: any) => {
           const combinedValue = `${row.unit_effective_number} - ${row.version_no}`;
-      console.log(row,"ROWDATA")
           const handleClick = () => {
             localStorage.setItem("VersionNumber", row.version_no);
             localStorage.setItem("UEN", row.unit_effective_number);

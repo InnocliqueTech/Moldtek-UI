@@ -539,7 +539,6 @@ const CreatePlan: React.FC = () => {
                           type="text"
                           onChange={(e) => {
                             const val = e.target.value;
-                            console.log(val, formFields, "VALUESOFTHEDATA");
                             setFormFields((prev: any) =>
                               prev.map((f: any) => {
                                 if (f.id === field.id) {

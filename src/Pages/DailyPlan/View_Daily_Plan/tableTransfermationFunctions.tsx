@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatDate } from "../../../Components/helpers";
 import { InfoItem } from "../../../Components/ReUsable/InfoContainer";
 type StationData = {
@@ -119,22 +120,22 @@ type TensionApiResponse = {
 
 
 
- export const transformPrintingProcessDataList = (apiDataList: ProcessReportItem[] | undefined): PrintingProcessRow[] => {
-    if(!apiDataList){
-        return [{ particular: 'Repeat Length', target: 927, roll1: '584', roll2: '88' }]
-    }
-    return apiDataList.map((item) => {
-      const row: PrintingProcessRow = {
-        particular: item.particular,
-        target: item.target ?? ""
-      };
-      Object.entries(item.rollValues ?? {}).forEach(([rollKey, value]) => {
-        const formattedKey = rollKey;
-        row[formattedKey] = value;
-      });
-      return row;
-    });
-  };
+export const transformPrintingProcessDataList = (
+  apiDataList: ProcessReportItem[] | undefined
+): PrintingProcessRow[] => {
+  if (!apiDataList) {
+    return [{ particular: 'Repeat Length', target: 927, roll1: '584', roll2: '88' }];
+  }
+  return apiDataList.map((item) => {
+    const row: PrintingProcessRow = {
+      particular: item.particular,
+      target: item.target ?? "",
+     'Roll-1': item.rollValues?.["Roll-1"] ?? "", // assign only Roll-1
+    };
+
+    return row;
+  });
+};
 
 export const revertPrintingProcessData = (uiData: any[]): ProcessReportItem[] => {
   return uiData.map((item) => {

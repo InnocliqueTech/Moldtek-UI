@@ -187,12 +187,9 @@ useEffect(() => {
   setRollCountState(initialRollCount);
 }, []);
 
-
-
-useEffect(() => {
-  // Check if the current path matches /viewDailyPlan/:id
   const viewDailyPlanMatch = /^\/viewDailyPlan\/[^/]+$/.test(location.pathname);
 
+useEffect(() => {
   if (!viewDailyPlanMatch) {
     setRollCountState(1); // Reset rollCount
     sessionStorage.removeItem("rollCount");
@@ -212,6 +209,7 @@ useEffect(() => {
       const response = await updateStatusJob({
         indentNumber: decodedIndentNo,
         status: selectedValue,
+        rollNumber:rollCount
       }).unwrap();
 
       if (response?.statusCode === 200) {
@@ -584,6 +582,7 @@ useEffect(() => {
                     </IconButton>
                   </Box>
                 )}
+                {viewDailyPlanMatch &&
                 <Box display="flex" alignItems="center" gap={1}>
                 <Typography
                   variant="subtitle2"
@@ -618,6 +617,7 @@ useEffect(() => {
                   ))}
                 </Select>
               </Box>
+}
             </Box>
 
             <Box display="flex" gap={1}>

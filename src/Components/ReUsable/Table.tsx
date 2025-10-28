@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-extra-boolean-cast */
 import React, { useState, JSX, useEffect } from "react";
 import {
   Table,
@@ -362,6 +365,7 @@ function ReusableTable<T extends Record<string, any>>({
       const response = await updateStatusJob({
         indentNumber: selectedRow.indentNumber,
         status: selectedValue,
+        rollNumber:1
       }).unwrap();
 
       if (response?.statusCode === 200) {
@@ -418,11 +422,11 @@ function ReusableTable<T extends Record<string, any>>({
 
     try {
       const downloadTasks = selected.map(async (row) => {
-        console.log(row, "ROWSDTATA");
         const unitNumber = row.unitEffectivityNumber;
         const indentNumber = decodeURIComponent(row.indentNumber || "");
         const jarCap = row.jarCap;
          const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
+         const rollNumber = row.rollNumber;
 
         try {
               const response = await fetch(url, {
@@ -434,6 +438,7 @@ function ReusableTable<T extends Record<string, any>>({
       unitNumber,
       indentNumber,
       jarCap,
+      rollNumber:rollNumber?rollNumber:1
     }),
   });
           if (!response.ok) {
@@ -510,7 +515,6 @@ function ReusableTable<T extends Record<string, any>>({
     }
 
     setLoaderDownload(true);
-    console.log(selected, "SELECTDAPI");
     const deletePayload = selected.map((row) => ({
       unitEffectiveNumber: row.unitEffectiveNumber,
       jarCap: row.jarCap,
@@ -926,10 +930,29 @@ function ReusableTable<T extends Record<string, any>>({
                                 marginLeft: index === 0 ? "8px" : undefined,
                               }}
                             >
-                              {column.dropdown && column.dropdownOptions ? (
-                                <Select
-                                  size="small"
-                                  value={row[column.id] || ""}
+                             {column.dropdown && column.dropdownOptions ? (
+  row.numberOfRolls && row.numberOfRolls > 1 ? (
+    <Tooltip title="If you want to update the status, go to View Daily Plan and update the status">
+      <Box
+        sx={{
+          padding: "4px 12px",
+          borderRadius: "20px",
+          border: "1px solid #ccc",
+          backgroundColor: "#F8F9FA",
+          display: "inline-block",
+          width: 150,
+          textAlign: "center",
+          cursor: "not-allowed",
+          ...getStatusStyles(row[column.id] || ""),
+        }}
+      >
+        {row[column.id]}
+      </Box>
+    </Tooltip>
+  ) : (
+    <Select
+      size="small"
+      value={row[column.id] || ""}
                                   onChange={(e) =>
                                     handleDropdownSelect(
                                       row,
@@ -937,19 +960,19 @@ function ReusableTable<T extends Record<string, any>>({
                                       e.target.value
                                     )
                                   }
-                                  displayEmpty
+      displayEmpty
                                   disabled={
                                     (row[column.id] || "").toLowerCase() ===
                                       "completed" &&
                                     role.toLowerCase() !== "admin"
                                   }
-                                  variant="standard"
-                                  sx={{
-                                    width: 150,
-                                    border: "none",
-                                    padding: "4px 12px",
-                                    borderRadius: "20px",
-                                    ...getStatusStyles(row[column.id] || ""),
+      variant="standard"
+      sx={{
+        width: 150,
+        border: "none",
+        padding: "4px 12px",
+        borderRadius: "20px",
+        ...getStatusStyles(row[column.id] || ""),
                                     "& .MuiSelect-select": {
                                       padding: 0,
                                     },
@@ -959,18 +982,18 @@ function ReusableTable<T extends Record<string, any>>({
                                     "& fieldset": {
                                       display: "none",
                                     },
-                                  }}
-                                >
+      }}
+    >
                                   {column.dropdownOptions.map((option) => (
                                     <MenuItem
                                       key={option.value}
                                       value={option.value}
                                     >
-                                      {option.label}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              ) : column.format ? (
+          {option.label}
+        </MenuItem>
+      ))}
+    </Select>
+                              )) : column.format ? (
                                 column.format(row[column.id], row)
                               ) : (
                                 row[column.id]

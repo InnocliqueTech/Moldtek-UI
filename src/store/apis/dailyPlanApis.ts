@@ -26,6 +26,7 @@ const getJobUniqueId = (job: DailyJob) => {
 interface UpdateStatusRequest {
   indentNumber: string;
   status: string;
+  rollNumber:number;
 }
 
 interface UpdateStatusResponse {
@@ -61,16 +62,17 @@ export const dailyPlanApi = createApi({
     "UnitEffectiveNumbers",
   ],
   endpoints: (builder) => ({
-    updateStatusJob: builder.mutation<
-      UpdateStatusResponse,
-      UpdateStatusRequest
-    >({
-      query: ({ indentNumber, status }) => ({
-        url: "/dailyplan/updateStatusForJob",
-        method: "GET",
-        params: { indentNumber, status },
-      }),
-    }),
+updateStatusJob: builder.mutation<
+  UpdateStatusResponse,
+  UpdateStatusRequest
+>({
+  query: ({ indentNumber, status, rollNumber }) => ({
+    url: "/dailyplan/updateStatusForJob",
+    method: "POST",
+    body: { indentNumber, status, rollNumber },
+  }),
+}),
+
 
     dailyPlanFilters: builder.mutation<any, any>({
       query: (newItem) => ({
