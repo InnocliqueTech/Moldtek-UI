@@ -406,109 +406,116 @@ function ReusableTable<T extends Record<string, any>>({
 
   const [kldDelete] = useKldDeleteMutation();
 
-  const handleBulkDownload = async () => {
-    if (selected.length === 0) {
-      toast.warning("Please select at least one row!");
-      return;
-    }
+const handleBulkDownload = async () => {
+  if (selected.length === 0) {
+    toast.warning("Please select at least one row!");
+    return;
+  }
 
-    setLoaderDownload(true);
-    const results: {
-      indentNumber: string;
-      status: "success" | "error";
-      message?: string;
-      blob?: Blob;
-    }[] = [];
+  setLoaderDownload(true);
+  const results: {
+    indentNumber: string;
+    status: "success" | "error";
+    message?: string;
+    blob?: Blob;
+    numberOfRolls?: number;
+  }[] = [];
 
-    try {
-      const downloadTasks = selected.map(async (row) => {
-        const unitNumber = row.unitEffectivityNumber;
-        const indentNumber = decodeURIComponent(row.indentNumber || "");
-        const jarCap = row.jarCap;
-         const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
-         const numberOfRolls = row.numberOfRolls;
+  try {
+    const downloadTasks = selected.map(async (row) => {
+      const unitNumber = row.unitEffectivityNumber;
+      const indentNumber = decodeURIComponent(row.indentNumber || "");
+      const jarCap = row.jarCap;
+      const url = `${BASE_API_URL}/master/downloadDailyJobTemplate`;
+      const numberOfRolls = row.numberOfRolls;
 
-        try {
-              const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      unitNumber,
-      indentNumber,
-      jarCap,
-      rollNumber : 0,
-      numberOfRolls:numberOfRolls ?numberOfRolls:0
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            unitNumber,
+            indentNumber,
+            jarCap,
+            rollNumber: 0,
+            numberOfRolls: numberOfRolls ? numberOfRolls : 0,
+          }),
+        });
 
-    }),
-  });
-          if (!response.ok) {
-            const errorData = await response.json();
-            results.push({
-              indentNumber,
-              status: "error",
-              message: errorData?.message || "Download failed.",
-            });
-          } else {
-            const blob = await response.blob();
-            results.push({
-              indentNumber,
-              status: "success",
-              blob,
-            });
-          }
-        } catch (err) {
+        if (!response.ok) {
+          const errorData = await response.json();
           results.push({
             indentNumber,
             status: "error",
-            message: err instanceof Error ? err.message : "Unknown error",
+            message: errorData?.message || "Download failed.",
           });
+        } else {
+          const blob = await response.blob();
+          results.push({
+            indentNumber,
+            status: "success",
+            blob,
+            numberOfRolls,
+          });
+        }
+      } catch (err) {
+        results.push({
+          indentNumber,
+          status: "error",
+          message: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+    });
+
+    await Promise.all(downloadTasks);
+
+    // Handle successful downloads
+    results
+      .filter((result) => result.status === "success")
+      .forEach(({ indentNumber, blob, numberOfRolls }) => {
+        if (blob) {
+          const fileUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = fileUrl;
+
+          // ✅ Choose file extension dynamically
+          const extension =
+            numberOfRolls && numberOfRolls > 1 ? "zip" : "xlsx";
+          link.download = `${indentNumber}.${extension}`;
+
+          link.click();
+          URL.revokeObjectURL(fileUrl);
         }
       });
 
-      await Promise.all(downloadTasks);
+    const successful = results
+      .filter((r) => r.status === "success")
+      .map((r) => r.indentNumber);
+    const failed = results
+      .filter((r) => r.status === "error")
+      .map((r) => `${r.message}`);
 
-      // Handle successful downloads
-      results
-        .filter((result) => result.status === "success")
-        .forEach(({ indentNumber, blob }) => {
-          if (blob) {
-            const fileUrl = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = fileUrl;
-            link.download = `${indentNumber}.xlsx`;
-            link.click();
-            URL.revokeObjectURL(fileUrl);
-          }
-        });
-
-      const successful = results
-        .filter((r) => r.status === "success")
-        .map((r) => r.indentNumber);
-      const failed = results
-        .filter((r) => r.status === "error")
-        .map((r) => `${r.message}`);
-
-      if (failed.length > 0) {
-        setDownloadSummary({
-          total: selected.length,
-          downloaded: successful,
-          errors: failed,
-        });
-      } else if (successful.length > 0 && failed.length <= 0) {
-        toast.success(
-          `${
-            successful.length === 1
-              ? "File downloaded successfully."
-              : "Files downloaded successfully."
-          }`
-        );
-      }
-    } finally {
-      setLoaderDownload(false);
+    if (failed.length > 0) {
+      setDownloadSummary({
+        total: selected.length,
+        downloaded: successful,
+        errors: failed,
+      });
+    } else if (successful.length > 0 && failed.length <= 0) {
+      toast.success(
+        `${
+          successful.length === 1
+            ? "File downloaded successfully."
+            : "Files downloaded successfully."
+        }`
+      );
     }
-  };
+  } finally {
+    setLoaderDownload(false);
+  }
+};
 
   const handleBulkDelete = async () => {
     if (selected.length === 0) {
